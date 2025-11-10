@@ -472,13 +472,13 @@ namespace CutTheRope.iframework.helpers
 
         public static bool lineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
-            Vector vector = default(Vector);
+            Vector vector = default;
             vector.x = x3 - x1 + x4 - x2;
             vector.y = y3 - y1 + y4 - y2;
-            Vector vector2 = default(Vector);
+            Vector vector2 = default;
             vector2.x = x2 - x1;
             vector2.y = y2 - y1;
-            Vector vector3 = default(Vector);
+            Vector vector3 = default;
             vector3.x = x4 - x3;
             vector3.y = y4 - y3;
             float value = (vector2.y * vector3.x) - (vector3.y * vector2.x);

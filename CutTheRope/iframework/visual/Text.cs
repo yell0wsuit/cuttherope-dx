@@ -268,7 +268,7 @@ namespace CutTheRope.iframework.visual
             }
             int num9 = num2 >> 1;
             formattedStrings.Clear();
-            NSRange range = default(NSRange);
+            NSRange range = default;
             for (int i = 0; i < num9; i++)
             {
                 int num10 = array[i << 1];

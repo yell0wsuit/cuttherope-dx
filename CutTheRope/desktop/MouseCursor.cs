@@ -60,7 +60,7 @@ namespace CutTheRope.desktop
             List<TouchLocation> list = [];
             _mouseStateOriginal = Global.XnaGame.GetMouseState();
             MouseState mouseStateTranformed = TransformMouseState(_mouseStateOriginal);
-            TouchLocation item = default(TouchLocation);
+            TouchLocation item = default;
             if (_touchID > 0)
             {
                 if (mouseStateTranformed.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)

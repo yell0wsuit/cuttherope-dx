@@ -156,7 +156,7 @@ namespace CutTheRope.iframework.visual
             particle.pos.y = y + (posVar.y * RND_MINUS1_1);
             particle.startPos = particle.pos;
             float num = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
-            Vector v = default(Vector);
+            Vector v = default;
             v.y = sinf(num);
             v.x = cosf(num);
             float s = speed + (speedVar * RND_MINUS1_1);
@@ -164,12 +164,12 @@ namespace CutTheRope.iframework.visual
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);
             particle.tangentialAccel = tangentialAccel + (tangentialAccelVar * RND_MINUS1_1);
             particle.life = life + (lifeVar * RND_MINUS1_1);
-            RGBAColor rGBAColor = default(RGBAColor);
+            RGBAColor rGBAColor = default;
             rGBAColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
             rGBAColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
             rGBAColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
             rGBAColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
-            RGBAColor rGBAColor2 = default(RGBAColor);
+            RGBAColor rGBAColor2 = default;
             rGBAColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
             rGBAColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
             rGBAColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);

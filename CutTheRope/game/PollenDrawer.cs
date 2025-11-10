@@ -69,7 +69,7 @@ namespace CutTheRope.game
             int num7 = (int)qh;
             num6 *= (int)num;
             num7 *= (int)num2;
-            Pollen pollen = default(Pollen);
+            Pollen pollen = default;
             pollen.parentIndex = pi;
             pollen.x = v.x;
             pollen.y = v.y;

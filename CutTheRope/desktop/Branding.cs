@@ -56,7 +56,7 @@ namespace CutTheRope.desktop
                 if (_currentSplashTime.TotalMilliseconds >= 3700.0)
                 {
                     _currentSplash++;
-                    _currentSplashTime = default(TimeSpan);
+                    _currentSplashTime = default;
                 }
             }
             catch (Exception)
@@ -74,7 +74,7 @@ namespace CutTheRope.desktop
                     {
                         _waitFirstDraw = false;
                         _currentSplash = 0;
-                        _currentSplashTime = default(TimeSpan);
+                        _currentSplashTime = default;
                     }
                     Texture2D texture2D = _listBitmap[_currentSplash];
                     Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;

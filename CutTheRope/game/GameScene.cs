@@ -1871,7 +1871,7 @@ namespace CutTheRope.game
                 }
                 if (!flag12)
                 {
-                    Vector s = default(Vector);
+                    Vector s = default;
                     Grab grab2 = null;
                     Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = getNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, slastTouch.x + camera.pos.x, slastTouch.y + camera.pos.y, ref grab2);
                     if (nearestBungeeSegmentByBeziersPointsatXYgrab != null)
@@ -2170,7 +2170,7 @@ namespace CutTheRope.game
                         j++;
                     }
                     List<Vector> list = [];
-                    Vector vector = default(Vector);
+                    Vector vector = default;
                     bool flag = true;
                     for (int k = 0; k < array.Length; k++)
                     {
@@ -2255,9 +2255,9 @@ namespace CutTheRope.game
             if (GameObject.rectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
             {
                 Vector v = vect(c.x, c.y);
-                Vector vector = default(Vector);
+                Vector vector = default;
                 vector.x = p.x - (p.bb.w / 2f);
-                Vector vector2 = default(Vector);
+                Vector vector2 = default;
                 vector2.x = p.x + (p.bb.w / 2f);
                 vector.y = vector2.y = p.y;
                 if (p.angle != 0.0)
@@ -2722,7 +2722,7 @@ namespace CutTheRope.game
             }
             if (clickToCut && !ignoreTouches)
             {
-                Vector s = default(Vector);
+                Vector s = default;
                 Grab grab2 = null;
                 Bungee nearestBungeeSegmentByBeziersPointsatXYgrab = getNearestBungeeSegmentByBeziersPointsatXYgrab(ref s, tx + camera.pos.x, ty + camera.pos.y, ref grab2);
                 if (nearestBungeeSegmentByBeziersPointsatXYgrab != null && nearestBungeeSegmentByBeziersPointsatXYgrab.highlighted && getNearestBungeeSegmentByConstraintsforGrab(ref s, grab2) != null)

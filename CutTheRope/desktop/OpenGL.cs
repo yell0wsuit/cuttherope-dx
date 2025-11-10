@@ -288,7 +288,7 @@ namespace CutTheRope.desktop
         {
             VertexPositionColor[] array = new VertexPositionColor[s_GLVertexPointer.Count];
             int num = 0;
-            Vector3 position = default(Vector3);
+            Vector3 position = default;
             for (int i = 0; i < array.Length; i++)
             {
                 position.X = s_GLVertexPointer.pointer_[num++];
@@ -305,7 +305,7 @@ namespace CutTheRope.desktop
             int num = 0;
             for (int i = 0; i < array.Length; i++)
             {
-                Vector3 position = default(Vector3);
+                Vector3 position = default;
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
                 position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
@@ -332,11 +332,11 @@ namespace CutTheRope.desktop
             int num2 = 0;
             for (int i = 0; i < array.Length; i++)
             {
-                Vector3 position = default(Vector3);
+                Vector3 position = default;
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
                 position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                Vector2 textureCoordinate = default(Vector2);
+                Vector2 textureCoordinate = default;
                 textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
                 textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
                 int num3 = 2;
@@ -359,11 +359,11 @@ namespace CutTheRope.desktop
             int num2 = 0;
             for (int i = 0; i < array.Length; i++)
             {
-                Vector3 position = default(Vector3);
+                Vector3 position = default;
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
                 position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                Vector2 textureCoordinate = default(Vector2);
+                Vector2 textureCoordinate = default;
                 textureCoordinate.X = s_GLTexCoordPointer.pointer_[num2++];
                 textureCoordinate.Y = s_GLTexCoordPointer.pointer_[num2++];
                 int num3 = 2;

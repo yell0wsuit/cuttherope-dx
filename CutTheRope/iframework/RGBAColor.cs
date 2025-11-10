@@ -7,7 +7,7 @@ namespace CutTheRope.iframework
     {
         public Color toXNA()
         {
-            Color result = default(Color);
+            Color result = default;
             int num = (int)(r * 255f);
             int num2 = (int)(g * 255f);
             int num3 = (int)(b * 255f);
@@ -21,7 +21,7 @@ namespace CutTheRope.iframework
 
         public Color toWhiteAlphaXNA()
         {
-            Color result = default(Color);
+            Color result = default;
             int num = (int)(a * 255f);
             result.R = byte.MaxValue;
             result.G = byte.MaxValue;

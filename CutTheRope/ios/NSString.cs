@@ -47,7 +47,7 @@ namespace CutTheRope.ios
 
         public NSRange rangeOfString(string str)
         {
-            NSRange result = default(NSRange);
+            NSRange result = default;
             result.length = 0U;
             result.location = 0U;
             if (str.Length > 0)

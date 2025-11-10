@@ -146,7 +146,7 @@ namespace CutTheRope.iframework.visual
                 }
                 return calcPathBezier(array, count - 1, delta);
             }
-            return count == 2 ? calc2PointBezier(ref p[0], ref p[1], delta) : default(Vector);
+            return count == 2 ? calc2PointBezier(ref p[0], ref p[1], delta) : default;
         }
 
         public static Vector calc2PointBezier(ref Vector a, ref Vector b, float delta)
