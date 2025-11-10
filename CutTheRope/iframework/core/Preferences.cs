@@ -54,8 +54,7 @@ namespace CutTheRope.iframework.core
 
         public static void _setIntforKey(int v, string key, bool comit)
         {
-            int value;
-            if (data_.TryGetValue(key, out value))
+            if (data_.TryGetValue(key, out int value))
             {
                 data_[key] = v;
             }
@@ -71,8 +70,7 @@ namespace CutTheRope.iframework.core
 
         private static void _setStringforKey(string v, string k, bool comit)
         {
-            string value;
-            if (dataStrings_.TryGetValue(k, out value))
+            if (dataStrings_.TryGetValue(k, out string value))
             {
                 dataStrings_[k] = v;
             }
@@ -88,8 +86,7 @@ namespace CutTheRope.iframework.core
 
         public static int _getIntForKey(string k)
         {
-            int value;
-            return data_.TryGetValue(k, out value) ? value : 0;
+            return data_.TryGetValue(k, out int value) ? value : 0;
         }
 
         private static float _getFloatForKey(string k)
@@ -109,8 +106,7 @@ namespace CutTheRope.iframework.core
 
         private static string _getStringForKey(string k)
         {
-            string value;
-            return dataStrings_.TryGetValue(k, out value) ? value : "";
+            return dataStrings_.TryGetValue(k, out string value) ? value : "";
         }
 
         public virtual void savePreferences()

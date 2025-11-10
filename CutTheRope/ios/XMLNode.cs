@@ -21,8 +21,7 @@ namespace CutTheRope.ios
         {
             get
             {
-                string rhs = null;
-                return !attributes_.TryGetValue(key, out rhs) ? new NSString("") : new NSString(rhs);
+                return !attributes_.TryGetValue(key, out string rhs) ? new NSString("") : new NSString(rhs);
             }
         }
 
@@ -51,8 +50,7 @@ namespace CutTheRope.ios
             }
             foreach (XMLNode item in childs_)
             {
-                string text;
-                if (item.name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out text) && text == attrVal)
+                if (item.name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out string text) && text == attrVal)
                 {
                     return item;
                 }

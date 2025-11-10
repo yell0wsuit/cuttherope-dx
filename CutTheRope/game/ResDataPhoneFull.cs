@@ -120,8 +120,7 @@ namespace CutTheRope.game
                     { "menu_extra_buttons_en", "<info format='0' fileFormat='0' filter='1'><quads>0,0,291,49,</quads><offsets>143,106,</offsets><preCutWidth>679</preCutWidth><preCutHeight>206</preCutHeight></info>" }
                 };
             }
-            string value;
-            xmls_.TryGetValue(resName, out value);
+            xmls_.TryGetValue(resName, out string value);
             return value;
         }
 

@@ -453,8 +453,7 @@ namespace CutTheRope.desktop
 
         private static void DrawTriangleStrip(int first, int count)
         {
-            bool value = false;
-            s_glServerSideFlags.TryGetValue(0, out value);
+            s_glServerSideFlags.TryGetValue(0, out bool value);
             if (value)
             {
                 s_glClientStateFlags.TryGetValue(0, out value);
@@ -494,8 +493,7 @@ namespace CutTheRope.desktop
                 s_LastVertices_PositionColor = null;
                 return;
             }
-            bool value = false;
-            s_glClientStateFlags.TryGetValue(13, out value);
+            s_glClientStateFlags.TryGetValue(13, out bool value);
             VertexPositionColor[] array = s_LastVertices_PositionColor = value ? ConstructColorVertices() : ConstructCurrentColorVertices();
             foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
             {
@@ -540,8 +538,7 @@ namespace CutTheRope.desktop
 
         private static void DrawTriangleList(int first, int count, short[] indices)
         {
-            bool value = false;
-            s_glClientStateFlags.TryGetValue(13, out value);
+            s_glClientStateFlags.TryGetValue(13, out bool value);
             if (value)
             {
                 DrawTriangleListColored(first, count, indices);

@@ -86,8 +86,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void addViewwithID(View v, int n)
         {
-            View value;
-            views.TryGetValue(n, out value);
+            views.TryGetValue(n, out View value);
             views[n] = v;
         }
 
@@ -127,8 +126,7 @@ namespace CutTheRope.iframework.core
 
         public virtual View getView(int n)
         {
-            View value = null;
-            views.TryGetValue(n, out value);
+            views.TryGetValue(n, out View value);
             return value;
         }
 
@@ -141,8 +139,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void deleteChild(int n)
         {
-            ViewController value = null;
-            if (childs.TryGetValue(n, out value))
+            if (childs.TryGetValue(n, out ViewController value))
             {
                 value.dealloc();
                 childs[n] = null;
@@ -236,8 +233,7 @@ namespace CutTheRope.iframework.core
             }
             else if (childs != null)
             {
-                ViewController value;
-                childs.TryGetValue(activeChildID, out value);
+                childs.TryGetValue(activeChildID, out ViewController value);
                 value?.deactivateAllButtons();
             }
         }

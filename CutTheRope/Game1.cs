@@ -128,8 +128,7 @@ namespace CutTheRope
 
         public bool IsKeyPressed(Microsoft.Xna.Framework.Input.Keys key)
         {
-            bool value = false;
-            keyState.TryGetValue(key, out value);
+            keyState.TryGetValue(key, out bool value);
             bool flag = keyboardStateXna.IsKeyDown(key);
             keyState[key] = flag;
             return flag && value != flag;

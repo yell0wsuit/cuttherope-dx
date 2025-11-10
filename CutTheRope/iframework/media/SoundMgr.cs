@@ -34,8 +34,7 @@ namespace CutTheRope.iframework.media
             {
                 return null;
             }
-            SoundEffect value;
-            if (LoadedSounds.TryGetValue(resId, out value))
+            if (LoadedSounds.TryGetValue(resId, out SoundEffect value))
             {
                 return value;
             }

@@ -208,8 +208,7 @@ namespace CutTheRope.iframework.visual
             int num2 = 0;
             while (num < childs.Count)
             {
-                BaseElement value;
-                if (childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out BaseElement value))
                 {
                     if (value != null && value.visible)
                     {
@@ -235,8 +234,7 @@ namespace CutTheRope.iframework.visual
             int num2 = 0;
             while (num < childs.Count)
             {
-                BaseElement value;
-                if (childs.TryGetValue(num2, out value))
+                if (childs.TryGetValue(num2, out BaseElement value))
                 {
                     if (value != null && value.updateable)
                     {
@@ -393,12 +391,10 @@ namespace CutTheRope.iframework.visual
         public virtual int addChildwithID(BaseElement c, int i)
         {
             c.parent = this;
-            BaseElement value2;
             if (i == -1)
             {
                 i = 0;
-                BaseElement value;
-                while (childs.TryGetValue(i, out value))
+                while (childs.TryGetValue(i, out BaseElement value))
                 {
                     if (value == null)
                     {
@@ -409,7 +405,7 @@ namespace CutTheRope.iframework.visual
                 }
                 childs.Add(i, c);
             }
-            else if (childs.TryGetValue(i, out value2))
+            else if (childs.TryGetValue(i, out BaseElement value2))
             {
                 if (value2 != c)
                 {
@@ -426,8 +422,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void removeChildWithID(int i)
         {
-            BaseElement value = null;
-            if (childs.TryGetValue(i, out value))
+            if (childs.TryGetValue(i, out BaseElement value))
             {
                 if (value != null)
                 {
@@ -456,8 +451,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual BaseElement getChild(int i)
         {
-            BaseElement value = null;
-            childs.TryGetValue(i, out value);
+            childs.TryGetValue(i, out BaseElement value);
             return value;
         }
 
@@ -508,8 +502,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void playTimeline(int t)
         {
-            Timeline value = null;
-            timelines.TryGetValue(t, out value);
+            timelines.TryGetValue(t, out Timeline value);
             if (value != null)
             {
                 if (currentTimeline != null && currentTimeline.state != Timeline.TimelineState.TIMELINE_STOPPED)
@@ -546,8 +539,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual Timeline getTimeline(int n)
         {
-            Timeline value = null;
-            timelines.TryGetValue(n, out value);
+            timelines.TryGetValue(n, out Timeline value);
             return value;
         }
 

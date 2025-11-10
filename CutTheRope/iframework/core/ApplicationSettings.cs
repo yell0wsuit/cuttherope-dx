@@ -13,8 +13,7 @@ namespace CutTheRope.iframework.core
 
         public virtual bool getBool(int s)
         {
-            bool value = false;
-            DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out value);
+            DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
             return value;
         }
 

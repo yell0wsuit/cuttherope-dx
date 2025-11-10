@@ -227,8 +227,7 @@ namespace CutTheRope.game
                     { 149, "menu_extra_buttons_en" }
                 };
             }
-            string value;
-            resNames_.TryGetValue(handleLocalizedResource(resId), out value);
+            resNames_.TryGetValue(handleLocalizedResource(resId), out string value);
             return value;
         }
 

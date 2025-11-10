@@ -11,8 +11,7 @@ namespace CutTheRope.iframework.core
     {
         public virtual bool hasResource(int resID)
         {
-            NSObject value = null;
-            s_Resources.TryGetValue(resID, out value);
+            s_Resources.TryGetValue(resID, out NSObject value);
             return value != null;
         }
 
@@ -29,8 +28,7 @@ namespace CutTheRope.iframework.core
 
         public virtual NSObject loadResource(int resID, ResourceType resType)
         {
-            NSObject value = null;
-            if (s_Resources.TryGetValue(resID, out value))
+            if (s_Resources.TryGetValue(resID, out NSObject value))
             {
                 return value;
             }
@@ -414,8 +412,7 @@ namespace CutTheRope.iframework.core
                 Application.sharedSoundMgr().freeSound(resId);
                 return;
             }
-            NSObject value = null;
-            if (s_Resources.TryGetValue(resId, out value))
+            if (s_Resources.TryGetValue(resId, out NSObject value))
             {
                 value?.dealloc();
                 s_Resources.Remove(resId);
