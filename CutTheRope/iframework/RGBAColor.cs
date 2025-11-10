@@ -12,10 +12,10 @@ namespace CutTheRope.iframework
             int num2 = (int)(g * 255f);
             int num3 = (int)(b * 255f);
             int num4 = (int)(a * 255f);
-            result.R = (byte)((num >= 0) ? ((num > 255) ? 255 : num) : 0);
-            result.G = (byte)((num2 >= 0) ? ((num2 > 255) ? 255 : num2) : 0);
-            result.B = (byte)((num3 >= 0) ? ((num3 > 255) ? 255 : num3) : 0);
-            result.A = (byte)((num4 >= 0) ? ((num4 > 255) ? 255 : num4) : 0);
+            result.R = (byte)(num >= 0 ? num > 255 ? 255 : num : 0);
+            result.G = (byte)(num2 >= 0 ? num2 > 255 ? 255 : num2 : 0);
+            result.B = (byte)(num3 >= 0 ? num3 > 255 ? 255 : num3 : 0);
+            result.A = (byte)(num4 >= 0 ? num4 > 255 ? 255 : num4 : 0);
             return result;
         }
 
@@ -26,7 +26,7 @@ namespace CutTheRope.iframework
             result.R = byte.MaxValue;
             result.G = byte.MaxValue;
             result.B = byte.MaxValue;
-            result.A = (byte)((num >= 0) ? ((num > 255) ? 255 : num) : 0);
+            result.A = (byte)(num >= 0 ? num > 255 ? 255 : num : 0);
             return result;
         }
 

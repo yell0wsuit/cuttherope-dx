@@ -1,5 +1,6 @@
 using CutTheRope.ctr_commons;
 using CutTheRope.desktop;
+using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,8 +13,8 @@ namespace CutTheRope.iframework.visual
         {
             float num = t._invWidth * rect.x;
             float num2 = t._invHeight * rect.y;
-            float num3 = num + (t._invWidth * rect.w);
-            float num4 = num2 + (t._invHeight * rect.h);
+            float num3 = num + t._invWidth * rect.w;
+            float num4 = num2 + t._invHeight * rect.h;
             float[] pointer = [num, num2, num3, num2, num, num4, num3, num4];
             float[] array = new float[12];
             array[0] = point.x;

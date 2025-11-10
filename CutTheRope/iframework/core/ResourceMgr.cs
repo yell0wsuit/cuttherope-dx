@@ -1,4 +1,5 @@
 using CutTheRope.game;
+using CutTheRope.iframework;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
@@ -32,7 +33,7 @@ namespace CutTheRope.iframework.core
             {
                 return value;
             }
-            string path = (resType != ResourceType.STRINGS) ? CTRResourceMgr.XNA_ResName(resID) : "";
+            string path = resType != ResourceType.STRINGS ? CTRResourceMgr.XNA_ResName(resID) : "";
             bool flag = false;
             float scaleX = getNormalScaleX(resID);
             float scaleY = getNormalScaleY(resID);

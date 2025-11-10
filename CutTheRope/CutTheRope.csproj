@@ -33,8 +33,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="content\**">
+    <None Include="..\content\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </None>
   </ItemGroup>
 </Project>

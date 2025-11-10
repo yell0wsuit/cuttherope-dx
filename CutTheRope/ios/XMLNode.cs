@@ -134,7 +134,7 @@ namespace CutTheRope.ios
         IL_009B:
             ReadNode(textReader, xMLNode);
         IL_00A3:
-            if ((!flag && !textReader.Read()) || textReader.Depth <= xMLNode.depth)
+            if (!flag && !textReader.Read() || textReader.Depth <= xMLNode.depth)
             {
                 return xMLNode;
             }

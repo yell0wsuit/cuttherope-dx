@@ -47,12 +47,12 @@ namespace CutTheRope.iframework
 
         public static float transformToRealX(float x)
         {
-            return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
+            return x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH + VIEW_OFFSET_X;
         }
 
         public static float transformToRealY(float y)
         {
-            return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
+            return y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT + VIEW_OFFSET_Y;
         }
 
         public static float transformFromRealX(float x)
@@ -101,7 +101,7 @@ namespace CutTheRope.iframework
 
         public static float WVGAD(double V)
         {
-            return (float)(IS_WVGA ? (V * 2.0) : V);
+            return (float)(IS_WVGA ? V * 2.0 : V);
         }
 
         public static float RT(double H, double L)
@@ -111,12 +111,12 @@ namespace CutTheRope.iframework
 
         public static float RTD(double V)
         {
-            return (float)(IS_RETINA ? (V * 2.0) : V);
+            return (float)(IS_RETINA ? V * 2.0 : V);
         }
 
         public static float RTPD(double V)
         {
-            return (float)((IS_RETINA | IS_IPAD) ? (V * 2.0) : V);
+            return (float)(IS_RETINA | IS_IPAD ? V * 2.0 : V);
         }
 
         public static float CHOOSE3(double P1, double P2, double P3)

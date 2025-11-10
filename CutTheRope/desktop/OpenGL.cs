@@ -409,7 +409,7 @@ namespace CutTheRope.desktop
 
         private static BasicEffect getEffect(bool useTexture, bool useColor)
         {
-            BasicEffect basicEffect = (!useTexture) ? s_effectColor : (useColor ? s_effectTextureColor : s_effectTexture);
+            BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
             if (useTexture)
             {
                 basicEffect.Alpha = s_Color.A / 255f;
@@ -677,36 +677,24 @@ namespace CutTheRope.desktop
 
         private static double s_LineWidth;
 
-        private class GLVertexPointer
+        private class GLVertexPointer(int size, int type, int stride, object pointer)
         {
             // (get) Token: 0x06000653 RID: 1619 RVA: 0x00033AD0 File Offset: 0x00031CD0
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
 
-            public GLVertexPointer(int size, int type, int stride, object pointer)
-            {
-                pointer_ = (pointer != null) ? ((float[])pointer) : null;
-                size_ = size;
-            }
+            public int size_ = size;
 
-            public int size_;
-
-            public float[] pointer_;
+            public float[] pointer_ = pointer != null ? (float[])pointer : null;
         }
 
-        private class GLTexCoordPointer
+        private class GLTexCoordPointer(int size, int type, int stride, object pointer)
         {
             // (get) Token: 0x06000655 RID: 1621 RVA: 0x00033B16 File Offset: 0x00031D16
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
 
-            public GLTexCoordPointer(int size, int type, int stride, object pointer)
-            {
-                pointer_ = (pointer != null) ? ((float[])pointer) : null;
-                size_ = size;
-            }
+            public int size_ = size;
 
-            public int size_;
-
-            public float[] pointer_;
+            public float[] pointer_ = pointer != null ? (float[])pointer : null;
         }
     }
 }

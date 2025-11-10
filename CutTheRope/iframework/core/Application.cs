@@ -87,7 +87,7 @@ namespace CutTheRope.iframework.core
                 string text = sharedPreferences().getStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)
                 {
-                    text = (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru") ? "ru" : ((CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de") ? "de" : ((!(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")) ? "en" : "fr"));
+                    text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
                 }
                 appSettings.setString(8, NSS(text));
             }

@@ -38,8 +38,8 @@ namespace CutTheRope.game
         public virtual void updateRotation()
         {
             float num = 140f;
-            t1.x = x - (num / 2f) - 20f;
-            t2.x = x + (num / 2f) - 20f;
+            t1.x = x - num / 2f - 20f;
+            t2.x = x + num / 2f - 20f;
             t1.y = t2.y = y;
             b1.x = t1.x;
             b2.x = t2.x;

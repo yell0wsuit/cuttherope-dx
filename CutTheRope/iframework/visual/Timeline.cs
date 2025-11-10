@@ -163,7 +163,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual void addKeyFrame(KeyFrame k)
         {
-            int i = (tracks[(int)k.trackType] != null) ? tracks[(int)k.trackType].keyFramesCount : 0;
+            int i = tracks[(int)k.trackType] != null ? tracks[(int)k.trackType].keyFramesCount : 0;
             setKeyFrameAt(k, i);
         }
 

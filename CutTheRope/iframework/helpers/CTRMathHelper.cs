@@ -8,7 +8,7 @@ namespace CutTheRope.iframework.helpers
     internal class CTRMathHelper : ResDataPhoneFull
     {
         // (get) Token: 0x0600034D RID: 845 RVA: 0x000137FA File Offset: 0x000119FA
-        public static float RND_MINUS1_1 => (float)((arc4random() / (double)ARC4RANDOM_MAX * 2.0) - 1.0);
+        public static float RND_MINUS1_1 => (float)(arc4random() / (double)ARC4RANDOM_MAX * 2.0 - 1.0);
 
         // (get) Token: 0x0600034E RID: 846 RVA: 0x0001381F File Offset: 0x00011A1F
         public static float RND_0_1 => (float)(arc4random() / (double)ARC4RANDOM_MAX);
@@ -149,7 +149,7 @@ namespace CutTheRope.iframework.helpers
 
         public static bool sameSign(float a, float b)
         {
-            return (a >= 0f && b >= 0f) || (a < 0f && b < 0f);
+            return a >= 0f && b >= 0f || a < 0f && b < 0f;
         }
 
         public static bool pointInRect(float x, float y, float checkX, float checkY, float checkWidth, float checkHeight)
@@ -254,7 +254,7 @@ namespace CutTheRope.iframework.helpers
             float num = angle;
             while (Math.Abs(num) > 360f)
             {
-                num -= (num > 0f) ? 360f : (-360f);
+                num -= num > 0f ? 360f : -360f;
             }
             if (num < 0f)
             {
@@ -305,12 +305,12 @@ namespace CutTheRope.iframework.helpers
 
         public static float vectDot(Vector v1, Vector v2)
         {
-            return (v1.x * v2.x) + (v1.y * v2.y);
+            return v1.x * v2.x + v1.y * v2.y;
         }
 
         private static float vectCross(Vector v1, Vector v2)
         {
-            return (v1.x * v2.y) - (v1.y * v2.x);
+            return v1.x * v2.y - v1.y * v2.x;
         }
 
         public static Vector vectPerp(Vector v)
@@ -330,12 +330,12 @@ namespace CutTheRope.iframework.helpers
 
         private static Vector vectRotateByVector(Vector v1, Vector v2)
         {
-            return new Vector((v1.x * v2.x) - (v1.y * v2.y), (v1.x * v2.y) + (v1.y * v2.x));
+            return new Vector(v1.x * v2.x - v1.y * v2.y, v1.x * v2.y + v1.y * v2.x);
         }
 
         private static Vector vectUnrotateByVector(Vector v1, Vector v2)
         {
-            return new Vector((v1.x * v2.x) + (v1.y * v2.y), (v1.y * v2.x) - (v1.x * v2.y));
+            return new Vector(v1.x * v2.x + v1.y * v2.y, v1.y * v2.x - v1.x * v2.y);
         }
 
         public static float vectAngle(Vector v)
@@ -382,8 +382,8 @@ namespace CutTheRope.iframework.helpers
         {
             float num = fmCos((float)rad);
             float num2 = fmSin((float)rad);
-            float num3 = (v.x * num) - (v.y * num2);
-            float yParam = (v.x * num2) + (v.y * num);
+            float num3 = v.x * num - v.y * num2;
+            float yParam = v.x * num2 + v.y * num;
             return new Vector(num3, yParam);
         }
 
@@ -405,7 +405,7 @@ namespace CutTheRope.iframework.helpers
 
         private static int vcode(float x_min, float y_min, float x_max, float y_max, Vector p)
         {
-            return ((p.x < x_min) ? 1 : 0) + ((p.x > x_max) ? 2 : 0) + ((p.y < y_min) ? 4 : 0) + ((p.y > y_max) ? 8 : 0);
+            return (p.x < x_min ? 1 : 0) + (p.x > x_max ? 2 : 0) + (p.y < y_min ? 4 : 0) + (p.y > y_max ? 8 : 0);
         }
 
         public static bool lineInRect(float x1, float y1, float x2, float y2, float rx, float ry, float w, float h)
@@ -437,25 +437,25 @@ namespace CutTheRope.iframework.helpers
                 if ((num5 & 1) != 0)
                 {
                     VectorClass vectorClass4 = vectorClass3;
-                    vectorClass4.v.y += ((y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2));
+                    vectorClass4.v.y += (y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2);
                     vectorClass3.v.x = rx;
                 }
                 else if ((num5 & 2) != 0)
                 {
                     VectorClass vectorClass5 = vectorClass3;
-                    vectorClass5.v.y += ((y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2));
+                    vectorClass5.v.y += (y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2);
                     vectorClass3.v.x = num;
                 }
                 if ((num5 & 4) != 0)
                 {
                     VectorClass vectorClass6 = vectorClass3;
-                    vectorClass6.v.x += ((x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2));
+                    vectorClass6.v.x += (x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2);
                     vectorClass3.v.y = ry;
                 }
                 else if ((num5 & 8) != 0)
                 {
                     VectorClass vectorClass7 = vectorClass3;
-                    vectorClass7.v.x += ((x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2));
+                    vectorClass7.v.x += (x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2);
                     vectorClass3.v.y = num2;
                 }
                 if (num5 == num3)
@@ -481,9 +481,9 @@ namespace CutTheRope.iframework.helpers
             Vector vector3 = default;
             vector3.x = x4 - x3;
             vector3.y = y4 - y3;
-            float value = (vector2.y * vector3.x) - (vector3.y * vector2.x);
-            float num = (vector3.x * vector.y) - (vector3.y * vector.x);
-            float value2 = (vector2.x * vector.y) - (vector2.y * vector.x);
+            float value = vector2.y * vector3.x - vector3.y * vector2.x;
+            float num = vector3.x * vector.y - vector3.y * vector.x;
+            float value2 = vector2.x * vector.y - vector2.y * vector.x;
             return Math.Abs(num) <= Math.Abs(value) && Math.Abs(value2) <= Math.Abs(value);
         }
 
@@ -503,7 +503,7 @@ namespace CutTheRope.iframework.helpers
             for (int i = 0; i < data.Length; i++)
             {
                 array[i * 2] = (byte)((data[i] & '\uff00') >> 8);
-                array[(i * 2) + 1] = (byte)(data[i] & 'ÿ');
+                array[i * 2 + 1] = (byte)(data[i] & 'ÿ');
             }
             md5.md5_context ctx = new();
             md5.md5_starts(ref ctx);
@@ -515,10 +515,10 @@ namespace CutTheRope.iframework.helpers
             for (int j = 0; j < 16; j++)
             {
                 int num2 = array2[j];
-                int num3 = (num2 >> 4) & 15;
-                array3[num++] = (char)((num3 < 10) ? (48 + num3) : (97 + num3 - 10));
+                int num3 = num2 >> 4 & 15;
+                array3[num++] = (char)(num3 < 10 ? 48 + num3 : 97 + num3 - 10);
                 num3 = num2 & 15;
-                array3[num++] = (char)((num3 < 10) ? (48 + num3) : (97 + num3 - 10));
+                array3[num++] = (char)(num3 < 10 ? 48 + num3 : 97 + num3 - 10);
             }
             array3[num++] = '\0';
             return new NSString(new string(array3));

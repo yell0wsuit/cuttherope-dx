@@ -20,7 +20,7 @@ namespace CutTheRope.game
             OpenGL.glVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
+                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[i * 2 + 1], s.vertices[i * 2 + 2], s.vertices[i * 2 + 3], 3f, color);
             }
             OpenGL.glDrawArrays(8, 0, 8);
             OpenGL.glEnableClientState(0);
@@ -70,7 +70,7 @@ namespace CutTheRope.game
             wheelImage2.rotation += num;
             wheelImage3.rotation += num;
             wheelHighlight.rotation += num;
-            num = (num > 0f) ? MIN((double)MAX(1.0, (double)num), 4.5) : MAX((double)MIN(-1.0, (double)num), -4.5);
+            num = num > 0f ? MIN((double)MAX(1.0, (double)num), 4.5) : MAX((double)MIN(-1.0, (double)num), -4.5);
             float num2 = 0f;
             if (rope != null)
             {
@@ -132,13 +132,13 @@ namespace CutTheRope.game
                 if (ABS(vector.x) > 15f)
                 {
                     float num = 10f;
-                    t = (vector.x > 0f) ? num : (0f - num);
+                    t = vector.x > 0f ? num : 0f - num;
                 }
                 Mover.moveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
             if (wheel && wheelDirty)
             {
-                float num2 = (rope == null) ? 0f : (rope.getLength() * 0.7f);
+                float num2 = rope == null ? 0f : rope.getLength() * 0.7f;
                 if (num2 == 0f)
                 {
                     wheelImage2.scaleX = wheelImage2.scaleY = 0f;
@@ -417,8 +417,8 @@ namespace CutTheRope.game
             Vector quadOffset = getQuadOffset(98, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
-            bee.rotationCenterX = quadOffset.x - (bee.width / 2);
-            bee.rotationCenterY = quadOffset.y - (bee.height / 2);
+            bee.rotationCenterX = quadOffset.x - bee.width / 2;
+            bee.rotationCenterY = quadOffset.y - bee.height / 2;
             bee.scaleX = bee.scaleY = 0.7692308f;
             addChild(bee);
         }

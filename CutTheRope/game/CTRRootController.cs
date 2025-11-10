@@ -231,7 +231,7 @@ namespace CutTheRope.game
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = (pack < CTRPreferences.getPacksCount() - 1) ? 5 : 7;
+                            menuController3.viewToShow = pack < CTRPreferences.getPacksCount() - 1 ? 5 : 7;
                         }
                         activateChild(1);
                         if (nextController == 3)

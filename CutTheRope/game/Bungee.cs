@@ -18,7 +18,7 @@ namespace CutTheRope.game
             Vector vector = vectSub(v2, v);
             if (!vectEqual(vector, vectZero))
             {
-                Vector v3 = highlighted ? vector : vectMult(vector, (color.a == 1.0) ? 1.02 : 1.0);
+                Vector v3 = highlighted ? vector : vectMult(vector, color.a == 1.0 ? 1.02 : 1.0);
                 Vector v4 = vectPerp(vector);
                 Vector vector2 = vectNormalize(v4);
                 v4 = vectMult(vector2, size);
@@ -104,7 +104,7 @@ namespace CutTheRope.game
 
         private static void drawBungee(Bungee b, Vector[] pts, int count, int points)
         {
-            float num = (b.cut == -1 || b.forceWhite) ? 1f : (b.cutTime / 1.95f);
+            float num = b.cut == -1 || b.forceWhite ? 1f : b.cutTime / 1.95f;
             RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.475 * (double)num, 0.305 * (double)num, 0.185 * (double)num, (double)num);
             RGBAColor rGBAColor2 = RGBAColor.MakeRGBA(0.6755555555555556 * (double)num, 0.44 * (double)num, 0.27555555555555555 * (double)num, (double)num);
             RGBAColor rGBAColor3 = RGBAColor.MakeRGBA(0.19 * (double)num, 0.122 * (double)num, 0.074 * (double)num, (double)num);
@@ -173,12 +173,12 @@ namespace CutTheRope.game
                 b.drawPts[num9++] = vector.y;
                 if (num8 >= 8 || (double)num7 == 1.0)
                 {
-                    RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : ((!flag) ? rGBAColor6 : rGBAColor5);
+                    RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rGBAColor6 : rGBAColor5;
                     OpenGL.glColor4f(color.toXNA());
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
-                        drawAntialiasedLineContinued(array[i * 2], array[(i * 2) + 1], array[(i * 2) + 2], array[(i * 2) + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
+                        drawAntialiasedLineContinued(array[i * 2], array[i * 2 + 1], array[i * 2 + 2], array[i * 2 + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
                     array[0] = array[num8 - 2];
                     array[1] = array[num8 - 1];
@@ -226,7 +226,7 @@ namespace CutTheRope.game
                 addPart(tail);
                 tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                 Vector v = vectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)((len / BUNGEE_REST_LEN) + 2f);
+                int num = (int)(len / BUNGEE_REST_LEN + 2f);
                 v = vectDiv(v, num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
@@ -256,7 +256,7 @@ namespace CutTheRope.game
 
         public virtual void roll(float rollLen)
         {
-            this.rollplacingWithOffset(rollLen, vectZero);
+            rollplacingWithOffset(rollLen, vectZero);
         }
 
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
@@ -343,7 +343,7 @@ namespace CutTheRope.game
         {
             forceWhite = false;
             ConstraintedPoint constraintedPoint = parts[part];
-            ConstraintedPoint constraintedPoint2 = (part + 1 >= parts.Count) ? null : parts[part + 1];
+            ConstraintedPoint constraintedPoint2 = part + 1 >= parts.Count ? null : parts[part + 1];
             if (constraintedPoint2 == null)
             {
                 constraintedPoint.removeConstraints();

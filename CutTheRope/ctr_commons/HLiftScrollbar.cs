@@ -134,8 +134,8 @@ namespace CutTheRope.ctr_commons
             {
                 num2 = scroll.y / maxScroll.y;
             }
-            lift.x = ((lift.maxX - lift.minX) * num) + lift.minX;
-            lift.y = ((lift.maxY - lift.minY) * num2) + lift.minY;
+            lift.x = (lift.maxX - lift.minX) * num + lift.minX;
+            lift.y = (lift.maxY - lift.minY) * num2 + lift.minY;
         }
 
         public virtual void calcScrollPoints()
@@ -161,8 +161,8 @@ namespace CutTheRope.ctr_commons
                 {
                     num2 = vector.y / maxScroll.y;
                 }
-                float num3 = ((lift.maxX - lift.minX) * num) + lift.minX;
-                float num4 = ((lift.maxY - lift.minY) * num2) + lift.minY;
+                float num3 = (lift.maxX - lift.minX) * num + lift.minX;
+                float num4 = (lift.maxY - lift.minY) * num2 + lift.minY;
                 spoints[i] = vect(num3, num4);
             }
             for (int j = 0; j < spointsNum; j++)
@@ -190,7 +190,7 @@ namespace CutTheRope.ctr_commons
                 Vector vector4 = spointsLimits[l + 1];
                 Vector[] array = spointsLimits;
                 int num6 = l;
-                array[num6].x = array[num6].x + ((vector4.x - vector3.x) / 2f);
+                array[num6].x = array[num6].x + (vector4.x - vector3.x) / 2f;
             }
         }
 

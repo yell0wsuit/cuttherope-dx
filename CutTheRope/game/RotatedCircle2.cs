@@ -15,7 +15,7 @@ namespace CutTheRope.game
         public virtual void setSize(float value)
         {
             size = value;
-            float num = size / (vinilTL.width + (vinilTR.width * (1f - vinilTL.scaleX)));
+            float num = size / (vinilTL.width + vinilTR.width * (1f - vinilTL.scaleX));
             vinilHighlightL.scaleX = vinilHighlightL.scaleY = vinilHighlightR.scaleY = num;
             vinilHighlightR.scaleX = 0f - num;
             vinilBL.scaleX = vinilBL.scaleY = vinilBR.scaleY = num;
@@ -23,13 +23,13 @@ namespace CutTheRope.game
             vinilTL.scaleX = num;
             vinilTL.scaleY = 0f - num;
             vinilTR.scaleX = vinilTR.scaleY = 0f - num;
-            float num2 = (num >= 0.4f) ? num : 0.4f;
+            float num2 = num >= 0.4f ? num : 0.4f;
             vinilStickerL.scaleX = vinilStickerL.scaleY = vinilStickerR.scaleY = num2;
             vinilStickerR.scaleX = 0f - num2;
-            float num3 = (num >= 0.75f) ? num : 0.75f;
+            float num3 = num >= 0.75f ? num : 0.75f;
             vinilControllerL.scaleX = vinilControllerL.scaleY = vinilControllerR.scaleX = vinilControllerR.scaleY = num3;
             vinilActiveControllerL.scaleX = vinilActiveControllerL.scaleY = vinilActiveControllerR.scaleX = vinilActiveControllerR.scaleY = num3;
-            vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
+            vinilCenter.scaleX = 1f - (1f - vinilStickerL.scaleX) * 0.5f;
             vinilCenter.scaleY = vinilCenter.scaleX;
             sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
             updateChildPositions();
@@ -159,7 +159,7 @@ namespace CutTheRope.game
             {
                 OpenGL.glDisable(0);
                 OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
+                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + 3f * Math.Abs(vinilTR.scaleX), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
             OpenGL.glEnable(0);
             OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
@@ -233,8 +233,8 @@ namespace CutTheRope.game
             float num2 = vinilHighlightL.height / 2 * (1f - vinilHighlightL.scaleY);
             float num3 = (vinilBL.width + 4) / 2f * (1f - vinilBL.scaleX);
             float num4 = (vinilBL.height + 4) / 2f * (1f - vinilBL.scaleY);
-            float num5 = (Math.Abs(vinilControllerR.scaleX) < 1f) ? ((1f - Math.Abs(vinilControllerR.scaleX)) * 10f) : 0f;
-            float num6 = (Math.Abs(vinilTL.scaleX) < 0.45f) ? (((0.45f - Math.Abs(vinilTL.scaleX)) * 10f) + 1f) : 0f;
+            float num5 = Math.Abs(vinilControllerR.scaleX) < 1f ? (1f - Math.Abs(vinilControllerR.scaleX)) * 10f : 0f;
+            float num6 = Math.Abs(vinilTL.scaleX) < 0.45f ? (0.45f - Math.Abs(vinilTL.scaleX)) * 10f + 1f : 0f;
             float num7 = Math.Abs(vinilBL.height * vinilBL.scaleY) - Math.Abs(vinilControllerR.height * 0.58f * vinilControllerR.scaleY / 2f) - num5 - num6;
             vinilHighlightL.x = x + num;
             vinilHighlightR.x = x - num;

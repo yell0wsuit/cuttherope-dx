@@ -54,7 +54,7 @@ namespace CutTheRope.game
             Animation animation2 = getAnimation(i2);
             Timeline timeline = animation.getTimeline(a1);
             DynamicArray dynamicArray = (DynamicArray)new DynamicArray().init();
-            dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", (i1 == 80) ? 1 : 0, a2));
+            dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", i1 == 80 ? 1 : 0, a2));
             if (animation != animation2)
             {
                 dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));

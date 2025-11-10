@@ -45,7 +45,7 @@ namespace CutTheRope.game
             {
                 doRestoreCutTransparency();
                 int num = (t - 1) * 2;
-                int q = 1 + ((t - 1) * 2);
+                int q = 1 + (t - 1) * 2;
                 Image image = Image_createWithResIDQuad(97, num);
                 Image image2 = Image_createWithResIDQuad(97, q);
                 image.doRestoreCutTransparency();
@@ -57,7 +57,7 @@ namespace CutTheRope.game
                 Vector quadOffset = getQuadOffset(97, num);
                 Vector quadSize = getQuadSize(97, num);
                 Vector vector = vectSub(vect(image.texture.preCutSize.x, image.texture.preCutSize.y), vectAdd(quadSize, quadOffset));
-                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
+                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
             }
             passColorToChilds = false;
             spikesNormal = false;
@@ -78,7 +78,7 @@ namespace CutTheRope.game
 
         public virtual void updateRotation()
         {
-            float num = (!electro) ? texture.quadRects[quadToDraw].w : (width - RTPD(400.0));
+            float num = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
             num /= 2f;
             t1.x = x - num;
             t2.x = x + num;

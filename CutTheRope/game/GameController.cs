@@ -237,9 +237,9 @@ namespace CutTheRope.game
             Image image = (Image)boxOpenClose.result.getChildWithName("star1");
             Image image2 = (Image)boxOpenClose.result.getChildWithName("star2");
             Image image3 = (Image)boxOpenClose.result.getChildWithName("star3");
-            image.setDrawQuad((gameScene.starsCollected > 0) ? 13 : 14);
-            image2.setDrawQuad((gameScene.starsCollected > 1) ? 13 : 14);
-            image3.setDrawQuad((gameScene.starsCollected > 2) ? 13 : 14);
+            image.setDrawQuad(gameScene.starsCollected > 0 ? 13 : 14);
+            image2.setDrawQuad(gameScene.starsCollected > 1 ? 13 : 14);
+            image3.setDrawQuad(gameScene.starsCollected > 2 ? 13 : 14);
             ((Text)boxOpenClose.result.getChildWithName("passText")).setString(Application.getString(655372 + gameScene.starsCollected));
             boxOpenClose.time = gameScene.time;
             boxOpenClose.starBonus = gameScene.starBonus;
@@ -425,7 +425,7 @@ namespace CutTheRope.game
             gameScene5.animateRestartDim = n == 1;
             gameScene5.reload();
             setPaused(false);
-            CTRRootController.logEvent((n != 8) ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
+            CTRRootController.logEvent(n != 8 ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
             return;
         IL_013D:
             if (lastLevelInPack() && !cTRRootController.isPicker())

@@ -82,8 +82,8 @@ namespace CutTheRope.desktop
                     double num5 = currentSize.Width / (double)bounds.Width;
                     double val2 = currentSize.Height / (double)bounds.Height;
                     double num = Math.Min(num5, val2);
-                    bounds.Width = (int)((bounds.Width * num) + 0.5);
-                    bounds.Height = (int)((bounds.Height * num) + 0.5);
+                    bounds.Width = (int)(bounds.Width * num + 0.5);
+                    bounds.Height = (int)(bounds.Height * num + 0.5);
                     bounds.X = (currentSize.Width - bounds.Width) / 2;
                     bounds.Y = (currentSize.Height - bounds.Height) / 2;
                     Color color = Color.White;

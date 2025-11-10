@@ -139,13 +139,13 @@ namespace CutTheRope.iframework.visual
             {
                 float num13 = num4 - num2;
                 int num5 = (int)num13 % tileMapHeight;
-                num4 = (num13 >= 0f) ? (num5 - tileMapHeight + num2) : (num5 + num2);
+                num4 = num13 >= 0f ? num5 - tileMapHeight + num2 : num5 + num2;
             }
             if (repeatedHorizontally != Repeat.REPEAT_NONE)
             {
                 float num14 = num3 - num;
                 int num6 = (int)num14 % tileMapWidth;
-                num3 = (num14 >= 0f) ? (num6 - tileMapWidth + num) : (num6 + num);
+                num3 = num14 >= 0f ? num6 - tileMapWidth + num : num6 + num;
             }
             if (!rectInRect(num, num2, num + cameraViewWidth, num2 + cameraViewHeight, num3, num4, num3 + tileMapWidth, num4 + tileMapHeight))
             {
@@ -154,8 +154,8 @@ namespace CutTheRope.iframework.visual
             CTRRectangle rectangle = rectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
             Vector vector = vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
             Vector vector2 = vect((int)vector.x / tileWidth, (int)vector.y / tileHeight);
-            float num7 = num4 + (vector2.y * tileHeight);
-            Vector vector3 = vect(num3 + (vector2.x * tileWidth), num7);
+            float num7 = num4 + vector2.y * tileHeight;
+            Vector vector3 = vect(num3 + vector2.x * tileWidth, num7);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
