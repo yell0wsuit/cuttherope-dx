@@ -963,10 +963,15 @@ namespace CutTheRope.game
                 for (int j = 0; j < fingerCuts[i].Count(); j++)
                 {
                     FingerCut fingerCut = (FingerCut)fingerCuts[i].ObjectAtIndex(j);
-                    if (Mover.MoveVariableToTarget(ref fingerCut.c.a, 0.0, 10.0, (double)delta))
+                    float alpha = fingerCut.c.a;
+                    if (Mover.MoveVariableToTarget(ref alpha, 0.0f, 10.0f, (float)delta))
                     {
                         fingerCuts[i].RemoveObject(fingerCut);
                         j--;
+                    }
+                    else
+                    {
+                        fingerCut.c.a = alpha;
                     }
                 }
             }
