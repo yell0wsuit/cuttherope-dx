@@ -48,7 +48,7 @@ namespace CutTheRope.game
                         Text text21 = (Text)result.getChildWithName("dataValue");
                         text21.setEnabled(true);
                         Text text22 = (Text)result.getChildWithName("scoreValue");
-                        text28.color.a = text21.color.a = text22.color.a = 1f - raDelay / 0.2f;
+                        text28.color.a = text21.color.a = text22.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 2;
@@ -83,7 +83,7 @@ namespace CutTheRope.game
                             raState = 4;
                             raDelay = 0.2f;
                             int num = (int)Math.Floor((double)(round(time) / 60f));
-                            int num2 = (int)(round(time) - num * 60f);
+                            int num2 = (int)(round(time) - (num * 60f));
                             ((Text)result.getChildWithName("dataTitle")).setString(Application.getString(655377));
                             ((Text)result.getChildWithName("dataValue")).setString(NSS(num.ToString() + ":" + num2.ToString("D2")));
                             return;
@@ -94,7 +94,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement2 = (Text)result.getChildWithName("dataTitle");
                         Text text24 = (Text)result.getChildWithName("dataValue");
-                        baseElement2.color.a = text24.color.a = 1f - raDelay / 0.2f;
+                        baseElement2.color.a = text24.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 5;
@@ -106,9 +106,9 @@ namespace CutTheRope.game
                 case 5:
                     {
                         ctime = time * raDelay;
-                        cscore = (int)(starBonus + (1f - raDelay) * timeBonus);
+                        cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
                         int num3 = (int)Math.Floor((double)round(ctime) / 60.0);
-                        int num4 = (int)((double)round(ctime) - num3 * 60.0);
+                        int num4 = (int)((double)round(ctime) - (num3 * 60.0));
                         ((Text)result.getChildWithName("dataValue")).setString(NSS(num3.ToString() + ":" + num4.ToString("D2")));
                         ((Text)result.getChildWithName("scoreValue")).setString(cscore.ToString());
                         if (flag)
@@ -140,7 +140,7 @@ namespace CutTheRope.game
                     {
                         BaseElement baseElement4 = (Text)result.getChildWithName("dataTitle");
                         Text text26 = (Text)result.getChildWithName("dataValue");
-                        baseElement4.color.a = text26.color.a = 1f - raDelay / 0.2f;
+                        baseElement4.color.a = text26.color.a = 1f - (raDelay / 0.2f);
                         if (flag)
                         {
                             raState = 8;
@@ -162,7 +162,7 @@ namespace CutTheRope.game
             if (init() != null)
             {
                 result = (BaseElement)new BaseElement().init();
-                addChildwithID(result, 1);
+                _ = addChildwithID(result, 1);
                 anchor = parentAnchor = 18;
                 result.anchor = result.parentAnchor = 18;
                 result.setEnabled(false);
@@ -178,67 +178,67 @@ namespace CutTheRope.game
                 image.anchor = 18;
                 image.setName("star1");
                 Image.setElementPositionWithQuadOffset(image, 67, 0);
-                result.addChild(image);
+                _ = result.addChild(image);
                 Image image2 = Image.Image_createWithResIDQuad(67, 14);
                 image2.anchor = 18;
                 image2.setName("star2");
                 Image.setElementPositionWithQuadOffset(image2, 67, 1);
-                result.addChild(image2);
+                _ = result.addChild(image2);
                 Image image3 = Image.Image_createWithResIDQuad(67, 14);
                 image3.anchor = 18;
                 image3.setName("star3");
                 Image.setElementPositionWithQuadOffset(image3, 67, 2);
-                result.addChild(image3);
+                _ = result.addChild(image3);
                 Text text = new Text().initWithFont(Application.getFont(3));
                 text.setString(Application.getString(655372));
                 Image.setElementPositionWithQuadOffset(text, 67, 3);
                 text.anchor = 18;
                 text.setName("passText");
-                result.addChild(text);
+                _ = result.addChild(text);
                 Image image4 = Image.Image_createWithResIDQuad(67, 15);
                 image4.anchor = 18;
                 Image.setElementPositionWithQuadOffset(image4, 67, 4);
-                result.addChild(image4);
+                _ = result.addChild(image4);
                 stamp = Image.Image_createWithResIDQuad(70, 0);
                 Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(7);
                 timeline2.addKeyFrame(KeyFrame.makeScale(3.0, 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-                stamp.addTimeline(timeline2);
+                _ = stamp.addTimeline(timeline2);
                 stamp.anchor = 18;
                 stamp.setEnabled(false);
                 Image.setElementPositionWithQuadOffset(stamp, 67, 12);
-                result.addChild(stamp);
+                _ = result.addChild(stamp);
                 Button button = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655384), 8, b);
                 button.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button, 67, 11);
-                result.addChild(button);
+                _ = result.addChild(button);
                 Button button2 = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655385), 9, b);
                 button2.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button2, 67, 10);
-                result.addChild(button2);
+                _ = result.addChild(button2);
                 Button button3 = MenuController.createShortButtonWithTextIDDelegate(Application.getString(655386), 5, b);
                 button3.anchor = 18;
                 Image.setElementPositionWithQuadOffset(button3, 67, 9);
-                result.addChild(button3);
+                _ = result.addChild(button3);
                 Text text2 = new Text().initWithFont(Application.getFont(4));
                 text2.setName("dataTitle");
                 text2.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text2, 67, 5);
-                result.addChild(text2);
+                _ = result.addChild(text2);
                 Text text3 = new Text().initWithFont(Application.getFont(4));
                 text3.setName("dataValue");
                 text3.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text3, 67, 6);
-                result.addChild(text3);
+                _ = result.addChild(text3);
                 Text text4 = new Text().initWithFont(Application.getFont(68));
                 text4.setName("scoreValue");
                 text4.anchor = 18;
                 Image.setElementPositionWithQuadOffset(text4, 67, 8);
-                result.addChild(text4);
+                _ = result.addChild(text4);
                 confettiAnims = (BaseElement)new BaseElement().init();
-                result.addChild(confettiAnims);
+                _ = result.addChild(confettiAnims);
                 openCloseAnims = null;
                 boxAnim = -1;
                 delegateboxClosed = null;
@@ -282,7 +282,7 @@ namespace CutTheRope.game
             timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
             timeline.addKeyFrame(KeyFrame.makeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeRotation(RND_RANGE(-360, 360), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
-            confetti.addTimeline(timeline);
+            _ = confetti.addTimeline(timeline);
             confetti.playTimeline(1);
             return confetti;
         }
@@ -354,7 +354,7 @@ namespace CutTheRope.game
         {
             for (int i = 0; i < 70; i++)
             {
-                confettiAnims.addChild(createConfettiParticleNear(vectZero));
+                _ = confettiAnims.addChild(createConfettiParticleNear(vectZero));
             }
         }
 
@@ -364,8 +364,8 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num9 = 126 + cTRRootController.getPack();
             Image image = Image.Image_createWithResIDQuad(67, 16);
-            image.rotationCenterX = (float)-(float)image.width / 2f + 1f;
-            image.rotationCenterY = (float)-(float)image.height / 2f + 1f;
+            image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
+            image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;
             image.scaleX = image.scaleY = 4f;
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -381,16 +381,16 @@ namespace CutTheRope.game
             image.addTimelinewithID(timeline, 0);
             image.playTimeline(0);
             timeline.delegateTimelineDelegate = this;
-            openCloseAnims.addChild(image);
+            _ = openCloseAnims.addChild(image);
             Vector quadSize = Image.getQuadSize(num9, 0);
-            float num2 = SCREEN_WIDTH / 2f - quadSize.x;
+            float num2 = (SCREEN_WIDTH / 2f) - quadSize.x;
             Image image2 = Image.Image_createWithResIDQuad(num9, 0);
             Image image3 = Image.Image_createWithResIDQuad(num9, 0);
             image2.x = num2;
             image2.rotationCenterX = (float)-(float)image2.width / 2f;
             image3.rotationCenterX = image2.rotationCenterX;
             image3.rotation = 180f;
-            image3.x = SCREEN_WIDTH - (SCREEN_WIDTH / 2f - image2.width);
+            image3.x = SCREEN_WIDTH - ((SCREEN_WIDTH / 2f) - image2.width);
             image3.y = -0.5f;
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
@@ -489,7 +489,7 @@ namespace CutTheRope.game
             }
             image6.addTimelinewithID(timeline, 0);
             image6.playTimeline(0);
-            openCloseAnims.addChild(image6);
+            _ = openCloseAnims.addChild(image6);
             timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -507,13 +507,13 @@ namespace CutTheRope.game
             }
             image7.addTimelinewithID(timeline, 0);
             image7.playTimeline(0);
-            openCloseAnims.addChild(image7);
-            openCloseAnims.addChild(image2);
-            openCloseAnims.addChild(image3);
+            _ = openCloseAnims.addChild(image7);
+            _ = openCloseAnims.addChild(image2);
+            _ = openCloseAnims.addChild(image3);
             if (boxAnim == 0)
             {
-                openCloseAnims.addChild(image4);
-                openCloseAnims.addChild(image5);
+                _ = openCloseAnims.addChild(image4);
+                _ = openCloseAnims.addChild(image5);
             }
         }
 
@@ -579,7 +579,7 @@ namespace CutTheRope.game
         public virtual void createOpenCloseAnims()
         {
             openCloseAnims = (BaseElement)new BaseElement().init();
-            addChildwithID(openCloseAnims, 0);
+            _ = addChildwithID(openCloseAnims, 0);
         }
 
         private static void selector_removeOpenCloseAnims(NSObject obj)

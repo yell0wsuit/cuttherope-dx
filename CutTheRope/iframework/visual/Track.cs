@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.visual
                         for (int i = 0; i < kf.value.action.actionSet.Count; i++)
                         {
                             CTRAction action = kf.value.action.actionSet[i];
-                            action.actionTarget.handleAction(action.data);
+                            _ = action.actionTarget.handleAction(action.data);
                         }
                         return;
                     }
@@ -373,8 +373,8 @@ namespace CutTheRope.iframework.visual
                             float num9 = thiss.currentStepAcceleration.value.pos.y * delta;
                             thiss.currentStepPerSecond.value.pos.x += num8;
                             thiss.currentStepPerSecond.value.pos.y += num9;
-                            timeline.element.x += (keyFrame.value.pos.x + num8 / 2f) * delta;
-                            timeline.element.y += (keyFrame.value.pos.y + num9 / 2f) * delta;
+                            timeline.element.x += (keyFrame.value.pos.x + (num8 / 2f)) * delta;
+                            timeline.element.y += (keyFrame.value.pos.y + (num9 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_SCALE:
@@ -383,15 +383,15 @@ namespace CutTheRope.iframework.visual
                             float num11 = thiss.currentStepAcceleration.value.scale.scaleY * delta;
                             thiss.currentStepPerSecond.value.scale.scaleX += num10;
                             thiss.currentStepPerSecond.value.scale.scaleY += num11;
-                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + num10 / 2f) * delta;
-                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + num11 / 2f) * delta;
+                            timeline.element.scaleX += (keyFrame.value.scale.scaleX + (num10 / 2f)) * delta;
+                            timeline.element.scaleY += (keyFrame.value.scale.scaleY + (num11 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_ROTATION:
                         {
                             float num12 = thiss.currentStepAcceleration.value.rotation.angle * delta;
                             thiss.currentStepPerSecond.value.rotation.angle += num12;
-                            timeline.element.rotation += (keyFrame.value.rotation.angle + num12 / 2f) * delta;
+                            timeline.element.rotation += (keyFrame.value.rotation.angle + (num12 / 2f)) * delta;
                             break;
                         }
                     case TrackType.TRACK_COLOR:
@@ -417,13 +417,13 @@ namespace CutTheRope.iframework.visual
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
                             color8.rgba.a += num16;
                             BaseElement element = timeline.element;
-                            element.color.r += (keyFrame.value.color.rgba.r + num13 / 2f) * delta;
+                            element.color.r += (keyFrame.value.color.rgba.r + (num13 / 2f)) * delta;
                             BaseElement element2 = timeline.element;
-                            element2.color.g += (keyFrame.value.color.rgba.g + num14 / 2f) * delta;
+                            element2.color.g += (keyFrame.value.color.rgba.g + (num14 / 2f)) * delta;
                             BaseElement element3 = timeline.element;
-                            element3.color.b += (keyFrame.value.color.rgba.b + num15 / 2f) * delta;
+                            element3.color.b += (keyFrame.value.color.rgba.b + (num15 / 2f)) * delta;
                             BaseElement element4 = timeline.element;
-                            element4.color.a += (keyFrame.value.color.rgba.a + num16 / 2f) * delta;
+                            element4.color.a += (keyFrame.value.color.rgba.a + (num16 / 2f)) * delta;
                             break;
                         }
                 }

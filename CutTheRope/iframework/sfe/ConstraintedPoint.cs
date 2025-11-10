@@ -26,7 +26,7 @@ namespace CutTheRope.iframework.sfe
         public virtual void addConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
         {
             Constraint constraint = new();
-            constraint.init();
+            _ = constraint.init();
             constraint.cp = c;
             constraint.restLength = r;
             constraint.type = t;
@@ -169,7 +169,6 @@ namespace CutTheRope.iframework.sfe
             }
             int count = p.constraints.Count;
             Vector vector = vectZero;
-            Vector vector2 = vectZero;
             int i = 0;
             while (i < count)
             {
@@ -201,6 +200,7 @@ namespace CutTheRope.iframework.sfe
             IL_01D6:
                 i++;
                 continue;
+                Vector vector2;
             IL_00F8:
                 vector2 = vector;
                 float num2 = constraint.cp.invWeight;

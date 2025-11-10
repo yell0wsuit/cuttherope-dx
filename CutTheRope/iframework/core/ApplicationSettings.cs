@@ -1,4 +1,3 @@
-using CutTheRope.iframework;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace CutTheRope.iframework.core
 
         public virtual bool getBool(int s)
         {
-            DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
+            _ = DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
             return value;
         }
 

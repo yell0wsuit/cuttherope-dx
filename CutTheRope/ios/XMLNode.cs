@@ -12,18 +12,12 @@ namespace CutTheRope.ios
     internal class XMLNode
     {
         // (get) Token: 0x060000FB RID: 251 RVA: 0x000057CA File Offset: 0x000039CA
-        public string Name => name;
+        public string Name { get; private set; }
 
         // (get) Token: 0x060000FC RID: 252 RVA: 0x000057D2 File Offset: 0x000039D2
-        public NSString data => value;
+        public NSString data { get; private set; }
 
-        public NSString this[string key]
-        {
-            get
-            {
-                return !attributes_.TryGetValue(key, out string rhs) ? new NSString("") : new NSString(rhs);
-            }
-        }
+        public NSString this[string key] => !attributes_.TryGetValue(key, out string rhs) ? new NSString("") : new NSString(rhs);
 
         public XMLNode()
         {
@@ -50,7 +44,7 @@ namespace CutTheRope.ios
             }
             foreach (XMLNode item in childs_)
             {
-                if (item.name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out string text) && text == attrVal)
+                if (item.Name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out string text) && text == attrVal)
                 {
                     return item;
                 }
@@ -79,7 +73,7 @@ namespace CutTheRope.ios
             }
             foreach (XMLNode item in childs_)
             {
-                if (item.name == tag)
+                if (item.Name == tag)
                 {
                     return item;
                 }
@@ -110,7 +104,7 @@ namespace CutTheRope.ios
                 xMLNode.parent = parent;
                 parent.childs_.Add(xMLNode);
             }
-            xMLNode.name = textReader.Name;
+            xMLNode.Name = textReader.Name;
             xMLNode.depth = textReader.Depth;
             if (textReader.HasAttributes)
             {
@@ -118,12 +112,12 @@ namespace CutTheRope.ios
                 {
                     xMLNode.attributes_.Add(textReader.Name, textReader.Value);
                 }
-                textReader.MoveToElement();
+                _ = textReader.MoveToElement();
             }
             bool flag = false;
             try
             {
-                xMLNode.value = new NSString(textReader.ReadElementContentAsString());
+                xMLNode.data = new NSString(textReader.ReadElementContentAsString());
                 goto IL_00A3;
             }
             catch (Exception)
@@ -132,9 +126,9 @@ namespace CutTheRope.ios
                 goto IL_00A3;
             }
         IL_009B:
-            ReadNode(textReader, xMLNode);
+            _ = ReadNode(textReader, xMLNode);
         IL_00A3:
-            if (!flag && !textReader.Read() || textReader.Depth <= xMLNode.depth)
+            if ((!flag && !textReader.Read()) || textReader.Depth <= xMLNode.depth)
             {
                 return xMLNode;
             }
@@ -154,11 +148,11 @@ namespace CutTheRope.ios
                 xMLNode.parent = parent;
                 parent.childs_.Add(xMLNode);
             }
-            xMLNode.name = nodeLinq.Name.ToString();
+            xMLNode.Name = nodeLinq.Name.ToString();
             string text = (string)nodeLinq;
             if (text != null)
             {
-                xMLNode.value = new NSString(text);
+                xMLNode.data = new NSString(text);
             }
             foreach (XAttribute item in nodeLinq.Attributes())
             {
@@ -166,7 +160,7 @@ namespace CutTheRope.ios
             }
             foreach (XElement xelement in nodeLinq.Elements())
             {
-                ReadNodeLINQ(xelement, xMLNode);
+                _ = ReadNodeLINQ(xelement, xMLNode);
             }
             return xMLNode;
         }
@@ -192,11 +186,6 @@ namespace CutTheRope.ios
         private XMLNode parent;
 
         private readonly List<XMLNode> childs_;
-
-        private string name;
-
-        private NSString value;
-
         private readonly Dictionary<string, string> attributes_;
     }
 }

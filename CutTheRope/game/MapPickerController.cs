@@ -20,12 +20,12 @@ namespace CutTheRope.game
                 rectangleElement.color = RGBAColor.whiteRGBA;
                 rectangleElement.width = (int)SCREEN_WIDTH;
                 rectangleElement.height = (int)SCREEN_HEIGHT;
-                view.addChild(rectangleElement);
+                _ = view.addChild(rectangleElement);
                 FontGeneric font = Application.getFont(4);
                 Text text = new Text().initWithFont(font);
                 text.setString(NSS("Loading..."));
                 text.anchor = text.parentAnchor = 18;
-                view.addChild(text);
+                _ = view.addChild(text);
                 addViewwithID(view, 1);
                 setNormalMode();
             }
@@ -39,7 +39,7 @@ namespace CutTheRope.game
             rectangleElement.color = RGBAColor.whiteRGBA;
             rectangleElement.width = (int)SCREEN_WIDTH;
             rectangleElement.height = (int)SCREEN_HEIGHT;
-            view.addChild(rectangleElement);
+            _ = view.addChild(rectangleElement);
             FontGeneric font = Application.getFont(4);
             Text text = new Text().initWithFont(font);
             text.setString(NSS("START"));
@@ -49,7 +49,7 @@ namespace CutTheRope.game
             Button button = new Button().initWithUpElementDownElementandID(text, text2, 0);
             button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
-            view.addChild(button);
+            _ = view.addChild(button);
             addViewwithID(view, 0);
         }
 
@@ -83,7 +83,6 @@ namespace CutTheRope.game
             if (rootNode != null)
             {
                 CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
-                bool flag = autoLoad;
                 ctrrootController.setMap(rootNode);
                 ctrrootController.setMapName(selectedMap);
                 ctrrootController.setMapsList(maplist);

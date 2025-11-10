@@ -54,7 +54,7 @@ namespace CutTheRope.iframework.core
 
         public static void _setIntforKey(int v, string key, bool comit)
         {
-            if (data_.TryGetValue(key, out int value))
+            if (data_.TryGetValue(key, out _))
             {
                 data_[key] = v;
             }
@@ -70,7 +70,7 @@ namespace CutTheRope.iframework.core
 
         private static void _setStringforKey(string v, string k, bool comit)
         {
-            if (dataStrings_.TryGetValue(k, out string value))
+            if (dataStrings_.TryGetValue(k, out _))
             {
                 dataStrings_[k] = v;
             }
@@ -135,7 +135,7 @@ namespace CutTheRope.iframework.core
                 if (GameSaveRequested)
                 {
                     FileStream fileStream = File.Create("ctr_save.bin");
-                    SaveToStream(fileStream);
+                    _ = SaveToStream(fileStream);
                     fileStream.Close();
                     GameSaveRequested = false;
                 }
@@ -221,7 +221,7 @@ namespace CutTheRope.iframework.core
             if (File.Exists(file))
             {
                 FileStream fileStream = File.OpenRead(file);
-                LoadFromStream(fileStream);
+                _ = LoadFromStream(fileStream);
                 fileStream.Close();
             }
         }

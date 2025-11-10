@@ -6,7 +6,7 @@ namespace CutTheRope.iframework
     {
         private static void GET_UINT32(ref uint n, byte[] b, int dataIndex, int i)
         {
-            n = (uint)(b[dataIndex + i] | b[dataIndex + i + 1] << 8 | b[dataIndex + i + 2] << 16 | b[dataIndex + i + 3] << 24);
+            n = (uint)(b[dataIndex + i] | (b[dataIndex + i + 1] << 8) | (b[dataIndex + i + 2] << 16) | (b[dataIndex + i + 3] << 24));
         }
 
         private static void PUT_UINT32(uint n, ref byte[] b, int i)
@@ -19,7 +19,7 @@ namespace CutTheRope.iframework
 
         private static uint S(uint x, uint n)
         {
-            return x << (int)n | (x & uint.MaxValue) >> (int)(32U - n);
+            return (x << (int)n) | ((x & uint.MaxValue) >> (int)(32U - n));
         }
 
         private static void P(ref uint a, uint b, uint c, uint d, uint k, uint s, uint t, uint[] X, FuncF F)
@@ -30,12 +30,12 @@ namespace CutTheRope.iframework
 
         private static uint F_1(uint x, uint y, uint z)
         {
-            return z ^ x & (y ^ z);
+            return z ^ (x & (y ^ z));
         }
 
         private static uint F_2(uint x, uint y, uint z)
         {
-            return y ^ z & (x ^ y);
+            return y ^ (z & (x ^ y));
         }
 
         private static uint F_3(uint x, uint y, uint z)
@@ -194,7 +194,7 @@ namespace CutTheRope.iframework
         public static void md5_finish(ref md5_context ctx, byte[] digest)
         {
             byte[] b = new byte[8];
-            uint num2 = ctx.total[0] >> 29 | ctx.total[1] << 3;
+            uint num2 = (ctx.total[0] >> 29) | (ctx.total[1] << 3);
             PUT_UINT32(ctx.total[0] << 3, ref b, 0);
             PUT_UINT32(num2, ref b, 4);
             uint num = ctx.total[0] & 63U;

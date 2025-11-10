@@ -45,7 +45,7 @@ namespace CutTheRope.game
             {
                 doRestoreCutTransparency();
                 int num = (t - 1) * 2;
-                int q = 1 + (t - 1) * 2;
+                int q = 1 + ((t - 1) * 2);
                 Image image = Image_createWithResIDQuad(97, num);
                 Image image2 = Image_createWithResIDQuad(97, q);
                 image.doRestoreCutTransparency();
@@ -53,11 +53,11 @@ namespace CutTheRope.game
                 rotateButton = new Button().initWithUpElementDownElementandID(image, image2, 0);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
-                addChild(rotateButton);
+                _ = addChild(rotateButton);
                 Vector quadOffset = getQuadOffset(97, num);
                 Vector quadSize = getQuadSize(97, num);
                 Vector vector = vectSub(vect(image.texture.preCutSize.x, image.texture.preCutSize.y), vectAdd(quadSize, quadOffset));
-                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + quadSize.x / 2f, 0f - vector.x + quadSize.x / 2f, 0f - quadOffset.y + quadSize.y / 2f, 0f - vector.y + quadSize.y / 2f);
+                rotateButton.setTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
             }
             passColorToChilds = false;
             spikesNormal = false;
@@ -152,7 +152,7 @@ namespace CutTheRope.game
             }
             if (electroOn)
             {
-                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                _ = Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
                 if (electroTimer == 0.0)
                 {
                     turnElectroOff();
@@ -161,7 +161,7 @@ namespace CutTheRope.game
             }
             else
             {
-                Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
+                _ = Mover.moveVariableToTarget(ref electroTimer, 0f, 1f, delta);
                 if (electroTimer == 0.0)
                 {
                     turnElectroOn();

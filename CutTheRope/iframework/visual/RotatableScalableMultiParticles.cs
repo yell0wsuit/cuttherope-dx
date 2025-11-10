@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 
 namespace CutTheRope.iframework.visual
@@ -10,7 +9,7 @@ namespace CutTheRope.iframework.visual
         {
             base.initParticle(ref particle);
             particle.angle = initialAngle;
-            particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + rotateSpeedVar * RND_MINUS1_1);
+            particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
@@ -42,14 +41,14 @@ namespace CutTheRope.iframework.visual
                 p.life -= delta;
                 float num2 = p.width * p.size;
                 float num3 = p.height * p.size;
-                float num4 = p.pos.x - num2 / 2f;
-                float num5 = p.pos.y - num3 / 2f;
-                float num6 = p.pos.x + num2 / 2f;
-                float num7 = p.pos.y - num3 / 2f;
-                float num8 = p.pos.x - num2 / 2f;
-                float num9 = p.pos.y + num3 / 2f;
-                float num11 = p.pos.x + num2 / 2f;
-                float num10 = p.pos.y + num3 / 2f;
+                float num4 = p.pos.x - (num2 / 2f);
+                float num5 = p.pos.y - (num3 / 2f);
+                float num6 = p.pos.x + (num2 / 2f);
+                float num7 = p.pos.y - (num3 / 2f);
+                float num8 = p.pos.x - (num2 / 2f);
+                float num9 = p.pos.y + (num3 / 2f);
+                float num11 = p.pos.x + (num2 / 2f);
+                float num10 = p.pos.y + (num3 / 2f);
                 float cx = p.pos.x;
                 float cy = p.pos.y;
                 Vector v3 = vect(num4, num5);
@@ -66,7 +65,7 @@ namespace CutTheRope.iframework.visual
                 drawer.vertices[particleIdx] = Quad3D.MakeQuad3DEx(v3.x, v3.y, v4.x, v4.y, v5.x, v5.y, v6.x, v6.y);
                 for (int i = 0; i < 4; i++)
                 {
-                    colors[particleIdx * 4 + i] = p.color;
+                    colors[(particleIdx * 4) + i] = p.color;
                 }
                 particleIdx++;
                 return;
@@ -89,7 +88,7 @@ namespace CutTheRope.iframework.visual
                 emitCounter += delta;
                 while (particleCount < totalParticles && emitCounter > num)
                 {
-                    addParticle();
+                    _ = addParticle();
                     emitCounter -= num;
                 }
                 elapsed += delta;

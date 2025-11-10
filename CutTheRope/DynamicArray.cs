@@ -13,7 +13,7 @@ internal class DynamicArray : NSObject, IEnumerable
 
     public override NSObject init()
     {
-        initWithCapacityandOverReallocValue(10, 10);
+        _ = initWithCapacityandOverReallocValue(10, 10);
         return this;
     }
 

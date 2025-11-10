@@ -140,12 +140,12 @@ namespace CutTheRope.iframework.visual
                 {
                     if (container.x > 0.0)
                     {
-                        float speed = (float)(50.0 + (double)Math.Abs(container.x) * 5.0);
+                        float speed = (float)(50.0 + ((double)Math.Abs(container.x) * 5.0));
                         moveToPointDeltaSpeed(vect(0f, container.y), delta, speed);
                     }
                     else if (container.x < (float)(-(float)container.width + width) && container.x < 0.0)
                     {
-                        float speed2 = (float)(50.0 + (double)Math.Abs((float)(-(float)container.width + width) - container.x) * 5.0);
+                        float speed2 = (float)(50.0 + ((double)Math.Abs((float)(-(float)container.width + width) - container.x) * 5.0));
                         moveToPointDeltaSpeed(vect((float)(-(float)container.width + width), container.y), delta, speed2);
                     }
                 }
@@ -153,11 +153,11 @@ namespace CutTheRope.iframework.visual
                 {
                     if (container.y > 0.0)
                     {
-                        moveToPointDeltaSpeed(vect(container.x, 0f), delta, (float)(50.0 + (double)Math.Abs(container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, 0f), delta, (float)(50.0 + ((double)Math.Abs(container.y) * 5.0)));
                     }
                     else if (container.y < (float)(-(float)container.height + height) && container.y < 0.0)
                     {
-                        moveToPointDeltaSpeed(vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + (double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0));
+                        moveToPointDeltaSpeed(vect(container.x, (float)(-(float)container.height + height)), delta, (float)(50.0 + ((double)Math.Abs((float)(-(float)container.height + height) - container.y) * 5.0)));
                     }
                 }
             }
@@ -180,8 +180,8 @@ namespace CutTheRope.iframework.visual
             }
             if (!vectEqual(move, vectZero))
             {
-                vectEqual(targetPoint, vectZero);
-                vect(container.x, container.y);
+                _ = vectEqual(targetPoint, vectZero);
+                _ = vect(container.x, container.y);
                 Vector v = vectMult(vectNeg(move), 2f);
                 move = vectAdd(move, vectMult(v, delta));
                 Vector off = vectMult(move, delta);
@@ -195,7 +195,7 @@ namespace CutTheRope.iframework.visual
                     off.y = 0f;
                     move.y = 0f;
                 }
-                moveContainerBy(off);
+                _ = moveContainerBy(off);
             }
             if (inertiaTimeoutLeft > 0.0)
             {
@@ -275,7 +275,7 @@ namespace CutTheRope.iframework.visual
                 {
                     touchTimer = 0f;
                     passTouches = false;
-                    base.onTouchUpXY(-1f, -1f);
+                    _ = base.onTouchUpXY(-1f, -1f);
                 }
                 if (container.width <= width)
                 {
@@ -411,7 +411,7 @@ namespace CutTheRope.iframework.visual
             container = (BaseElement)new BaseElement().init();
             container.width = (int)cw;
             container.height = (int)ch;
-            initWithWidthHeightContainer(w, h, container);
+            _ = initWithWidthHeightContainer(w, h, container);
             return this;
         }
 
@@ -559,8 +559,8 @@ namespace CutTheRope.iframework.visual
             Vector v = vectSub(tsp, vect(container.x, container.y));
             v = vectNormalize(v);
             v = vectMult(v, speed);
-            Mover.moveVariableToTarget(ref container.x, tsp.x, Math.Abs(v.x), delta);
-            Mover.moveVariableToTarget(ref container.y, tsp.y, Math.Abs(v.y), delta);
+            _ = Mover.moveVariableToTarget(ref container.x, tsp.x, Math.Abs(v.x), delta);
+            _ = Mover.moveVariableToTarget(ref container.y, tsp.y, Math.Abs(v.y), delta);
             targetPoint = tsp;
             move = vectZero;
         }

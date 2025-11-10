@@ -39,7 +39,7 @@ namespace CutTheRope.iframework.helpers
                 if (dispatch.delay <= 0.0)
                 {
                     dispatch.dispatch();
-                    dispatchers.Remove(dispatch);
+                    _ = dispatchers.Remove(dispatch);
                     i--;
                     count = dispatchers.Count;
                 }

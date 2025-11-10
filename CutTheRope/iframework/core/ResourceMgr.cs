@@ -1,5 +1,4 @@
 using CutTheRope.game;
-using CutTheRope.iframework;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
@@ -12,7 +11,7 @@ namespace CutTheRope.iframework.core
     {
         public virtual bool hasResource(int resID)
         {
-            s_Resources.TryGetValue(resID, out NSObject value);
+            _ = s_Resources.TryGetValue(resID, out NSObject value);
             return value != null;
         }
 
@@ -49,7 +48,7 @@ namespace CutTheRope.iframework.core
                     break;
                 case ResourceType.FONT:
                     value = loadVariableFontInfo(path, resID, flag);
-                    s_Resources.Remove(resID);
+                    _ = s_Resources.Remove(resID);
                     break;
                 case ResourceType.SOUND:
                     value = loadSoundInfo(path);
@@ -116,7 +115,7 @@ namespace CutTheRope.iframework.core
             NSString data = xMLNode2.data;
             if (xMLNode3 != null)
             {
-                NSString data2 = xMLNode3.data;
+                _ = xMLNode3.data;
             }
             Font font = new Font().initWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)loadResource(resID, ResourceType.IMAGE), null);
             font.setCharOffsetLineOffsetSpaceWidth(num, num2, num3);
@@ -364,17 +363,17 @@ namespace CutTheRope.iframework.core
             }
             if (isSound(resId))
             {
-                Application.sharedSoundMgr().getSound(resId);
+                _ = Application.sharedSoundMgr().getSound(resId);
                 return;
             }
             if (isFont(resId))
             {
-                Application.getFont(resId);
+                _ = Application.getFont(resId);
                 return;
             }
             try
             {
-                Application.getTexture(resId);
+                _ = Application.getTexture(resId);
             }
             catch (Exception)
             {
@@ -400,7 +399,7 @@ namespace CutTheRope.iframework.core
             if (s_Resources.TryGetValue(resId, out NSObject value))
             {
                 value?.dealloc();
-                s_Resources.Remove(resId);
+                _ = s_Resources.Remove(resId);
             }
         }
 

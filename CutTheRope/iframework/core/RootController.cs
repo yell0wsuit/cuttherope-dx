@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
@@ -129,7 +128,7 @@ namespace CutTheRope.iframework.core
                 }
                 else if (nextScreenImage != null)
                 {
-                    RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - (double)num * 2.0) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - (double)num * 2.0);
+                    RGBAColor fill2 = viewTransition == 4 ? RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 2.0 - ((double)num * 2.0)) : RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 2.0 - ((double)num * 2.0));
                     Grabber.drawGrabbedImage(nextScreenImage, 0, 0);
                     OpenGL.glDisable(0);
                     OpenGL.glEnable(1);
@@ -202,7 +201,7 @@ namespace CutTheRope.iframework.core
                 NSREL(nextScreenImage);
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = screenGrabber.grab();
-                NSRET(nextScreenImage);
+                _ = NSRET(nextScreenImage);
                 OpenGL.glLoadIdentity();
             }
         }
@@ -220,7 +219,7 @@ namespace CutTheRope.iframework.core
                 NSREL(prevScreenImage);
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = screenGrabber.grab();
-                NSRET(prevScreenImage);
+                _ = NSRET(prevScreenImage);
                 OpenGL.glLoadIdentity();
             }
         }

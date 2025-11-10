@@ -9,7 +9,7 @@ namespace CutTheRope.game
     {
         public override NSObject init()
         {
-            base.init();
+            _ = base.init();
             return this;
         }
 
@@ -224,7 +224,7 @@ namespace CutTheRope.game
                     { 148, "game_music3" },
                     { 149, "menu_extra_buttons_en" }
                 };
-            resNames_.TryGetValue(handleLocalizedResource(resId), out string value);
+            _ = resNames_.TryGetValue(handleLocalizedResource(resId), out string value);
             return value;
         }
 

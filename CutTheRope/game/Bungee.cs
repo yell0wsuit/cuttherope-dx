@@ -178,7 +178,7 @@ namespace CutTheRope.game
                     int num17 = num8 >> 1;
                     for (int i = 0; i < num17 - 1; i++)
                     {
-                        drawAntialiasedLineContinued(array[i * 2], array[i * 2 + 1], array[i * 2 + 2], array[i * 2 + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
+                        drawAntialiasedLineContinued(array[i * 2], array[(i * 2) + 1], array[(i * 2) + 2], array[(i * 2) + 3], 5f, color, ref lx, ref ly, ref rx, ref ry, b.highlighted);
                     }
                     array[0] = array[num8 - 2];
                     array[1] = array[num8 - 1];
@@ -226,7 +226,7 @@ namespace CutTheRope.game
                 addPart(tail);
                 tail.addConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                 Vector v = vectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)(len / BUNGEE_REST_LEN + 2f);
+                int num = (int)((len / BUNGEE_REST_LEN) + 2f);
                 v = vectDiv(v, num);
                 rollplacingWithOffset(len, v);
                 forceWhite = false;
@@ -355,7 +355,7 @@ namespace CutTheRope.game
                     Constraint constraint = constraintedPoint2.constraints[i];
                     if (constraint.cp == constraintedPoint)
                     {
-                        constraintedPoint2.constraints.Remove(constraint);
+                        _ = constraintedPoint2.constraints.Remove(constraint);
                         ConstraintedPoint constraintedPoint3 = (ConstraintedPoint)new ConstraintedPoint().init();
                         constraintedPoint3.setWeight(1E-05f);
                         constraintedPoint3.pos = constraintedPoint2.pos;
@@ -416,7 +416,7 @@ namespace CutTheRope.game
         {
             if (cutTime > 0.0)
             {
-                Mover.moveVariableToTarget(ref cutTime, 0f, 1f, delta);
+                _ = Mover.moveVariableToTarget(ref cutTime, 0f, 1f, delta);
                 if (cutTime < 1.95f && forceWhite)
                 {
                     removePart(cut);

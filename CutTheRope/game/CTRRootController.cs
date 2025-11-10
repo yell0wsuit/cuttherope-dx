@@ -67,7 +67,7 @@ namespace CutTheRope.game
 
         public override void activate()
         {
-            CTRPreferences.isFirstLaunch();
+            _ = CTRPreferences.isFirstLaunch();
             base.activate();
             activateChild(0);
             Application.sharedCanvas().beforeRender();
@@ -246,7 +246,7 @@ namespace CutTheRope.game
                         SaveMgr.backup();
                         GameController gameController = (GameController)getChild(3);
                         int exitCode = gameController.exitCode;
-                        GameScene gameScene = (GameScene)gameController.getView(0).getChild(0);
+                        _ = (GameScene)gameController.getView(0).getChild(0);
                         if (exitCode <= 2)
                         {
                             deleteChild(3);

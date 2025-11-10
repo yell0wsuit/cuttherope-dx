@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.visual
     {
         public AnimationsPool()
         {
-            init();
+            _ = init();
         }
 
         public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)

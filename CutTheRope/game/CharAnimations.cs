@@ -15,7 +15,7 @@ namespace CutTheRope.game
         private static CharAnimations CharAnimations_create(CTRTexture2D t)
         {
             CharAnimations charAnimations = new();
-            charAnimations.initWithTexture(t);
+            _ = charAnimations.initWithTexture(t);
             return charAnimations;
         }
 
@@ -27,7 +27,7 @@ namespace CutTheRope.game
             charAnimation.doRestoreCutTransparency();
             int i = resId - 101;
             animations.setObjectAt(charAnimation, i);
-            addChild(charAnimation);
+            _ = addChild(charAnimation);
             charAnimation.setEnabled(false);
         }
 
@@ -54,15 +54,15 @@ namespace CutTheRope.game
             Animation animation2 = getAnimation(i2);
             Timeline timeline = animation.getTimeline(a1);
             DynamicArray dynamicArray = (DynamicArray)new DynamicArray().init();
-            dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", i1 == 80 ? 1 : 0, a2));
+            _ = dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_PLAY_TIMELINE", i1 == 80 ? 1 : 0, a2));
             if (animation != animation2)
             {
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_VISIBLE", 0, 0));
+                _ = dynamicArray.addObject(CTRAction.createAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.addKeyFrame(KeyFrame.makeAction(dynamicArray, d));
         }

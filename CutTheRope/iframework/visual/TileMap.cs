@@ -78,8 +78,7 @@ namespace CutTheRope.iframework.visual
                 }
                 if (imageMultiDrawer.image.texture._realWidth == tileWidth)
                 {
-                    int realHeight = imageMultiDrawer.image.texture._realHeight;
-                    int num2 = tileHeight;
+                    _ = imageMultiDrawer.image.texture._realHeight;
                 }
             }
             if (num == -1)
@@ -154,8 +153,8 @@ namespace CutTheRope.iframework.visual
             CTRRectangle rectangle = rectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
             Vector vector = vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
             Vector vector2 = vect((int)vector.x / tileWidth, (int)vector.y / tileHeight);
-            float num7 = num4 + vector2.y * tileHeight;
-            Vector vector3 = vect(num3 + vector2.x * tileWidth, num7);
+            float num7 = num4 + (vector2.y * tileHeight);
+            Vector vector3 = vect(num3 + (vector2.x * tileWidth), num7);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {

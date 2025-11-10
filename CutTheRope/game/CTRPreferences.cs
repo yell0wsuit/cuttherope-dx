@@ -25,7 +25,7 @@ namespace CutTheRope.game
                 {
                     if (getIntForKey("PREFS_VERSION") < 1)
                     {
-                        getTotalScore();
+                        _ = getTotalScore();
                         int i = 0;
                         int packsCount = getPacksCount();
                         while (i < packsCount)
@@ -76,7 +76,7 @@ namespace CutTheRope.game
         public static bool isSharewareUnlocked()
         {
             bool flag = isShareware();
-            return !flag || flag && _getBooleanForKey("IAP_SHAREWARE");
+            return !flag || (flag && _getBooleanForKey("IAP_SHAREWARE"));
         }
 
         public static bool isLiteVersion()
@@ -231,7 +231,7 @@ namespace CutTheRope.game
                 int levelsInPackCount = getLevelsInPackCount();
                 while (j < levelsInPackCount)
                 {
-                    int v = (i == 0 || isShareware() && i < sharewareFreePacks()) && j == 0 ? 1 : 0;
+                    int v = (i == 0 || (isShareware() && i < sharewareFreePacks())) && j == 0 ? 1 : 0;
                     setIntforKey(0, getPackLevelKey("SCORE_", i, j), false);
                     setIntforKey(0, getPackLevelKey("STARS_", i, j), false);
                     setIntforKey(v, getPackLevelKey("UNLOCKED_", i, j), false);

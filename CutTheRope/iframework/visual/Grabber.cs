@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.visual
     {
         public override NSObject init()
         {
-            base.init();
+            _ = base.init();
             return this;
         }
 

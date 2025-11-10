@@ -164,7 +164,7 @@ namespace CutTheRope.ctr_commons
             LANGUAGE = language;
             fmInit();
             gApp = new CTRApp();
-            gApp.init();
+            _ = gApp.init();
             gApp.applicationDidFinishLaunching(null);
         }
 

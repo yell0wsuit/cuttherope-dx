@@ -86,7 +86,7 @@ namespace CutTheRope.iframework.core
 
         public virtual void addViewwithID(View v, int n)
         {
-            views.TryGetValue(n, out View value);
+            _ = views.TryGetValue(n, out _);
             views[n] = v;
         }
 
@@ -101,7 +101,7 @@ namespace CutTheRope.iframework.core
             Application.sharedRootController().onControllerViewHide(view);
             if (view != null)
             {
-                view.onTouchUpXY(-10000f, -10000f);
+                _ = view.onTouchUpXY(-10000f, -10000f);
                 view.hide();
             }
             activeViewID = -1;
@@ -126,7 +126,7 @@ namespace CutTheRope.iframework.core
 
         public virtual View getView(int n)
         {
-            views.TryGetValue(n, out View value);
+            _ = views.TryGetValue(n, out View value);
             return value;
         }
 
@@ -227,13 +227,13 @@ namespace CutTheRope.iframework.core
                 View view = views[activeViewID];
                 if (view != null)
                 {
-                    view.onTouchUpXY(-1f, -1f);
+                    _ = view.onTouchUpXY(-1f, -1f);
                     return;
                 }
             }
             else if (childs != null)
             {
-                childs.TryGetValue(activeChildID, out ViewController value);
+                _ = childs.TryGetValue(activeChildID, out ViewController value);
                 value?.deactivateAllButtons();
             }
         }
@@ -290,7 +290,7 @@ namespace CutTheRope.iframework.core
         {
             foreach (TouchLocation touch in touches)
             {
-                TouchLocationState state = touch.State;
+                _ = touch.State;
             }
             return false;
         }

@@ -25,7 +25,7 @@ namespace CutTheRope.iframework.media
 
         public void freeSound(int resId)
         {
-            LoadedSounds.Remove(resId);
+            _ = LoadedSounds.Remove(resId);
         }
 
         public SoundEffect getSound(int resId)

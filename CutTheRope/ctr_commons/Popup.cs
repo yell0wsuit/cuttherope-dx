@@ -18,13 +18,13 @@ namespace CutTheRope.ctr_commons
                 timeline.addKeyFrame(KeyFrame.makeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                addTimeline(timeline);
+                _ = addTimeline(timeline);
                 timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
                 width = (int)SCREEN_WIDTH;
                 height = (int)SCREEN_HEIGHT;
-                addTimeline(timeline);
+                _ = addTimeline(timeline);
                 timeline.delegateTimelineDelegate = this;
             }
             return this;
@@ -57,7 +57,7 @@ namespace CutTheRope.ctr_commons
         {
             if (isShow)
             {
-                base.onTouchDownXY(tx, ty);
+                _ = base.onTouchDownXY(tx, ty);
             }
             return true;
         }
@@ -66,7 +66,7 @@ namespace CutTheRope.ctr_commons
         {
             if (isShow)
             {
-                base.onTouchUpXY(tx, ty);
+                _ = base.onTouchUpXY(tx, ty);
             }
             return true;
         }
@@ -75,7 +75,7 @@ namespace CutTheRope.ctr_commons
         {
             if (isShow)
             {
-                base.onTouchMoveXY(tx, ty);
+                _ = base.onTouchMoveXY(tx, ty);
             }
             return true;
         }

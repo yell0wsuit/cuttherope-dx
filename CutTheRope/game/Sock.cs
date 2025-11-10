@@ -32,14 +32,14 @@ namespace CutTheRope.game
             light.addAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 2, [3, 4, 4]);
             light.doRestoreCutTransparency();
             light.visible = false;
-            addChild(light);
+            _ = addChild(light);
         }
 
         public virtual void updateRotation()
         {
             float num = 140f;
-            t1.x = x - num / 2f - 20f;
-            t2.x = x + num / 2f - 20f;
+            t1.x = x - (num / 2f) - 20f;
+            t2.x = x + (num / 2f) - 20f;
             t1.y = t2.y = y;
             b1.x = t1.x;
             b2.x = t2.x;

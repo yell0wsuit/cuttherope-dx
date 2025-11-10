@@ -9,7 +9,7 @@ namespace CutTheRope.desktop
     {
         private static ContentManager getContentManager(string imgName)
         {
-            _contentManagers.TryGetValue(imgName, out ContentManager value);
+            _ = _contentManagers.TryGetValue(imgName, out ContentManager value);
             if (value == null)
             {
                 value = new ContentManager(Global.XnaGame.Services, "content");

@@ -20,8 +20,7 @@ namespace CutTheRope.iframework.visual
         {
             base.preDraw();
             OpenGL.glDisable(0);
-            MIN(width, height);
-            bool flag = solid;
+            _ = MIN(width, height);
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);
             base.postDraw();

@@ -27,8 +27,8 @@ namespace CutTheRope.game
             text2.setString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
+            _ = image.addChild(text);
+            _ = image2.addChild(text2);
             Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
             button.setTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
             button.delegateButtonDelegate = d;
@@ -46,8 +46,8 @@ namespace CutTheRope.game
             text2.setString(str);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
+            _ = image.addChild(text);
+            _ = image2.addChild(text2);
             Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
             button.setTouchIncreaseLeftRightTopBottom(15.0, 15.0, 15.0, 15.0);
             button.delegateButtonDelegate = d;
@@ -73,10 +73,10 @@ namespace CutTheRope.game
             text2.anchor = text2.parentAnchor = 18;
             text3.anchor = text3.parentAnchor = 18;
             text4.anchor = text4.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
-            image3.addChild(text3);
-            image4.addChild(text4);
+            _ = image.addChild(text);
+            _ = image2.addChild(text2);
+            _ = image3.addChild(text3);
+            _ = image4.addChild(text4);
             ToggleButton toggleButton = new ToggleButton().initWithUpElement1DownElement1UpElement2DownElement2andID(image, image2, image3, image4, bid);
             toggleButton.setTouchIncreaseLeftRightTopBottom(10.0, 10.0, 10.0, 10.0);
             toggleButton.delegateButtonDelegate = d;
@@ -138,7 +138,7 @@ namespace CutTheRope.game
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
-            baseElement.addChild(image);
+            _ = baseElement.addChild(image);
             if (l)
             {
                 Image image2 = Image.Image_createWithResIDQuad(48, 1);
@@ -146,12 +146,12 @@ namespace CutTheRope.game
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
-                image.addChild(image2);
+                _ = image.addChild(image2);
                 Image image3 = Image.Image_createWithResIDQuad(50, 0);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
-                baseElement.addChild(image3);
+                _ = baseElement.addChild(image3);
             }
             if (s)
             {
@@ -162,9 +162,9 @@ namespace CutTheRope.game
                 timeline.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
                 timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                image4.addTimeline(timeline);
+                _ = image4.addTimeline(timeline);
                 image4.playTimeline(0);
-                baseElement.addChild(image4);
+                _ = baseElement.addChild(image4);
             }
             return baseElement;
         }
@@ -183,14 +183,14 @@ namespace CutTheRope.game
             image2.parentAnchor = image2.anchor = 9;
             image2.x += offset.x;
             image2.y += offset.y;
-            image.addChild(image2);
+            _ = image.addChild(image2);
             if (b)
             {
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
                 Image image3 = Image.Image_createWithResIDQuad(8, 4);
                 image3.parentAnchor = image3.anchor = 9;
                 Image.setElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
-                image.addChild(image3);
+                _ = image.addChild(image3);
             }
             return image;
         }
@@ -232,14 +232,14 @@ namespace CutTheRope.game
             text2.setString(string2);
             text.anchor = text.parentAnchor = 18;
             text2.anchor = text2.parentAnchor = 18;
-            image.addChild(text);
-            image2.addChild(text2);
+            _ = image.addChild(text);
+            _ = image2.addChild(text2);
             Image image3 = Image.Image_createWithResIDQuad(54, q);
             Image image4 = Image.Image_createWithResIDQuad(54, q);
             image4.parentAnchor = image3.parentAnchor = 20;
             image4.anchor = image3.anchor = 20;
-            text.addChild(image3);
-            text2.addChild(image4);
+            _ = text.addChild(image3);
+            _ = text2.addChild(image4);
             text.width += (int)(image3.width + RTPD(10.0));
             text2.width += (int)(image4.width + RTPD(10.0));
             Button button = new Button().initWithUpElementDownElementandID(image, image2, bid);
@@ -278,7 +278,7 @@ namespace CutTheRope.game
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
-            image.addChild(text);
+            _ = image.addChild(text);
             Image.setElementPositionWithRelativeQuadOffset(text, 8, q, tq);
             if (bId != -1)
             {
@@ -286,8 +286,8 @@ namespace CutTheRope.game
                 toggleButton.setName("button");
                 toggleButton.parentAnchor = 9;
                 Image.setElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
-                image.addChild(toggleButton);
-                int num = image.width / 2 - toggleButton.width / 2;
+                _ = image.addChild(toggleButton);
+                int num = (image.width / 2) - (toggleButton.width / 2);
                 toggleButton.setTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
             }
             else
@@ -295,7 +295,7 @@ namespace CutTheRope.game
                 Image image2 = Image.Image_createWithResIDQuad(8, 7);
                 image2.parentAnchor = 9;
                 Image.setElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
-                image.addChild(image2);
+                _ = image.addChild(image2);
             }
             return image;
         }
@@ -304,7 +304,7 @@ namespace CutTheRope.game
         {
             Image image3 = Image.Image_createWithResIDQuad(59, pressed ? 1 : 0);
             Image image2 = Image.Image_createWithResIDQuad(59, quad);
-            image3.addChild(image2);
+            _ = image3.addChild(image2);
             image2.parentAnchor = 9;
             Image.setElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
             return image3;
@@ -328,12 +328,12 @@ namespace CutTheRope.game
             vBox.anchor = vBox.parentAnchor = 34;
             vBox.y = -85f;
             Button c = createButtonWithTextIDDelegate(Application.getString(655360), 0, this);
-            vBox.addChild(c);
+            _ = vBox.addChild(c);
             Button c2 = createButtonWithTextIDDelegate(Application.getString(655361), 1, this);
-            vBox.addChild(c2);
+            _ = vBox.addChild(c2);
             Button c3 = createButtonWithTextIDDelegate(Application.getString(655506), 41, this);
-            vBox.addChild(c3);
-            baseElement.addChild(vBox);
+            _ = vBox.addChild(c3);
+            _ = baseElement.addChild(vBox);
             bool flag = Application.getString(655507).length() > 0;
             if (flag)
             {
@@ -343,7 +343,7 @@ namespace CutTheRope.game
                 baseElement2.width = baseElement.width;
                 baseElement2.height = baseElement.height;
                 baseElement2.x -= canvas.xOffsetScaled;
-                baseElement.addChild(baseElement2);
+                _ = baseElement.addChild(baseElement2);
                 CTRTexture2D texture = Application.getTexture(54);
                 Button button = createButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
                 button.anchor = 9;
@@ -351,7 +351,7 @@ namespace CutTheRope.game
                 Image.setElementPositionWithQuadOffset(button, 54, 3);
                 button.x -= texture.preCutSize.x;
                 button.y -= texture.preCutSize.y;
-                baseElement2.addChild(button);
+                _ = baseElement2.addChild(button);
                 Button button2 = createButton2WithImageQuad1Quad2IDDelegate(54, 2, 2, 17, this);
                 button2.anchor = 9;
                 button2.parentAnchor = 36;
@@ -360,7 +360,7 @@ namespace CutTheRope.game
                 button2.y -= texture.preCutSize.y;
                 if (flag)
                 {
-                    baseElement2.addChild(button2);
+                    _ = baseElement2.addChild(button2);
                 }
                 Image image = Image.Image_createWithResIDQuad(149, 0);
                 image.anchor = 9;
@@ -368,9 +368,9 @@ namespace CutTheRope.game
                 Image.setElementPositionWithQuadOffset(image, 149, 0);
                 image.x -= texture.preCutSize.x;
                 image.y -= texture.preCutSize.y;
-                baseElement2.addChild(image);
+                _ = baseElement2.addChild(image);
             }
-            menuView.addChild(baseElement);
+            _ = menuView.addChild(baseElement);
             addViewwithID(menuView, 0);
         }
 
@@ -378,14 +378,14 @@ namespace CutTheRope.game
         {
             MenuView menuView = (MenuView)new MenuView().initFullscreen();
             BaseElement baseElement = createBackgroundWithLogowithShadow(false, false);
-            menuView.addChild(baseElement);
+            _ = menuView.addChild(baseElement);
             BaseElement baseElement2 = createControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.getString(655423), -1, null);
             BaseElement baseElement3 = createControlButtontitleAnchortextbuttonIDdelegate(6, 9, Application.getString(655422), 11, this);
             HBox hBox = new HBox().initWithOffsetAlignHeight(RTPD(80.0), 16, MAX(baseElement2.height, baseElement3.height));
             hBox.parentAnchor = hBox.anchor = 18;
-            hBox.addChild(baseElement2);
-            hBox.addChild(baseElement3);
-            menuView.addChild(hBox);
+            _ = hBox.addChild(baseElement2);
+            _ = hBox.addChild(baseElement3);
+            _ = menuView.addChild(hBox);
             Image image = Image.Image_createWithResIDQuad(60, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
@@ -393,26 +393,26 @@ namespace CutTheRope.game
             timeline.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
             timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            image.addTimeline(timeline);
+            _ = image.addTimeline(timeline);
             image.playTimeline(0);
-            menuView.addChild(image);
+            _ = menuView.addChild(image);
             VBox vBox = new VBox().initWithOffsetAlignWidth(5f, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 18;
             Vector offset = vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
             ToggleButton toggleButton = createAudioButtonWithQuadDelegateIDiconOffset(3, this, 6, vectZero);
             ToggleButton toggleButton2 = createAudioButtonWithQuadDelegateIDiconOffset(2, this, 5, offset);
             HBox hBox2 = new HBox().initWithOffsetAlignHeight(-10f, 16, toggleButton.height);
-            hBox2.addChild(toggleButton2);
-            hBox2.addChild(toggleButton);
-            vBox.addChild(hBox2);
+            _ = hBox2.addChild(toggleButton2);
+            _ = hBox2.addChild(toggleButton);
+            _ = vBox.addChild(hBox2);
             Button c = createLanguageButtonWithIDDelegate(22, this);
-            vBox.addChild(c);
+            _ = vBox.addChild(c);
             Button c2 = createButtonWithTextIDDelegate(Application.getString(655364), 8, this);
-            vBox.addChild(c2);
+            _ = vBox.addChild(c2);
             Button c3 = createButtonWithTextIDDelegate(Application.getString(655365), 7, this);
-            vBox.addChild(c3);
-            baseElement.addChild(vBox);
-            hBox.y = vBox.height / 2 + 10;
+            _ = vBox.addChild(c3);
+            _ = baseElement.addChild(vBox);
+            hBox.y = (vBox.height / 2) + 10;
             vBox.y = -(float)hBox.height / 2;
             bool flag4 = Preferences._getBooleanForKey("SOUND_ON");
             bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
@@ -433,7 +433,7 @@ namespace CutTheRope.game
             Button button = createBackButtonWithDelegateID(this, 36);
             button.setName("backb");
             button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
+            _ = menuView.addChild(button);
             addViewwithID(menuView, 1);
         }
 
@@ -445,7 +445,7 @@ namespace CutTheRope.game
             text.setAlignment(2);
             text.setStringandWidth(Application.getString(655371), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
             text.anchor = text.parentAnchor = 18;
-            baseElement.addChild(text);
+            _ = baseElement.addChild(text);
             text.y = -200f;
             Button button = createButtonWithTextIDDelegate(Application.getString(655382), 13, this);
             button.anchor = button.parentAnchor = 34;
@@ -453,13 +453,13 @@ namespace CutTheRope.game
             Button button2 = createButtonWithTextIDDelegate(Application.getString(655383), 14, this);
             button2.anchor = button2.parentAnchor = 34;
             button2.y = -320f;
-            baseElement.addChild(button);
-            baseElement.addChild(button2);
-            menuView.addChild(baseElement);
+            _ = baseElement.addChild(button);
+            _ = baseElement.addChild(button2);
+            _ = menuView.addChild(baseElement);
             Button button3 = createBackButtonWithDelegateID(this, 10);
             button3.setName("backb");
             button3.x = canvas.xOffsetScaled;
-            menuView.addChild(button3);
+            _ = menuView.addChild(button3);
             addViewwithID(menuView, 4);
         }
 
@@ -470,7 +470,7 @@ namespace CutTheRope.game
             rectangleElement.width = (int)SCREEN_WIDTH;
             rectangleElement.height = (int)SCREEN_HEIGHT;
             rectangleElement.color = RGBAColor.blackRGBA;
-            movieView.addChild(rectangleElement);
+            _ = movieView.addChild(rectangleElement);
             addViewwithID(movieView, 7);
         }
 
@@ -501,28 +501,28 @@ namespace CutTheRope.game
             BaseElement baseElement2 = (BaseElement)new BaseElement().init();
             baseElement2.width = (int)num;
             baseElement2.height = 100;
-            vBox.addChild(baseElement2);
+            _ = vBox.addChild(baseElement2);
             Image c = Image.Image_createWithResIDQuad(50, 1);
-            vBox.addChild(c);
+            _ = vBox.addChild(c);
             Text text2 = new Text().initWithFont(Application.getFont(4));
             text2.setAlignment(2);
             text2.setStringandWidth(NSS(text), (int)num);
             aboutContainer = new ScrollableContainer().initWithWidthHeightContainer(num, h, vBox);
             aboutContainer.anchor = aboutContainer.parentAnchor = 18;
-            vBox.addChild(text2);
+            _ = vBox.addChild(text2);
             Image c2 = Image.Image_createWithResIDQuad(50, 2);
-            vBox.addChild(c2);
+            _ = vBox.addChild(c2);
             NSString @string = Application.getString(655417);
             Text text3 = new Text().initWithFont(Application.getFont(4));
             text3.setAlignment(2);
             text3.setStringandWidth(@string, num);
-            vBox.addChild(text3);
-            baseElement.addChild(aboutContainer);
-            menuView.addChild(baseElement);
+            _ = vBox.addChild(text3);
+            _ = baseElement.addChild(aboutContainer);
+            _ = menuView.addChild(baseElement);
             Button button = createBackButtonWithDelegateID(this, 10);
             button.setName("backb");
             button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
+            _ = menuView.addChild(button);
             addViewwithID(menuView, 3);
         }
 
@@ -534,20 +534,20 @@ namespace CutTheRope.game
             text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
             text.width = (int)(text.width * 0.7f);
-            hbox.addChild(text);
+            _ = hbox.addChild(text);
             Image c = Image.Image_createWithResIDQuad(52, 3);
-            hbox.addChild(c);
+            _ = hbox.addChild(c);
             return hbox;
         }
 
         public virtual float getBoxWidth()
         {
-            return Image.getQuadSize(52, 4).x + Image.getQuadOffset(52, 4).x * 2f;
+            return Image.getQuadSize(52, 4).x + (Image.getQuadOffset(52, 4).x * 2f);
         }
 
         public virtual float getPackOffset()
         {
-            float num = SCREEN_WIDTH + canvas.xOffset * 2;
+            float num = SCREEN_WIDTH + (canvas.xOffset * 2);
             float boxWidth = getBoxWidth();
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
@@ -559,7 +559,7 @@ namespace CutTheRope.game
             BaseElement baseElement = (BaseElement)new BaseElement().init();
             baseElement.setName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
-            touchBaseElement.addChild(baseElement);
+            _ = touchBaseElement.addChild(baseElement);
             int totalStars = CTRPreferences.getTotalStars();
             if (n > 0 && n < CTRPreferences.getPacksCount() && CTRPreferences.getUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && totalStars >= CTRPreferences.packUnlockStars(n))
             {
@@ -593,16 +593,16 @@ namespace CutTheRope.game
             image.anchor = image.parentAnchor = 9;
             if (flag)
             {
-                baseElement.addChild(image);
+                _ = baseElement.addChild(image);
                 int num = CTRPreferences.packUnlockStars(n);
                 Image image2 = Image.Image_createWithResIDQuad(52, 2);
                 image2.doRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
-                image.addChild(image2);
+                _ = image.addChild(image2);
                 HBox hBox = createTextWithStar(NSS(num.ToString()));
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
-                image2.addChild(hBox);
+                _ = image2.addChild(hBox);
                 Text text = new Text().initWithFont(Application.getFont(4));
                 NSString newString = NSS(Application.getString(655390).ToString().Replace("%d", num.ToString()));
                 text.setAlignment(2);
@@ -612,7 +612,7 @@ namespace CutTheRope.game
                 text.y = -70f;
                 text.scaleX = text.scaleY = 0.7f;
                 text.rotationCenterY = -(float)text.height / 2;
-                touchBaseElement.addChild(text);
+                _ = touchBaseElement.addChild(text);
             }
             else
             {
@@ -626,31 +626,31 @@ namespace CutTheRope.game
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
-                    baseElement.addChild(monsterSlot);
+                    _ = baseElement.addChild(monsterSlot);
                     Image image3 = Image.Image_createWithResIDQuad(52, q3);
                     image3.doRestoreCutTransparency();
                     image3.anchor = 17;
-                    monsterSlot.s = image.width * (n - 1) + -20f * n + packContainer.x + 50f;
+                    monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
                     monsterSlot.e = monsterSlot.s + 1200f;
                     image3.x = packContainer.x - 0f + monsterSlot.width + -20f - getPackOffset();
-                    image3.y = packContainer.y + SCREEN_HEIGHT / 2f;
+                    image3.y = packContainer.y + (SCREEN_HEIGHT / 2f);
                     image3.parentAnchor = -1;
-                    monsterSlot.addChild(image3);
+                    _ = monsterSlot.addChild(image3);
                 }
-                baseElement.addChild(image);
+                _ = baseElement.addChild(image);
                 if (unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED)
                 {
                     Image image4 = Image.Image_createWithResIDQuad(52, 2);
                     image4.setName("lockHideMe");
                     image4.doRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
-                    baseElement.addChild(image4);
+                    _ = baseElement.addChild(image4);
                     Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
                     timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                     timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
                     timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                     timeline.addKeyFrame(KeyFrame.makeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5));
-                    image4.addTimeline(timeline);
+                    _ = image4.addTimeline(timeline);
                 }
             }
             Text text2 = new Text().initWithFont(Application.getFont(3));
@@ -670,13 +670,13 @@ namespace CutTheRope.game
                 text2.setStringandWidth(nSString, 656.0);
             }
             text2.y = 120f;
-            image.addChild(text2);
+            _ = image.addChild(text2);
             Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(4);
             timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline2.addKeyFrame(KeyFrame.makeScale(0.95, 1.05, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.15));
             timeline2.addKeyFrame(KeyFrame.makeScale(1.05, 0.95, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.2));
             timeline2.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25));
-            baseElement.addTimeline(timeline2);
+            _ = baseElement.addTimeline(timeline2);
             baseElement.height = touchBaseElement.height = image.height;
             baseElement.width = touchBaseElement.width = image.width;
             return touchBaseElement;
@@ -693,7 +693,7 @@ namespace CutTheRope.game
             hBox.y = 40f;
             hBox.setName("text");
             HBox hBox2 = new HBox().initWithOffsetAlignHeight(-20f, 16, SCREEN_HEIGHT);
-            float num = SCREEN_WIDTH + canvas.xOffset * 2;
+            float num = SCREEN_WIDTH + (canvas.xOffset * 2);
             float boxWidth = getBoxWidth();
             float num2 = boxWidth * 3f;
             if (num2 > num - 200f)
@@ -709,23 +709,23 @@ namespace CutTheRope.game
             packContainer.dontHandleTouchUpsHandledByChilds = true;
             packContainer.turnScrollPointsOnWithCapacity(CTRPreferences.getPacksCount() + 2);
             packContainer.delegateScrollableContainerProtocol = this;
-            packContainer.x = SCREEN_WIDTH / 2f - packContainer.width / 2;
+            packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
-            baseElement.addChild(hBox);
+            _ = baseElement.addChild(hBox);
             CTRTexture2D texture = Application.getTexture(52);
             BaseElement baseElement2 = (BaseElement)new BaseElement().init();
             baseElement2.width = (int)texture.preCutSize.x;
             baseElement2.height = (int)texture.preCutSize.y;
-            hBox2.addChild(baseElement2);
+            _ = hBox2.addChild(baseElement2);
             float num3 = 0f + getPackOffset();
             for (int i = 0; i < CTRPreferences.getPacksCount() + 1; i++)
             {
                 TouchBaseElement touchBaseElement = (TouchBaseElement)createPackElementforContainer(i, packContainer);
                 boxes[i] = touchBaseElement;
-                hBox2.addChild(touchBaseElement);
+                _ = hBox2.addChild(touchBaseElement);
                 touchBaseElement.x -= 0f;
                 touchBaseElement.y -= 0f;
-                packContainer.addScrollPointAtXY((double)num3, 0.0);
+                _ = packContainer.addScrollPointAtXY((double)num3, 0.0);
                 touchBaseElement.bbc = MakeRectangle(0f, 0f, -20f, 0f);
                 num3 += touchBaseElement.width + -20f;
             }
@@ -734,41 +734,41 @@ namespace CutTheRope.game
             image.anchor = 17;
             image.y += SCREEN_HEIGHT / 2f;
             image.x = packContainer.x - 2f;
-            baseElement.addChild(image);
+            _ = baseElement.addChild(image);
             Image image2 = Image.Image_createWithResIDQuad(52, 11);
             image2.anchor = 20;
             image2.y += SCREEN_HEIGHT / 2f;
             image2.x = packContainer.x + packContainer.width + 2f;
-            baseElement.addChild(image2);
+            _ = baseElement.addChild(image2);
             image2.scaleX = image2.scaleY = -1f;
-            baseElement.addChild(packContainer);
+            _ = baseElement.addChild(packContainer);
             Image image3 = Image.Image_createWithResIDQuad(52, 12);
             image3.anchor = 20;
             image3.y += SCREEN_HEIGHT / 2f;
             image3.x = packContainer.x + 3f;
-            baseElement.addChild(image3);
+            _ = baseElement.addChild(image3);
             Image image4 = Image.Image_createWithResIDQuad(52, 12);
             image4.anchor = 17;
             image4.y += SCREEN_HEIGHT / 2f;
             image4.x = packContainer.x + packContainer.width - 3f;
             image4.scaleX = image4.scaleY = -1f;
-            baseElement.addChild(image4);
+            _ = baseElement.addChild(image4);
             prevb = createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 21, this);
             prevb.parentAnchor = 17;
             prevb.anchor = 20;
             prevb.x = packContainer.x - 40f;
-            baseElement.addChild(prevb);
+            _ = baseElement.addChild(prevb);
             nextb = createButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, 20, this);
             nextb.anchor = nextb.parentAnchor = 17;
             nextb.x = packContainer.x + packContainer.width + 40f;
             nextb.scaleX = -1f;
-            baseElement.addChild(nextb);
-            menuView.addChild(baseElement);
+            _ = baseElement.addChild(nextb);
+            _ = menuView.addChild(baseElement);
             addViewwithID(menuView, 5);
             Button button = createBackButtonWithDelegateID(this, 35);
             button.setName("backb");
             button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
+            _ = menuView.addChild(button);
             int lastPack = CTRPreferences.getLastPack();
             packContainer.placeToScrollPoint(lastPack);
             scrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
@@ -789,7 +789,7 @@ namespace CutTheRope.game
             popup.setName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.doRestoreCutTransparency();
-            popup.addChild(image);
+            _ = popup.addChild(image);
             int num = 20;
             image.scaleX = 1.3f;
             Text text = new Text().initWithFont(Application.getFont(3));
@@ -798,13 +798,13 @@ namespace CutTheRope.game
             text.anchor = 18;
             Image.setElementPositionWithQuadOffset(text, 49, 1);
             text.y -= num;
-            popup.addChild(text);
+            _ = popup.addChild(text);
             Text text2 = new Text().initWithFont(Application.getFont(3));
             text2.setAlignment(2);
             text2.setString(Application.getString(655392));
             text2.anchor = 18;
             Image.setElementPositionWithQuadOffset(text2, 49, 2);
-            popup.addChild(text2);
+            _ = popup.addChild(text2);
             text2.y -= num;
             Text text3 = new Text().initWithFont(Application.getFont(4));
             text3.setAlignment(2);
@@ -812,19 +812,19 @@ namespace CutTheRope.game
             text3.anchor = 18;
             Image.setElementPositionWithQuadOffset(text3, 49, 3);
             text3.y += 50f;
-            popup.addChild(text3);
+            _ = popup.addChild(text3);
             int totalStars = CTRPreferences.getTotalStars();
             HBox hBox = createTextWithStar(NSS((CTRPreferences.packUnlockStars(cTRRootController.getPack() + 1) - totalStars).ToString()));
             hBox.anchor = 18;
             Image.setElementPositionWithQuadOffset(hBox, 49, 5);
             hBox.y -= num;
-            popup.addChild(hBox);
+            _ = popup.addChild(hBox);
             Button button = createButtonWithTextIDDelegate(Application.getString(655389), 15, this);
             button.anchor = 18;
             Image.setElementPositionWithQuadOffset(button, 49, 4);
-            popup.addChild(button);
+            _ = popup.addChild(button);
             popup.showPopup();
-            activeView().addChild(popup);
+            _ = activeView().addChild(popup);
         }
 
         public virtual void showGameFinishedPopup()
@@ -833,27 +833,27 @@ namespace CutTheRope.game
             popup.setName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.doRestoreCutTransparency();
-            popup.addChild(image);
+            _ = popup.addChild(image);
             Text text = new Text().initWithFont(Application.getFont(3));
             text.setAlignment(2);
             text.setStringandWidth(Application.getString(655394), 600.0);
             text.anchor = 18;
             Image.setElementPositionWithQuadOffset(text, 49, 2);
             text.y -= 170f;
-            image.addChild(text);
+            _ = image.addChild(text);
             Text text2 = new Text().initWithFont(Application.getFont(4));
             text2.setAlignment(2);
             text2.setStringandWidth(Application.getString(655395), 700.0);
             text2.anchor = 18;
             Image.setElementPositionWithQuadOffset(text2, 49, 3);
             text2.y += 30f;
-            image.addChild(text2);
+            _ = image.addChild(text2);
             Button button = createButtonWithTextIDDelegate(Application.getString(655389), 15, this);
             button.anchor = 18;
             Image.setElementPositionWithQuadOffset(button, 49, 4);
-            image.addChild(button);
+            _ = image.addChild(button);
             popup.showPopup();
-            activeView().addChild(popup);
+            _ = activeView().addChild(popup);
         }
 
         public virtual void showYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
@@ -862,26 +862,26 @@ namespace CutTheRope.game
             popup.setName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.doRestoreCutTransparency();
-            popup.addChild(image);
+            _ = popup.addChild(image);
             Text text = new Text().initWithFont(Application.getFont(3));
             text.setAlignment(2);
             text.setStringandWidth(str, 680.0);
             text.anchor = 18;
             Image.setElementPositionWithQuadOffset(text, 49, 2);
             text.y -= 120f;
-            image.addChild(text);
+            _ = image.addChild(text);
             Button button = createButtonWithTextIDDelegate(Application.getString(655382), buttonYesId, this);
             button.anchor = 18;
             Image.setElementPositionWithQuadOffset(button, 49, 4);
             button.y -= button.height;
-            image.addChild(button);
+            _ = image.addChild(button);
             Button button2 = createButtonWithTextIDDelegate(Application.getString(655383), buttonNoId, this);
             button2.anchor = 18;
             Image.setElementPositionWithQuadOffset(button2, 49, 4);
-            image.addChild(button2);
+            _ = image.addChild(button2);
             popup.showPopup();
             ep = popup;
-            activeView().addChild(popup);
+            _ = activeView().addChild(popup);
         }
 
         public virtual void scrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
@@ -953,14 +953,14 @@ namespace CutTheRope.game
                 text.setString(@string);
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
-                image.addChild(text);
+                _ = image.addChild(text);
                 Image image2 = Image.Image_createWithResIDQuad(51, 2 + starsForPackLevel);
                 image2.doRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
-                image.addChild(image2);
+                _ = image.addChild(image2);
             }
             image.anchor = image.parentAnchor = 18;
-            touchBaseElement.addChild(image);
+            _ = touchBaseElement.addChild(image);
             touchBaseElement.setSizeToChildsBounds();
             return touchBaseElement;
         }
@@ -973,7 +973,7 @@ namespace CutTheRope.game
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
             Vector quadSize = Image.getQuadSize(num4, 0);
-            float x = SCREEN_WIDTH / 2f - quadSize.x;
+            float x = (SCREEN_WIDTH / 2f) - quadSize.x;
             image.x = x;
             image2.x = SCREEN_WIDTH / 2f;
             image2.rotation = 180f;
@@ -981,18 +981,18 @@ namespace CutTheRope.game
             Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(3);
             timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.85, 0.85, 0.85, 1.0), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            image.addTimeline(timeline);
+            _ = image.addTimeline(timeline);
             image.setName("levelsBack");
-            image.addChild(image2);
-            menuView.addChild(image);
+            _ = image.addChild(image2);
+            _ = menuView.addChild(image);
             Image image3 = Image.Image_createWithResIDQuad(5, 0);
             Image image4 = Image.Image_createWithResIDQuad(5, 1);
             image3.x = Image.getQuadOffset(5, 0).x;
             image3.y = 80f;
             image4.x = Image.getQuadOffset(5, 1).x;
             image4.y = 80f;
-            menuView.addChild(image3);
-            menuView.addChild(image4);
+            _ = menuView.addChild(image3);
+            _ = menuView.addChild(image4);
             Image image5 = Image.Image_createWithResIDQuad(60, 0);
             image5.setName("shadow");
             image5.anchor = image5.parentAnchor = 18;
@@ -1001,14 +1001,14 @@ namespace CutTheRope.game
             timeline2.addKeyFrame(KeyFrame.makeScale(2.0, 2.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline2.addKeyFrame(KeyFrame.makeScale(5.0, 5.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, (double)num));
             timeline2.delegateTimelineDelegate = this;
-            image5.addTimeline(timeline2);
+            _ = image5.addTimeline(timeline2);
             Timeline timeline3 = new Timeline().initWithMaxKeyFramesOnTrack(3);
             timeline3.addKeyFrame(KeyFrame.makeRotation(45.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline3.addKeyFrame(KeyFrame.makeRotation(405.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75.0));
             timeline3.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            image5.addTimeline(timeline3);
+            _ = image5.addTimeline(timeline3);
             image5.playTimeline(1);
-            menuView.addChild(image5);
+            _ = menuView.addChild(image5);
             HBox hBox = createTextWithStar(NSS(CTRPreferences.getTotalStarsInPack(pack).ToString() + "/" + (CTRPreferences.getLevelsInPackCount() * 3).ToString()));
             hBox.x = -20f;
             hBox.y = 20f;
@@ -1026,31 +1026,31 @@ namespace CutTheRope.game
                 HBox hBox2 = new HBox().initWithOffsetAlignHeight(of2, 16, h);
                 for (int j = 0; j < num2; j++)
                 {
-                    hBox2.addChild(createButtonForLevelPack(num3++, pack));
+                    _ = hBox2.addChild(createButtonForLevelPack(num3++, pack));
                 }
-                vBox.addChild(hBox2);
+                _ = vBox.addChild(hBox2);
             }
             Timeline timeline4 = new Timeline().initWithMaxKeyFramesOnTrack(3);
             timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline4.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            vBox.addTimeline(timeline4);
+            _ = vBox.addTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.setName("starText");
             hBox.x = -(float)canvas.xOffsetScaled;
             Timeline timeline5 = new Timeline().initWithMaxKeyFramesOnTrack(2);
             timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline5.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            hBox.addTimeline(timeline5);
-            menuView.addChild(hBox);
-            menuView.addChild(vBox);
+            _ = hBox.addTimeline(timeline5);
+            _ = menuView.addChild(hBox);
+            _ = menuView.addChild(vBox);
             Button button = createBackButtonWithDelegateID(this, 12);
             button.setName("backButton");
             Timeline timeline6 = new Timeline().initWithMaxKeyFramesOnTrack(2);
             timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline6.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            button.addTimeline(timeline6);
+            _ = button.addTimeline(timeline6);
             button.x = canvas.xOffsetScaled;
-            menuView.addChild(button);
+            _ = menuView.addChild(button);
             addViewwithID(menuView, 6);
         }
 
@@ -1330,7 +1330,7 @@ namespace CutTheRope.game
                     {
                         bool flag7 = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
                         Preferences._setBooleanforKey(!flag7, "PREFS_CLICK_TO_CUT", true);
-                        NSS(flag7 ? "off" : "on");
+                        _ = NSS(flag7 ? "off" : "on");
                         return;
                     }
                 case 12:
@@ -1811,7 +1811,7 @@ namespace CutTheRope.game
         {
             public override bool onTouchDownXY(float tx, float ty)
             {
-                base.onTouchDownXY(tx, ty);
+                _ = base.onTouchDownXY(tx, ty);
                 CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
                 CTRRectangle rectangle = rectInRectIntersection(MakeRectangle(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT), r);
                 if (pointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2.0)
@@ -1864,7 +1864,7 @@ namespace CutTheRope.game
                 if (num >= s && num < e)
                 {
                     num -= preCutSize.x + -20f;
-                    float num2 = num - (s + e) / 2f;
+                    float num2 = num - ((s + e) / 2f);
                     OpenGL.setScissorRectangle(250.0 - (double)num2, 0.0, 200.0, SCREEN_HEIGHT);
                     postDraw();
                     OpenGL.setScissorRectangle(c.drawX, c.drawY, c.width, c.height);

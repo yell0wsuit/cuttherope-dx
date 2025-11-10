@@ -14,7 +14,7 @@ namespace CutTheRope.iframework.platform
         {
             get
             {
-                Rectangle bounds = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
+                _ = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
                 _bounds.size.width = currentSize.Width;
                 _bounds.size.height = currentSize.Height;
@@ -124,22 +124,22 @@ namespace CutTheRope.iframework.platform
 
         public virtual void touchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            touchDelegate?.touchesBeganwithEvent(touches);
+            _ = (touchDelegate?.touchesBeganwithEvent(touches));
         }
 
         public virtual void touchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            touchDelegate?.touchesMovedwithEvent(touches);
+            _ = (touchDelegate?.touchesMovedwithEvent(touches));
         }
 
         public virtual void touchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            touchDelegate?.touchesEndedwithEvent(touches);
+            _ = (touchDelegate?.touchesEndedwithEvent(touches));
         }
 
         public virtual void touchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            touchDelegate?.touchesCancelledwithEvent(touches);
+            _ = (touchDelegate?.touchesCancelledwithEvent(touches));
         }
 
         public virtual bool backButtonPressed()

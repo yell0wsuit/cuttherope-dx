@@ -1,5 +1,3 @@
-using CutTheRope.iframework;
-
 namespace CutTheRope.iframework.visual
 {
     internal class ColorParams

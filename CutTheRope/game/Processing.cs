@@ -28,24 +28,24 @@ namespace CutTheRope.game
                     timeline.addKeyFrame(KeyFrame.makeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                     timeline.addKeyFrame(KeyFrame.makeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
                     timeline.setTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    image.addTimeline(timeline);
+                    _ = image.addTimeline(timeline);
                     image.playTimeline(0);
                     Text c = Text.createWithFontandString(3, Application.getString(655425));
                     HBox hBox = new HBox().initWithOffsetAlignHeight(10f, 16, image.height);
                     hBox.parentAnchor = hBox.anchor = 18;
-                    addChild(hBox);
-                    hBox.addChild(image);
-                    hBox.addChild(c);
+                    _ = addChild(hBox);
+                    _ = hBox.addChild(image);
+                    _ = hBox.addChild(c);
                 }
                 Timeline timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                addTimeline(timeline2);
+                _ = addTimeline(timeline2);
                 timeline2 = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline2.delegateTimelineDelegate = this;
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.4), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
                 timeline2.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                addTimeline(timeline2);
+                _ = addTimeline(timeline2);
                 playTimeline(0);
             }
             return this;
@@ -53,19 +53,19 @@ namespace CutTheRope.game
 
         public override bool onTouchDownXY(float tx, float ty)
         {
-            base.onTouchDownXY(tx, ty);
+            _ = base.onTouchDownXY(tx, ty);
             return true;
         }
 
         public override bool onTouchUpXY(float tx, float ty)
         {
-            base.onTouchUpXY(tx, ty);
+            _ = base.onTouchUpXY(tx, ty);
             return true;
         }
 
         public override bool onTouchMoveXY(float tx, float ty)
         {
-            base.onTouchMoveXY(tx, ty);
+            _ = base.onTouchMoveXY(tx, ty);
             return true;
         }
 

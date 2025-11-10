@@ -1,4 +1,3 @@
-using CutTheRope.iframework;
 using System;
 
 namespace CutTheRope.iframework.visual

@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
@@ -429,7 +428,7 @@ namespace CutTheRope.iframework.visual
                 {
                     value.parent = null;
                 }
-                childs.Remove(i);
+                _ = childs.Remove(i);
             }
         }
 
@@ -444,7 +443,7 @@ namespace CutTheRope.iframework.visual
             {
                 if (c.Equals(child.Value))
                 {
-                    childs.Remove(child.Key);
+                    _ = childs.Remove(child.Key);
                     break;
                 }
             }
@@ -452,7 +451,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual BaseElement getChild(int i)
         {
-            childs.TryGetValue(i, out BaseElement value);
+            _ = childs.TryGetValue(i, out BaseElement value);
             return value;
         }
 
@@ -498,12 +497,12 @@ namespace CutTheRope.iframework.visual
             {
                 stopCurrentTimeline();
             }
-            timelines.Remove(i);
+            _ = timelines.Remove(i);
         }
 
         public virtual void playTimeline(int t)
         {
-            timelines.TryGetValue(t, out Timeline value);
+            _ = timelines.TryGetValue(t, out Timeline value);
             if (value != null)
             {
                 if (currentTimeline != null && currentTimeline.state != Timeline.TimelineState.TIMELINE_STOPPED)
@@ -540,7 +539,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual Timeline getTimeline(int n)
         {
-            timelines.TryGetValue(n, out Timeline value);
+            _ = timelines.TryGetValue(n, out Timeline value);
             return value;
         }
 

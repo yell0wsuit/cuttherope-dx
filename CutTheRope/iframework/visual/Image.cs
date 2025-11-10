@@ -77,7 +77,7 @@ namespace CutTheRope.iframework.visual
             if (init() != null)
             {
                 texture = t;
-                NSRET(texture);
+                _ = NSRET(texture);
                 restoreCutTransparency = false;
                 if (texture.quadsCount > 0)
                 {

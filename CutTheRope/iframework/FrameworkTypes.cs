@@ -6,7 +6,6 @@ using CutTheRope.ios;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 
 namespace CutTheRope.iframework
 {
@@ -47,12 +46,12 @@ namespace CutTheRope.iframework
 
         public static float transformToRealX(float x)
         {
-            return x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH + VIEW_OFFSET_X;
+            return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
         }
 
         public static float transformToRealY(float y)
         {
-            return y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT + VIEW_OFFSET_Y;
+            return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
         }
 
         public static float transformFromRealX(float x)
@@ -222,7 +221,7 @@ namespace CutTheRope.iframework
             {
                 try
                 {
-                    Process.Start(url);
+                    _ = Process.Start(url);
                 }
                 catch (Win32Exception ex)
                 {

@@ -128,7 +128,7 @@ namespace CutTheRope
 
         public bool IsKeyPressed(Keys key)
         {
-            keyState.TryGetValue(key, out bool value);
+            _ = keyState.TryGetValue(key, out bool value);
             bool flag = keyboardStateXna.IsKeyDown(key);
             keyState[key] = flag;
             return flag && value != flag;
@@ -164,9 +164,9 @@ namespace CutTheRope
                 frameCounter = 0;
                 Preferences.Update();
             }
-            IsFixedTimeStep = frameRate > 0 && frameRate < 50 || true;
+            IsFixedTimeStep = (frameRate > 0 && frameRate < 50) || true;
             keyboardStateXna = Keyboard.GetState();
-            if ((IsKeyPressed(Keys.F11) || (IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt)) && IsKeyPressed(Keys.Enter)) && !UseWindowMode_TODO_ChangeFullScreenResolution)
+            if ((IsKeyPressed(Keys.F11) || ((IsKeyDown(Keys.LeftAlt) || IsKeyDown(Keys.RightAlt)) && IsKeyPressed(Keys.Enter))) && !UseWindowMode_TODO_ChangeFullScreenResolution)
             {
                 Global.ScreenSizeManager.ToggleFullScreen();
                 Thread.Sleep(500);
@@ -188,12 +188,12 @@ namespace CutTheRope
             if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
                 Application.sharedMovieMgr().stop();
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
+                _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
             _currentMouseState = Mouse.GetState();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = desktop.MouseCursor.GetMouseState();
-            Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
+            _ = Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
             CtrRenderer.update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);
         }

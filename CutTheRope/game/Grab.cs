@@ -20,7 +20,7 @@ namespace CutTheRope.game
             OpenGL.glVertexPointer_setAdditive(2, 5, 0, s.vertexCount * 16);
             for (int i = 0; i < s.vertexCount; i += 2)
             {
-                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[i * 2 + 1], s.vertices[i * 2 + 2], s.vertices[i * 2 + 3], 3f, color);
+                GLDrawer.drawAntialiasedLine(s.vertices[i * 2], s.vertices[(i * 2) + 1], s.vertices[(i * 2) + 2], s.vertices[(i * 2) + 3], 3f, color);
             }
             OpenGL.glDrawArrays(8, 0, 8);
             OpenGL.glEnableClientState(0);
@@ -87,7 +87,7 @@ namespace CutTheRope.game
                 }
                 else if (num != 0f && rope.parts.Count > 3)
                 {
-                    rope.rollBack(0f - num);
+                    _ = rope.rollBack(0f - num);
                 }
                 wheelDirty = true;
             }
@@ -134,7 +134,7 @@ namespace CutTheRope.game
                     float num = 10f;
                     t = vector.x > 0f ? num : 0f - num;
                 }
-                Mover.moveVariableToTarget(ref bee.rotation, t, 60f, delta);
+                _ = Mover.moveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
             if (wheel && wheelDirty)
             {
@@ -310,8 +310,8 @@ namespace CutTheRope.game
                 back.anchor = back.parentAnchor = 18;
                 front = Image_createWithResIDQuad(r2, 1);
                 front.anchor = front.parentAnchor = 18;
-                addChild(back);
-                addChild(front);
+                _ = addChild(back);
+                _ = addChild(front);
                 back.visible = false;
                 front.visible = false;
             }
@@ -322,8 +322,8 @@ namespace CutTheRope.game
                 back.anchor = back.parentAnchor = 18;
                 front = Image_createWithResIDQuad(74, 1);
                 front.anchor = front.parentAnchor = 18;
-                addChild(back);
-                addChild(front);
+                _ = addChild(back);
+                _ = addChild(front);
                 back.visible = false;
                 front.visible = false;
                 radiusAlpha = 1f;
@@ -341,17 +341,17 @@ namespace CutTheRope.game
             {
                 wheelImage = Image_createWithResIDQuad(81, 0);
                 wheelImage.anchor = wheelImage.parentAnchor = 18;
-                addChild(wheelImage);
+                _ = addChild(wheelImage);
                 wheelImage.visible = false;
                 wheelImage2 = Image_createWithResIDQuad(81, 1);
                 wheelImage2.passTransformationsToChilds = false;
                 wheelHighlight = Image_createWithResIDQuad(81, 2);
                 wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
-                wheelImage2.addChild(wheelHighlight);
+                _ = wheelImage2.addChild(wheelHighlight);
                 wheelImage3 = Image_createWithResIDQuad(81, 3);
                 wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
-                wheelImage2.addChild(wheelImage3);
-                addChild(wheelImage2);
+                _ = wheelImage2.addChild(wheelImage3);
+                _ = addChild(wheelImage2);
                 wheelImage2.visible = false;
                 wheelDirty = true;
             }
@@ -372,12 +372,12 @@ namespace CutTheRope.game
                 grabMoverHighlight = Image_createWithResIDQuad(82, 3);
                 grabMoverHighlight.visible = false;
                 grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
-                addChild(grabMoverHighlight);
+                _ = addChild(grabMoverHighlight);
                 grabMover = Image_createWithResIDQuad(82, 4);
                 grabMover.visible = false;
                 grabMover.anchor = grabMover.parentAnchor = 18;
-                addChild(grabMover);
-                grabMover.addChild(moveBackground);
+                _ = addChild(grabMover);
+                _ = grabMover.addChild(moveBackground);
                 if (moveVertical)
                 {
                     moveBackground.rotation = 90f;
@@ -410,17 +410,17 @@ namespace CutTheRope.game
             Animation animation = Animation_createWithResID(98);
             animation.parentAnchor = animation.anchor = 9;
             animation.doRestoreCutTransparency();
-            animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
+            _ = animation.addAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.playTimeline(0);
             animation.jumpTo(RND_RANGE(0, 2));
-            bee.addChild(animation);
+            _ = bee.addChild(animation);
             Vector quadOffset = getQuadOffset(98, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
-            bee.rotationCenterX = quadOffset.x - bee.width / 2;
-            bee.rotationCenterY = quadOffset.y - bee.height / 2;
+            bee.rotationCenterX = quadOffset.x - (bee.width / 2);
+            bee.rotationCenterY = quadOffset.y - (bee.height / 2);
             bee.scaleX = bee.scaleY = 0.7692308f;
-            addChild(bee);
+            _ = addChild(bee);
         }
 
         public virtual void setSpider(bool s)
@@ -438,7 +438,7 @@ namespace CutTheRope.game
             spider.setDelayatIndexforAnimation(0.4f, 5, 0);
             spider.addAnimationWithIDDelayLoopFirstLast(1, 0.1f, Timeline.LoopType.TIMELINE_REPLAY, 7, 10);
             spider.switchToAnimationatEndOfAnimationDelay(1, 0, 0.05f);
-            addChild(spider);
+            _ = addChild(spider);
         }
 
         public virtual void destroyRope()

@@ -19,7 +19,7 @@ namespace CutTheRope.game
                 int i = 100;
                 if (nSString2.characterAtIndex(0) == 'R')
                 {
-                    i = (int)((int)RTD(nSString2.substringFromIndex(2).intValue()) * 3.3f) / 2 + 1;
+                    i = ((int)((int)RTD(nSString2.substringFromIndex(2).intValue()) * 3.3f) / 2) + 1;
                 }
                 float m_ = xml["moveSpeed"].floatValue() * 3.3f;
                 float r_ = xml["rotateSpeed"].floatValue();

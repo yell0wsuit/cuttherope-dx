@@ -11,8 +11,8 @@ namespace CutTheRope.iframework.visual
             Vector result = v;
             result.x -= cx;
             result.y -= cy;
-            float num = result.x * cosA - result.y * sinA;
-            float num2 = result.x * sinA + result.y * cosA;
+            float num = (result.x * cosA) - (result.y * sinA);
+            float num2 = (result.x * sinA) + (result.y * cosA);
             result.x = num + cx;
             result.y = num2 + cy;
             return result;
@@ -75,7 +75,7 @@ namespace CutTheRope.iframework.visual
                 emitCounter += delta;
                 while (particleCount < totalParticles && emitCounter > num)
                 {
-                    addParticle();
+                    _ = addParticle();
                     emitCounter -= num;
                 }
                 elapsed += delta;
@@ -152,34 +152,34 @@ namespace CutTheRope.iframework.visual
 
         public virtual void initParticle(ref Particle particle)
         {
-            particle.pos.x = x + posVar.x * RND_MINUS1_1;
-            particle.pos.y = y + posVar.y * RND_MINUS1_1;
+            particle.pos.x = x + (posVar.x * RND_MINUS1_1);
+            particle.pos.y = y + (posVar.y * RND_MINUS1_1);
             particle.startPos = particle.pos;
-            float num = DEGREES_TO_RADIANS(angle + angleVar * RND_MINUS1_1);
+            float num = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
             Vector v = default;
             v.y = sinf(num);
             v.x = cosf(num);
-            float s = speed + speedVar * RND_MINUS1_1;
+            float s = speed + (speedVar * RND_MINUS1_1);
             particle.dir = vectMult(v, s);
-            particle.radialAccel = radialAccel + radialAccelVar * RND_MINUS1_1;
-            particle.tangentialAccel = tangentialAccel + tangentialAccelVar * RND_MINUS1_1;
-            particle.life = life + lifeVar * RND_MINUS1_1;
+            particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);
+            particle.tangentialAccel = tangentialAccel + (tangentialAccelVar * RND_MINUS1_1);
+            particle.life = life + (lifeVar * RND_MINUS1_1);
             RGBAColor rGBAColor = default;
-            rGBAColor.r = startColor.r + startColorVar.r * RND_MINUS1_1;
-            rGBAColor.g = startColor.g + startColorVar.g * RND_MINUS1_1;
-            rGBAColor.b = startColor.b + startColorVar.b * RND_MINUS1_1;
-            rGBAColor.a = startColor.a + startColorVar.a * RND_MINUS1_1;
+            rGBAColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
+            rGBAColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
+            rGBAColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
+            rGBAColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
             RGBAColor rGBAColor2 = default;
-            rGBAColor2.r = endColor.r + endColorVar.r * RND_MINUS1_1;
-            rGBAColor2.g = endColor.g + endColorVar.g * RND_MINUS1_1;
-            rGBAColor2.b = endColor.b + endColorVar.b * RND_MINUS1_1;
-            rGBAColor2.a = endColor.a + endColorVar.a * RND_MINUS1_1;
+            rGBAColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
+            rGBAColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
+            rGBAColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);
+            rGBAColor2.a = endColor.a + (endColorVar.a * RND_MINUS1_1);
             particle.color = rGBAColor;
             particle.deltaColor.r = (rGBAColor2.r - rGBAColor.r) / particle.life;
             particle.deltaColor.g = (rGBAColor2.g - rGBAColor.g) / particle.life;
             particle.deltaColor.b = (rGBAColor2.b - rGBAColor.b) / particle.life;
             particle.deltaColor.a = (rGBAColor2.a - rGBAColor.a) / particle.life;
-            particle.size = size + sizeVar * RND_MINUS1_1;
+            particle.size = size + (sizeVar * RND_MINUS1_1);
         }
 
         public virtual void startSystem(int initialParticles)
@@ -187,7 +187,7 @@ namespace CutTheRope.iframework.visual
             particleCount = 0;
             while (particleCount < initialParticles)
             {
-                addParticle();
+                _ = addParticle();
             }
             active = true;
         }

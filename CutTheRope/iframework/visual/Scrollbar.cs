@@ -1,5 +1,4 @@
 using CutTheRope.desktop;
-using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using Microsoft.Xna.Framework;
 using System;
@@ -33,7 +32,7 @@ namespace CutTheRope.iframework.visual
                 num2 = 1f;
                 num3 = (float)Math.Round((height - 2.0) / sc.y);
                 float num4 = mp.y != 0f ? sp.y / mp.y : 1f;
-                num5 = (float)(1.0 + (height - 2.0 - (double)num3) * (double)num4);
+                num5 = (float)(1.0 + ((height - 2.0 - (double)num3) * (double)num4));
                 if (num3 > height)
                 {
                     flag = true;
@@ -45,7 +44,7 @@ namespace CutTheRope.iframework.visual
                 num5 = 1f;
                 num = (float)Math.Round((width - 2.0) / sc.x);
                 float num6 = mp.x != 0f ? sp.x / mp.x : 1f;
-                num2 = (float)(1.0 + (width - 2.0 - (double)num) * (double)num6);
+                num2 = (float)(1.0 + ((width - 2.0 - (double)num) * (double)num6));
                 if (num > width)
                 {
                     flag = true;

@@ -38,7 +38,7 @@ namespace CutTheRope.game
         {
             if (timeout > 0.0 && time > 0.0)
             {
-                Mover.moveVariableToTarget(ref time, 0f, 1f, delta);
+                _ = Mover.moveVariableToTarget(ref time, 0f, 1f, delta);
             }
             base.update(delta);
         }
@@ -60,7 +60,7 @@ namespace CutTheRope.game
                 timedAnim.playTimeline(0);
                 time = timeout;
                 timedAnim.visible = false;
-                addChild(timedAnim);
+                _ = addChild(timedAnim);
                 Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
                 timeline.addKeyFrame(KeyFrame.makeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
@@ -85,11 +85,11 @@ namespace CutTheRope.game
             Timeline.updateTimeline(timeline3, (float)(RND_RANGE(0, 20) / 10.0));
             Animation animation = Animation_createWithResID(78);
             animation.doRestoreCutTransparency();
-            animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
+            _ = animation.addAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.playTimeline(0);
             Timeline.updateTimeline(animation.getTimeline(0), (float)(RND_RANGE(0, 20) / 10.0));
             animation.anchor = animation.parentAnchor = 18;
-            addChild(animation);
+            _ = addChild(animation);
         }
 
         public float time;

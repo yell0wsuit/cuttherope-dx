@@ -15,13 +15,13 @@ namespace CutTheRope.game
                 Image image = Image.Image_createWithResID(0);
                 image.parentAnchor = image.anchor = 18;
                 image.scaleX = image.scaleY = 1.25f;
-                view.addChild(image);
+                _ = view.addChild(image);
                 bar = TiledImage.TiledImage_createWithResID(1);
                 bar.parentAnchor = bar.anchor = 9;
                 bar.setTile(-1);
                 bar.x = 738f;
                 bar.y = 1056f;
-                image.addChild(bar);
+                _ = image.addChild(bar);
                 barTotalWidth = bar.width;
                 addViewwithID(view, 1);
                 view.release();

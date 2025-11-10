@@ -49,13 +49,13 @@ namespace CutTheRope.game
             GameView gameView = (GameView)new GameView().initFullscreen();
             GameScene gameScene = (GameScene)new GameScene().init();
             gameScene.gameSceneDelegate = this;
-            gameView.addChildwithID(gameScene, 0);
+            _ = gameView.addChildwithID(gameScene, 0);
             Button button = MenuController.createButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
             button.x = -(float)canvas.xOffsetScaled;
-            gameView.addChildwithID(button, 1);
+            _ = gameView.addChildwithID(button, 1);
             Button button2 = MenuController.createButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
             button2.x = -(float)canvas.xOffsetScaled;
-            gameView.addChildwithID(button2, 2);
+            _ = gameView.addChildwithID(button2, 2);
             Image image = Image.Image_createWithResIDQuad(66, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = 1.25f;
@@ -64,28 +64,28 @@ namespace CutTheRope.game
             mapNameLabel = new Text().initWithFont(Application.getFont(4));
             mapNameLabel.setName("mapNameLabel");
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
+            _ = CTRPreferences.getScoreForPackLevel(cTRRootController.getPack(), cTRRootController.getLevel());
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
             mapNameLabel.x = RTD(-10.0) - canvas.xOffsetScaled + 256f;
             mapNameLabel.y = RTD(-5.0);
-            image.addChild(mapNameLabel);
+            _ = image.addChild(mapNameLabel);
             VBox vBox = new VBox().initWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             Button c = MenuController.createButtonWithTextIDDelegate(Application.getString(655397), 0, this);
-            vBox.addChild(c);
+            _ = vBox.addChild(c);
             Button c2 = MenuController.createButtonWithTextIDDelegate(Application.getString(655398), 2, this);
-            vBox.addChild(c2);
+            _ = vBox.addChild(c2);
             Button c3 = MenuController.createButtonWithTextIDDelegate(Application.getString(655399), 3, this);
-            vBox.addChild(c3);
+            _ = vBox.addChild(c3);
             Button c4 = MenuController.createButtonWithTextIDDelegate(Application.getString(655400), 4, this);
-            vBox.addChild(c4);
+            _ = vBox.addChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
             Vector offset = vectSub(Image.getQuadCenter(8, 0), Image.getQuadOffset(8, 12));
             ToggleButton toggleButton = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, vectZero);
             ToggleButton toggleButton2 = MenuController.createAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
             HBox hBox = new HBox().initWithOffsetAlignHeight(-10f, 16, toggleButton.height);
-            hBox.addChild(toggleButton2);
-            hBox.addChild(toggleButton);
-            vBox.addChild(hBox);
+            _ = hBox.addChild(toggleButton2);
+            _ = hBox.addChild(toggleButton);
+            _ = vBox.addChild(hBox);
             vBox.y = (SCREEN_HEIGHT - vBox.height) / 2f;
             bool flag3 = Preferences._getBooleanForKey("SOUND_ON");
             bool flag2 = Preferences._getBooleanForKey("MUSIC_ON");
@@ -97,12 +97,12 @@ namespace CutTheRope.game
             {
                 toggleButton.toggle();
             }
-            image.addChild(vBox);
-            gameView.addChildwithID(image, 3);
+            _ = image.addChild(vBox);
+            _ = gameView.addChildwithID(image, 3);
             addViewwithID(gameView, 0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)new BoxOpenClose().initWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(boxClosed);
-            gameView.addChildwithID(boxOpenClose, 4);
+            _ = gameView.addChildwithID(boxOpenClose, 4);
         }
 
         public virtual void initGameView()
@@ -165,7 +165,7 @@ namespace CutTheRope.game
             CTRPreferences cTRPreferences = Application.sharedPreferences();
             CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
             int pack = ctrrootController.getPack();
-            ctrrootController.getLevel();
+            _ = ctrrootController.getLevel();
             bool flag = true;
             for (int num = CTRPreferences.getLevelsInPackCount() - 1; num >= 0; num--)
             {
@@ -223,7 +223,7 @@ namespace CutTheRope.game
         public virtual void levelWon()
         {
             boxCloseHandled = false;
-            CTRPreferences ctrpreferences = Application.sharedPreferences();
+            _ = Application.sharedPreferences();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             if (!CTRPreferences.isScoreHashValid())
             {
@@ -469,7 +469,6 @@ namespace CutTheRope.game
         public override bool touchesBeganwithEvent(IList<TouchLocation> touches)
         {
             View view = getView(0);
-            GameView gameView = (GameView)view;
             GameScene gameScene = (GameScene)view.getChild(0);
             if (base.touchesBeganwithEvent(touches))
             {
@@ -495,7 +494,7 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchDownXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.touchDownXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
                     }
                 }
             }
@@ -529,7 +528,7 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchUpXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.touchUpXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
                     }
                     else
                     {
@@ -566,7 +565,7 @@ namespace CutTheRope.game
                     }
                     if (num != -1)
                     {
-                        gameScene.touchMoveXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
+                        _ = gameScene.touchMoveXYIndex(CtrRenderer.transformX(touch.Position.X), CtrRenderer.transformY(touch.Position.Y), num);
                     }
                 }
             }
@@ -618,7 +617,6 @@ namespace CutTheRope.game
             CTRPreferences.gameViewChanged(NSS("game"));
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             View view = getView(0);
-            GameView gameView = (GameView)view;
             if (lastLevelInPack() && !cTRRootController.isPicker())
             {
                 deactivate();
@@ -633,13 +631,13 @@ namespace CutTheRope.game
             for (int i = 0; i < 5; i++)
             {
                 touchAddressMap[i] = 0;
-                gs.touchUpXYIndex(-500f, -500f, i);
+                _ = gs.touchUpXYIndex(-500f, -500f, i);
             }
         }
 
         public virtual void setAdSkipper(object skipper)
         {
-            GameView gameView = (GameView)getView(0);
+            _ = (GameView)getView(0);
         }
 
         public override bool mouseMoved(float x, float y)
@@ -654,7 +652,7 @@ namespace CutTheRope.game
             {
                 return false;
             }
-            gameScene.touchDraggedXYIndex(x, y, 0);
+            _ = gameScene.touchDraggedXYIndex(x, y, 0);
             return true;
         }
 

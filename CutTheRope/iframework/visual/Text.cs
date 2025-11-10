@@ -141,7 +141,7 @@ namespace CutTheRope.iframework.visual
                             int charQuad2 = font.getCharQuad('.');
                             ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
                             int num11 = (int)font.getCharWidth('.');
-                            if (l == num9 - 1 || l == num9 - 2 && num10 + 3 * (num11 + num7) + font.getCharWidth(' ') > wrapWidth)
+                            if (l == num9 - 1 || (l == num9 - 2 && num10 + (3 * (num11 + num7)) + font.getCharWidth(' ') > wrapWidth))
                             {
                                 imageMultiDrawer2.mapTextureQuadAtXYatIndex(charQuad2, num10, num4, num6++);
                                 num10 += num11 + num7;
@@ -163,7 +163,7 @@ namespace CutTheRope.iframework.visual
             }
             else
             {
-                height = (int)((font.fontHeight() + font.getLineOffset()) * formattedStrings.Count - font.getLineOffset());
+                height = (int)(((font.fontHeight() + font.getLineOffset()) * formattedStrings.Count) - font.getLineOffset());
                 width = (int)wrapWidth;
             }
             if (maxHeight != -1f)
@@ -244,7 +244,7 @@ namespace CutTheRope.iframework.visual
                     num4 = 0f;
                     num3 = num8;
                 }
-                if (num7 + num4 > wrapWidth && num6 != num5 || c == '\n')
+                if ((num7 + num4 > wrapWidth && num6 != num5) || c == '\n')
                 {
                     array[num2++] = (short)num5;
                     array[num2++] = (short)num6;
