@@ -8,6 +8,7 @@ using CutTheRope.ios;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -793,7 +794,7 @@ namespace CutTheRope.game
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1.0);
-            Text text = Text.CreateWithFontandString(3, (cTRRootController.GetPack() + 1).ToString() + " - " + (cTRRootController.GetLevel() + 1).ToString());
+            Text text = Text.CreateWithFontandString(3, (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture));
             text.anchor = 33;
             Text text2 = Text.CreateWithFontandString(3, Application.GetString(655376));
             text2.anchor = 33;
