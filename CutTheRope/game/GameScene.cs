@@ -3233,9 +3233,9 @@ namespace CutTheRope.game
 
         private GameObject candy;
 
-        private Image candyMain;
+        private GameObject candyMain;
 
-        private Image candyTop;
+        private GameObject candyTop;
 
         private Animation candyBlink;
 
