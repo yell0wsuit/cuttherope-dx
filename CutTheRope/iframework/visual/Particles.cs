@@ -164,21 +164,21 @@ namespace CutTheRope.iframework.visual
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);
             particle.tangentialAccel = tangentialAccel + (tangentialAccelVar * RND_MINUS1_1);
             particle.life = life + (lifeVar * RND_MINUS1_1);
-            RGBAColor rGBAColor = default;
-            rGBAColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
-            rGBAColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
-            rGBAColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
-            rGBAColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
-            RGBAColor rGBAColor2 = default;
-            rGBAColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
-            rGBAColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
-            rGBAColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);
-            rGBAColor2.a = endColor.a + (endColorVar.a * RND_MINUS1_1);
-            particle.color = rGBAColor;
-            particle.deltaColor.r = (rGBAColor2.r - rGBAColor.r) / particle.life;
-            particle.deltaColor.g = (rGBAColor2.g - rGBAColor.g) / particle.life;
-            particle.deltaColor.b = (rGBAColor2.b - rGBAColor.b) / particle.life;
-            particle.deltaColor.a = (rGBAColor2.a - rGBAColor.a) / particle.life;
+            RGBAColor rgbaColor = default;
+            rgbaColor.r = startColor.r + (startColorVar.r * RND_MINUS1_1);
+            rgbaColor.g = startColor.g + (startColorVar.g * RND_MINUS1_1);
+            rgbaColor.b = startColor.b + (startColorVar.b * RND_MINUS1_1);
+            rgbaColor.a = startColor.a + (startColorVar.a * RND_MINUS1_1);
+            RGBAColor rgbaColor2 = default;
+            rgbaColor2.r = endColor.r + (endColorVar.r * RND_MINUS1_1);
+            rgbaColor2.g = endColor.g + (endColorVar.g * RND_MINUS1_1);
+            rgbaColor2.b = endColor.b + (endColorVar.b * RND_MINUS1_1);
+            rgbaColor2.a = endColor.a + (endColorVar.a * RND_MINUS1_1);
+            particle.color = rgbaColor;
+            particle.deltaColor.r = (rgbaColor2.r - rgbaColor.r) / particle.life;
+            particle.deltaColor.g = (rgbaColor2.g - rgbaColor.g) / particle.life;
+            particle.deltaColor.b = (rgbaColor2.b - rgbaColor.b) / particle.life;
+            particle.deltaColor.a = (rgbaColor2.a - rgbaColor.a) / particle.life;
             particle.size = size + (sizeVar * RND_MINUS1_1);
         }
 

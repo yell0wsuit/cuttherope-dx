@@ -219,8 +219,8 @@ namespace CutTheRope.game
             OpenGL.GlDisable(0);
             if (radius != -1f || hideRadius)
             {
-                RGBAColor rGBAColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
-                DrawGrabCircle(this, x, y, radius, vertexCount, rGBAColor);
+                RGBAColor rgbaColor = RGBAColor.MakeRGBA(0.2, 0.5, 0.9, radiusAlpha);
+                DrawGrabCircle(this, x, y, radius, vertexCount, rgbaColor);
             }
             OpenGL.GlColor4f(Color.White);
             OpenGL.GlEnable(0);
