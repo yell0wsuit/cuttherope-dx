@@ -425,7 +425,7 @@ namespace CutTheRope.game
                     {
                         if (!shouldSkipTutorialElement(item3))
                         {
-                            int q = new NSString(item3.Name.Substring(8)).intValue() - 1;
+                            int q = new NSString(item3.Name[8..]).intValue() - 1;
                             GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
                             gameObjectSpecial.color = RGBAColor.transparentRGBA;
                             gameObjectSpecial.x = item3["x"].intValue() * num + num3 + num4;

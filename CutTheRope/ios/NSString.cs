@@ -96,12 +96,12 @@ namespace CutTheRope.ios
 
         public NSString substringFromIndex(int n)
         {
-            return new NSString(value_.Substring(n));
+            return new NSString(value_[n..]);
         }
 
         public NSString substringToIndex(int n)
         {
-            return new NSString(value_.Substring(0, n));
+            return new NSString(value_[..n]);
         }
 
         public int intValue()
