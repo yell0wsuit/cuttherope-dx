@@ -22,12 +22,12 @@ namespace CutTheRope.iframework.core
             y = yParam;
         }
 
-        public Vector2 toXNA()
+        public readonly Vector2 toXNA()
         {
             return new Vector2(x, y);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Concat(new string[]
             {

@@ -14,7 +14,7 @@ namespace CutTheRope.iframework
             brY = y + h;
         }
 
-        public float[] toFloatArray()
+        public readonly float[] toFloatArray()
         {
             return [tlX, tlY, trX, trY, blX, blY, brX, brY];
         }

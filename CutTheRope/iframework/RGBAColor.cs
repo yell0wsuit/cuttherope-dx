@@ -5,7 +5,7 @@ namespace CutTheRope.iframework
 {
     public struct RGBAColor
     {
-        public Color toXNA()
+        public readonly Color toXNA()
         {
             Color result = default;
             int num = (int)(r * 255f);
@@ -19,7 +19,7 @@ namespace CutTheRope.iframework
             return result;
         }
 
-        public Color toWhiteAlphaXNA()
+        public readonly Color toWhiteAlphaXNA()
         {
             Color result = default;
             int num = (int)(a * 255f);
@@ -69,7 +69,7 @@ namespace CutTheRope.iframework
             a = _a;
         }
 
-        public float[] toFloatArray()
+        public readonly float[] toFloatArray()
         {
             return [r, g, b, a];
         }
