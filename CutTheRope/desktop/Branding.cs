@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace CutTheRope.desktop
@@ -25,7 +26,7 @@ namespace CutTheRope.desktop
                 {
                     try
                     {
-                        FileStream fileStream = new("branding/splash" + num.ToString() + "." + item, FileMode.Open, FileAccess.Read);
+                        FileStream fileStream = new("branding/splash" + num.ToString(CultureInfo.InvariantCulture) + "." + item, FileMode.Open, FileAccess.Read);
                         texture2D = Texture2D.FromStream(Global.GraphicsDevice, fileStream);
                         fileStream.Close();
                         _listBitmap.Add(texture2D);
