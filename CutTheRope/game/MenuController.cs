@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 namespace CutTheRope.game
@@ -579,7 +580,7 @@ namespace CutTheRope.game
             }
             else
             {
-                string text3 = (n + 1).ToString();
+                string text3 = (n + 1).ToString(CultureInfo.InvariantCulture);
                 string text4 = ". ";
                 NSString @string = Application.GetString(655404 + n);
                 nsstring = NSS(text3 + text4 + (@string?.ToString()));
@@ -599,12 +600,12 @@ namespace CutTheRope.game
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
-                HBox hBox = CreateTextWithStar(NSS(num.ToString()));
+                HBox hBox = CreateTextWithStar(NSS(num.ToString(CultureInfo.InvariantCulture)));
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
                 _ = image2.AddChild(hBox);
                 Text text = new Text().InitWithFont(Application.GetFont(4));
-                NSString newString = NSS(Application.GetString(655390).ToString().Replace("%d", num.ToString()));
+                NSString newString = NSS(Application.GetString(655390).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture)));
                 text.SetAlignment(2);
                 text.anchor = 10;
                 text.parentAnchor = 34;
@@ -688,7 +689,7 @@ namespace CutTheRope.game
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             string text = Application.GetString(655388).ToString();
             text = text.Replace("%d", "");
-            HBox hBox = CreateTextWithStar(NSS(text + CTRPreferences.GetTotalStars().ToString()));
+            HBox hBox = CreateTextWithStar(NSS(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture)));
             hBox.x = -30f - Canvas.xOffsetScaled;
             hBox.y = 40f;
             hBox.SetName("text");
@@ -814,7 +815,7 @@ namespace CutTheRope.game
             text3.y += 50f;
             _ = popup.AddChild(text3);
             int totalStars = CTRPreferences.GetTotalStars();
-            HBox hBox = CreateTextWithStar(NSS((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString()));
+            HBox hBox = CreateTextWithStar(NSS((CTRPreferences.PackUnlockStars(cTRRootController.GetPack() + 1) - totalStars).ToString(CultureInfo.InvariantCulture)));
             hBox.anchor = 18;
             Image.SetElementPositionWithQuadOffset(hBox, 49, 5);
             hBox.y -= num;
@@ -949,7 +950,7 @@ namespace CutTheRope.game
                 image = Image.Image_createWithResIDQuad(51, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(3));
-                NSString @string = NSS((l + 1).ToString());
+                NSString @string = NSS((l + 1).ToString(CultureInfo.InvariantCulture));
                 text.SetString(@string);
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
@@ -1009,7 +1010,7 @@ namespace CutTheRope.game
             _ = image5.AddTimeline(timeline3);
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
-            HBox hBox = CreateTextWithStar(NSS(CTRPreferences.GetTotalStarsInPack(pack).ToString() + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString()));
+            HBox hBox = CreateTextWithStar(NSS(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount() * 3).ToString(CultureInfo.InvariantCulture)));
             hBox.x = -20f;
             hBox.y = 20f;
             float of = 55f;
