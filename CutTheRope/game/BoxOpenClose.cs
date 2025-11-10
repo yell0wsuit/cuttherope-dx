@@ -4,6 +4,7 @@ using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
+using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -24,11 +25,11 @@ namespace CutTheRope.game
                         cscore = 0;
                         ctime = time;
                         cstarBonus = starBonus;
-                        ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString());
+                        ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         Text text27 = (Text)result.GetChildWithName("dataTitle");
                         Image.SetElementPositionWithQuadOffset(text27, 67, 5);
                         text27.SetString(Application.GetString(655378));
-                        ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString());
+                        ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
                         raState = 1;
                         raDelay = 1f;
                         return;
@@ -61,10 +62,10 @@ namespace CutTheRope.game
                     {
                         cstarBonus = (int)(starBonus * raDelay);
                         cscore = (int)((1f - raDelay) * starBonus);
-                        ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString());
+                        ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
                         Text text29 = (Text)result.GetChildWithName("scoreValue");
                         text29.SetEnabled(true);
-                        text29.SetString(cscore.ToString());
+                        text29.SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (flag)
                         {
                             raState = 3;
@@ -85,7 +86,7 @@ namespace CutTheRope.game
                             int num = (int)Math.Floor((double)(Round(time) / 60f));
                             int num2 = (int)(Round(time) - (num * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString(655377));
-                            ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num.ToString() + ":" + num2.ToString("D2")));
+                            ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num.ToString(CultureInfo.InvariantCulture) + ":" + num2.ToString("D2", CultureInfo.InvariantCulture)));
                             return;
                         }
                         break;
@@ -109,8 +110,8 @@ namespace CutTheRope.game
                         cscore = (int)(starBonus + ((1f - raDelay) * timeBonus));
                         int num3 = (int)Math.Floor((double)Round(ctime) / 60.0);
                         int num4 = (int)((double)Round(ctime) - (num3 * 60.0));
-                        ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num3.ToString() + ":" + num4.ToString("D2")));
-                        ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString());
+                        ((Text)result.GetChildWithName("dataValue")).SetString(NSS(num3.ToString(CultureInfo.InvariantCulture) + ":" + num4.ToString("D2", CultureInfo.InvariantCulture)));
+                        ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (flag)
                         {
                             raState = 6;
