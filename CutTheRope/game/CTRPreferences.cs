@@ -2,6 +2,7 @@ using CutTheRope.ctr_commons;
 using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using System;
+using System.Globalization;
 
 namespace CutTheRope.game
 {
@@ -135,7 +136,7 @@ namespace CutTheRope.game
 
         private static string GetPackLevelKey(string prefs, int p, int l)
         {
-            return prefs + p.ToString() + "_" + l.ToString();
+            return prefs + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture);
         }
 
         public static void SetUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
@@ -185,17 +186,17 @@ namespace CutTheRope.game
 
         public static int GetScoreForPackLevel(int p, int l)
         {
-            return _getIntForKey("SCORE_" + p.ToString() + "_" + l.ToString());
+            return _getIntForKey("SCORE_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture));
         }
 
         public static void SetScoreForPackLevel(int s, int p, int l)
         {
-            _setIntforKey(s, "SCORE_" + p.ToString() + "_" + l.ToString(), true);
+            _setIntforKey(s, "SCORE_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture), true);
         }
 
         public static void SetStarsForPackLevel(int s, int p, int l)
         {
-            _setIntforKey(s, "STARS_" + p.ToString() + "_" + l.ToString(), true);
+            _setIntforKey(s, "STARS_" + p.ToString(CultureInfo.InvariantCulture) + "_" + l.ToString(CultureInfo.InvariantCulture), true);
         }
 
         public static int GetTotalStarsInPack(int p)
@@ -289,7 +290,7 @@ namespace CutTheRope.game
 
         public void SetScoreHash()
         {
-            NSString mD5Str = GetMD5Str(NSS(GetTotalScore().ToString()));
+            NSString mD5Str = GetMD5Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
             SetStringforKey(mD5Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 
