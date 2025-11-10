@@ -6,7 +6,7 @@ namespace CutTheRope.game
 {
     internal class CTRSoundMgr : SoundMgr
     {
-        public static void PlaySound(int s)
+        public static new void PlaySound(int s)
         {
             if (Preferences._getBooleanForKey("SOUND_ON"))
             {
@@ -23,7 +23,7 @@ namespace CutTheRope.game
             }
         }
 
-        public static SoundEffectInstance PlaySoundLooped(int s)
+        public static new SoundEffectInstance PlaySoundLooped(int s)
         {
             return s_EnableLoopedSounds && Preferences._getBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
         }
@@ -40,7 +40,7 @@ namespace CutTheRope.game
             PlayMusic(num);
         }
 
-        public static void PlayMusic(int f)
+        public static new void PlayMusic(int f)
         {
             if (Preferences._getBooleanForKey("MUSIC_ON"))
             {
@@ -48,7 +48,7 @@ namespace CutTheRope.game
             }
         }
 
-        public static void StopLoopedSounds()
+        public static new void StopLoopedSounds()
         {
             Application.SharedSoundMgr().StopLoopedSounds();
         }
@@ -64,17 +64,17 @@ namespace CutTheRope.game
             StopMusic();
         }
 
-        public static void StopMusic()
+        public static new void StopMusic()
         {
             Application.SharedSoundMgr().StopMusic();
         }
 
-        public static void Pause()
+        public static new void Pause()
         {
             Application.SharedSoundMgr().Pause();
         }
 
-        public static void Unpause()
+        public static new void Unpause()
         {
             Application.SharedSoundMgr().Unpause();
         }
