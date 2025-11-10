@@ -81,7 +81,7 @@ namespace CutTheRope.iframework
             uint a2 = ctx.state[1];
             uint a3 = ctx.state[2];
             uint a4 = ctx.state[3];
-            FuncF f = new FuncF(F_1);
+            FuncF f = new(F_1);
             P(ref a, a2, a3, a4, 0U, 7U, 3614090360U, array, f);
             P(ref a4, a, a2, a3, 1U, 12U, 3905402710U, array, f);
             P(ref a3, a4, a, a2, 2U, 17U, 606105819U, array, f);

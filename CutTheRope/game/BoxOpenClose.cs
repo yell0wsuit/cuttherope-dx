@@ -528,7 +528,7 @@ namespace CutTheRope.game
                 case 0:
                 case 1:
                     {
-                        DelayedDispatcher.DispatchFunc dispatchFunc = new DelayedDispatcher.DispatchFunc(selector_removeOpenCloseAnims);
+                        DelayedDispatcher.DispatchFunc dispatchFunc = new(selector_removeOpenCloseAnims);
                         NSTimer.registerDelayedObjectCall(dispatchFunc, this, 0.001);
                         if (result.isEnabled())
                         {
@@ -540,7 +540,7 @@ namespace CutTheRope.game
                     }
                 case 2:
                     {
-                        DelayedDispatcher.DispatchFunc dispatchFunc2 = new DelayedDispatcher.DispatchFunc(selector_postBoxClosed);
+                        DelayedDispatcher.DispatchFunc dispatchFunc2 = new(selector_postBoxClosed);
                         NSTimer.registerDelayedObjectCall(dispatchFunc2, this, 0.001);
                         break;
                     }
