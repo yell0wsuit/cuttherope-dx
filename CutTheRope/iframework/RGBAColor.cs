@@ -100,12 +100,12 @@ namespace CutTheRope.iframework
 
         public static readonly RGBAColor whiteRGBA = new(1.0, 1.0, 1.0, 1.0);
 
-        public float r;
+        public float r { get; set; }
 
-        public float g;
+        public float g { get; set; }
 
-        public float b;
+        public float b { get; set; }
 
-        public float a;
+        public float a { get; set; }
     }
 }
