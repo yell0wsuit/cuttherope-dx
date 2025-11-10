@@ -261,13 +261,13 @@ namespace CutTheRope.game
 
         public virtual void rollplacingWithOffset(float rollLen, Vector off)
         {
-            ConstraintedPoint i = parts[parts.Count - 2];
+            ConstraintedPoint i = parts[^2];
             int num = (int)tail.restLengthFor(i);
             while (rollLen > 0f)
             {
                 if (rollLen >= BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint constraintedPoint = parts[parts.Count - 2];
+                    ConstraintedPoint constraintedPoint = parts[^2];
                     ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().init();
                     constraintedPoint2.setWeight(0.02f);
                     constraintedPoint2.pos = vectAdd(constraintedPoint.pos, off);
@@ -286,7 +286,7 @@ namespace CutTheRope.game
                     }
                     else
                     {
-                        ConstraintedPoint n2 = parts[parts.Count - 2];
+                        ConstraintedPoint n2 = parts[^2];
                         tail.changeRestLengthToFor(num2, n2);
                         rollLen = 0f;
                     }
@@ -297,7 +297,7 @@ namespace CutTheRope.game
         public virtual float rollBack(float amount)
         {
             float num = amount;
-            ConstraintedPoint i = parts[parts.Count - 2];
+            ConstraintedPoint i = parts[^2];
             int num2 = (int)tail.restLengthFor(i);
             int num3 = parts.Count;
             while (num > 0f)

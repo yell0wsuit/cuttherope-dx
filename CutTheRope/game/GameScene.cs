@@ -1130,7 +1130,7 @@ namespace CutTheRope.game
                         goto IL_08D4;
                     }
                     MaterialPoint bungeeAnchor = rope.bungeeAnchor;
-                    ConstraintedPoint constraintedPoint2 = rope.parts[rope.parts.Count - 1];
+                    ConstraintedPoint constraintedPoint2 = rope.parts[^1];
                     Vector v = vectSub(bungeeAnchor.pos, constraintedPoint2.pos);
                     bool flag4 = false;
                     if (twoParts != 2)
@@ -1265,11 +1265,11 @@ namespace CutTheRope.game
                             Bungee rope2 = ((Grab)bungees.objectAtIndex(m)).rope;
                             if (rope2 != null && rope2.cut != rope2.parts.Count - 3 && (rope2.tail == starL || rope2.tail == starR))
                             {
-                                ConstraintedPoint constraintedPoint3 = rope2.parts[rope2.parts.Count - 2];
+                                ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
                                 int num11 = (int)rope2.tail.restLengthFor(constraintedPoint3);
                                 star.addConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
                                 rope2.tail = star;
-                                rope2.parts[rope2.parts.Count - 1] = star;
+                                rope2.parts[^1] = star;
                                 rope2.initialCandleAngle = 0f;
                                 rope2.chosenOne = false;
                             }
