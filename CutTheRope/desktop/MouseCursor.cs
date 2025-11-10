@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.windows
+namespace CutTheRope.desktop
 {
     internal class MouseCursor
     {
