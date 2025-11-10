@@ -182,9 +182,9 @@ namespace CutTheRope.iframework.sfe
                 float num = VectLength(vector);
                 float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
-                if (type != Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
+                if (type != Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
-                    if (type != Constraint.CONSTRAINT.CONSTRAINT_NOT_LESS_THAN)
+                    if (type != Constraint.CONSTRAINT.NOT_LESS_THAN)
                     {
                         goto IL_00F8;
                     }

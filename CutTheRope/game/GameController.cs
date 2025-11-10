@@ -307,9 +307,9 @@ namespace CutTheRope.game
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
             int pack = ctrrootController.GetPack();
             int level = ctrrootController.GetLevel();
-            if (level < CTRPreferences.GetLevelsInPackCount() - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
+            if (level < CTRPreferences.GetLevelsInPackCount() - 1 && CTRPreferences.GetUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.LOCKED)
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEUNLOCKED, pack, level + 1);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
             }
         }
 

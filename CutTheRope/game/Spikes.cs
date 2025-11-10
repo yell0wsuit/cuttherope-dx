@@ -238,14 +238,14 @@ namespace CutTheRope.game
 
         private enum SPIKES_ANIM
         {
-            SPIKES_ANIM_ELECTRODES_BASE,
-            SPIKES_ANIM_ELECTRODES_ELECTRIC,
-            SPIKES_ANIM_ROTATION_ADJUSTED
+            ELECTRODES_BASE,
+            ELECTRODES_ELECTRIC,
+            ROTATION_ADJUSTED
         }
 
         private enum SPIKES_ROTATION
         {
-            SPIKES_ROTATION_BUTTON
+            BUTTON
         }
 
         // (Invoke) Token: 0x06000689 RID: 1673

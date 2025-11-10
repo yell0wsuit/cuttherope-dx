@@ -100,10 +100,10 @@ namespace CutTheRope.iframework.core
 
         public enum ORIENTATION
         {
-            ORIENTATION_PORTRAIT,
-            ORIENTATION_PORTRAIT_UPSIDE_DOWN,
-            ORIENTATION_LANDSCAPE_LEFT,
-            ORIENTATION_LANDSCAPE_RIGHT
+            PORTRAIT,
+            PORTRAIT_UPSIDE_DOWN,
+            LANDSCAPE_LEFT,
+            LANDSCAPE_RIGHT
         }
 
         public enum AppSettings

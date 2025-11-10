@@ -134,7 +134,7 @@ namespace CutTheRope.iframework.visual
                     }
                 }
             }
-            if (touchState == TOUCH_STATE.TOUCH_STATE_UP)
+            if (touchState == TOUCH_STATE.UP)
             {
                 if (shouldBounceHorizontally)
                 {
@@ -236,7 +236,7 @@ namespace CutTheRope.iframework.visual
                 totalDrag = vectZero;
                 passTouches = false;
             }
-            touchState = TOUCH_STATE.TOUCH_STATE_DOWN;
+            touchState = TOUCH_STATE.DOWN;
             movingByInertion = false;
             movingToSpoint = false;
             targetSpoint = -1;
@@ -263,7 +263,7 @@ namespace CutTheRope.iframework.visual
             {
                 return false;
             }
-            touchState = TOUCH_STATE.TOUCH_STATE_MOVING;
+            touchState = TOUCH_STATE.MOVING;
             if (!VectEqual(dragStart, impossibleTouch))
             {
                 Vector vector2 = VectSub(vector, dragStart);
@@ -325,11 +325,11 @@ namespace CutTheRope.iframework.visual
                     return true;
                 }
             }
-            if (touchState == TOUCH_STATE.TOUCH_STATE_UP)
+            if (touchState == TOUCH_STATE.UP)
             {
                 return false;
             }
-            touchState = TOUCH_STATE.TOUCH_STATE_UP;
+            touchState = TOUCH_STATE.UP;
             if (inertiaTimeoutLeft > 0.0)
             {
                 float num = inertiaTimeoutLeft / inertiaTimeout;
@@ -401,7 +401,7 @@ namespace CutTheRope.iframework.visual
                 container.parent = this;
                 childs[0] = container;
                 dragStart = impossibleTouch;
-                touchState = TOUCH_STATE.TOUCH_STATE_UP;
+                touchState = TOUCH_STATE.UP;
             }
             return this;
         }
@@ -674,9 +674,9 @@ namespace CutTheRope.iframework.visual
 
         private enum TOUCH_STATE
         {
-            TOUCH_STATE_UP,
-            TOUCH_STATE_DOWN,
-            TOUCH_STATE_MOVING
+            UP,
+            DOWN,
+            MOVING
         }
     }
 }

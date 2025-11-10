@@ -266,9 +266,9 @@ namespace CutTheRope.game
             int packsCount = GetPacksCount();
             while (i < packsCount)
             {
-                if (GetUnlockedForPackLevel(i, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
+                if (GetUnlockedForPackLevel(i, 0) == UNLOCKEDSTATE.LOCKED)
                 {
-                    SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED, i, 0);
+                    SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, i, 0);
                 }
                 i++;
             }

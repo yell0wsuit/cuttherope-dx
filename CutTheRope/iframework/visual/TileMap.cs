@@ -45,8 +45,8 @@ namespace CutTheRope.iframework.visual
                         matrix[i, j] = -1;
                     }
                 }
-                repeatedVertically = Repeat.REPEAT_NONE;
-                repeatedHorizontally = Repeat.REPEAT_NONE;
+                repeatedVertically = Repeat.NONE;
+                repeatedHorizontally = Repeat.NONE;
                 horizontalRandom = false;
                 verticalRandom = false;
                 restoreTileTransparency = true;
@@ -134,13 +134,13 @@ namespace CutTheRope.iframework.visual
             float num2 = (float)Math.Round((double)(pos.y / parallaxRatio));
             float num3 = x;
             float num4 = y;
-            if (repeatedVertically != Repeat.REPEAT_NONE)
+            if (repeatedVertically != Repeat.NONE)
             {
                 float num13 = num4 - num2;
                 int num5 = (int)num13 % tileMapHeight;
                 num4 = num13 >= 0f ? num5 - tileMapHeight + num2 : num5 + num2;
             }
-            if (repeatedHorizontally != Repeat.REPEAT_NONE)
+            if (repeatedHorizontally != Repeat.NONE)
             {
                 float num14 = num3 - num;
                 int num6 = (int)num14 % tileMapWidth;
@@ -166,11 +166,11 @@ namespace CutTheRope.iframework.visual
             }
             int num8 = (int)(vector2.x + maxColsOnScreen - 1f);
             int num9 = (int)(vector2.y + maxRowsOnScreen - 1f);
-            if (repeatedVertically == Repeat.REPEAT_NONE)
+            if (repeatedVertically == Repeat.NONE)
             {
                 num9 = Math.Min(rows - 1, num9);
             }
-            if (repeatedHorizontally == Repeat.REPEAT_NONE)
+            if (repeatedHorizontally == Repeat.NONE)
             {
                 num8 = Math.Min(columns - 1, num8);
             }
@@ -184,7 +184,7 @@ namespace CutTheRope.iframework.visual
                     CTRRectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
-                    if (repeatedVertically == Repeat.REPEAT_EDGES)
+                    if (repeatedVertically == Repeat.EDGES)
                     {
                         if (vector3.y < y)
                         {
@@ -195,7 +195,7 @@ namespace CutTheRope.iframework.visual
                             num11 = rows - 1;
                         }
                     }
-                    if (repeatedHorizontally == Repeat.REPEAT_EDGES)
+                    if (repeatedHorizontally == Repeat.EDGES)
                     {
                         if (vector3.x < x)
                         {
@@ -258,11 +258,11 @@ namespace CutTheRope.iframework.visual
         {
             maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
             maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));
-            if (repeatedVertically == Repeat.REPEAT_NONE)
+            if (repeatedVertically == Repeat.NONE)
             {
                 maxRowsOnScreen = Math.Min(maxRowsOnScreen, rows);
             }
-            if (repeatedHorizontally == Repeat.REPEAT_NONE)
+            if (repeatedHorizontally == Repeat.NONE)
             {
                 maxColsOnScreen = Math.Min(maxColsOnScreen, columns);
             }
@@ -312,9 +312,9 @@ namespace CutTheRope.iframework.visual
 
         public enum Repeat
         {
-            REPEAT_NONE,
-            REPEAT_ALL,
-            REPEAT_EDGES
+            NONE,
+            ALL,
+            EDGES
         }
     }
 }

@@ -74,8 +74,8 @@ namespace CutTheRope.game
                 camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
                 int textureResID = 104 + (cTRRootController.GetPack() * 2);
                 back = new TileMap().InitWithRowsColumns(1, 1);
-                back.SetRepeatHorizontally(TileMap.Repeat.REPEAT_NONE);
-                back.SetRepeatVertically(TileMap.Repeat.REPEAT_ALL);
+                back.SetRepeatHorizontally(TileMap.Repeat.NONE);
+                back.SetRepeatVertically(TileMap.Repeat.ALL);
                 back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
                 back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
                 if (Canvas.isFullscreen)
@@ -1261,7 +1261,7 @@ namespace CutTheRope.game
                             {
                                 ConstraintedPoint constraintedPoint3 = rope2.parts[^2];
                                 int num11 = (int)rope2.tail.RestLengthFor(constraintedPoint3);
-                                star.AddConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                                star.AddConstraintwithRestLengthofType(constraintedPoint3, num11, Constraint.CONSTRAINT.DISTANCE);
                                 rope2.tail = star;
                                 rope2.parts[^1] = star;
                                 rope2.initialCandleAngle = 0f;
@@ -1288,8 +1288,8 @@ namespace CutTheRope.game
                 {
                     twoParts = 1;
                     partsDist = VectDistance(starL.pos, starR.pos);
-                    starL.AddConstraintwithRestLengthofType(starR, partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
-                    starR.AddConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                    starL.AddConstraintwithRestLengthofType(starR, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    starR.AddConstraintwithRestLengthofType(starL, partsDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
                 }
             }
             target.Update(delta);

@@ -62,8 +62,8 @@ namespace CutTheRope.iframework.visual
 
         private enum TOGGLE_BUTTON
         {
-            TOGGLE_BUTTON_FACE1,
-            TOGGLE_BUTTON_FACE2
+            BUTTON_FACE1,
+            BUTTON_FACE2
         }
     }
 }

@@ -561,9 +561,9 @@ namespace CutTheRope.game
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
             int totalStars = CTRPreferences.GetTotalStars();
-            if (n > 0 && n < CTRPreferences.GetPacksCount() && CTRPreferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && totalStars >= CTRPreferences.PackUnlockStars(n))
+            if (n > 0 && n < CTRPreferences.GetPacksCount() && CTRPreferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= CTRPreferences.PackUnlockStars(n))
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED, n, 0);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
             int r = 52;
             int q = 4 + n;
@@ -586,7 +586,7 @@ namespace CutTheRope.game
             }
             NSString nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
-            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && n != CTRPreferences.GetPacksCount();
+            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
             touchBaseElement.bid = 23 + n;
             Image image = Image.Image_createWithResIDQuad(r, q);
             image.DoRestoreCutTransparency();
@@ -638,7 +638,7 @@ namespace CutTheRope.game
                     _ = monsterSlot.AddChild(image3);
                 }
                 _ = baseElement.AddChild(image);
-                if (unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
                 {
                     Image image4 = Image.Image_createWithResIDQuad(52, 2);
                     image4.SetName("lockHideMe");
@@ -906,16 +906,16 @@ namespace CutTheRope.game
             boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
-            if (childWithName != null && unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED)
+            if (childWithName != null && unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEUNLOCKED, i, 0);
+                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
                 childWithName.PlayTimeline(0);
             }
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (showNextPackStatus && i == cTRRootController.GetPack() + 1)
             {
                 showNextPackStatus = false;
-                if (unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.LOCKED)
                 {
                     ShowCantUnlockPopup();
                 }
@@ -931,7 +931,7 @@ namespace CutTheRope.game
 
         public virtual BaseElement CreateButtonForLevelPack(int l, int p)
         {
-            bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED;
+            bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
             touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
@@ -1445,7 +1445,7 @@ namespace CutTheRope.game
                             return;
                         }
                         CTRPreferences.SetLastPack(pack);
-                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && n - 23 != CTRPreferences.GetPacksCount();
+                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.LOCKED && n - 23 != CTRPreferences.GetPacksCount();
                         if (n != 34 && !flag5)
                         {
                             PreLevelSelect();

@@ -97,8 +97,8 @@ namespace CutTheRope.ctr_commons
 
         private enum POPUP
         {
-            POPUP_SHOW_ANIM,
-            POPUP_HIDE_ANIM
+            SHOW_ANIM,
+            HIDE_ANIM
         }
     }
 }

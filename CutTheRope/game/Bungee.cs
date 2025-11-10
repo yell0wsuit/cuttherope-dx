@@ -224,7 +224,7 @@ namespace CutTheRope.game
                 tail.pos = Vect(tx, ty);
                 AddPart(bungeeAnchor);
                 AddPart(tail);
-                tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
                 Vector v = VectSub(tail.pos, bungeeAnchor.pos);
                 int num = (int)((len / BUNGEE_REST_LEN) + 2f);
                 v = VectDiv(v, num);
@@ -273,7 +273,7 @@ namespace CutTheRope.game
                     constraintedPoint2.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(constraintedPoint2, parts.Count - 1);
                     tail.ChangeConstraintFromTowithRestLength(constraintedPoint, constraintedPoint2, num);
-                    constraintedPoint2.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                    constraintedPoint2.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
@@ -331,7 +331,7 @@ namespace CutTheRope.game
             for (int j = 0; j < count; j++)
             {
                 Constraint constraint = tail.constraints[j];
-                if (constraint != null && constraint.type == Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN)
+                if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
                 {
                     constraint.restLength = (num3 - 1) * (BUNGEE_REST_LEN + 3f);
                 }
@@ -361,7 +361,7 @@ namespace CutTheRope.game
                         constraintedPoint3.pos = constraintedPoint2.pos;
                         constraintedPoint3.prevPos = constraintedPoint2.prevPos;
                         AddPartAt(constraintedPoint3, part + 1);
-                        constraintedPoint3.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.CONSTRAINT_DISTANCE);
+                        constraintedPoint3.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
                         break;
                     }
                 }
@@ -399,7 +399,7 @@ namespace CutTheRope.game
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.CONSTRAINT_NOT_MORE_THAN);
+                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + 3f), Constraint.CONSTRAINT.NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -583,8 +583,8 @@ namespace CutTheRope.game
 
         private enum BUNGEE_MODE
         {
-            BUNGEE_MODE_NORMAL,
-            BUNGEE_MODE_LOCKED
+            NORMAL,
+            LOCKED
         }
     }
 }
