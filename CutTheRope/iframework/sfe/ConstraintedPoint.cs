@@ -212,8 +212,8 @@ namespace CutTheRope.iframework.sfe
                 num5 = num2 * num4;
                 vector2.x *= num5;
                 vector2.y *= num5;
-                p.pos.x = p.pos.x + vector.x;
-                p.pos.y = p.pos.y + vector.y;
+                p.pos.x += vector.x;
+                p.pos.y += vector.y;
                 if (constraint.cp.pin.x == -1f)
                 {
                     constraint.cp.pos = vectSub(constraint.cp.pos, vector2);

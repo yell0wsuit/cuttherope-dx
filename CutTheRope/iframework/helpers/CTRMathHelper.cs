@@ -437,25 +437,25 @@ namespace CutTheRope.iframework.helpers
                 if ((num5 & 1) != 0)
                 {
                     VectorClass vectorClass4 = vectorClass3;
-                    vectorClass4.v.y = vectorClass4.v.y + ((y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2));
+                    vectorClass4.v.y += ((y1 - y2) * (rx - vectorClass3.v.x) / (x1 - x2));
                     vectorClass3.v.x = rx;
                 }
                 else if ((num5 & 2) != 0)
                 {
                     VectorClass vectorClass5 = vectorClass3;
-                    vectorClass5.v.y = vectorClass5.v.y + ((y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2));
+                    vectorClass5.v.y += ((y1 - y2) * (num - vectorClass3.v.x) / (x1 - x2));
                     vectorClass3.v.x = num;
                 }
                 if ((num5 & 4) != 0)
                 {
                     VectorClass vectorClass6 = vectorClass3;
-                    vectorClass6.v.x = vectorClass6.v.x + ((x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2));
+                    vectorClass6.v.x += ((x1 - x2) * (ry - vectorClass3.v.y) / (y1 - y2));
                     vectorClass3.v.y = ry;
                 }
                 else if ((num5 & 8) != 0)
                 {
                     VectorClass vectorClass7 = vectorClass3;
-                    vectorClass7.v.x = vectorClass7.v.x + ((x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2));
+                    vectorClass7.v.x += ((x1 - x2) * (num2 - vectorClass3.v.y) / (y1 - y2));
                     vectorClass3.v.y = num2;
                 }
                 if (num5 == num3)

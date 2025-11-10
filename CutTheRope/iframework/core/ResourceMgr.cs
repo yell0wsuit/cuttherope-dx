@@ -201,8 +201,8 @@ namespace CutTheRope.iframework.core
                 t.preCutSize = vect(xMLNode3.data.intValue(), xMLNode4.data.intValue());
                 if (isWvga)
                 {
-                    t.preCutSize.x = t.preCutSize.x / 1.5f;
-                    t.preCutSize.y = t.preCutSize.y / 1.5f;
+                    t.preCutSize.x /= 1.5f;
+                    t.preCutSize.y /= 1.5f;
                 }
             }
         }

@@ -145,13 +145,13 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = currentStepPerSecond.value.color;
-                            color.rgba.r = color.rgba.r * 2f;
+                            color.rgba.r *= 2f;
                             ColorParams color2 = currentStepPerSecond.value.color;
-                            color2.rgba.g = color2.rgba.g * 2f;
+                            color2.rgba.g *= 2f;
                             ColorParams color3 = currentStepPerSecond.value.color;
-                            color3.rgba.b = color3.rgba.b * 2f;
+                            color3.rgba.b *= 2f;
                             ColorParams color4 = currentStepPerSecond.value.color;
-                            color4.rgba.a = color4.rgba.a * 2f;
+                            color4.rgba.a *= 2f;
                             currentStepAcceleration.value.color.rgba.r = currentStepPerSecond.value.color.rgba.r / keyFrameTimeLeft;
                             currentStepAcceleration.value.color.rgba.g = currentStepPerSecond.value.color.rgba.g / keyFrameTimeLeft;
                             currentStepAcceleration.value.color.rgba.b = currentStepPerSecond.value.color.rgba.b / keyFrameTimeLeft;
@@ -166,13 +166,13 @@ namespace CutTheRope.iframework.visual
                             else
                             {
                                 ColorParams color5 = currentStepAcceleration.value.color;
-                                color5.rgba.r = color5.rgba.r * -1f;
+                                color5.rgba.r *= -1f;
                                 ColorParams color6 = currentStepAcceleration.value.color;
-                                color6.rgba.g = color6.rgba.g * -1f;
+                                color6.rgba.g *= -1f;
                                 ColorParams color7 = currentStepAcceleration.value.color;
-                                color7.rgba.b = color7.rgba.b * -1f;
+                                color7.rgba.b *= -1f;
                                 ColorParams color8 = currentStepAcceleration.value.color;
-                                color8.rgba.a = color8.rgba.a * -1f;
+                                color8.rgba.a *= -1f;
                             }
                             break;
                         }
@@ -397,33 +397,33 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             ColorParams color = thiss.currentStepPerSecond.value.color;
-                            color.rgba.r = color.rgba.r + (thiss.currentStepAcceleration.value.color.rgba.r * delta);
+                            color.rgba.r += (thiss.currentStepAcceleration.value.color.rgba.r * delta);
                             ColorParams color2 = thiss.currentStepPerSecond.value.color;
-                            color2.rgba.g = color2.rgba.g + (thiss.currentStepAcceleration.value.color.rgba.g * delta);
+                            color2.rgba.g += (thiss.currentStepAcceleration.value.color.rgba.g * delta);
                             ColorParams color3 = thiss.currentStepPerSecond.value.color;
-                            color3.rgba.b = color3.rgba.b + (thiss.currentStepAcceleration.value.color.rgba.b * delta);
+                            color3.rgba.b += (thiss.currentStepAcceleration.value.color.rgba.b * delta);
                             ColorParams color4 = thiss.currentStepPerSecond.value.color;
-                            color4.rgba.a = color4.rgba.a + (thiss.currentStepAcceleration.value.color.rgba.a * delta);
+                            color4.rgba.a += (thiss.currentStepAcceleration.value.color.rgba.a * delta);
                             float num13 = thiss.currentStepAcceleration.value.color.rgba.r * delta;
                             float num14 = thiss.currentStepAcceleration.value.color.rgba.g * delta;
                             float num15 = thiss.currentStepAcceleration.value.color.rgba.b * delta;
                             float num16 = thiss.currentStepAcceleration.value.color.rgba.a * delta;
                             ColorParams color5 = thiss.currentStepPerSecond.value.color;
-                            color5.rgba.r = color5.rgba.r + num13;
+                            color5.rgba.r += num13;
                             ColorParams color6 = thiss.currentStepPerSecond.value.color;
-                            color6.rgba.g = color6.rgba.g + num14;
+                            color6.rgba.g += num14;
                             ColorParams color7 = thiss.currentStepPerSecond.value.color;
-                            color7.rgba.b = color7.rgba.b + num15;
+                            color7.rgba.b += num15;
                             ColorParams color8 = thiss.currentStepPerSecond.value.color;
-                            color8.rgba.a = color8.rgba.a + num16;
+                            color8.rgba.a += num16;
                             BaseElement element = timeline.element;
-                            element.color.r = element.color.r + ((keyFrame.value.color.rgba.r + (num13 / 2f)) * delta);
+                            element.color.r += ((keyFrame.value.color.rgba.r + (num13 / 2f)) * delta);
                             BaseElement element2 = timeline.element;
-                            element2.color.g = element2.color.g + ((keyFrame.value.color.rgba.g + (num14 / 2f)) * delta);
+                            element2.color.g += ((keyFrame.value.color.rgba.g + (num14 / 2f)) * delta);
                             BaseElement element3 = timeline.element;
-                            element3.color.b = element3.color.b + ((keyFrame.value.color.rgba.b + (num15 / 2f)) * delta);
+                            element3.color.b += ((keyFrame.value.color.rgba.b + (num15 / 2f)) * delta);
                             BaseElement element4 = timeline.element;
-                            element4.color.a = element4.color.a + ((keyFrame.value.color.rgba.a + (num16 / 2f)) * delta);
+                            element4.color.a += ((keyFrame.value.color.rgba.a + (num16 / 2f)) * delta);
                             break;
                         }
                 }
@@ -446,13 +446,13 @@ namespace CutTheRope.iframework.visual
                     case TrackType.TRACK_COLOR:
                         {
                             BaseElement element5 = timeline.element;
-                            element5.color.r = element5.color.r + (thiss.currentStepPerSecond.value.color.rgba.r * delta);
+                            element5.color.r += (thiss.currentStepPerSecond.value.color.rgba.r * delta);
                             BaseElement element6 = timeline.element;
-                            element6.color.g = element6.color.g + (thiss.currentStepPerSecond.value.color.rgba.g * delta);
+                            element6.color.g += (thiss.currentStepPerSecond.value.color.rgba.g * delta);
                             BaseElement element7 = timeline.element;
-                            element7.color.b = element7.color.b + (thiss.currentStepPerSecond.value.color.rgba.b * delta);
+                            element7.color.b += (thiss.currentStepPerSecond.value.color.rgba.b * delta);
                             BaseElement element8 = timeline.element;
-                            element8.color.a = element8.color.a + (thiss.currentStepPerSecond.value.color.rgba.a * delta);
+                            element8.color.a += (thiss.currentStepPerSecond.value.color.rgba.a * delta);
                             break;
                         }
                 }
