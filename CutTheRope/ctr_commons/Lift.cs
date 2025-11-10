@@ -31,10 +31,7 @@ namespace CutTheRope.ctr_commons
                     if (num != xPercent)
                     {
                         xPercent = num;
-                        if (liftDelegate != null)
-                        {
-                            liftDelegate(xPercent, yPercent);
-                        }
+                        liftDelegate?.Invoke(xPercent, yPercent);
                     }
                 }
                 if (maxY != 0f)
@@ -43,10 +40,7 @@ namespace CutTheRope.ctr_commons
                     if (num2 != yPercent)
                     {
                         yPercent = num2;
-                        if (liftDelegate != null)
-                        {
-                            liftDelegate(xPercent, yPercent);
-                        }
+                        liftDelegate?.Invoke(xPercent, yPercent);
                     }
                 }
                 return true;

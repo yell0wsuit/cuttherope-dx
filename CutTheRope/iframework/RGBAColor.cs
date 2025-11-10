@@ -69,19 +69,19 @@ namespace CutTheRope.iframework
             a = _a;
         }
 
-        public readonly float[] toFloatArray()
+        public readonly float[] ToFloatArray()
         {
             return [r, g, b, a];
         }
 
-        public static float[] toFloatArray(RGBAColor[] colors)
+        public static float[] ToFloatArray(RGBAColor[] colors)
         {
             List<float> list = [];
             for (int i = 0; i < colors.Length; i++)
             {
-                list.AddRange(colors[i].toFloatArray());
+                list.AddRange(colors[i].ToFloatArray());
             }
-            return list.ToArray();
+            return [.. list];
         }
 
         public static readonly RGBAColor transparentRGBA = new(0f, 0f, 0f, 0f);

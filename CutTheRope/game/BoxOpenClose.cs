@@ -556,10 +556,7 @@ namespace CutTheRope.game
 
         public virtual void postBoxClosed()
         {
-            if (delegateboxClosed != null)
-            {
-                delegateboxClosed();
-            }
+            delegateboxClosed?.Invoke();
             if (shouldShowConfetti)
             {
                 showConfetti();

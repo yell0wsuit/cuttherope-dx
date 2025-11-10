@@ -138,22 +138,18 @@ namespace CutTheRope.iframework.core
                 CTRTexture2D.setAliasTexParameters();
             }
             CTRTexture2D.setDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
-            CTRTexture2D texture2D = new CTRTexture2D().initWithPath(text, true);
-            if (texture2D == null)
-            {
-                throw new Exception("texture not found: " + text);
-            }
+            CTRTexture2D texture2D = new CTRTexture2D().initWithPath(text, true) ?? throw new Exception("texture not found: " + text);
             CTRTexture2D.setDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
             if (isWvga)
             {
                 texture2D.setWvga();
             }
             texture2D.setScale(scaleX, scaleY);
-            setTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
+            SetTextureInfo(texture2D, i, isWvga, scaleX, scaleY);
             return texture2D;
         }
 
-        public virtual void setTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual void SetTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
             t.preCutSize = vectUndefined;
             XMLNode xMLNode = i.findChildWithTagNameRecursively("quads", false);

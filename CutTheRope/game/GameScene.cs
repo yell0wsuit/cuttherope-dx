@@ -2187,7 +2187,7 @@ namespace CutTheRope.game
                     }
                     if (!flag)
                     {
-                        array = list.ToArray();
+                        array = [.. list];
                         num = array.Length - 1;
                         int num6 = num * 2;
                         float[] array2 = new float[num6 * 2];

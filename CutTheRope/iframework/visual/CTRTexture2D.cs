@@ -376,7 +376,7 @@ namespace CutTheRope.iframework.visual
             kTexture2DPixelFormat_PVRTC4
         }
 
-        private struct TexParams
+        private readonly struct TexParams
         {
             private readonly uint minFilter;
 

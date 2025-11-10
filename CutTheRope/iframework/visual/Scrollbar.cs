@@ -11,10 +11,7 @@ namespace CutTheRope.iframework.visual
         public override void update(float delta)
         {
             base.update(delta);
-            if (delegateProvider != null)
-            {
-                delegateProvider(ref sp, ref mp, ref sc);
-            }
+            delegateProvider?.Invoke(ref sp, ref mp, ref sc);
         }
 
         public override void draw()

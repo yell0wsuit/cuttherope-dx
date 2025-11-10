@@ -14,10 +14,7 @@ namespace CutTheRope.iframework.helpers
 
         public virtual void dispatch()
         {
-            if (callThis != null)
-            {
-                callThis(param);
-            }
+            callThis?.Invoke(param);
         }
 
         public float delay;

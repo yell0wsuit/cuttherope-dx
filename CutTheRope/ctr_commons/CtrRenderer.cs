@@ -189,7 +189,7 @@ namespace CutTheRope.ctr_commons
                 CTRSoundMgr._pause();
                 Application.sharedMovieMgr().pause();
                 gPaused = true;
-                gApp?.applicationWillResignActive(null);
+                gApp?.ApplicationWillResignActive(null);
                 CTRTexture2D.suspendAll();
             }
         }
@@ -203,7 +203,7 @@ namespace CutTheRope.ctr_commons
                 CTRTexture2D.suspendAll();
                 CTRTexture2D.resumeAll();
                 gPaused = false;
-                gApp?.applicationDidBecomeActive(null);
+                gApp?.ApplicationDidBecomeActive(null);
             }
         }
 
