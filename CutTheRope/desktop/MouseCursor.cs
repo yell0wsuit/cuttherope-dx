@@ -41,7 +41,7 @@ namespace CutTheRope.desktop
                 float num = FrameworkTypes.SCREEN_WIDTH / scaledViewRect.Width;
                 float num2 = FrameworkTypes.SCREEN_HEIGHT / scaledViewRect.Height;
                 Global.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
-                Global.SpriteBatch.Draw(texture2D, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(texture2D.Width / num) * 0.75), (int)((double)(texture2D.Height / num2) * 0.75)), Color.White);
+                Global.SpriteBatch.Draw(texture2D, new Rectangle(_mouseStateTranformed.X, _mouseStateTranformed.Y, (int)((double)(texture2D.Width / num) * 1), (int)((double)(texture2D.Height / num2) * 1)), Color.White);
                 Global.SpriteBatch.End();
             }
         }
