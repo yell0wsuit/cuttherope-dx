@@ -54,10 +54,7 @@ namespace CutTheRope.iframework.visual
         public virtual void setStringandWidth(NSString newString, float w)
         {
             string_ = newString;
-            if (string_ == null)
-            {
-                string_ = new NSString("");
-            }
+            string_ ??= new NSString("");
             font.notifyTextChanged(this);
             if (w == -1f)
             {

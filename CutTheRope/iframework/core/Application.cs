@@ -22,10 +22,7 @@ namespace CutTheRope.iframework.core
 
         public static RootController sharedRootController()
         {
-            if (root == null)
-            {
-                root = (CTRRootController)new CTRRootController().initWithParent(null);
-            }
+            root ??= (CTRRootController)new CTRRootController().initWithParent(null);
             return root;
         }
 
@@ -41,19 +38,13 @@ namespace CutTheRope.iframework.core
 
         public static SoundMgr sharedSoundMgr()
         {
-            if (soundMgr == null)
-            {
-                soundMgr = new SoundMgr().init();
-            }
+            soundMgr ??= new SoundMgr().init();
             return soundMgr;
         }
 
         public static MovieMgr sharedMovieMgr()
         {
-            if (movieMgr == null)
-            {
-                movieMgr = new MovieMgr();
-            }
+            movieMgr ??= new MovieMgr();
             return movieMgr;
         }
 

@@ -21,10 +21,7 @@ namespace CutTheRope.game
 
         public virtual void addImage(int resId)
         {
-            if (animations == null)
-            {
-                animations = (DynamicArray)new DynamicArray().init();
-            }
+            animations ??= (DynamicArray)new DynamicArray().init();
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.doRestoreCutTransparency();

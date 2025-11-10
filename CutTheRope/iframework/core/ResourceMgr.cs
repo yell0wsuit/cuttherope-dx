@@ -73,10 +73,7 @@ namespace CutTheRope.iframework.core
         public NSString loadStringsInfo(int key)
         {
             key &= 65535;
-            if (xmlStrings == null)
-            {
-                xmlStrings = XMLNode.parseXML("menu_strings.xml");
-            }
+            xmlStrings ??= XMLNode.parseXML("menu_strings.xml");
             XMLNode xMLNode = null;
             try
             {
@@ -101,10 +98,7 @@ namespace CutTheRope.iframework.core
                     tag = "de";
                 }
                 XMLNode xMLNode2 = xMLNode.findChildWithTagNameRecursively(tag, false);
-                if (xMLNode2 == null)
-                {
-                    xMLNode2 = xMLNode.findChildWithTagNameRecursively("en", false);
-                }
+                xMLNode2 ??= xMLNode.findChildWithTagNameRecursively("en", false);
                 return xMLNode2.data;
             }
             return new NSString();
@@ -130,10 +124,7 @@ namespace CutTheRope.iframework.core
 
         public virtual CTRTexture2D loadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
         {
-            if (i == null)
-            {
-                i = XMLNode.parseXML(path);
-            }
+            i ??= XMLNode.parseXML(path);
             bool flag = (i["filter"].intValue() & 1) == 1;
             int defaultAlphaPixelFormat = i["format"].intValue();
             string text = fullPathFromRelativePath(path);
@@ -371,10 +362,7 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-                if (xmlStrings == null)
-                {
-                    xmlStrings = XMLNode.parseXML("menu_strings.xml");
-                }
+                xmlStrings ??= XMLNode.parseXML("menu_strings.xml");
                 return;
             }
             if (isSound(resId))

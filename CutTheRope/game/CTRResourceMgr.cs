@@ -71,9 +71,7 @@ namespace CutTheRope.game
 
         public static string XNA_ResName(int resId)
         {
-            if (resNames_ == null)
-            {
-                resNames_ = new Dictionary<int, string>
+            resNames_ ??= new Dictionary<int, string>
                 {
                     { 0, "zeptolab_no_link" },
                     { 1, "loaderbar_full" },
@@ -226,7 +224,6 @@ namespace CutTheRope.game
                     { 148, "game_music3" },
                     { 149, "menu_extra_buttons_en" }
                 };
-            }
             resNames_.TryGetValue(handleLocalizedResource(resId), out string value);
             return value;
         }

@@ -183,10 +183,7 @@ namespace CutTheRope.ios
             catch (Exception)
             {
             }
-            if (xDocument == null)
-            {
-                xDocument = XDocument.Parse(ResDataPhoneFull.GetXml(fileName));
-            }
+            xDocument ??= XDocument.Parse(ResDataPhoneFull.GetXml(fileName));
             return ReadNodeLINQ(xDocument.Elements().First(), null);
         }
 
