@@ -121,7 +121,7 @@ namespace CutTheRope.game
             return value;
         }
 
-        public static bool isSound(int id)
+        public static bool IsSound(int id)
         {
             return id switch
             {
@@ -131,7 +131,7 @@ namespace CutTheRope.game
             };
         }
 
-        public static bool isFont(int id)
+        public static bool IsFont(int id)
         {
             return id is 3 or 4 or 68;
         }

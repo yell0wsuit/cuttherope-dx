@@ -2,9 +2,9 @@ namespace CutTheRope.iframework.visual
 {
     internal class HBox : BaseElement
     {
-        public override int addChildwithID(BaseElement c, int i)
+        public override int AddChildwithID(BaseElement c, int i)
         {
-            int num = base.addChildwithID(c, i);
+            int num = base.AddChildwithID(c, i);
             if (align == 8)
             {
                 c.anchor = c.parentAnchor = 9;
@@ -23,14 +23,14 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual HBox initWithOffsetAlignHeight(double of, int a, double h)
+        public virtual HBox InitWithOffsetAlignHeight(double of, int a, double h)
         {
-            return initWithOffsetAlignHeight((float)of, a, (float)h);
+            return InitWithOffsetAlignHeight((float)of, a, (float)h);
         }
 
-        public virtual HBox initWithOffsetAlignHeight(float of, int a, float h)
+        public virtual HBox InitWithOffsetAlignHeight(float of, int a, float h)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 offset = of;
                 align = a;

@@ -18,17 +18,17 @@ namespace CutTheRope.desktop
             enabled = true;
         }
 
-        public void enable()
+        public void Enable()
         {
             enabled = true;
         }
 
-        public void disable()
+        public void Disable()
         {
             enabled = false;
         }
 
-        public static void applyDefault()
+        public static void ApplyDefault()
         {
             if (states[0] == null)
             {
@@ -38,14 +38,14 @@ namespace CutTheRope.desktop
             Global.GraphicsDevice.BlendFactor = Color.White;
         }
 
-        public void apply()
+        public void Apply()
         {
             if (defaultBlending || !enabled)
             {
                 if (lastBlend != BlendType.Default)
                 {
                     lastBlend = BlendType.Default;
-                    applyDefault();
+                    ApplyDefault();
                     return;
                 }
             }

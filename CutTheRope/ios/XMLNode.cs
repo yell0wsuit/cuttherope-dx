@@ -15,7 +15,7 @@ namespace CutTheRope.ios
         public string Name { get; private set; }
 
         // (get) Token: 0x060000FC RID: 252 RVA: 0x000057D2 File Offset: 0x000039D2
-        public NSString data { get; private set; }
+        public NSString Data { get; private set; }
 
         public NSString this[string key] => !attributes_.TryGetValue(key, out string rhs) ? new NSString("") : new NSString(rhs);
 
@@ -26,31 +26,31 @@ namespace CutTheRope.ios
             attributes_ = [];
         }
 
-        public bool attributes()
+        public bool Attributes()
         {
             return attributes_ != null && attributes_.Count > 0;
         }
 
-        public List<XMLNode> childs()
+        public List<XMLNode> Childs()
         {
             return childs_;
         }
 
-        public XMLNode findChildWithTagNameAndAttributeNameValueRecursively(string tag, string attrName, string attrVal, bool recursively)
+        public XMLNode FindChildWithTagNameAndAttributeNameValueRecursively(string tag, string attrName, string attrVal, bool recursively)
         {
-            if (childs() == null)
+            if (Childs() == null)
             {
                 return null;
             }
             foreach (XMLNode item in childs_)
             {
-                if (item.Name == tag && item.attributes() && item.attributes_.TryGetValue(attrName, out string text) && text == attrVal)
+                if (item.Name == tag && item.Attributes() && item.attributes_.TryGetValue(attrName, out string text) && text == attrVal)
                 {
                     return item;
                 }
-                if (recursively && item.childs() != null)
+                if (recursively && item.Childs() != null)
                 {
-                    XMLNode xMLNode = item.findChildWithTagNameRecursively(tag, recursively);
+                    XMLNode xMLNode = item.FindChildWithTagNameRecursively(tag, recursively);
                     if (xMLNode != null)
                     {
                         return xMLNode;
@@ -60,14 +60,14 @@ namespace CutTheRope.ios
             return null;
         }
 
-        public XMLNode findChildWithTagNameRecursively(NSString tag, bool recursively)
+        public XMLNode FindChildWithTagNameRecursively(NSString tag, bool recursively)
         {
-            return findChildWithTagNameRecursively(tag.ToString(), recursively);
+            return FindChildWithTagNameRecursively(tag.ToString(), recursively);
         }
 
-        public XMLNode findChildWithTagNameRecursively(string tag, bool recursively)
+        public XMLNode FindChildWithTagNameRecursively(string tag, bool recursively)
         {
-            if (childs() == null)
+            if (Childs() == null)
             {
                 return null;
             }
@@ -77,9 +77,9 @@ namespace CutTheRope.ios
                 {
                     return item;
                 }
-                if (recursively && item.childs() != null)
+                if (recursively && item.Childs() != null)
                 {
-                    XMLNode xMLNode = item.findChildWithTagNameRecursively(tag, recursively);
+                    XMLNode xMLNode = item.FindChildWithTagNameRecursively(tag, recursively);
                     if (xMLNode != null)
                     {
                         return xMLNode;
@@ -117,7 +117,7 @@ namespace CutTheRope.ios
             bool flag = false;
             try
             {
-                xMLNode.data = new NSString(textReader.ReadElementContentAsString());
+                xMLNode.Data = new NSString(textReader.ReadElementContentAsString());
                 goto IL_00A3;
             }
             catch (Exception)
@@ -135,7 +135,7 @@ namespace CutTheRope.ios
             goto IL_009B;
         }
 
-        public static XMLNode parseXML(string fileName)
+        public static XMLNode ParseXML(string fileName)
         {
             return ParseLINQ(fileName);
         }
@@ -152,7 +152,7 @@ namespace CutTheRope.ios
             string text = (string)nodeLinq;
             if (text != null)
             {
-                xMLNode.data = new NSString(text);
+                xMLNode.Data = new NSString(text);
             }
             foreach (XAttribute item in nodeLinq.Attributes())
             {

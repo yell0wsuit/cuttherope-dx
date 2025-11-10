@@ -7,9 +7,9 @@ namespace CutTheRope.iframework.core
 {
     internal class Preferences : NSObject
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() == null)
+            if (base.Init() == null)
             {
                 return null;
             }
@@ -17,37 +17,37 @@ namespace CutTheRope.iframework.core
             return this;
         }
 
-        public virtual void setIntforKey(int v, string k, bool comit)
+        public virtual void SetIntforKey(int v, string k, bool comit)
         {
             _setIntforKey(v, k, comit);
         }
 
-        public virtual void setBooleanforKey(bool v, string k, bool comit)
+        public virtual void SetBooleanforKey(bool v, string k, bool comit)
         {
             _setBooleanforKey(v, k, comit);
         }
 
-        public virtual void setStringforKey(string v, string k, bool comit)
+        public virtual void SetStringforKey(string v, string k, bool comit)
         {
             _setStringforKey(v, k, comit);
         }
 
-        public virtual int getIntForKey(string k)
+        public virtual int GetIntForKey(string k)
         {
             return _getIntForKey(k);
         }
 
-        public virtual float getFloatForKey(string k)
+        public virtual float GetFloatForKey(string k)
         {
             return 0f;
         }
 
-        public virtual bool getBooleanForKey(string k)
+        public virtual bool GetBooleanForKey(string k)
         {
             return _getBooleanForKey(k);
         }
 
-        public virtual string getStringForKey(string k)
+        public virtual string GetStringForKey(string k)
         {
             return _getStringForKey(k);
         }
@@ -171,7 +171,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                _LOG("Error: cannot save, " + ex.ToString());
+                LOG("Error: cannot save, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;
@@ -204,7 +204,7 @@ namespace CutTheRope.iframework.core
             }
             catch (Exception ex)
             {
-                _LOG("Error: cannot load, " + ex.ToString());
+                LOG("Error: cannot load, " + ex.ToString());
                 flag2 = flag;
             }
             return flag2;

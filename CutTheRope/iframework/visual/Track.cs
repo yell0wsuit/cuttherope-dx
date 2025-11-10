@@ -12,7 +12,7 @@ namespace CutTheRope.iframework.visual
             currentStepAcceleration = new KeyFrame();
         }
 
-        public virtual Track initWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
+        public virtual Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
             type = trackType;
@@ -29,18 +29,18 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void initActionKeyFrameandTime(KeyFrame kf, float time)
+        public virtual void InitActionKeyFrameandTime(KeyFrame kf, float time)
         {
             keyFrameTimeLeft = time;
-            setElementFromKeyFrame(kf);
+            SetElementFromKeyFrame(kf);
             if (overrun > 0f)
             {
-                updateActionTrack(this, overrun);
+                UpdateActionTrack(this, overrun);
                 overrun = 0f;
             }
         }
 
-        public virtual void setKeyFrameAt(KeyFrame k, int i)
+        public virtual void SetKeyFrameAt(KeyFrame k, int i)
         {
             keyFrames[i] = k;
             if (i >= keyFramesCount)
@@ -53,7 +53,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual float getFrameTime(int f)
+        public virtual float GetFrameTime(int f)
         {
             float num = 0f;
             for (int i = 0; i <= f; i++)
@@ -63,17 +63,17 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual void updateRange()
+        public virtual void UpdateRange()
         {
-            startTime = getFrameTime(0);
-            endTime = getFrameTime(keyFramesCount - 1);
+            startTime = GetFrameTime(0);
+            endTime = GetFrameTime(keyFramesCount - 1);
         }
 
-        private void initKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
+        private void InitKeyFrameStepFromTowithTime(KeyFrame src, KeyFrame dst, float time)
         {
             keyFrameTimeLeft = time;
-            setKeyFrameFromElement(elementPrevState);
-            setElementFromKeyFrame(src);
+            SetKeyFrameFromElement(elementPrevState);
+            SetElementFromKeyFrame(src);
             switch (type)
             {
                 case TrackType.TRACK_POSITION:
@@ -180,12 +180,12 @@ namespace CutTheRope.iframework.visual
             }
             if (overrun > 0f)
             {
-                updateTrack(this, overrun);
+                UpdateTrack(this, overrun);
                 overrun = 0f;
             }
         }
 
-        public virtual void setElementFromKeyFrame(KeyFrame kf)
+        public virtual void SetElementFromKeyFrame(KeyFrame kf)
         {
             switch (type)
             {
@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.visual
                         for (int i = 0; i < kf.value.action.actionSet.Count; i++)
                         {
                             CTRAction action = kf.value.action.actionSet[i];
-                            _ = action.actionTarget.handleAction(action.data);
+                            _ = action.actionTarget.HandleAction(action.data);
                         }
                         return;
                     }
@@ -242,7 +242,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        private void setKeyFrameFromElement(KeyFrame kf)
+        private void SetKeyFrameFromElement(KeyFrame kf)
         {
             switch (type)
             {
@@ -267,7 +267,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public static void updateActionTrack(Track thiss, float delta)
+        public static void UpdateActionTrack(Track thiss, float delta)
         {
             if (thiss == null)
             {
@@ -285,10 +285,10 @@ namespace CutTheRope.iframework.visual
                             thiss.nextKeyFrame = 0;
                             thiss.overrun = thiss.t.time - thiss.startTime;
                             thiss.nextKeyFrame++;
-                            thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                            thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                             return;
                         }
-                        thiss.initActionKeyFrameandTime(thiss.keyFrames[0], 0f);
+                        thiss.InitActionKeyFrameandTime(thiss.keyFrames[0], 0f);
                         return;
                     }
                 }
@@ -300,10 +300,10 @@ namespace CutTheRope.iframework.visual
                         thiss.nextKeyFrame = thiss.keyFramesCount - 1;
                         thiss.overrun = thiss.endTime - thiss.t.time;
                         thiss.nextKeyFrame--;
-                        thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                        thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
                         return;
                     }
-                    thiss.initActionKeyFrameandTime(thiss.keyFrames[0], 0f);
+                    thiss.InitActionKeyFrameandTime(thiss.keyFrames[0], 0f);
                 }
                 return;
             }
@@ -312,33 +312,33 @@ namespace CutTheRope.iframework.visual
             {
                 if (thiss.t != null && thiss.t.delegateTimelineDelegate != null)
                 {
-                    thiss.t.delegateTimelineDelegate.timelinereachedKeyFramewithIndex(thiss.t, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
+                    thiss.t.delegateTimelineDelegate.TimelinereachedKeyFramewithIndex(thiss.t, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
                 }
                 thiss.overrun = 0f - thiss.keyFrameTimeLeft;
                 if (thiss.nextKeyFrame == thiss.keyFramesCount - 1)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (thiss.nextKeyFrame == 0)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (!thiss.t.timelineDirReverse)
                 {
                     thiss.nextKeyFrame++;
-                    thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                    thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                     return;
                 }
                 thiss.nextKeyFrame--;
-                thiss.initActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                thiss.InitActionKeyFrameandTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
             }
         }
 
-        public static void updateTrack(Track thiss, float delta)
+        public static void UpdateTrack(Track thiss, float delta)
         {
             Timeline timeline = thiss.t;
             if (thiss.state == TrackState.TRACK_NOT_ACTIVE)
@@ -351,13 +351,13 @@ namespace CutTheRope.iframework.visual
                         thiss.nextKeyFrame = 0;
                         thiss.overrun = timeline.time - thiss.startTime;
                         thiss.nextKeyFrame++;
-                        thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                        thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                         return;
                     }
                     thiss.nextKeyFrame = thiss.keyFramesCount - 1;
                     thiss.overrun = thiss.endTime - timeline.time;
                     thiss.nextKeyFrame--;
-                    thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                    thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
                 }
                 return;
             }
@@ -459,28 +459,28 @@ namespace CutTheRope.iframework.visual
             }
             if (thiss.keyFrameTimeLeft <= 1E-06f)
             {
-                timeline.delegateTimelineDelegate?.timelinereachedKeyFramewithIndex(timeline, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
+                timeline.delegateTimelineDelegate?.TimelinereachedKeyFramewithIndex(timeline, thiss.keyFrames[thiss.nextKeyFrame], thiss.nextKeyFrame);
                 thiss.overrun = 0f - thiss.keyFrameTimeLeft;
                 if (thiss.nextKeyFrame == thiss.keyFramesCount - 1)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (thiss.nextKeyFrame == 0)
                 {
-                    thiss.setElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
+                    thiss.SetElementFromKeyFrame(thiss.keyFrames[thiss.nextKeyFrame]);
                     thiss.state = TrackState.TRACK_NOT_ACTIVE;
                     return;
                 }
                 if (!timeline.timelineDirReverse)
                 {
                     thiss.nextKeyFrame++;
-                    thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
+                    thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame - 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame].timeOffset);
                     return;
                 }
                 thiss.nextKeyFrame--;
-                thiss.initKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
+                thiss.InitKeyFrameStepFromTowithTime(thiss.keyFrames[thiss.nextKeyFrame + 1], thiss.keyFrames[thiss.nextKeyFrame], thiss.keyFrames[thiss.nextKeyFrame + 1].timeOffset);
             }
         }
 

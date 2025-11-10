@@ -7,90 +7,90 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.ctr_commons
 {
-    internal class Popup : BaseElement, TimelineDelegate
+    internal class Popup : BaseElement, ITimelineDelegate
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
-                Timeline timeline = new Timeline().initWithMaxKeyFramesOnTrack(4);
-                timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-                timeline.addKeyFrame(KeyFrame.makeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
-                timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-                _ = addTimeline(timeline);
-                timeline = new Timeline().initWithMaxKeyFramesOnTrack(2);
-                timeline.addKeyFrame(KeyFrame.makeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-                timeline.addKeyFrame(KeyFrame.makeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(1.1, 1.1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0.9, 0.9, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
+                _ = AddTimeline(timeline);
+                timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                timeline.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
+                timeline.AddKeyFrame(KeyFrame.MakeScale(0.0, 0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
                 width = (int)SCREEN_WIDTH;
                 height = (int)SCREEN_HEIGHT;
-                _ = addTimeline(timeline);
+                _ = AddTimeline(timeline);
                 timeline.delegateTimelineDelegate = this;
             }
             return this;
         }
 
-        public virtual void timelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void timelineFinished(Timeline t)
+        public virtual void TimelineFinished(Timeline t)
         {
             View view = (View)parent;
-            view?.removeChild(this);
+            view?.RemoveChild(this);
         }
 
-        public virtual void showPopup()
+        public virtual void ShowPopup()
         {
-            Application.sharedRootController().deactivateAllButtons();
+            Application.SharedRootController().DeactivateAllButtons();
             isShow = true;
-            playTimeline(0);
+            PlayTimeline(0);
         }
 
-        public virtual void hidePopup()
+        public virtual void HidePopup()
         {
             isShow = false;
-            playTimeline(1);
+            PlayTimeline(1);
         }
 
-        public override bool onTouchDownXY(float tx, float ty)
+        public override bool OnTouchDownXY(float tx, float ty)
         {
             if (isShow)
             {
-                _ = base.onTouchDownXY(tx, ty);
+                _ = base.OnTouchDownXY(tx, ty);
             }
             return true;
         }
 
-        public override bool onTouchUpXY(float tx, float ty)
+        public override bool OnTouchUpXY(float tx, float ty)
         {
             if (isShow)
             {
-                _ = base.onTouchUpXY(tx, ty);
+                _ = base.OnTouchUpXY(tx, ty);
             }
             return true;
         }
 
-        public override bool onTouchMoveXY(float tx, float ty)
+        public override bool OnTouchMoveXY(float tx, float ty)
         {
             if (isShow)
             {
-                _ = base.onTouchMoveXY(tx, ty);
+                _ = base.OnTouchMoveXY(tx, ty);
             }
             return true;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            OpenGL.glEnable(1);
-            OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            GLDrawer.drawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
-            OpenGL.glEnable(0);
-            OpenGL.glColor4f(Color.White);
-            base.preDraw();
-            base.postDraw();
-            OpenGL.glDisable(1);
+            OpenGL.GlEnable(1);
+            OpenGL.GlDisable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            GLDrawer.DrawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
+            OpenGL.GlEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            base.PreDraw();
+            base.PostDraw();
+            OpenGL.GlDisable(1);
         }
 
         private bool isShow;

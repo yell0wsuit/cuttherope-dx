@@ -7,7 +7,7 @@ namespace CutTheRope.iframework.media
 {
     internal class MovieMgr : NSObject, System.IDisposable
     {
-        public void playURL(NSString moviePath, bool mute)
+        public void PlayURL(NSString moviePath, bool mute)
         {
             url = moviePath;
             video = Global.ScreenSizeManager.CurrentSize.Width <= 1024
@@ -21,22 +21,22 @@ namespace CutTheRope.iframework.media
             waitForStart = true;
         }
 
-        public Texture2D getTexture()
+        public Texture2D GetTexture()
         {
             return player != null && player.State != MediaState.Stopped ? player.GetTexture() : null;
         }
 
-        public bool isPlaying()
+        public bool IsPlaying()
         {
             return player != null;
         }
 
-        public void stop()
+        public void Stop()
         {
             player?.Stop();
         }
 
-        public void pause()
+        public void Pause()
         {
             if (!paused)
             {
@@ -45,12 +45,12 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        public bool isPaused()
+        public bool IsPaused()
         {
             return paused;
         }
 
-        public void resume()
+        public void Resume()
         {
             if (paused)
             {
@@ -62,7 +62,7 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        public void start()
+        public void Start()
         {
             if (waitForStart && player != null && player.State == MediaState.Stopped)
             {
@@ -70,7 +70,7 @@ namespace CutTheRope.iframework.media
             }
         }
 
-        public void update()
+        public void Update()
         {
             if (!waitForStart && player != null && player.State == MediaState.Stopped)
             {
@@ -78,7 +78,7 @@ namespace CutTheRope.iframework.media
                 player = null;
                 video = null;
                 paused = false;
-                delegateMovieMgrDelegate?.moviePlaybackFinished(url);
+                delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
             }
         }
 
@@ -86,7 +86,7 @@ namespace CutTheRope.iframework.media
 
         public NSString url;
 
-        public MovieMgrDelegate delegateMovieMgrDelegate;
+        public IMovieMgrDelegate delegateMovieMgrDelegate;
 
         private Video video;
 

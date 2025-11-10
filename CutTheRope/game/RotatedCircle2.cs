@@ -12,7 +12,7 @@ namespace CutTheRope.game
 {
     internal class RotatedCircle2 : BaseElement
     {
-        public virtual void setSize(float value)
+        public virtual void SetSize(float value)
         {
             size = value;
             float num = size / (vinilTL.width + (vinilTR.width * (1f - vinilTL.scaleX)));
@@ -32,45 +32,45 @@ namespace CutTheRope.game
             vinilCenter.scaleX = 1f - ((1f - vinilStickerL.scaleX) * 0.5f);
             vinilCenter.scaleY = vinilCenter.scaleX;
             sizeInPixels = vinilHighlightL.width * vinilHighlightL.scaleX;
-            updateChildPositions();
+            UpdateChildPositions();
         }
 
-        public virtual void setHasOneHandle(bool value)
+        public virtual void SetHasOneHandle(bool value)
         {
             vinilControllerL.visible = !value;
         }
 
-        public virtual bool hasOneHandle()
+        public virtual bool HasOneHandle()
         {
             return !vinilControllerL.visible;
         }
 
-        public virtual void setIsLeftControllerActive(bool value)
+        public virtual void SetIsLeftControllerActive(bool value)
         {
             vinilActiveControllerL.visible = value;
         }
 
-        public virtual bool isLeftControllerActive()
+        public virtual bool IsLeftControllerActive()
         {
             return vinilActiveControllerL.visible;
         }
 
-        public virtual void setIsRightControllerActive(bool value)
+        public virtual void SetIsRightControllerActive(bool value)
         {
             vinilActiveControllerR.visible = value;
         }
 
-        public virtual bool isRightControllerActive()
+        public virtual bool IsRightControllerActive()
         {
             return vinilActiveControllerR.visible;
         }
 
-        public virtual bool containsSameObjectWithAnotherCircle()
+        public virtual bool ContainsSameObjectWithAnotherCircle()
         {
-            for (int i = 0; i < circlesArray.count(); i++)
+            for (int i = 0; i < circlesArray.Count(); i++)
             {
                 RotatedCircle2 rotatedCircle = (RotatedCircle2)circlesArray[i];
-                if (rotatedCircle != this && containsSameObjectWithCircle(rotatedCircle))
+                if (rotatedCircle != this && ContainsSameObjectWithCircle(rotatedCircle))
                 {
                     return true;
                 }
@@ -78,9 +78,9 @@ namespace CutTheRope.game
             return false;
         }
 
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 circlesArray = null;
                 containedObjects = [];
@@ -125,17 +125,17 @@ namespace CutTheRope.game
                 vinilTR.scaleX = vinilTR.scaleY = -1f;
                 vinilTR.anchor = 33;
                 passColorToChilds = false;
-                _ = addChild(vinilActiveControllerL);
-                _ = addChild(vinilActiveControllerR);
-                _ = addChild(vinilControllerL);
-                _ = addChild(vinilControllerR);
+                _ = AddChild(vinilActiveControllerL);
+                _ = AddChild(vinilActiveControllerR);
+                _ = AddChild(vinilControllerL);
+                _ = AddChild(vinilControllerR);
             }
             return this;
         }
 
-        public virtual NSObject copy()
+        public virtual NSObject Copy()
         {
-            RotatedCircle2 rotatedCircle = (RotatedCircle2)new RotatedCircle2().init();
+            RotatedCircle2 rotatedCircle = (RotatedCircle2)new RotatedCircle2().Init();
             rotatedCircle.x = x;
             rotatedCircle.y = y;
             rotatedCircle.rotation = rotation;
@@ -144,72 +144,72 @@ namespace CutTheRope.game
             rotatedCircle.operating = -1;
             rotatedCircle.handle1 = new Vector(rotatedCircle.x - size, rotatedCircle.y);
             rotatedCircle.handle2 = new Vector(rotatedCircle.x + size, rotatedCircle.y);
-            rotatedCircle.handle1 = vectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.handle2 = vectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.setSize(size);
-            rotatedCircle.setHasOneHandle(hasOneHandle());
+            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.SetSize(size);
+            rotatedCircle.SetHasOneHandle(HasOneHandle());
             rotatedCircle.vinilControllerL.visible = false;
             rotatedCircle.vinilControllerR.visible = false;
             return rotatedCircle;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            if (isRightControllerActive() || isLeftControllerActive())
+            if (IsRightControllerActive() || IsLeftControllerActive())
             {
-                OpenGL.glDisable(0);
-                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
+                OpenGL.GlDisable(0);
+                OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+                GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
-            OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             vinilTL.color = vinilTR.color = vinilBL.color = vinilBR.color = RGBAColor.solidOpaqueRGBA;
-            vinilTL.draw();
-            vinilTR.draw();
-            vinilBL.draw();
-            vinilBR.draw();
-            OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            if (isRightControllerActive() || isLeftControllerActive() || color.a < 1.0)
+            vinilTL.Draw();
+            vinilTR.Draw();
+            vinilBL.Draw();
+            vinilBR.Draw();
+            OpenGL.GlDisable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+            if (IsRightControllerActive() || IsLeftControllerActive() || color.a < 1.0)
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.a = 1f - color.a;
-                GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
+                GLDrawer.DrawAntialiasedCurve2(x, y, sizeInPixels + 1f, 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), whiteRGBA);
             }
-            for (int i = 0; i < circlesArray.count(); i++)
+            for (int i = 0; i < circlesArray.Count(); i++)
             {
                 RotatedCircle2 rotatedCircle = (RotatedCircle2)circlesArray[i];
-                if (rotatedCircle != this && rotatedCircle.containsSameObjectWithAnotherCircle() && circlesArray.getObjectIndex(rotatedCircle) < circlesArray.getObjectIndex(this))
+                if (rotatedCircle != this && rotatedCircle.ContainsSameObjectWithAnotherCircle() && circlesArray.GetObjectIndex(rotatedCircle) < circlesArray.GetObjectIndex(this))
                 {
-                    GLDrawer.drawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
+                    GLDrawer.DrawCircleIntersection(x, y, sizeInPixels, rotatedCircle.x, rotatedCircle.y, rotatedCircle.sizeInPixels, 51, 7f * rotatedCircle.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
+            OpenGL.GlEnable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
             vinilHighlightL.color = color;
             vinilHighlightR.color = color;
-            vinilHighlightL.draw();
-            vinilHighlightR.draw();
+            vinilHighlightL.Draw();
+            vinilHighlightR.Draw();
             vinilStickerL.x = vinilStickerR.x = x;
             vinilStickerL.y = vinilStickerR.y = y;
             vinilStickerL.rotation = vinilStickerR.rotation = rotation;
-            vinilStickerL.draw();
-            vinilStickerR.draw();
-            OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-            GLDrawer.drawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
-            GLDrawer.drawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
-            OpenGL.glColor4f(Color.White);
-            OpenGL.glEnable(0);
+            vinilStickerL.Draw();
+            vinilStickerR.Draw();
+            OpenGL.GlDisable(0);
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            GLDrawer.DrawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
+            GLDrawer.DrawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
+            OpenGL.GlColor4f(Color.White);
+            OpenGL.GlEnable(0);
             vinilControllerL.color = color;
             vinilControllerR.color = color;
-            base.draw();
-            vinilCenter.draw();
+            base.Draw();
+            vinilCenter.Draw();
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             vinilCenter = null;
             vinilHighlightL = null;
@@ -222,10 +222,10 @@ namespace CutTheRope.game
             vinilStickerR = null;
             containedObjects.Clear();
             containedObjects = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual void updateChildPositions()
+        public virtual void UpdateChildPositions()
         {
             vinilCenter.x = x;
             vinilCenter.y = y;
@@ -252,7 +252,7 @@ namespace CutTheRope.game
             vinilActiveControllerR.y = vinilControllerR.y;
         }
 
-        public virtual bool containsSameObjectWithCircle(RotatedCircle2 anotherCircle)
+        public virtual bool ContainsSameObjectWithCircle(RotatedCircle2 anotherCircle)
         {
             if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
             {

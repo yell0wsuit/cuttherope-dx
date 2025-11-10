@@ -7,20 +7,20 @@ namespace CutTheRope.iframework.visual
 {
     internal class Scrollbar : BaseElement
     {
-        public override void update(float delta)
+        public override void Update(float delta)
         {
-            base.update(delta);
+            base.Update(delta);
             delegateProvider?.Invoke(ref sp, ref mp, ref sc);
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
-            if (vectEqual(sp, vectUndefined) && delegateProvider != null)
+            base.PreDraw();
+            if (VectEqual(sp, vectUndefined) && delegateProvider != null)
             {
                 delegateProvider(ref sp, ref mp, ref sc);
             }
-            OpenGL.glDisable(0);
+            OpenGL.GlDisable(0);
             bool flag = false;
             float num;
             float num2;
@@ -52,17 +52,17 @@ namespace CutTheRope.iframework.visual
             }
             if (!flag)
             {
-                GLDrawer.drawSolidRectWOBorder(drawX, drawY, width, height, backColor);
-                GLDrawer.drawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
+                GLDrawer.DrawSolidRectWOBorder(drawX, drawY, width, height, backColor);
+                GLDrawer.DrawSolidRectWOBorder(drawX + num2, drawY + num5, num, num3, scrollerColor);
             }
-            OpenGL.glEnable(0);
-            OpenGL.glColor4f(Color.White);
-            base.postDraw();
+            OpenGL.GlEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            base.PostDraw();
         }
 
-        public virtual Scrollbar initWithWidthHeightVertical(float w, float h, bool v)
+        public virtual Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 width = (int)w;
                 height = (int)h;

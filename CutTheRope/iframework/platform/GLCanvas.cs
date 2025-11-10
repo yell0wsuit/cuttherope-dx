@@ -10,7 +10,7 @@ namespace CutTheRope.iframework.platform
     internal class GLCanvas : NSObject
     {
         // (get) Token: 0x060002F3 RID: 755 RVA: 0x00011F34 File Offset: 0x00010134
-        public NSRect bounds
+        public NSRect Bounds
         {
             get
             {
@@ -24,12 +24,12 @@ namespace CutTheRope.iframework.platform
             }
         }
 
-        public virtual NSObject initWithFrame(Rectangle frame)
+        public virtual NSObject InitWithFrame(Rectangle frame)
         {
-            return initWithFrame(new NSRect(frame));
+            return InitWithFrame(new NSRect(frame));
         }
 
-        public virtual NSObject initWithFrame(NSRect frame_UNUSED)
+        public virtual NSObject InitWithFrame(NSRect frame_UNUSED)
         {
             xOffset = 0;
             yOffset = 0;
@@ -40,42 +40,42 @@ namespace CutTheRope.iframework.platform
             return this;
         }
 
-        public virtual void initFPSMeterWithFont(Font font)
+        public virtual void InitFPSMeterWithFont(Font font)
         {
             fpsFont = font;
-            fpsText = new Text().initWithFont(fpsFont);
+            fpsText = new Text().InitWithFont(fpsFont);
         }
 
-        public virtual void drawFPS(float fps)
+        public virtual void DrawFPS(float fps)
         {
             if (fpsText != null && fpsFont != null)
             {
                 NSString @string = NSS(fps.ToString("F1"));
-                fpsText.setString(@string);
-                OpenGL.glColor4f(Color.White);
-                OpenGL.glEnable(0);
-                OpenGL.glEnable(1);
-                OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
+                fpsText.SetString(@string);
+                OpenGL.GlColor4f(Color.White);
+                OpenGL.GlEnable(0);
+                OpenGL.GlEnable(1);
+                OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;
-                fpsText.draw();
-                OpenGL.glDisable(1);
-                OpenGL.glDisable(0);
+                fpsText.Draw();
+                OpenGL.GlDisable(1);
+                OpenGL.GlDisable(0);
             }
         }
 
-        public virtual void prepareOpenGL()
+        public virtual void PrepareOpenGL()
         {
-            OpenGL.glEnableClientState(11);
-            OpenGL.glEnableClientState(12);
+            OpenGL.GlEnableClientState(11);
+            OpenGL.GlEnableClientState(12);
         }
 
-        public virtual void setDefaultRealProjection()
+        public virtual void SetDefaultRealProjection()
         {
-            setDefaultProjection();
+            SetDefaultProjection();
         }
 
-        public virtual void setDefaultProjection()
+        public virtual void SetDefaultProjection()
         {
             if (Global.ScreenSizeManager.IsFullScreen)
             {
@@ -89,93 +89,93 @@ namespace CutTheRope.iframework.platform
                 xOffsetScaled = 0;
                 isFullscreen = false;
             }
-            OpenGL.glViewport(xOffset, yOffset, backingWidth, backingHeight);
-            OpenGL.glMatrixMode(15);
-            OpenGL.glLoadIdentity();
-            OpenGL.glOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
-            OpenGL.glMatrixMode(14);
-            OpenGL.glLoadIdentity();
+            OpenGL.GlViewport(xOffset, yOffset, backingWidth, backingHeight);
+            OpenGL.GlMatrixMode(15);
+            OpenGL.GlLoadIdentity();
+            OpenGL.GlOrthof(0.0, origWidth, origHeight, 0.0, -1.0, 1.0);
+            OpenGL.GlMatrixMode(14);
+            OpenGL.GlLoadIdentity();
         }
 
-        public virtual void drawRect(NSRect rect)
+        public virtual void DrawRect(NSRect rect)
         {
         }
 
-        public virtual void show()
+        public virtual void Show()
         {
-            setDefaultProjection();
+            SetDefaultProjection();
         }
 
-        public virtual void hide()
+        public virtual void Hide()
         {
         }
 
-        public virtual void reshape()
+        public virtual void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
             backingWidth = scaledViewRect.Width;
             backingHeight = scaledViewRect.Height;
-            setDefaultProjection();
+            SetDefaultProjection();
         }
 
-        public virtual void swapBuffers()
+        public virtual void SwapBuffers()
         {
         }
 
-        public virtual void touchesBeganwithEvent(IList<TouchLocation> touches)
+        public virtual void TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            _ = (touchDelegate?.touchesBeganwithEvent(touches));
+            _ = (touchDelegate?.TouchesBeganwithEvent(touches));
         }
 
-        public virtual void touchesMovedwithEvent(IList<TouchLocation> touches)
+        public virtual void TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
-            _ = (touchDelegate?.touchesMovedwithEvent(touches));
+            _ = (touchDelegate?.TouchesMovedwithEvent(touches));
         }
 
-        public virtual void touchesEndedwithEvent(IList<TouchLocation> touches)
+        public virtual void TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
-            _ = (touchDelegate?.touchesEndedwithEvent(touches));
+            _ = (touchDelegate?.TouchesEndedwithEvent(touches));
         }
 
-        public virtual void touchesCancelledwithEvent(IList<TouchLocation> touches)
+        public virtual void TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
-            _ = (touchDelegate?.touchesCancelledwithEvent(touches));
+            _ = (touchDelegate?.TouchesCancelledwithEvent(touches));
         }
 
-        public virtual bool backButtonPressed()
+        public virtual bool BackButtonPressed()
         {
-            return touchDelegate != null && touchDelegate.backButtonPressed();
+            return touchDelegate != null && touchDelegate.BackButtonPressed();
         }
 
-        public virtual bool menuButtonPressed()
+        public virtual bool MenuButtonPressed()
         {
-            return touchDelegate != null && touchDelegate.menuButtonPressed();
+            return touchDelegate != null && touchDelegate.MenuButtonPressed();
         }
 
-        public static List<TouchLocation> convertTouches(List<TouchLocation> touches)
+        public static List<TouchLocation> ConvertTouches(List<TouchLocation> touches)
         {
             return touches;
         }
 
-        public virtual bool acceptsFirstResponder()
+        public virtual bool AcceptsFirstResponder()
         {
             return true;
         }
 
-        public virtual bool becomeFirstResponder()
+        public virtual bool BecomeFirstResponder()
         {
             return true;
         }
 
-        public virtual void beforeRender()
+        public virtual void BeforeRender()
         {
-            setDefaultProjection();
-            OpenGL.glDisable(1);
-            OpenGL.glEnableClientState(11);
-            OpenGL.glEnableClientState(12);
+            SetDefaultProjection();
+            OpenGL.GlDisable(1);
+            OpenGL.GlEnableClientState(11);
+            OpenGL.GlEnableClientState(12);
         }
 
-        public virtual void afterRender()
+        public virtual void AfterRender()
         {
         }
 
@@ -187,7 +187,7 @@ namespace CutTheRope.iframework.platform
 
         private int origHeight;
 
-        public TouchDelegate touchDelegate;
+        public ITouchDelegate touchDelegate;
 
         private NSPoint startPos;
 

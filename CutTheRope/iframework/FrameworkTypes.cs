@@ -12,24 +12,24 @@ namespace CutTheRope.iframework
     internal class FrameworkTypes : CTRMathHelper
     {
         // (get) Token: 0x06000108 RID: 264 RVA: 0x00005BCC File Offset: 0x00003DCC
-        public static GLCanvas canvas => Application.sharedCanvas();
+        public static GLCanvas Canvas => Application.SharedCanvas();
 
-        public static float[] toFloatArray(Quad2D[] quads)
+        public static float[] ToFloatArray(Quad2D[] quads)
         {
             float[] array = new float[quads.Length * 8];
             for (int i = 0; i < quads.Length; i++)
             {
-                quads[i].toFloatArray().CopyTo(array, i * 8);
+                quads[i].ToFloatArray().CopyTo(array, i * 8);
             }
             return array;
         }
 
-        public static float[] toFloatArray(Quad3D[] quads)
+        public static float[] ToFloatArray(Quad3D[] quads)
         {
             float[] array = new float[quads.Length * 12];
             for (int i = 0; i < quads.Length; i++)
             {
-                quads[i].toFloatArray().CopyTo(array, i * 12);
+                quads[i].ToFloatArray().CopyTo(array, i * 12);
             }
             return array;
         }
@@ -44,42 +44,42 @@ namespace CutTheRope.iframework
             return new CTRRectangle(xParam, yParam, width, height);
         }
 
-        public static float transformToRealX(float x)
+        public static float TransformToRealX(float x)
         {
             return (x * VIEW_SCREEN_WIDTH / SCREEN_WIDTH) + VIEW_OFFSET_X;
         }
 
-        public static float transformToRealY(float y)
+        public static float TransformToRealY(float y)
         {
             return (y * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT) + VIEW_OFFSET_Y;
         }
 
-        public static float transformFromRealX(float x)
+        public static float TransformFromRealX(float x)
         {
             return (x - VIEW_OFFSET_X) * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
         }
 
-        public static float transformFromRealY(float y)
+        public static float TransformFromRealY(float y)
         {
             return (y - VIEW_OFFSET_Y) * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
         }
 
-        public static float transformToRealW(float w)
+        public static float TransformToRealW(float w)
         {
             return w * VIEW_SCREEN_WIDTH / SCREEN_WIDTH;
         }
 
-        public static float transformToRealH(float h)
+        public static float TransformToRealH(float h)
         {
             return h * VIEW_SCREEN_HEIGHT / SCREEN_HEIGHT;
         }
 
-        public static float transformFromRealW(float w)
+        public static float TransformFromRealW(float w)
         {
             return w * SCREEN_WIDTH / VIEW_SCREEN_WIDTH;
         }
 
-        public static float transformFromRealH(float h)
+        public static float TransformFromRealH(float h)
         {
             return h * SCREEN_HEIGHT / VIEW_SCREEN_HEIGHT;
         }
@@ -89,7 +89,7 @@ namespace CutTheRope.iframework
             return s;
         }
 
-        public static void _LOG(string str)
+        public static void LOG(string str)
         {
         }
 
@@ -205,19 +205,19 @@ namespace CutTheRope.iframework
 
         public class FlurryAPI
         {
-            public static void logEvent(NSString s)
+            public static void LogEvent(NSString s)
             {
             }
         }
 
         public class AndroidAPI
         {
-            public static void openUrl(NSString url)
+            public static void OpenUrl(NSString url)
             {
-                openUrl(url.ToString());
+                OpenUrl(url.ToString());
             }
 
-            public static void openUrl(string url)
+            public static void OpenUrl(string url)
             {
                 try
                 {
@@ -232,23 +232,23 @@ namespace CutTheRope.iframework
                 }
             }
 
-            public static void showBanner()
+            public static void ShowBanner()
             {
             }
 
-            public static void showVideoBanner()
+            public static void ShowVideoBanner()
             {
             }
 
-            public static void hideBanner()
+            public static void HideBanner()
             {
             }
 
-            public static void disableBanners()
+            public static void DisableBanners()
             {
             }
 
-            public static void exitApp()
+            public static void ExitApp()
             {
                 Global.XnaGame.Exit();
             }

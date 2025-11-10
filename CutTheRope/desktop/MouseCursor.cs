@@ -94,7 +94,7 @@ namespace CutTheRope.desktop
                 list.Add(item);
             }
             _mouseStateTranformed = mouseStateTranformed;
-            return GLCanvas.convertTouches(list);
+            return GLCanvas.ConvertTouches(list);
         }
 
         private Texture2D _cursor;

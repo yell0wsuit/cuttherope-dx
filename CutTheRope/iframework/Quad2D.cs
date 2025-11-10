@@ -2,7 +2,7 @@ namespace CutTheRope.iframework
 {
     internal struct Quad2D(float x, float y, float w, float h)
     {
-        public readonly float[] toFloatArray()
+        public readonly float[] ToFloatArray()
         {
             return [tlX, tlY, trX, trY, blX, blY, brX, brY];
         }

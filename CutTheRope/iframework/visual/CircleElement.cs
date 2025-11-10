@@ -6,9 +6,9 @@ namespace CutTheRope.iframework.visual
 {
     internal class CircleElement : BaseElement
     {
-        public override NSObject init()
+        public override NSObject Init()
         {
-            if (base.init() != null)
+            if (base.Init() != null)
             {
                 vertextCount = 32;
                 solid = true;
@@ -16,14 +16,14 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void draw()
+        public override void Draw()
         {
-            base.preDraw();
-            OpenGL.glDisable(0);
+            base.PreDraw();
+            OpenGL.GlDisable(0);
             _ = MIN(width, height);
-            OpenGL.glEnable(0);
-            OpenGL.glColor4f(Color.White);
-            base.postDraw();
+            OpenGL.GlEnable(0);
+            OpenGL.GlColor4f(Color.White);
+            base.PostDraw();
         }
 
         public bool solid;

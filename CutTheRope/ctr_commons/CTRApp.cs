@@ -6,14 +6,14 @@ namespace CutTheRope.ctr_commons
 {
     internal class CTRApp : Application
     {
-        public override void dealloc()
+        public override void Dealloc()
         {
             throw new NotImplementedException();
         }
 
         public virtual void ApplicationWillTerminate(UIApplication application)
         {
-            sharedPreferences().savePreferences();
+            SharedPreferences().savePreferences();
         }
 
         public virtual void ApplicationDidReceiveMemoryWarning(UIApplication application)
@@ -28,18 +28,18 @@ namespace CutTheRope.ctr_commons
 
         public virtual void ApplicationWillResignActive(UIApplication application)
         {
-            sharedPreferences().savePreferences();
-            if (root != null && !root.isSuspended())
+            SharedPreferences().savePreferences();
+            if (root != null && !root.IsSuspended())
             {
-                root.suspend();
+                root.Suspend();
             }
         }
 
         public virtual void ApplicationDidBecomeActive(UIApplication application)
         {
-            if (root != null && root.isSuspended())
+            if (root != null && root.IsSuspended())
             {
-                root.resume();
+                root.Resume();
             }
         }
     }

@@ -22,7 +22,7 @@ namespace CutTheRope.iframework.core
             y = yParam;
         }
 
-        public readonly Vector2 toXNA()
+        public readonly Vector2 ToXNA()
         {
             return new Vector2(x, y);
         }

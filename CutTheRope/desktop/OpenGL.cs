@@ -9,42 +9,42 @@ namespace CutTheRope.desktop
 {
     internal class OpenGL
     {
-        public static void glGenTextures(int n, object textures)
+        public static void GlGenTextures(int n, object textures)
         {
         }
 
-        public static void glBindTexture(int target, uint texture)
+        public static void GlBindTexture(int target, uint texture)
         {
         }
 
-        public static void glEnable(int cap)
+        public static void GlEnable(int cap)
         {
             if (cap == 1)
             {
-                s_Blend.enable();
+                s_Blend.Enable();
             }
             s_glServerSideFlags[cap] = true;
         }
 
-        public static void glDisable(int cap)
+        public static void GlDisable(int cap)
         {
             if (cap == 4)
             {
-                glScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
+                GlScissor(0.0, 0.0, FrameworkTypes.SCREEN_WIDTH, FrameworkTypes.SCREEN_HEIGHT);
             }
             if (cap == 1)
             {
-                s_Blend.disable();
+                s_Blend.Disable();
             }
             s_glServerSideFlags[cap] = false;
         }
 
-        public static void glEnableClientState(int cap)
+        public static void GlEnableClientState(int cap)
         {
             s_glClientStateFlags[cap] = true;
         }
 
-        public static void glDisableClientState(int cap)
+        public static void GlDisableClientState(int cap)
         {
             s_glClientStateFlags[cap] = false;
         }
@@ -67,12 +67,12 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glViewport(double x, double y, double width, double height)
+        public static void GlViewport(double x, double y, double width, double height)
         {
-            glViewport((int)x, (int)y, (int)width, (int)height);
+            GlViewport((int)x, (int)y, (int)width, (int)height);
         }
 
-        public static void glViewport(int x, int y, int width, int height)
+        public static void GlViewport(int x, int y, int width, int height)
         {
             s_Viewport.X = x;
             s_Viewport.Y = y;
@@ -91,12 +91,12 @@ namespace CutTheRope.desktop
             s_RenderTarget = null;
         }
 
-        public static void glMatrixMode(int mode)
+        public static void GlMatrixMode(int mode)
         {
             s_glMatrixMode = mode;
         }
 
-        public static void glLoadIdentity()
+        public static void GlLoadIdentity()
         {
             if (s_glMatrixMode == 14)
             {
@@ -119,12 +119,12 @@ namespace CutTheRope.desktop
             throw new NotImplementedException();
         }
 
-        public static void glOrthof(double left, double right, double bottom, double top, double near, double far)
+        public static void GlOrthof(double left, double right, double bottom, double top, double near, double far)
         {
             s_matrixProjection = Matrix.CreateOrthographicOffCenter((float)left, (float)right, (float)bottom, (float)top, (float)near, (float)far);
         }
 
-        public static void glPopMatrix()
+        public static void GlPopMatrix()
         {
             if (s_matrixModelViewStack.Count > 0)
             {
@@ -134,120 +134,120 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glPushMatrix()
+        public static void GlPushMatrix()
         {
             s_matrixModelViewStack.Add(s_matrixModelView);
         }
 
-        public static void glScalef(double x, double y, double z)
+        public static void GlScalef(double x, double y, double z)
         {
-            glScalef((float)x, (float)y, (float)z);
+            GlScalef((float)x, (float)y, (float)z);
         }
 
-        public static void glScalef(float x, float y, float z)
+        public static void GlScalef(float x, float y, float z)
         {
             s_matrixModelView = Matrix.CreateScale(x, y, z) * s_matrixModelView;
         }
 
-        public static void glRotatef(double angle, double x, double y, double z)
+        public static void GlRotatef(double angle, double x, double y, double z)
         {
-            glRotatef((float)angle, (float)x, (float)y, (float)z);
+            GlRotatef((float)angle, (float)x, (float)y, (float)z);
         }
 
-        public static void glRotatef(float angle, float x, float y, float z)
+        public static void GlRotatef(float angle, float x, float y, float z)
         {
             s_matrixModelView = Matrix.CreateRotationZ(MathHelper.ToRadians(angle)) * s_matrixModelView;
         }
 
-        public static void glTranslatef(double x, double y, double z)
+        public static void GlTranslatef(double x, double y, double z)
         {
-            glTranslatef((float)x, (float)y, (float)z);
+            GlTranslatef((float)x, (float)y, (float)z);
         }
 
-        public static void glTranslatef(float x, float y, float z)
+        public static void GlTranslatef(float x, float y, float z)
         {
             s_matrixModelView = Matrix.CreateTranslation(x, y, 0f) * s_matrixModelView;
         }
 
-        public static void glBindTexture(CTRTexture2D t)
+        public static void GlBindTexture(CTRTexture2D t)
         {
             s_Texture = t;
         }
 
-        public static void glClearColor(Color c)
+        public static void GlClearColor(Color c)
         {
             s_glClearColor = c;
         }
 
-        public static void glClearColorf(double red, double green, double blue, double alpha)
+        public static void GlClearColorf(double red, double green, double blue, double alpha)
         {
             s_glClearColor = new Color((float)red, (float)green, (float)blue, (float)alpha);
         }
 
-        public static void glClear(int mask_NotUsedParam)
+        public static void GlClear(int mask_NotUsedParam)
         {
-            BlendParams.applyDefault();
+            BlendParams.ApplyDefault();
             Global.GraphicsDevice.Clear(s_glClearColor);
         }
 
-        public static void glColor4f(Color c)
+        public static void GlColor4f(Color c)
         {
             s_Color = c;
         }
 
-        public static void glBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        public static void GlBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
         {
             s_Blend = new BlendParams(sfactor, dfactor);
         }
 
-        public static void drawSegment(float x1, float y1, float x2, float y2, RGBAColor color)
+        public static void DrawSegment(float x1, float y1, float x2, float y2, RGBAColor color)
         {
         }
 
-        public static void glGenBuffers(int n, ref uint buffer)
+        public static void GlGenBuffers(int n, ref uint buffer)
         {
         }
 
-        public static void glGenBuffers(int n, ref uint[] buffers)
+        public static void GlGenBuffers(int n, ref uint[] buffers)
         {
         }
 
-        public static void glDeleteBuffers(int n, ref uint[] buffers)
+        public static void GlDeleteBuffers(int n, ref uint[] buffers)
         {
         }
 
-        public static void glDeleteBuffers(int n, ref uint buffers)
+        public static void GlDeleteBuffers(int n, ref uint buffers)
         {
         }
 
-        public static void glBindBuffer(int target, uint buffer)
+        public static void GlBindBuffer(int target, uint buffer)
         {
         }
 
-        public static void glBufferData(int target, RGBAColor[] data, int usage)
+        public static void GlBufferData(int target, RGBAColor[] data, int usage)
         {
         }
 
-        public static void glBufferData(int target, PointSprite[] data, int usage)
+        public static void GlBufferData(int target, PointSprite[] data, int usage)
         {
         }
 
-        public static void glColorPointer(int size, int type, int stride, RGBAColor[] pointer)
+        public static void GlColorPointer(int size, int type, int stride, RGBAColor[] pointer)
         {
             s_GLColorPointer = pointer;
         }
 
-        public static void glVertexPointer(int size, int type, int stride, object pointer)
+        public static void GlVertexPointer(int size, int type, int stride, object pointer)
         {
             s_GLVertexPointer = new GLVertexPointer(size, type, stride, pointer);
         }
 
-        public static void glTexCoordPointer(int size, int type, int stride, object pointer)
+        public static void GlTexCoordPointer(int size, int type, int stride, object pointer)
         {
             s_GLTexCoordPointer = new GLTexCoordPointer(size, type, stride, pointer);
         }
 
-        public static void glDrawArrays(int mode, int first, int count)
+        public static void GlDrawArrays(int mode, int first, int count)
         {
             if (mode == 8)
             {
@@ -260,25 +260,25 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glColorPointer_setAdditive(int size)
+        public static void GlColorPointer_setAdditive(int size)
         {
             s_GLColorPointer = new RGBAColor[size];
             s_GLColorPointer_additive_position = 0;
         }
 
-        public static void glColorPointer_add(int size, int type, int stride, RGBAColor[] pointer)
+        public static void GlColorPointer_add(int size, int type, int stride, RGBAColor[] pointer)
         {
             pointer.CopyTo(s_GLColorPointer, s_GLColorPointer_additive_position);
             s_GLColorPointer_additive_position += pointer.Length;
         }
 
-        public static void glVertexPointer_setAdditive(int size, int type, int stride, int length)
+        public static void GlVertexPointer_setAdditive(int size, int type, int stride, int length)
         {
             s_GLVertexPointer = new GLVertexPointer(size, type, stride, new float[length]);
             s_GLVertexPointer_additive_position = 0;
         }
 
-        public static void glVertexPointer_add(int size, int type, int stride, float[] pointer)
+        public static void GlVertexPointer_add(int size, int type, int stride, float[] pointer)
         {
             pointer.CopyTo(s_GLVertexPointer.pointer_, s_GLVertexPointer_additive_position);
             s_GLVertexPointer_additive_position += pointer.Length;
@@ -294,7 +294,7 @@ namespace CutTheRope.desktop
                 position.X = s_GLVertexPointer.pointer_[num++];
                 position.Y = s_GLVertexPointer.pointer_[num++];
                 position.Z = s_GLVertexPointer.size_ == 2 ? 0f : s_GLVertexPointer.pointer_[num++];
-                array[i] = new VertexPositionColor(position, s_GLColorPointer[i].toXNA());
+                array[i] = new VertexPositionColor(position, s_GLColorPointer[i].ToXNA());
             }
             return array;
         }
@@ -372,7 +372,7 @@ namespace CutTheRope.desktop
                     num3++;
                     num2++;
                 }
-                Color color = s_GLColorPointer[i].toXNA();
+                Color color = s_GLColorPointer[i].ToXNA();
                 array[i] = new VertexPositionColorTexture(position, color, textureCoordinate);
             }
             s_GLTexCoordPointer = null;
@@ -407,7 +407,7 @@ namespace CutTheRope.desktop
             };
         }
 
-        private static BasicEffect getEffect(bool useTexture, bool useColor)
+        private static BasicEffect GetEffect(bool useTexture, bool useColor)
         {
             BasicEffect basicEffect = !useTexture ? s_effectColor : useColor ? s_effectTextureColor : s_effectTexture;
             if (useTexture)
@@ -432,7 +432,7 @@ namespace CutTheRope.desktop
             }
             basicEffect.World = s_matrixModelView;
             basicEffect.Projection = s_matrixProjection;
-            s_Blend.apply();
+            s_Blend.Apply();
             return basicEffect;
         }
 
@@ -473,7 +473,7 @@ namespace CutTheRope.desktop
 
         public static void Optimized_DrawTriangleStripColored(VertexPositionColor[] vertices)
         {
-            BasicEffect effect = getEffect(false, true);
+            BasicEffect effect = GetEffect(false, true);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -487,7 +487,7 @@ namespace CutTheRope.desktop
 
         private static void DrawTriangleStripColored(int first, int count)
         {
-            BasicEffect effect = getEffect(false, true);
+            BasicEffect effect = GetEffect(false, true);
             if (effect.Alpha == 0f)
             {
                 s_LastVertices_PositionColor = null;
@@ -504,7 +504,7 @@ namespace CutTheRope.desktop
 
         private static void DrawTriangleStripTextured(int first, int count)
         {
-            BasicEffect effect = getEffect(true, false);
+            BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -524,7 +524,7 @@ namespace CutTheRope.desktop
 
         public static void Optimized_DrawTriangleList(VertexPositionNormalTexture[] vertices, short[] indices)
         {
-            BasicEffect effect = getEffect(true, false);
+            BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -544,7 +544,7 @@ namespace CutTheRope.desktop
                 DrawTriangleListColored(first, count, indices);
                 return;
             }
-            BasicEffect effect = getEffect(true, false);
+            BasicEffect effect = GetEffect(true, false);
             if (effect.Alpha == 0f)
             {
                 s_LastVertices_PositionNormalTexture = null;
@@ -564,7 +564,7 @@ namespace CutTheRope.desktop
             {
                 return;
             }
-            BasicEffect effect = getEffect(true, true);
+            BasicEffect effect = GetEffect(true, true);
             if (effect.Alpha == 0f)
             {
                 return;
@@ -578,7 +578,7 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glDrawElements(int mode, int count, short[] indices)
+        public static void GlDrawElements(int mode, int count, short[] indices)
         {
             if (mode == 7)
             {
@@ -586,12 +586,12 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glScissor(double x, double y, double width, double height)
+        public static void GlScissor(double x, double y, double width, double height)
         {
-            glScissor((int)x, (int)y, (int)width, (int)height);
+            GlScissor((int)x, (int)y, (int)width, (int)height);
         }
 
-        public static void glScissor(int x, int y, int width, int height)
+        public static void GlScissor(int x, int y, int width, int height)
         {
             try
             {
@@ -606,19 +606,19 @@ namespace CutTheRope.desktop
             }
         }
 
-        public static void glLineWidth(double width)
+        public static void GlLineWidth(double width)
         {
             s_LineWidth = width;
         }
 
-        public static void setScissorRectangle(double x, double y, double w, double h)
+        public static void SetScissorRectangle(double x, double y, double w, double h)
         {
-            setScissorRectangle((float)x, (float)y, (float)w, (float)h);
+            SetScissorRectangle((float)x, (float)y, (float)w, (float)h);
         }
 
-        public static void setScissorRectangle(float x, float y, float w, float h)
+        public static void SetScissorRectangle(float x, float y, float w, float h)
         {
-            glScissor((double)x, (double)y, (double)w, (double)h);
+            GlScissor((double)x, (double)y, (double)w, (double)h);
         }
 
         private static readonly Dictionary<int, bool> s_glServerSideFlags = [];

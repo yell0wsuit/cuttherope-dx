@@ -1,7 +1,7 @@
 namespace CutTheRope.ctr_commons
 {
-    internal interface LiftScrollbarDelegate
+    internal interface ILiftScrollbarDelegate
     {
-        void changedActiveSpointFromTo(int pp, int cp);
+        void ChangedActiveSpointFromTo(int pp, int cp);
     }
 }

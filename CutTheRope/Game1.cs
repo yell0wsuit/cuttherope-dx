@@ -98,8 +98,8 @@ namespace CutTheRope
             Global.ScreenSizeManager.Init(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode, num, isFullScreen);
             Window.ClientSizeChanged += Window_ClientSizeChanged;
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(GetSystemLanguage());
-            CtrRenderer.onSurfaceCreated();
-            CtrRenderer.onSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
+            CtrRenderer.OnSurfaceCreated();
+            CtrRenderer.OnSurfaceChanged(Global.ScreenSizeManager.WindowWidth, Global.ScreenSizeManager.WindowHeight);
             branding = new Branding();
             branding.LoadSplashScreens();
         }
@@ -187,14 +187,14 @@ namespace CutTheRope
             }
             if (IsKeyPressed(Keys.Escape) || GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
             {
-                Application.sharedMovieMgr().stop();
+                Application.SharedMovieMgr().Stop();
                 _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
             }
             _currentMouseState = Mouse.GetState();
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(Global.MouseCursor.GetTouchLocation());
             MouseState mouseState = desktop.MouseCursor.GetMouseState();
-            _ = Application.sharedRootController().mouseMoved(CtrRenderer.transformX(mouseState.X), CtrRenderer.transformY(mouseState.Y));
-            CtrRenderer.update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            _ = Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(mouseState.X), CtrRenderer.TransformY(mouseState.Y));
+            CtrRenderer.Update(gameTime.ElapsedGameTime.Milliseconds / 1000f);
             base.Update(gameTime);
         }
 
@@ -202,7 +202,7 @@ namespace CutTheRope
         {
             _DrawMovie = true;
             GraphicsDevice.Clear(Color.Black);
-            Texture2D texture = Application.sharedMovieMgr().getTexture();
+            Texture2D texture = Application.SharedMovieMgr().GetTexture();
             if (texture == null)
             {
                 return;
@@ -216,7 +216,7 @@ namespace CutTheRope
                 MouseState mouseState = Global.XnaGame.GetMouseState();
                 if (mouseState.LeftButton == ButtonState.Pressed && Global.ScreenSizeManager.CurrentSize.Contains(mouseState.X, mouseState.Y))
                 {
-                    Application.sharedMovieMgr().stop();
+                    Application.SharedMovieMgr().Stop();
                 }
             }
             Global.GraphicsDevice.SetRenderTarget(null);
@@ -245,7 +245,7 @@ namespace CutTheRope
             Global.ScreenSizeManager.FullScreenCropWidth = true;
             Global.ScreenSizeManager.ApplyViewportToDevice();
             _DrawMovie = false;
-            CtrRenderer.onDrawFrame();
+            CtrRenderer.OnDrawFrame();
             Global.MouseCursor.Draw();
             Global.GraphicsDevice.SetRenderTarget(null);
             if (bFirstFrame)

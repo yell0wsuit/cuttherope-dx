@@ -2,7 +2,7 @@ using System;
 
 namespace CutTheRope.iframework
 {
-    internal class md5
+    internal class Md5
     {
         private static void GET_UINT32(ref uint n, byte[] b, int dataIndex, int i)
         {
@@ -48,7 +48,7 @@ namespace CutTheRope.iframework
             return y ^ (x | ~z);
         }
 
-        public static void md5_starts(ref md5_context ctx)
+        public static void Md5_starts(ref Md5_context ctx)
         {
             ctx.total[0] = 0U;
             ctx.total[1] = 0U;
@@ -58,7 +58,7 @@ namespace CutTheRope.iframework
             ctx.state[3] = 271733878U;
         }
 
-        public static void md5_process(ref md5_context ctx, byte[] data, int dataIndex)
+        public static void Md5_process(ref Md5_context ctx, byte[] data, int dataIndex)
         {
             uint[] array = new uint[16];
             GET_UINT32(ref array[0], data, dataIndex, 0);
@@ -155,7 +155,7 @@ namespace CutTheRope.iframework
             ctx.state[3] += a4;
         }
 
-        public static void md5_update(ref md5_context ctx, byte[] input, uint length)
+        public static void Md5_update(ref Md5_context ctx, byte[] input, uint length)
         {
             if (length == 0U)
             {
@@ -173,7 +173,7 @@ namespace CutTheRope.iframework
             if (num != 0U && length >= num2)
             {
                 Array.Copy(input, num3, ctx.buffer, (int)num, (int)num2);
-                md5_process(ref ctx, ctx.buffer, 0);
+                Md5_process(ref ctx, ctx.buffer, 0);
                 length -= num2;
                 num3 += (int)num2;
                 num = 0U;
@@ -185,13 +185,13 @@ namespace CutTheRope.iframework
                     Array.Copy(input, num3, ctx.buffer, (int)num, (int)length);
                     return;
                 }
-                md5_process(ref ctx, input, num3);
+                Md5_process(ref ctx, input, num3);
                 length -= 64U;
                 num3 += 64;
             }
         }
 
-        public static void md5_finish(ref md5_context ctx, byte[] digest)
+        public static void Md5_finish(ref Md5_context ctx, byte[] digest)
         {
             byte[] b = new byte[8];
             uint num2 = (ctx.total[0] >> 29) | (ctx.total[1] << 3);
@@ -199,15 +199,15 @@ namespace CutTheRope.iframework
             PUT_UINT32(num2, ref b, 4);
             uint num = ctx.total[0] & 63U;
             uint length = num < 56U ? 56U - num : 120U - num;
-            md5_update(ref ctx, md5_padding, length);
-            md5_update(ref ctx, b, 8U);
+            Md5_update(ref ctx, md5_padding, length);
+            Md5_update(ref ctx, b, 8U);
             PUT_UINT32(ctx.state[0], ref digest, 0);
             PUT_UINT32(ctx.state[1], ref digest, 4);
             PUT_UINT32(ctx.state[2], ref digest, 8);
             PUT_UINT32(ctx.state[3], ref digest, 12);
         }
 
-        static md5()
+        static Md5()
         {
             byte[] array = new byte[64];
             array[0] = 128;
@@ -216,9 +216,9 @@ namespace CutTheRope.iframework
 
         private static readonly byte[] md5_padding;
 
-        public class md5_context
+        public class Md5_context
         {
-            public md5_context()
+            public Md5_context()
             {
                 total = new uint[2];
                 state = new uint[4];

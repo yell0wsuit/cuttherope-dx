@@ -12,16 +12,16 @@ namespace CutTheRope.ios
             is_init = true;
         }
 
-        public static void registerDelayedObjectCall(DelayedDispatcher.DispatchFunc f, NSObject p, double interval)
+        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc f, NSObject p, double interval)
         {
             if (!is_init)
             {
                 Init();
             }
-            dd.callObjectSelectorParamafterDelay(f, p, interval);
+            dd.CallObjectSelectorParamafterDelay(f, p, interval);
         }
 
-        public static int schedule(DelayedDispatcher.DispatchFunc f, NSObject p, float interval)
+        public static int Schedule(DelayedDispatcher.DispatchFunc f, NSObject p, float interval)
         {
             if (!is_init)
             {
@@ -38,13 +38,13 @@ namespace CutTheRope.ios
             return Timers.Count - 1;
         }
 
-        public static void fireTimers(float delta)
+        public static void FireTimers(float delta)
         {
             if (!is_init)
             {
                 Init();
             }
-            dd.update(delta);
+            dd.Update(delta);
             for (int i = 0; i < Timers.Count; i++)
             {
                 Entry entry = Timers[i];
@@ -57,7 +57,7 @@ namespace CutTheRope.ios
             }
         }
 
-        public static void stopTimer(int Number)
+        public static void StopTimer(int Number)
         {
             Timers.RemoveAt(Number);
         }

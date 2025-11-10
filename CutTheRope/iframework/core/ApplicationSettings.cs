@@ -6,18 +6,18 @@ namespace CutTheRope.iframework.core
 {
     internal class ApplicationSettings : NSObject
     {
-        public virtual int getInt(int s)
+        public virtual int GetInt(int s)
         {
             return s == 5 ? fps : s != 6 ? throw new NotImplementedException() : (int)orientation;
         }
 
-        public virtual bool getBool(int s)
+        public virtual bool GetBool(int s)
         {
             _ = DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
             return value;
         }
 
-        public virtual NSString getString(int s)
+        public virtual NSString GetString(int s)
         {
             return s != 8
                 ? NSS("")
@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.core
                 };
         }
 
-        public virtual void setString(int sid, NSString str)
+        public virtual void SetString(int sid, NSString str)
         {
             if (sid == 8)
             {

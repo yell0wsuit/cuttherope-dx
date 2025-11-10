@@ -6,29 +6,29 @@ namespace CutTheRope.iframework.visual
 {
     internal class TileMap : BaseElement
     {
-        public override void draw()
+        public override void Draw()
         {
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
-                imageMultiDrawer?.draw();
+                imageMultiDrawer?.Draw();
             }
         }
 
-        public override void dealloc()
+        public override void Dealloc()
         {
             matrix = null;
             drawers.Clear();
             drawers = null;
             tiles.Clear();
             tiles = null;
-            base.dealloc();
+            base.Dealloc();
         }
 
-        public virtual TileMap initWithRowsColumns(int r, int c)
+        public virtual TileMap InitWithRowsColumns(int r, int c)
         {
-            if (init() != null)
+            if (Init() != null)
             {
                 rows = r;
                 columns = c;
@@ -55,7 +55,7 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void addTileQuadwithID(CTRTexture2D t, int q, int ti)
+        public virtual void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
         {
             if (q == -1)
             {
@@ -67,7 +67,7 @@ namespace CutTheRope.iframework.visual
                 tileWidth = (int)t.quadRects[q].w;
                 tileHeight = (int)t.quadRects[q].h;
             }
-            updateVars();
+            UpdateVars();
             int num = -1;
             for (int i = 0; i < drawers.Count; i++)
             {
@@ -86,9 +86,9 @@ namespace CutTheRope.iframework.visual
                 Image image = Image.Image_create(t);
                 if (restoreTileTransparency)
                 {
-                    image.doRestoreCutTransparency();
+                    image.DoRestoreCutTransparency();
                 }
-                ImageMultiDrawer item = new ImageMultiDrawer().initWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
+                ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
                 num = drawers.Count;
                 drawers.Add(item);
             }
@@ -100,7 +100,7 @@ namespace CutTheRope.iframework.visual
             tiles[ti] = tileEntry;
         }
 
-        public virtual void fillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
+        public virtual void FillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
         {
             for (int i = c; i < c + cs; i++)
             {
@@ -111,24 +111,24 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void setParallaxRatio(float r)
+        public virtual void SetParallaxRatio(float r)
         {
             parallaxRatio = r;
         }
 
-        public virtual void setRepeatHorizontally(Repeat r)
+        public virtual void SetRepeatHorizontally(Repeat r)
         {
             repeatedHorizontally = r;
-            updateVars();
+            UpdateVars();
         }
 
-        public virtual void setRepeatVertically(Repeat r)
+        public virtual void SetRepeatVertically(Repeat r)
         {
             repeatedVertically = r;
-            updateVars();
+            UpdateVars();
         }
 
-        public virtual void updateWithCameraPos(Vector pos)
+        public virtual void UpdateWithCameraPos(Vector pos)
         {
             float num = (float)Math.Round((double)(pos.x / parallaxRatio));
             float num2 = (float)Math.Round((double)(pos.y / parallaxRatio));
@@ -146,15 +146,15 @@ namespace CutTheRope.iframework.visual
                 int num6 = (int)num14 % tileMapWidth;
                 num3 = num14 >= 0f ? num6 - tileMapWidth + num : num6 + num;
             }
-            if (!rectInRect(num, num2, num + cameraViewWidth, num2 + cameraViewHeight, num3, num4, num3 + tileMapWidth, num4 + tileMapHeight))
+            if (!RectInRect(num, num2, num + cameraViewWidth, num2 + cameraViewHeight, num3, num4, num3 + tileMapWidth, num4 + tileMapHeight))
             {
                 return;
             }
-            CTRRectangle rectangle = rectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
-            Vector vector = vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
-            Vector vector2 = vect((int)vector.x / tileWidth, (int)vector.y / tileHeight);
+            CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(num3, num4, tileMapWidth, tileMapHeight), new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight));
+            Vector vector = Vect(Math.Max(0f, rectangle.x), Math.Max(0f, rectangle.y));
+            Vector vector2 = Vect((int)vector.x / tileWidth, (int)vector.y / tileHeight);
             float num7 = num4 + (vector2.y * tileHeight);
-            Vector vector3 = vect(num3 + (vector2.x * tileWidth), num7);
+            Vector vector3 = Vect(num3 + (vector2.x * tileWidth), num7);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
@@ -180,7 +180,7 @@ namespace CutTheRope.iframework.visual
                 int k = (int)vector2.y;
                 while (k <= num9 && vector3.y < num2 + cameraViewHeight)
                 {
-                    CTRRectangle rectangle2 = rectInRectIntersection(new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight), new CTRRectangle(vector3.x, vector3.y, tileWidth, tileHeight));
+                    CTRRectangle rectangle2 = RectInRectIntersection(new CTRRectangle(num, num2, cameraViewWidth, cameraViewHeight), new CTRRectangle(vector3.x, vector3.y, tileWidth, tileHeight));
                     CTRRectangle r = new(num - vector3.x + rectangle2.x, num2 - vector3.y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int num10 = j;
                     int num11 = k;
@@ -208,11 +208,11 @@ namespace CutTheRope.iframework.visual
                     }
                     if (horizontalRandom)
                     {
-                        num10 = Math.Abs((int)(fmSin(vector3.x) * randomSeed) % columns);
+                        num10 = Math.Abs((int)(FmSin(vector3.x) * randomSeed) % columns);
                     }
                     if (verticalRandom)
                     {
-                        num11 = Math.Abs((int)(fmSin(vector3.y) * randomSeed) % rows);
+                        num11 = Math.Abs((int)(FmSin(vector3.y) * randomSeed) % rows);
                     }
                     if (num10 >= columns)
                     {
@@ -233,7 +233,7 @@ namespace CutTheRope.iframework.visual
                             r.x += texture.quadRects[tileEntry.quad].x;
                             r.y += texture.quadRects[tileEntry.quad].y;
                         }
-                        Quad2D textureCoordinates = GLDrawer.getTextureCoordinates(imageMultiDrawer2.image.texture, r);
+                        Quad2D textureCoordinates = GLDrawer.GetTextureCoordinates(imageMultiDrawer2.image.texture, r);
                         Quad3D qv = Quad3D.MakeQuad3D((double)(pos.x + rectangle2.x), (double)(pos.y + rectangle2.y), 0.0, rectangle2.w, rectangle2.h);
                         ImageMultiDrawer imageMultiDrawer3 = imageMultiDrawer2;
                         Quad2D quad2D = textureCoordinates;
@@ -241,7 +241,7 @@ namespace CutTheRope.iframework.visual
                         ImageMultiDrawer imageMultiDrawer4 = imageMultiDrawer2;
                         int numberOfQuadsToDraw = imageMultiDrawer4.numberOfQuadsToDraw;
                         imageMultiDrawer4.numberOfQuadsToDraw = numberOfQuadsToDraw + 1;
-                        imageMultiDrawer3.setTextureQuadatVertexQuadatIndex(quad2D, quad3D, numberOfQuadsToDraw);
+                        imageMultiDrawer3.SetTextureQuadatVertexQuadatIndex(quad2D, quad3D, numberOfQuadsToDraw);
                     }
                     vector3.y += tileHeight;
                     k++;
@@ -254,7 +254,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void updateVars()
+        public virtual void UpdateVars()
         {
             maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
             maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));

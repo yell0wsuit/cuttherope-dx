@@ -167,8 +167,8 @@ namespace CutTheRope.desktop
             SkipSizeChanges = false;
             EnableFullScreen(!isFullScreen);
             Save();
-            Application.sharedCanvas().reshape();
-            Application.sharedRootController().fullscreenToggled(!isFullScreen);
+            Application.SharedCanvas().Reshape();
+            Application.SharedRootController().FullscreenToggled(!isFullScreen);
         }
 
         public void FixWindowSize(Rectangle newWindowRect)
@@ -211,7 +211,7 @@ namespace CutTheRope.desktop
                 }
             }
             Save();
-            Application.sharedCanvas().reshape();
+            Application.SharedCanvas().Reshape();
         }
 
         public void ApplyViewportToDevice()

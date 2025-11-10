@@ -45,7 +45,7 @@ namespace CutTheRope.iframework
             };
         }
 
-        public float[] toFloatArray()
+        public float[] ToFloatArray()
         {
             _array ??=
                 [
