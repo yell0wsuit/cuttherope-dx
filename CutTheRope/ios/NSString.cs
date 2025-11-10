@@ -52,7 +52,7 @@ namespace CutTheRope.ios
             result.location = 0U;
             if (str.Length > 0)
             {
-                int num = value_.IndexOf(str);
+                int num = value_.IndexOf(str, StringComparison.Ordinal);
                 if (num > -1)
                 {
                     result.length = (uint)str.Length;
@@ -194,12 +194,12 @@ namespace CutTheRope.ios
 
         public bool HasPrefix(NSString prefix)
         {
-            return value_.StartsWith(prefix.ToString());
+            return value_.StartsWith(prefix.ToString(), StringComparison.Ordinal);
         }
 
         public bool HasSuffix(string p)
         {
-            return value_.EndsWith(p);
+            return value_.EndsWith(p, StringComparison.Ordinal);
         }
 
         private readonly string value_;
