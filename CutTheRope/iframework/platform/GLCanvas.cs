@@ -4,6 +4,7 @@ using CutTheRope.ios;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace CutTheRope.iframework.platform
 {
@@ -50,7 +51,7 @@ namespace CutTheRope.iframework.platform
         {
             if (fpsText != null && fpsFont != null)
             {
-                NSString @string = NSS(fps.ToString("F1"));
+                NSString @string = NSS(fps.ToString("F1", CultureInfo.InvariantCulture));
                 fpsText.SetString(@string);
                 OpenGL.GlColor4f(Color.White);
                 OpenGL.GlEnable(0);

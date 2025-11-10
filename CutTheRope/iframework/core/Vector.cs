@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Globalization;
 
 namespace CutTheRope.iframework.core
 {
@@ -32,9 +33,9 @@ namespace CutTheRope.iframework.core
             return string.Concat(new string[]
             {
                 "Vector(x=",
-                x.ToString(),
+                x.ToString(CultureInfo.InvariantCulture),
                 ",y=",
-                y.ToString(),
+                y.ToString(CultureInfo.InvariantCulture),
                 ")"
             });
         }
