@@ -77,7 +77,7 @@ namespace CutTheRope.game
 
         public virtual void DeleteMenu()
         {
-            ResourceMgr resourceMgr = Application.SharedResourceMgr();
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
             resourceMgr.FreePack(PACK_MENU);
             GC.Collect();
@@ -107,7 +107,7 @@ namespace CutTheRope.game
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
-            ResourceMgr resourceMgr = Application.SharedResourceMgr();
+            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             switch (n)
             {
                 case 0:
