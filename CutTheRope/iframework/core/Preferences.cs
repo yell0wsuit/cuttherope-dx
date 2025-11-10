@@ -234,6 +234,6 @@ namespace CutTheRope.iframework.core
 
         private static readonly Dictionary<string, string> dataStrings_ = [];
 
-        public static bool GameSaveRequested = false;
+        public static bool GameSaveRequested;
     }
 }

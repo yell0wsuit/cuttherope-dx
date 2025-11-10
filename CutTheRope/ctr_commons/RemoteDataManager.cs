@@ -2,17 +2,17 @@ namespace CutTheRope.ctr_commons
 {
     internal class RemoteDataManager
     {
-        public int getBoxForCrossPromo()
+        public static int getBoxForCrossPromo()
         {
             return 0;
         }
 
-        public bool getHideSocialNetworks()
+        public static bool getHideSocialNetworks()
         {
             return false;
         }
 
-        public bool getHideMainPromo()
+        public static bool getHideMainPromo()
         {
             return false;
         }

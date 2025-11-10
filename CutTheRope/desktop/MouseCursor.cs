@@ -1,4 +1,5 @@
 using CutTheRope.iframework;
+using CutTheRope.iframework.platform;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -93,7 +94,7 @@ namespace CutTheRope.desktop
                 list.Add(item);
             }
             _mouseStateTranformed = mouseStateTranformed;
-            return iframework.core.Application.sharedCanvas().convertTouches(list);
+            return GLCanvas.convertTouches(list);
         }
 
         private Texture2D _cursor;

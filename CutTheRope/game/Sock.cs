@@ -76,7 +76,7 @@ namespace CutTheRope.game
 
         public const float SOCK_IDLE_TIMOUT = 0.8f;
 
-        public static int SOCK_RECEIVING = 0;
+        public static int SOCK_RECEIVING;
 
         public static int SOCK_THROWING = 1;
 

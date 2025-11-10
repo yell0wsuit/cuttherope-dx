@@ -470,7 +470,7 @@ namespace CutTheRope.iframework.helpers
             return true;
         }
 
-        public bool lineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+        public static bool lineInLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
         {
             Vector vector = default(Vector);
             vector.x = x3 - x1 + x4 - x2;

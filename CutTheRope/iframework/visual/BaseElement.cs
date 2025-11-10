@@ -97,7 +97,7 @@ namespace CutTheRope.iframework.visual
         {
             if (!RGBAColor.RGBAEqual(t.color, RGBAColor.solidOpaqueRGBA))
             {
-                OpenGL.glColor4f(RGBAColor.solidOpaqueRGBA_Xna);
+                OpenGL.glColor4f(RGBAColor.solidOpaqueRGBAXna);
             }
         }
 
@@ -174,13 +174,13 @@ namespace CutTheRope.iframework.visual
                 switch (blendingMode)
                 {
                     case 0:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                        OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 1:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                        OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                         return;
                     case 2:
-                        OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                        OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                         break;
                     default:
                         return;
@@ -350,12 +350,12 @@ namespace CutTheRope.iframework.visual
             return true;
         }
 
-        private BaseElement createFromXML(XMLNode xml)
+        private static BaseElement createFromXML(XMLNode xml)
         {
             return new BaseElement();
         }
 
-        private int parseAlignmentString(NSString s)
+        private static int parseAlignmentString(NSString s)
         {
             int num = 0;
             if (s.rangeOfString("LEFT").length != 0U)

@@ -136,7 +136,7 @@ namespace CutTheRope.ios
 
         public bool boolValue()
         {
-            return value_.Length != 0 && value_.ToLower() == "true";
+            return value_.Length != 0 && value_.Equals("true", StringComparison.OrdinalIgnoreCase);
         }
 
         public float floatValue()

@@ -90,15 +90,15 @@ namespace CutTheRope.iframework.core
             if (xMLNode != null)
             {
                 string tag = "en";
-                if (LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANGRU)
                 {
                     tag = "ru";
                 }
-                if (LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANGFR)
                 {
                     tag = "fr";
                 }
-                if (LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANGDE)
                 {
                     tag = "de";
                 }
@@ -214,7 +214,7 @@ namespace CutTheRope.iframework.core
             return ContentFolder + relPath;
         }
 
-        private void setQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void setQuadsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = data.Length / 4;
             t.setQuadsCapacity(num);
@@ -240,7 +240,7 @@ namespace CutTheRope.iframework.core
             t.optimizeMemory();
         }
 
-        private void setOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
+        private static void setOffsetsInfo(CTRTexture2D t, float[] data, int size, float scaleX, float scaleY)
         {
             int num = size / 2;
             for (int i = 0; i < num; i++)

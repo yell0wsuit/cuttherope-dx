@@ -12,7 +12,7 @@ namespace CutTheRope.game
             Global.MouseCursor.Enable(false);
             OpenGL.glEnable(0);
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             preDraw();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             int num7 = 126 + cTRRootController.getPack();

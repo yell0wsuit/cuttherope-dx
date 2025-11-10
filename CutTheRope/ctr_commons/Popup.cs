@@ -84,7 +84,7 @@ namespace CutTheRope.ctr_commons
         {
             OpenGL.glEnable(1);
             OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             GLDrawer.drawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, RGBAColor.MakeRGBA(0.0, 0.0, 0.0, 0.5));
             OpenGL.glEnable(0);
             OpenGL.glColor4f(Color.White);

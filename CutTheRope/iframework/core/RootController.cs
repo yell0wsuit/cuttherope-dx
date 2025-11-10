@@ -76,7 +76,7 @@ namespace CutTheRope.iframework.core
             Application.sharedCanvas().afterRender();
         }
 
-        private void applyLandscape()
+        private static void applyLandscape()
         {
         }
 
@@ -95,7 +95,7 @@ namespace CutTheRope.iframework.core
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Application.sharedCanvas().setDefaultRealProjection();
             int num2 = viewTransition;
             if (num2 - 4 <= 1)
@@ -109,7 +109,7 @@ namespace CutTheRope.iframework.core
                         Grabber.drawGrabbedImage(prevScreenImage, 0, 0);
                         OpenGL.glDisable(0);
                         OpenGL.glEnable(1);
-                        OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                        OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                         GLDrawer.drawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill);
                         OpenGL.glDisable(1);
                     }
@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.core
                     Grabber.drawGrabbedImage(nextScreenImage, 0, 0);
                     OpenGL.glDisable(0);
                     OpenGL.glEnable(1);
-                    OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                    OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                     GLDrawer.drawSolidRectWOBorder(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT, fill2);
                     OpenGL.glDisable(1);
                 }
@@ -159,7 +159,7 @@ namespace CutTheRope.iframework.core
             base.activate();
         }
 
-        private void runLoop()
+        private static void runLoop()
         {
         }
 

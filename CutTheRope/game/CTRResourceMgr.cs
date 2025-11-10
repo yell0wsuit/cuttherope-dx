@@ -21,15 +21,15 @@ namespace CutTheRope.game
                 {
                     if (r == 149)
                     {
-                        if (LANGUAGE == Language.LANG_RU)
+                        if (LANGUAGE == Language.LANGRU)
                         {
                             return 139;
                         }
-                        if (LANGUAGE == Language.LANG_DE)
+                        if (LANGUAGE == Language.LANGDE)
                         {
                             return 138;
                         }
-                        if (LANGUAGE == Language.LANG_FR)
+                        if (LANGUAGE == Language.LANGFR)
                         {
                             return 137;
                         }
@@ -37,15 +37,15 @@ namespace CutTheRope.game
                 }
                 else
                 {
-                    if (LANGUAGE == Language.LANG_RU)
+                    if (LANGUAGE == Language.LANGRU)
                     {
                         return 142;
                     }
-                    if (LANGUAGE == Language.LANG_DE)
+                    if (LANGUAGE == Language.LANGDE)
                     {
                         return 144;
                     }
-                    if (LANGUAGE == Language.LANG_FR)
+                    if (LANGUAGE == Language.LANGFR)
                     {
                         return 143;
                     }
@@ -53,15 +53,15 @@ namespace CutTheRope.game
             }
             else
             {
-                if (LANGUAGE == Language.LANG_RU)
+                if (LANGUAGE == Language.LANGRU)
                 {
                     return 140;
                 }
-                if (LANGUAGE == Language.LANG_DE)
+                if (LANGUAGE == Language.LANGDE)
                 {
                     return 141;
                 }
-                if (LANGUAGE == Language.LANG_FR)
+                if (LANGUAGE == Language.LANGFR)
                 {
                     return 69;
                 }

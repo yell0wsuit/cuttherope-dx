@@ -319,26 +319,26 @@ namespace CutTheRope.ctr_commons
 
         private const long NANOS_IN_MILLI = 1000000L;
 
-        private static int state = 0;
+        private static int state;
 
-        private static long onResumeTimeStamp = 0L;
+        private static long onResumeTimeStamp;
 
-        private static long playedTicks = 0L;
+        private static long playedTicks;
 
-        private static long prevTick = 0L;
+        private static long prevTick;
 
         private static readonly long DELTA_NANOS = 18181818L;
 
         private static readonly long DELTA_NANOS_THRES = (long)(DELTA_NANOS * 0.35);
 
-        private static bool DRAW_NOTHING = false;
+        private static bool DRAW_NOTHING;
 
         private static CTRApp gApp;
 
-        private static bool gPaused = false;
+        private static bool gPaused;
 
         private static readonly long[] fpsDeltas = new long[10];
 
-        private static int fpsDeltasPos = 0;
+        private static int fpsDeltasPos;
     }
 }

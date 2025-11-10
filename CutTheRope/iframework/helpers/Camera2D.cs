@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.helpers
 {
     internal class Camera2D : NSObject
     {
-        public virtual Camera2D initWithSpeedandType(float s, CAMERA_TYPE t)
+        public virtual Camera2D initWithSpeedandType(float s, CAMERATYPE t)
         {
             if (base.init() != null)
             {
@@ -25,12 +25,12 @@ namespace CutTheRope.iframework.helpers
                 pos = target;
                 return;
             }
-            if (type == CAMERA_TYPE.CAMERA_SPEED_DELAY)
+            if (type == CAMERATYPE.CAMERASPEEDDELAY)
             {
                 offset = vectMult(vectSub(target, pos), speed);
                 return;
             }
-            if (type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+            if (type == CAMERATYPE.CAMERASPEEDPIXELS)
             {
                 offset = vectMult(vectNormalize(vectSub(target, pos)), speed);
             }
@@ -59,7 +59,7 @@ namespace CutTheRope.iframework.helpers
             OpenGL.glTranslatef(pos.x, pos.y, 0.0);
         }
 
-        public CAMERA_TYPE type;
+        public CAMERATYPE type;
 
         public float speed;
 

@@ -13,11 +13,11 @@ namespace CutTheRope.iframework
     internal class FrameworkTypes : CTRMathHelper
     {
         // (get) Token: 0x06000108 RID: 264 RVA: 0x00005BCC File Offset: 0x00003DCC
-        public GLCanvas canvas => Application.sharedCanvas();
+        public static GLCanvas canvas => Application.sharedCanvas();
 
         public static float[] toFloatArray(Quad2D[] quads)
         {
-            float[] array = new float[quads.Count() * 8];
+            float[] array = new float[quads.Length * 8];
             for (int i = 0; i < quads.Length; i++)
             {
                 quads[i].toFloatArray().CopyTo(array, i * 8);
@@ -27,7 +27,7 @@ namespace CutTheRope.iframework
 
         public static float[] toFloatArray(Quad3D[] quads)
         {
-            float[] array = new float[quads.Count() * 12];
+            float[] array = new float[quads.Length * 12];
             for (int i = 0; i < quads.Length; i++)
             {
                 quads[i].toFloatArray().CopyTo(array, i * 12);
@@ -166,9 +166,9 @@ namespace CutTheRope.iframework
 
         public static float REAL_SCREEN_HEIGHT = 800f;
 
-        public static float SCREEN_OFFSET_Y = 0f;
+        public static float SCREEN_OFFSET_Y;
 
-        public static float SCREEN_OFFSET_X = 0f;
+        public static float SCREEN_OFFSET_X;
 
         public static float SCREEN_BG_SCALE_Y = 1f;
 
@@ -186,9 +186,9 @@ namespace CutTheRope.iframework
 
         public static float VIEW_SCREEN_HEIGHT = 800f;
 
-        public static float VIEW_OFFSET_X = 0f;
+        public static float VIEW_OFFSET_X;
 
-        public static float VIEW_OFFSET_Y = 0f;
+        public static float VIEW_OFFSET_Y;
 
         public static float SCREEN_RATIO;
 
@@ -196,13 +196,13 @@ namespace CutTheRope.iframework
 
         public static float PORTRAIT_SCREEN_HEIGHT = 320f;
 
-        public static bool IS_IPAD = false;
+        public static bool IS_IPAD;
 
-        public static bool IS_RETINA = false;
+        public static bool IS_RETINA;
 
-        public static bool IS_WVGA = false;
+        public static bool IS_WVGA;
 
-        public static bool IS_QVGA = false;
+        public static bool IS_QVGA;
 
         public class FlurryAPI
         {

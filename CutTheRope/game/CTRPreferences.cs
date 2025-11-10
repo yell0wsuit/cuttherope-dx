@@ -94,9 +94,9 @@ namespace CutTheRope.game
             return _getIntForKey(getPackLevelKey("STARS_", p, l));
         }
 
-        public static UNLOCKED_STATE getUnlockedForPackLevel(int p, int l)
+        public static UNLOCKEDSTATE getUnlockedForPackLevel(int p, int l)
         {
-            return (UNLOCKED_STATE)_getIntForKey(getPackLevelKey("UNLOCKED_", p, l));
+            return (UNLOCKEDSTATE)_getIntForKey(getPackLevelKey("UNLOCKED_", p, l));
         }
 
         public static int getPacksCount()
@@ -138,7 +138,7 @@ namespace CutTheRope.game
             return prefs + p.ToString() + "_" + l.ToString();
         }
 
-        public static void setUnlockedForPackLevel(UNLOCKED_STATE s, int p, int l)
+        public static void setUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
         {
             _setIntforKey((int)s, getPackLevelKey("UNLOCKED_", p, l), true);
         }
@@ -266,9 +266,9 @@ namespace CutTheRope.game
             int packsCount = getPacksCount();
             while (i < packsCount)
             {
-                if (getUnlockedForPackLevel(i, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+                if (getUnlockedForPackLevel(i, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
                 {
-                    setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, i, 0);
+                    setUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED, i, 0);
                 }
                 i++;
             }
@@ -317,7 +317,7 @@ namespace CutTheRope.game
             savePreferences();
         }
 
-        internal bool isScoreHashValid()
+        internal static bool isScoreHashValid()
         {
             return true;
         }

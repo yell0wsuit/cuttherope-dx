@@ -282,7 +282,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        private BaseElement createFromXML(XMLNode xml)
+        private static BaseElement createFromXML(XMLNode xml)
         {
             return null;
         }

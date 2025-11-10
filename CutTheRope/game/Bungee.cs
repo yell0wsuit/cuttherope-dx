@@ -88,12 +88,12 @@ namespace CutTheRope.game
                 OpenGL.glEnableClientState(13);
                 if (highlighted)
                 {
-                    OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                    OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     OpenGL.glColorPointer(4, 5, 0, ccolors);
                     OpenGL.glVertexPointer(2, 5, 0, pointer);
                     OpenGL.glDrawArrays(8, 0, 8);
                 }
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 OpenGL.glColorPointer(4, 5, 0, ccolors2);
                 OpenGL.glVertexPointer(2, 5, 0, pointer2);
                 OpenGL.glDrawArrays(8, 0, 10);

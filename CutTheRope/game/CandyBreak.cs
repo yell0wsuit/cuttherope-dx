@@ -67,7 +67,7 @@ namespace CutTheRope.game
         public override void draw()
         {
             preDraw();
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.glEnable(0);
             OpenGL.glBindTexture(drawer.image.texture.name());
             OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));

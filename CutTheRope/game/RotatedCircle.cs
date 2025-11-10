@@ -126,7 +126,7 @@ namespace CutTheRope.game
             if (isRightControllerActive() || isLeftControllerActive())
             {
                 OpenGL.glDisable(0);
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 if (color.a != 1.0)
                 {
@@ -143,7 +143,7 @@ namespace CutTheRope.game
             vinil.color = color;
             vinil.draw();
             OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj in circlesArray)
             {
                 RotatedCircle item = (RotatedCircle)obj;
@@ -152,7 +152,7 @@ namespace CutTheRope.game
                     GLDrawer.drawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
                 }
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             vinilHighlightL.draw();

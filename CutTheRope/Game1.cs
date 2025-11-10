@@ -108,20 +108,20 @@ namespace CutTheRope
         {
         }
 
-        private Language GetSystemLanguage()
+        private static Language GetSystemLanguage()
         {
-            Language result = Language.LANG_EN;
+            Language result = Language.LANGEN;
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru")
             {
-                result = Language.LANG_RU;
+                result = Language.LANGRU;
             }
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de")
             {
-                result = Language.LANG_DE;
+                result = Language.LANGDE;
             }
             if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr")
             {
-                result = Language.LANG_FR;
+                result = Language.LANGFR;
             }
             return result;
         }

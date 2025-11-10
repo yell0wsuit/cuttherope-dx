@@ -49,7 +49,7 @@ namespace CutTheRope.desktop
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
             {
                 if (lastBlend != BlendType.SourceAlpha_InverseSourceAlpha)
                 {
@@ -69,7 +69,7 @@ namespace CutTheRope.desktop
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_ONE && dfactor == BlendingFactor.GL_ONE_MINUS_SRC_ALPHA)
+            else if (sfactor == BlendingFactor.GLONE && dfactor == BlendingFactor.GLONEMINUSSRCALPHA)
             {
                 if (lastBlend != BlendType.One_InverseSourceAlpha)
                 {
@@ -89,7 +89,7 @@ namespace CutTheRope.desktop
                     return;
                 }
             }
-            else if (sfactor == BlendingFactor.GL_SRC_ALPHA && dfactor == BlendingFactor.GL_ONE && lastBlend != BlendType.SourceAlpha_One)
+            else if (sfactor == BlendingFactor.GLSRCALPHA && dfactor == BlendingFactor.GLONE && lastBlend != BlendType.SourceAlpha_One)
             {
                 lastBlend = BlendType.SourceAlpha_One;
                 if (states[(int)lastBlend] == null)

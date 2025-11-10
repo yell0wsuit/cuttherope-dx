@@ -26,12 +26,12 @@ namespace CutTheRope.iframework.core
                 ? NSS(locale)
                 : LANGUAGE switch
                 {
-                    Language.LANG_EN => NSS("en"),
-                    Language.LANG_RU => NSS("ru"),
-                    Language.LANG_DE => NSS("de"),
-                    Language.LANG_FR => NSS("fr"),
-                    Language.LANG_ZH => NSS("zh"),
-                    Language.LANG_JA => NSS("ja"),
+                    Language.LANGEN => NSS("en"),
+                    Language.LANGRU => NSS("ru"),
+                    Language.LANGDE => NSS("de"),
+                    Language.LANGFR => NSS("fr"),
+                    Language.LANGZH => NSS("zh"),
+                    Language.LANGJA => NSS("ja"),
                     _ => NSS("en"),
                 };
         }
@@ -41,18 +41,18 @@ namespace CutTheRope.iframework.core
             if (sid == 8)
             {
                 locale = str.ToString();
-                LANGUAGE = Language.LANG_EN;
+                LANGUAGE = Language.LANGEN;
                 if (locale == "ru")
                 {
-                    LANGUAGE = Language.LANG_RU;
+                    LANGUAGE = Language.LANGRU;
                 }
                 else if (locale == "de")
                 {
-                    LANGUAGE = Language.LANG_DE;
+                    LANGUAGE = Language.LANGDE;
                 }
                 if (locale == "fr")
                 {
-                    LANGUAGE = Language.LANG_FR;
+                    LANGUAGE = Language.LANGFR;
                 }
             }
         }

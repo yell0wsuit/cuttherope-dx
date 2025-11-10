@@ -209,7 +209,7 @@ namespace CutTheRope.iframework.visual
             _hasPremultipliedAlpha = true;
         }
 
-        private void resume()
+        private static void resume()
         {
         }
 
@@ -239,7 +239,7 @@ namespace CutTheRope.iframework.visual
         {
             for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
-                texture2D.resume();
+                resume();
             }
         }
 

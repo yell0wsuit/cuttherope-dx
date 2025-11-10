@@ -27,7 +27,7 @@ namespace CutTheRope.iframework.core
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             base.preDraw();
             base.postDraw();
             OpenGL.glDisable(0);

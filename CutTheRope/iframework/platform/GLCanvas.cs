@@ -55,7 +55,7 @@ namespace CutTheRope.iframework.platform
                 OpenGL.glColor4f(Color.White);
                 OpenGL.glEnable(0);
                 OpenGL.glEnable(1);
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 fpsText.x = 5f;
                 fpsText.y = 5f;
                 fpsText.draw();
@@ -152,7 +152,7 @@ namespace CutTheRope.iframework.platform
             return touchDelegate != null && touchDelegate.menuButtonPressed();
         }
 
-        public List<TouchLocation> convertTouches(List<TouchLocation> touches)
+        public static List<TouchLocation> convertTouches(List<TouchLocation> touches)
         {
             return touches;
         }

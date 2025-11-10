@@ -37,7 +37,7 @@ namespace CutTheRope.ios
                 delay = interval
             };
             Timers.Add(entry);
-            return Timers.Count() - 1;
+            return Timers.Count - 1;
         }
 
         public static void fireTimers(float delta)

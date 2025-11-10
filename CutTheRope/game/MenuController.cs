@@ -561,9 +561,9 @@ namespace CutTheRope.game
             baseElement.anchor = baseElement.parentAnchor = 12;
             touchBaseElement.addChild(baseElement);
             int totalStars = CTRPreferences.getTotalStars();
-            if (n > 0 && n < CTRPreferences.getPacksCount() && CTRPreferences.getUnlockedForPackLevel(n, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && totalStars >= CTRPreferences.packUnlockStars(n))
+            if (n > 0 && n < CTRPreferences.getPacksCount() && CTRPreferences.getUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && totalStars >= CTRPreferences.packUnlockStars(n))
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED, n, 0);
+                CTRPreferences.setUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED, n, 0);
             }
             int r = 52;
             int q = 4 + n;
@@ -585,8 +585,8 @@ namespace CutTheRope.game
                 nsstring = NSS(text3 + text4 + (@string?.ToString()));
             }
             NSString nSString = nsstring;
-            UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(n, 0);
-            bool flag = unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && n != CTRPreferences.getPacksCount();
+            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(n, 0);
+            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && n != CTRPreferences.getPacksCount();
             touchBaseElement.bid = 23 + n;
             Image image = Image.Image_createWithResIDQuad(r, q);
             image.doRestoreCutTransparency();
@@ -638,7 +638,7 @@ namespace CutTheRope.game
                     monsterSlot.addChild(image3);
                 }
                 baseElement.addChild(image);
-                if (unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED)
                 {
                     Image image4 = Image.Image_createWithResIDQuad(52, 2);
                     image4.setName("lockHideMe");
@@ -656,7 +656,7 @@ namespace CutTheRope.game
             Text text2 = new Text().initWithFont(Application.getFont(3));
             text2.anchor = text2.parentAnchor = 10;
             text2.scaleX = text2.scaleY = 0.75f;
-            if (LANGUAGE is Language.LANG_DE or Language.LANG_EN)
+            if (LANGUAGE is Language.LANGDE or Language.LANGEN)
             {
                 text2.scaleX = 0.7f;
             }
@@ -904,18 +904,18 @@ namespace CutTheRope.game
                 return;
             }
             boxes[i].getChildWithName("boxContainer").playTimeline(0);
-            UNLOCKED_STATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(i, 0);
+            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.getUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].getChildWithName("lockHideMe");
-            if (childWithName != null && unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_JUST_UNLOCKED)
+            if (childWithName != null && unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATEJUSTUNLOCKED)
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_UNLOCKED, i, 0);
+                CTRPreferences.setUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEUNLOCKED, i, 0);
                 childWithName.playTimeline(0);
             }
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
             if (showNextPackStatus && i == cTRRootController.getPack() + 1)
             {
                 showNextPackStatus = false;
-                if (unlockedForPackLevel == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+                if (unlockedForPackLevel == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
                 {
                     showCantUnlockPopup();
                 }
@@ -931,7 +931,7 @@ namespace CutTheRope.game
 
         public virtual BaseElement createButtonForLevelPack(int l, int p)
         {
-            bool flag = CTRPreferences.getUnlockedForPackLevel(p, l) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED;
+            bool flag = CTRPreferences.getUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED;
             int starsForPackLevel = CTRPreferences.getStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().init();
             touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
@@ -1445,7 +1445,7 @@ namespace CutTheRope.game
                             return;
                         }
                         CTRPreferences.setLastPack(pack);
-                        bool flag5 = CTRPreferences.getUnlockedForPackLevel(n - 23, 0) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED && n - 23 != CTRPreferences.getPacksCount();
+                        bool flag5 = CTRPreferences.getUnlockedForPackLevel(n - 23, 0) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED && n - 23 != CTRPreferences.getPacksCount();
                         if (n != 34 && !flag5)
                         {
                             preLevelSelect();

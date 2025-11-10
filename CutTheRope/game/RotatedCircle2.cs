@@ -158,18 +158,18 @@ namespace CutTheRope.game
             if (isRightControllerActive() || isLeftControllerActive())
             {
                 OpenGL.glDisable(0);
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 GLDrawer.drawAntialiasedCurve2(x, y, sizeInPixels + (3f * Math.Abs(vinilTR.scaleX)), 0f, 6.2831855f, 51, 2f, 1f * Math.Abs(vinilTR.scaleX), RGBAColor.whiteRGBA);
             }
             OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             vinilTL.color = vinilTR.color = vinilBL.color = vinilBR.color = RGBAColor.solidOpaqueRGBA;
             vinilTL.draw();
             vinilTR.draw();
             vinilBL.draw();
             vinilBR.draw();
             OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             if (isRightControllerActive() || isLeftControllerActive() || color.a < 1.0)
             {
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
@@ -185,7 +185,7 @@ namespace CutTheRope.game
                 }
             }
             OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             vinilHighlightL.color = color;
@@ -198,7 +198,7 @@ namespace CutTheRope.game
             vinilStickerL.draw();
             vinilStickerR.draw();
             OpenGL.glDisable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             GLDrawer.drawAntialiasedCurve2(x, y, vinilStickerL.width * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 1f, vinilStickerL.scaleX * 1.5f, INNER_CIRCLE_COLOR1);
             GLDrawer.drawAntialiasedCurve2(x, y, (vinilStickerL.width - 2) * vinilStickerL.scaleX, 0f, 6.2831855f, 51, 0f, vinilStickerL.scaleX * 1f, INNER_CIRCLE_COLOR2);
             OpenGL.glColor4f(Color.White);

@@ -1704,7 +1704,7 @@ namespace CutTheRope.game
 
         internal static int[] PACK_LOCALIZATION_MENU = [149, -1];
 
-        public static Language LANGUAGE = Language.LANG_EN;
+        public static Language LANGUAGE = Language.LANGEN;
 
         private static Dictionary<string, string> xmls_;
     }

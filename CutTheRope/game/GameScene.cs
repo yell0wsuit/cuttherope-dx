@@ -76,7 +76,7 @@ namespace CutTheRope.game
                 staticAniPool = (AnimationsPool)new AnimationsPool().init();
                 staticAniPool.visible = false;
                 addChild(staticAniPool);
-                camera = new Camera2D().initWithSpeedandType(14f, CAMERA_TYPE.CAMERA_SPEED_DELAY);
+                camera = new Camera2D().initWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
                 int textureResID = 104 + (cTRRootController.getPack() * 2);
                 back = new TileMap().initWithRowsColumns(1, 1);
                 back.setRepeatHorizontally(TileMap.Repeat.REPEAT_NONE);
@@ -839,7 +839,7 @@ namespace CutTheRope.game
             {
                 ignoreTouches = true;
                 fastenCamera = false;
-                camera.type = CAMERA_TYPE.CAMERA_SPEED_PIXELS;
+                camera.type = CAMERATYPE.CAMERASPEEDPIXELS;
                 camera.speed = 20f;
                 cameraMoveMode = 0;
                 ConstraintedPoint constraintedPoint = (twoParts != 2) ? starL : star;
@@ -990,11 +990,11 @@ namespace CutTheRope.game
             float num2 = FIT_TO_BOUNDARIES((double)num, 0.0, (double)(mapWidth - SCREEN_WIDTH));
             float num3 = FIT_TO_BOUNDARIES(num19, 0.0, (double)(mapHeight - SCREEN_HEIGHT));
             camera.moveToXYImmediate(num2, num3, false);
-            if (!freezeCamera || camera.type != CAMERA_TYPE.CAMERA_SPEED_DELAY)
+            if (!freezeCamera || camera.type != CAMERATYPE.CAMERASPEEDDELAY)
             {
                 camera.update(delta);
             }
-            if (camera.type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+            if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
             {
                 float num4 = 100f;
                 float num5 = 800f;
@@ -1025,7 +1025,7 @@ namespace CutTheRope.game
                 }
                 if ((double)Math.Abs(camera.pos.x - num2) < 1.0 && (double)Math.Abs(camera.pos.y - num3) < 1.0)
                 {
-                    camera.type = CAMERA_TYPE.CAMERA_SPEED_DELAY;
+                    camera.type = CAMERATYPE.CAMERASPEEDDELAY;
                     camera.speed = 14f;
                 }
             }
@@ -1068,7 +1068,7 @@ namespace CutTheRope.game
                         {
                             goto IL_0478;
                         }
-                        if (camera.type != CAMERA_TYPE.CAMERA_SPEED_PIXELS || !ignoreTouches)
+                        if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
                         {
                             grab.updateSpider(delta);
                         }
@@ -1299,7 +1299,7 @@ namespace CutTheRope.game
                 }
             }
             target.update(delta);
-            if (camera.type != CAMERA_TYPE.CAMERA_SPEED_PIXELS || !ignoreTouches)
+            if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
             {
                 foreach (object obj2 in stars)
                 {
@@ -2022,7 +2022,7 @@ namespace CutTheRope.game
                 GLDrawer.drawImagePart(texture, r, 0.0, (double)(num5 + num3));
             }
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (earthAnims != null)
             {
                 foreach (object obj in earthAnims)
@@ -2033,12 +2033,12 @@ namespace CutTheRope.game
             OpenGL.glTranslatef((double)-(double)canvas.xOffsetScaled, 0.0, 0.0);
             OpenGL.glPopMatrix();
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             pollenDrawer.draw();
             gravityButton?.draw();
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             support.draw();
             target.draw();
             foreach (object obj2 in tutorials)
@@ -2080,7 +2080,7 @@ namespace CutTheRope.game
                 sock.draw();
                 sock.y += 85f;
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj11 in bungees)
             {
                 ((Grab)obj11).drawBack();
@@ -2089,7 +2089,7 @@ namespace CutTheRope.game
             {
                 ((Grab)obj12).draw();
             }
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj13 in stars)
             {
                 ((GameObject)obj13).draw();
@@ -2101,9 +2101,9 @@ namespace CutTheRope.game
                 candy.draw();
                 if (candyBlink.getCurrentTimeline() != null)
                 {
-                    OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                    OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                     candyBlink.draw();
-                    OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                    OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 }
             }
             if (twoParts != 2)
@@ -2131,12 +2131,12 @@ namespace CutTheRope.game
             }
             aniPool.draw();
             bool flag = nightLevel;
-            OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.glDisable(0);
             OpenGL.glColor4f(Color.White);
             drawCuts();
             OpenGL.glEnable(0);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             camera.cancelCameraTransformation();
             staticAniPool.draw();
             if (nightLevel)
@@ -2172,7 +2172,7 @@ namespace CutTheRope.game
                     List<Vector> list = [];
                     Vector vector = default(Vector);
                     bool flag = true;
-                    for (int k = 0; k < array.Count(); k++)
+                    for (int k = 0; k < array.Length; k++)
                     {
                         if (k == 0)
                         {
@@ -2188,7 +2188,7 @@ namespace CutTheRope.game
                     if (!flag)
                     {
                         array = list.ToArray();
-                        num = array.Count() - 1;
+                        num = array.Length - 1;
                         int num6 = num * 2;
                         float[] array2 = new float[num6 * 2];
                         float num7 = 1f / num6;
@@ -2201,7 +2201,7 @@ namespace CutTheRope.game
                                 num8 = 1f;
                             }
                             Vector vector2 = GLDrawer.calcPathBezier(array, num + 1, num8);
-                            if (num9 > array2.Count() - 2)
+                            if (num9 > array2.Length - 2)
                             {
                                 break;
                             }
@@ -2593,7 +2593,7 @@ namespace CutTheRope.game
         {
             if (ignoreTouches)
             {
-                if (camera.type == CAMERA_TYPE.CAMERA_SPEED_PIXELS)
+                if (camera.type == CAMERATYPE.CAMERASPEEDPIXELS)
                 {
                     fastenCamera = true;
                 }

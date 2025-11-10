@@ -241,9 +241,9 @@ namespace CutTheRope.game
             {
                 wheelHighlight.visible = wheelOperating != -1;
                 wheelImage3.visible = wheelOperating == -1;
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 wheelImage.draw();
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             }
             OpenGL.glDisable(0);
             bungee?.draw();

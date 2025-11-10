@@ -630,7 +630,7 @@ namespace CutTheRope.desktop
 
         private static RenderTarget2D s_RenderTarget;
 
-        private static Viewport s_Viewport = default(Viewport);
+        private static Viewport s_Viewport;
 
         private static int s_glMatrixMode;
 
@@ -672,9 +672,9 @@ namespace CutTheRope.desktop
 
         private static RasterizerState s_rasterizerStateTexture;
 
-        private static VertexPositionColor[] s_LastVertices_PositionColor = null;
+        private static VertexPositionColor[] s_LastVertices_PositionColor;
 
-        private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture = null;
+        private static VertexPositionNormalTexture[] s_LastVertices_PositionNormalTexture;
 
         private static Rectangle ScreenRect = new(0, 0, Global.GraphicsDevice.Viewport.Width, Global.GraphicsDevice.Viewport.Height);
 

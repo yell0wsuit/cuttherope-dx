@@ -118,11 +118,11 @@ namespace CutTheRope.iframework.visual
             preDraw();
             if (blendAdditive)
             {
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
             }
             else
             {
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
             OpenGL.glEnable(0);
             OpenGL.glBindTexture(drawer.image.texture.name());
@@ -132,7 +132,7 @@ namespace CutTheRope.iframework.visual
             OpenGL.glBindBuffer(2, colorsID);
             OpenGL.glColorPointer(4, 5, 0, colors);
             OpenGL.glDrawElements(7, particleIdx * 6, drawer.indices);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             OpenGL.glBindBuffer(2, 0U);
             OpenGL.glDisableClientState(13);
             postDraw();

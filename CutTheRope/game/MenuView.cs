@@ -17,7 +17,7 @@ namespace CutTheRope.game
             OpenGL.glColor4f(Color.White);
             OpenGL.glEnable(0);
             OpenGL.glEnable(1);
-            OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+            OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             base.preDraw();
             base.postDraw();
             OpenGL.glDisable(0);

@@ -45,20 +45,20 @@ namespace CutTheRope.iframework
             return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
         }
 
-        public RGBAColor(double _r, double _g, double _b, double _a)
+        public RGBAColor(double R, double G, double B, double A)
         {
-            r = (float)_r;
-            g = (float)_g;
-            b = (float)_b;
-            a = (float)_a;
+            r = (float)R;
+            g = (float)G;
+            b = (float)B;
+            a = (float)A;
         }
 
-        public RGBAColor(float _r, float _g, float _b, float _a)
+        public RGBAColor(float R, float G, float B, float A)
         {
-            r = _r;
-            g = _g;
-            b = _b;
-            a = _a;
+            r = R;
+            g = G;
+            b = B;
+            a = A;
         }
 
         private void init(float _r, float _g, float _b, float _a)
@@ -88,7 +88,7 @@ namespace CutTheRope.iframework
 
         public static readonly RGBAColor solidOpaqueRGBA = new(1f, 1f, 1f, 1f);
 
-        public static readonly Color solidOpaqueRGBA_Xna = Color.White;
+        public static readonly Color solidOpaqueRGBAXna = Color.White;
 
         public static readonly RGBAColor redRGBA = new(1.0, 0.0, 0.0, 1.0);
 

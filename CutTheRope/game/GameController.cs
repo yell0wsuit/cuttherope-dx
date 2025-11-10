@@ -225,7 +225,7 @@ namespace CutTheRope.game
             boxCloseHandled = false;
             CTRPreferences ctrpreferences = Application.sharedPreferences();
             CTRRootController cTRRootController = (CTRRootController)Application.sharedRootController();
-            if (!ctrpreferences.isScoreHashValid())
+            if (!CTRPreferences.isScoreHashValid())
             {
                 CTRRootController.setHacked();
             }
@@ -307,9 +307,9 @@ namespace CutTheRope.game
             CTRRootController ctrrootController = (CTRRootController)Application.sharedRootController();
             int pack = ctrrootController.getPack();
             int level = ctrrootController.getLevel();
-            if (level < CTRPreferences.getLevelsInPackCount() - 1 && CTRPreferences.getUnlockedForPackLevel(pack, level + 1) == UNLOCKED_STATE.UNLOCKED_STATE_LOCKED)
+            if (level < CTRPreferences.getLevelsInPackCount() - 1 && CTRPreferences.getUnlockedForPackLevel(pack, level + 1) == UNLOCKEDSTATE.UNLOCKEDSTATELOCKED)
             {
-                CTRPreferences.setUnlockedForPackLevel(UNLOCKED_STATE.UNLOCKED_STATE_UNLOCKED, pack, level + 1);
+                CTRPreferences.setUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKEDSTATEUNLOCKED, pack, level + 1);
             }
         }
 

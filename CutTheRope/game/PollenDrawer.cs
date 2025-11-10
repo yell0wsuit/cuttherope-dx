@@ -52,7 +52,7 @@ namespace CutTheRope.game
             float num = 1f;
             float num2 = 1f;
             float[] array = [0.3f, 0.3f, 0.5f, 0.5f, 0.6f];
-            int num3 = array.Count();
+            int num3 = array.Length;
             float num4 = array[RND_RANGE(0, num3 - 1)];
             float num5 = num4;
             if (RND(1) == 1)
@@ -155,7 +155,7 @@ namespace CutTheRope.game
             if (pollenCount >= 2)
             {
                 preDraw();
-                OpenGL.glBlendFunc(BlendingFactor.GL_SRC_ALPHA, BlendingFactor.GL_ONE);
+                OpenGL.glBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
                 OpenGL.glEnable(0);
                 OpenGL.glBindTexture(drawer.image.texture.name());
                 OpenGL.glVertexPointer(3, 5, 0, toFloatArray(drawer.vertices));
@@ -165,7 +165,7 @@ namespace CutTheRope.game
                 OpenGL.glBufferData(2, colors, 3);
                 OpenGL.glColorPointer(4, 5, 0, colors);
                 OpenGL.glDrawElements(7, (pollenCount - 1) * 6, drawer.indices);
-                OpenGL.glBlendFunc(BlendingFactor.GL_ONE, BlendingFactor.GL_ONE_MINUS_SRC_ALPHA);
+                OpenGL.glBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
                 OpenGL.glBindBuffer(2, 0U);
                 OpenGL.glDisableClientState(13);
                 postDraw();
