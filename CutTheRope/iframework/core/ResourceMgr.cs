@@ -4,6 +4,7 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CutTheRope.iframework.core
 {
@@ -137,7 +138,8 @@ namespace CutTheRope.iframework.core
                 CTRTexture2D.SetAliasTexParameters();
             }
             CTRTexture2D.SetDefaultAlphaPixelFormat((CTRTexture2D.Texture2DPixelFormat)defaultAlphaPixelFormat);
-            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text, true) ?? throw new Exception("texture not found: " + text);
+            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(text, true)
+                ?? throw new FileNotFoundException("texture not found: " + text, text);
             CTRTexture2D.SetDefaultAlphaPixelFormat(CTRTexture2D.kTexture2DPixelFormat_Default);
             if (isWvga)
             {
