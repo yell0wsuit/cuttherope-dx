@@ -2,7 +2,7 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class VerticallyTiledImage : Image
+    internal sealed class VerticallyTiledImage : Image
     {
         public override Image InitWithTexture(CTRTexture2D t)
         {
@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.visual
             PostDraw();
         }
 
-        public virtual void SetTileVerticallyTopCenterBottom(int t, int c, int b)
+        public void SetTileVerticallyTopCenterBottom(int t, int c, int b)
         {
             tiles[0] = t;
             tiles[1] = c;

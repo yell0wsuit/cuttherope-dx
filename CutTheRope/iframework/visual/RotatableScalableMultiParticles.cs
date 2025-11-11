@@ -3,7 +3,7 @@ using CutTheRope.iframework.core;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class RotatableScalableMultiParticles : ScalableMultiParticles
+    internal sealed class RotatableScalableMultiParticles : ScalableMultiParticles
     {
         public override void InitParticle(ref Particle particle)
         {

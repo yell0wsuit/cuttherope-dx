@@ -1,6 +1,6 @@
 namespace CutTheRope.commons
 {
-    internal class SaveMgr
+    internal sealed class SaveMgr
     {
         public static void Backup()
         {

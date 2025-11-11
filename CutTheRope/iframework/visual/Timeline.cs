@@ -3,15 +3,15 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Timeline : NSObject
+    internal sealed class Timeline : NSObject
     {
-        public virtual void StopTimeline()
+        public void StopTimeline()
         {
             state = TimelineState.TIMELINE_STOPPED;
             DeactivateTracks();
         }
 
-        public virtual void DeactivateTracks()
+        public void DeactivateTracks()
         {
             for (int i = 0; i < tracks.Length; i++)
             {
@@ -31,7 +31,7 @@ namespace CutTheRope.iframework.visual
             time = tracks[t].GetFrameTime(k);
         }
 
-        public virtual void PlayTimeline()
+        public void PlayTimeline()
         {
             if (state != TimelineState.TIMELINE_PAUSED)
             {
@@ -54,7 +54,7 @@ namespace CutTheRope.iframework.visual
             UpdateTimeline(this, 0f);
         }
 
-        public virtual void PauseTimeline()
+        public void PauseTimeline()
         {
             state = TimelineState.TIMELINE_PAUSED;
         }
@@ -147,7 +147,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual Timeline InitWithMaxKeyFramesOnTrack(int m)
+        public Timeline InitWithMaxKeyFramesOnTrack(int m)
         {
             if (base.Init() != null)
             {
@@ -161,13 +161,13 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void AddKeyFrame(KeyFrame k)
+        public void AddKeyFrame(KeyFrame k)
         {
             int i = tracks[(int)k.trackType] != null ? tracks[(int)k.trackType].keyFramesCount : 0;
             SetKeyFrameAt(k, i);
         }
 
-        public virtual void SetKeyFrameAt(KeyFrame k, int i)
+        public void SetKeyFrameAt(KeyFrame k, int i)
         {
             if (tracks[(int)k.trackType] == null)
             {
@@ -176,12 +176,12 @@ namespace CutTheRope.iframework.visual
             tracks[(int)k.trackType].SetKeyFrameAt(k, i);
         }
 
-        public virtual void SetTimelineLoopType(LoopType l)
+        public void SetTimelineLoopType(LoopType l)
         {
             timelineLoopType = l;
         }
 
-        public virtual Track GetTrack(Track.TrackType tt)
+        public Track GetTrack(Track.TrackType tt)
         {
             return tracks[(int)tt];
         }

@@ -4,9 +4,9 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class Camera2D : NSObject
+    internal sealed class Camera2D : NSObject
     {
-        public virtual Camera2D InitWithSpeedandType(float s, CAMERATYPE t)
+        public Camera2D InitWithSpeedandType(float s, CAMERATYPE t)
         {
             if (base.Init() != null)
             {
@@ -16,7 +16,7 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void MoveToXYImmediate(float x, float y, bool immediate)
+        public void MoveToXYImmediate(float x, float y, bool immediate)
         {
             target.x = x;
             target.y = y;
@@ -36,7 +36,7 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void Update(float delta)
+        public void Update(float delta)
         {
             if (!VectEqual(pos, target))
             {
@@ -49,12 +49,12 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void ApplyCameraTransformation()
+        public void ApplyCameraTransformation()
         {
             OpenGL.GlTranslatef((double)(0f - pos.x), (double)(0f - pos.y), 0.0);
         }
 
-        public virtual void CancelCameraTransformation()
+        public void CancelCameraTransformation()
         {
             OpenGL.GlTranslatef(pos.x, pos.y, 0.0);
         }

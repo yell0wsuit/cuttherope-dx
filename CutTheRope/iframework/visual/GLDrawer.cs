@@ -4,7 +4,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class GLDrawer : NSObject
+    internal sealed class GLDrawer : NSObject
     {
         public static void DrawImage(CTRTexture2D image, float x, float y)
         {

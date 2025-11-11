@@ -203,14 +203,14 @@ namespace CutTheRope.iframework
 
         public static bool IS_QVGA;
 
-        public class FlurryAPI
+        public sealed class FlurryAPI
         {
             public static void LogEvent(NSString s)
             {
             }
         }
 
-        public class AndroidAPI
+        public sealed class AndroidAPI
         {
             public static void OpenUrl(NSString url)
             {

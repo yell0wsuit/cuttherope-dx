@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
+    internal sealed class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
         private static void DrawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
@@ -53,7 +53,7 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public virtual bool PointOutOfScreen(ConstraintedPoint p)
+        public bool PointOutOfScreen(ConstraintedPoint p)
         {
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
@@ -105,7 +105,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -116,7 +116,7 @@ namespace CutTheRope.game
             Restart();
         }
 
-        public virtual void Reload()
+        public void Reload()
         {
             dd.CancelAllDispatches();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -130,7 +130,7 @@ namespace CutTheRope.game
             XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
         }
 
-        public virtual void LoadNextMap()
+        public void LoadNextMap()
         {
             dd.CancelAllDispatches();
             initialCameraToStarDistance = -1f;
@@ -151,13 +151,13 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void Restart()
+        public void Restart()
         {
             Hide();
             Show();
         }
 
-        public virtual void CreateEarthImageWithOffsetXY(float xs, float ys)
+        public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
             Image image = Image.Image_createWithResIDQuad(78, 58);
             image.anchor = 18;
@@ -181,7 +181,7 @@ namespace CutTheRope.game
             _ = earthAnims.AddObject(image);
         }
 
-        public virtual bool ShouldSkipTutorialElement(XMLNode c)
+        public static bool ShouldSkipTutorialElement(XMLNode c)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 1)
@@ -204,7 +204,7 @@ namespace CutTheRope.game
             return false;
         }
 
-        public virtual void ShowGreeting()
+        public void ShowGreeting()
         {
             target.PlayAnimationtimeline(101, 10);
         }
@@ -829,7 +829,7 @@ namespace CutTheRope.game
             CTRRootController.LogEvent("IG_SHOWN");
         }
 
-        public virtual void StartCamera()
+        public void StartCamera()
         {
             if (mapWidth > SCREEN_WIDTH || mapHeight > SCREEN_HEIGHT)
             {
@@ -876,12 +876,12 @@ namespace CutTheRope.game
             camera.MoveToXYImmediate(0f, 0f, true);
         }
 
-        public virtual void DoCandyBlink()
+        public void DoCandyBlink()
         {
             candyBlink.PlayTimeline(0);
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
             if (rotatedCircles.GetObjectIndex(t.element) != -1 || i != 1)
             {
@@ -909,7 +909,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             if (rotatedCircles.GetObjectIndex(t.element) != -1)
             {
@@ -1894,7 +1894,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void Teleport()
+        public void Teleport()
         {
             if (targetSock != null)
             {
@@ -1914,13 +1914,13 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void AnimateLevelRestart()
+        public void AnimateLevelRestart()
         {
             restartState = 0;
             dimTime = 0.15f;
         }
 
-        public virtual void ReleaseAllRopes(bool left)
+        public void ReleaseAllRopes(bool left)
         {
             int num = bungees.Count();
             for (int i = 0; i < num; i++)
@@ -1945,7 +1945,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void CalculateScore()
+        public void CalculateScore()
         {
             timeBonus = (int)MAX(0f, 30f - time) * 100;
             timeBonus /= 10;
@@ -1954,7 +1954,7 @@ namespace CutTheRope.game
             score = (int)Ceil(timeBonus + starBonus);
         }
 
-        public virtual void GameWon()
+        public void GameWon()
         {
             dd.CancelAllDispatches();
             target.PlayTimeline(6);
@@ -1983,7 +1983,7 @@ namespace CutTheRope.game
             ReleaseAllRopes(false);
         }
 
-        public virtual void GameLost()
+        public void GameLost()
         {
             dd.CancelAllDispatches();
             target.PlayAnimationtimeline(102, 5);
@@ -2145,7 +2145,7 @@ namespace CutTheRope.game
             base.PostDraw();
         }
 
-        public virtual void DrawCuts()
+        public void DrawCuts()
         {
             for (int i = 0; i < 5; i++)
             {
@@ -2248,7 +2248,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
+        public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
         {
             float num = 624f;
             if (GameObject.RectInObject(p.x - num, p.y - num, p.x + num, p.y + num, c))
@@ -2273,7 +2273,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void HandleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
+        public static void HandleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
         {
             if (!b.skip)
             {
@@ -2293,7 +2293,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void OperatePump(Pump p)
+        public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
             CTRSoundMgr.PlaySound(RND_RANGE(29, 32));
@@ -2323,7 +2323,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
+        public int CutWithRazorOrLine1Line2Immediate(Razor r, Vector v1, Vector v2, bool im)
         {
             int num = 0;
             for (int i = 0; i < bungees.Count(); i++)
@@ -2371,7 +2371,7 @@ namespace CutTheRope.game
             return num;
         }
 
-        public virtual void SpiderBusted(Grab g)
+        public void SpiderBusted(Grab g)
         {
             int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
             Preferences._setIntforKey(num, "PREFS_SPIDERS_BUSTED", false);
@@ -2411,7 +2411,7 @@ namespace CutTheRope.game
             _ = aniPool.AddChild(image);
         }
 
-        public virtual void SpiderWon(Grab sg)
+        public void SpiderWon(Grab sg)
         {
             CTRSoundMgr.PlaySound(35);
             int num = bungees.Count();
@@ -2467,7 +2467,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void PopCandyBubble(bool left)
+        public void PopCandyBubble(bool left)
         {
             if (twoParts == 2)
             {
@@ -2488,7 +2488,7 @@ namespace CutTheRope.game
             PopBubbleAtXY(candyR.x, candyR.y);
         }
 
-        public virtual void PopBubbleAtXY(float bx, float by)
+        public void PopBubbleAtXY(float bx, float by)
         {
             CTRSoundMgr.PlaySound(12);
             Animation animation = Animation.Animation_createWithResID(73);
@@ -2502,7 +2502,7 @@ namespace CutTheRope.game
             _ = aniPool.AddChild(animation);
         }
 
-        public virtual bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
+        public bool HandleBubbleTouchXY(ConstraintedPoint s, float tx, float ty)
         {
             if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
@@ -2522,7 +2522,7 @@ namespace CutTheRope.game
             return false;
         }
 
-        public virtual void ResetBungeeHighlight()
+        public void ResetBungeeHighlight()
         {
             for (int i = 0; i < bungees.Count(); i++)
             {
@@ -2534,7 +2534,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual Bungee GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
+        public Bungee GetNearestBungeeSegmentByBeziersPointsatXYgrab(ref Vector s, float tx, float ty, ref Grab grab)
         {
             float num = 60f;
             Bungee result = null;
@@ -2563,7 +2563,7 @@ namespace CutTheRope.game
             return result;
         }
 
-        public virtual Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
+        public static Bungee GetNearestBungeeSegmentByConstraintsforGrab(ref Vector s, Grab g)
         {
             float num4 = 2.1474836E+09f;
             Bungee result = null;
@@ -2588,7 +2588,7 @@ namespace CutTheRope.game
             return result;
         }
 
-        public virtual bool TouchDownXYIndex(float tx, float ty, int ti)
+        public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
@@ -2732,7 +2732,7 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual bool TouchUpXYIndex(float tx, float ty, int ti)
+        public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
@@ -2790,7 +2790,7 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual bool TouchMoveXYIndex(float tx, float ty, int ti)
+        public bool TouchMoveXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
             {
@@ -3007,7 +3007,7 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual bool TouchDraggedXYIndex(float tx, float ty, int index)
+        public bool TouchDraggedXYIndex(float tx, float ty, int index)
         {
             if (index > 5)
             {
@@ -3017,7 +3017,7 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (MaterialPoint.globalGravity.y == 784.0)
             {
@@ -3049,7 +3049,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void RotateAllSpikesWithID(int sid)
+        public void RotateAllSpikesWithID(int sid)
         {
             foreach (object obj in spikes)
             {
@@ -3073,7 +3073,7 @@ namespace CutTheRope.game
             base.Dealloc();
         }
 
-        public virtual void FullscreenToggled(bool isFullscreen)
+        public void FullscreenToggled(bool isFullscreen)
         {
             BaseElement childWithName = staticAniPool.GetChildWithName("levelLabel");
             if (childWithName != null)
@@ -3387,7 +3387,7 @@ namespace CutTheRope.game
 
         public DynamicArray[] fingerCuts = new DynamicArray[5];
 
-        private class FingerCut : NSObject
+        private sealed class FingerCut : NSObject
         {
             public Vector start;
 
@@ -3400,7 +3400,7 @@ namespace CutTheRope.game
             public RGBAColor c;
         }
 
-        private class SCandy : ConstraintedPoint
+        private sealed class SCandy : ConstraintedPoint
         {
             public bool good;
 
@@ -3411,12 +3411,12 @@ namespace CutTheRope.game
             public float lastAngleChange;
         }
 
-        private class TutorialText : Text
+        private sealed class TutorialText : Text
         {
             public int special;
         }
 
-        private class GameObjectSpecial : CTRGameObject
+        private sealed class GameObjectSpecial : CTRGameObject
         {
             private static GameObjectSpecial GameObjectSpecial_create(CTRTexture2D t)
             {

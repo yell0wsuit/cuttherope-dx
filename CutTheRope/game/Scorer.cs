@@ -2,7 +2,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Scorer
+    internal sealed class Scorer
     {
         public static void PostLeaderboardResultforLaderboardIdlowestValFirstforGameCenter(int boxScore, int level, bool islowestValFirstforGameCenter)
         {

@@ -4,7 +4,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class Pump : GameObject
+    internal sealed class Pump : GameObject
     {
         public static Pump Pump_create(CTRTexture2D t)
         {
@@ -23,7 +23,7 @@ namespace CutTheRope.game
             return pump;
         }
 
-        public virtual void UpdateRotation()
+        public void UpdateRotation()
         {
             t1.x = x - (bb.w / 2f);
             t2.x = x + (bb.w / 2f);

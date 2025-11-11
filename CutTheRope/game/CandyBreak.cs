@@ -4,7 +4,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CandyBreak : RotateableMultiParticles
+    internal sealed class CandyBreak : RotateableMultiParticles
     {
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {

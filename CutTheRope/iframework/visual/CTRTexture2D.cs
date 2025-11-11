@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class CTRTexture2D : NSObject
+    internal sealed class CTRTexture2D : NSObject
     {
         public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
@@ -42,7 +42,7 @@ namespace CutTheRope.iframework.visual
             return _isWvga;
         }
 
-        public virtual void SetQuadsCapacity(int n)
+        public void SetQuadsCapacity(int n)
         {
             quadsCount = n;
             quads = new Quad2D[quadsCount];
@@ -50,19 +50,19 @@ namespace CutTheRope.iframework.visual
             quadOffsets = new Vector[quadsCount];
         }
 
-        public virtual void SetQuadAt(CTRRectangle rect, int n)
+        public void SetQuadAt(CTRRectangle rect, int n)
         {
             quads[n] = GLDrawer.GetTextureCoordinates(this, rect);
             quadRects[n] = rect;
             quadOffsets[n] = vectZero;
         }
 
-        public virtual void SetWvga()
+        public void SetWvga()
         {
             _isWvga = true;
         }
 
-        public virtual void SetScale(float scaleX, float scaleY)
+        public void SetScale(float scaleX, float scaleY)
         {
             _scaleX = scaleX;
             _scaleY = scaleY;
@@ -109,7 +109,7 @@ namespace CutTheRope.iframework.visual
             OpenGL.GlDrawArrays(8, 0, 4);
         }
 
-        public virtual void CalculateForQuickDrawing()
+        public void CalculateForQuickDrawing()
         {
             if (_isWvga)
             {
@@ -133,7 +133,7 @@ namespace CutTheRope.iframework.visual
         {
         }
 
-        public virtual void Reg()
+        public void Reg()
         {
             prev = tail;
             if (prev != null)
@@ -147,7 +147,7 @@ namespace CutTheRope.iframework.visual
             tail = this;
         }
 
-        public virtual void Unreg()
+        public void Unreg()
         {
             if (prev != null)
             {
@@ -168,7 +168,7 @@ namespace CutTheRope.iframework.visual
             next = prev = null;
         }
 
-        public virtual CTRTexture2D InitWithPath(string path, bool assets)
+        public CTRTexture2D InitWithPath(string path, bool assets)
         {
             if (base.Init() == null)
             {
@@ -222,7 +222,7 @@ namespace CutTheRope.iframework.visual
         {
         }
 
-        public virtual void Suspend()
+        public static void Suspend()
         {
         }
 
@@ -230,7 +230,7 @@ namespace CutTheRope.iframework.visual
         {
             for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
-                texture2D.Suspend();
+                Suspend();
             }
         }
 
@@ -242,7 +242,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual NSObject InitFromPixels(int x, int y, int w, int h)
+        public NSObject InitFromPixels(int x, int y, int w, int h)
         {
             if (base.Init() == null)
             {

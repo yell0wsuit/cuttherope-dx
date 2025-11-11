@@ -2,7 +2,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class CTRAction : NSObject
+    internal sealed class CTRAction : NSObject
     {
         public CTRAction()
         {

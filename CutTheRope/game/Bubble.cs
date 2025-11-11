@@ -4,7 +4,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class Bubble : GameObject
+    internal sealed class Bubble : GameObject
     {
         public static Bubble Bubble_create(CTRTexture2D t)
         {

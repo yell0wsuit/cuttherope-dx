@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.desktop
 {
-    internal class Images
+    internal sealed class Images
     {
         private static ContentManager GetContentManager(string imgName)
         {

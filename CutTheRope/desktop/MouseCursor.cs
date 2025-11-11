@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.desktop
 {
-    internal class MouseCursor
+    internal sealed class MouseCursor
     {
         public void Enable(bool b)
         {

@@ -13,7 +13,7 @@ using System.Diagnostics;
 
 namespace CutTheRope.commons
 {
-    internal class CtrRenderer : NSObject
+    internal sealed class CtrRenderer : NSObject
     {
         public static void OnSurfaceCreated()
         {

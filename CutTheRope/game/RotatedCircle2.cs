@@ -10,9 +10,9 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class RotatedCircle2 : BaseElement
+    internal sealed class RotatedCircle2 : BaseElement
     {
-        public virtual void SetSize(float value)
+        public void SetSize(float value)
         {
             size = value;
             float num = size / (vinilTL.width + (vinilTR.width * (1f - vinilTL.scaleX)));
@@ -35,37 +35,37 @@ namespace CutTheRope.game
             UpdateChildPositions();
         }
 
-        public virtual void SetHasOneHandle(bool value)
+        public void SetHasOneHandle(bool value)
         {
             vinilControllerL.visible = !value;
         }
 
-        public virtual bool HasOneHandle()
+        public bool HasOneHandle()
         {
             return !vinilControllerL.visible;
         }
 
-        public virtual void SetIsLeftControllerActive(bool value)
+        public void SetIsLeftControllerActive(bool value)
         {
             vinilActiveControllerL.visible = value;
         }
 
-        public virtual bool IsLeftControllerActive()
+        public bool IsLeftControllerActive()
         {
             return vinilActiveControllerL.visible;
         }
 
-        public virtual void SetIsRightControllerActive(bool value)
+        public void SetIsRightControllerActive(bool value)
         {
             vinilActiveControllerR.visible = value;
         }
 
-        public virtual bool IsRightControllerActive()
+        public bool IsRightControllerActive()
         {
             return vinilActiveControllerR.visible;
         }
 
-        public virtual bool ContainsSameObjectWithAnotherCircle()
+        public bool ContainsSameObjectWithAnotherCircle()
         {
             for (int i = 0; i < circlesArray.Count(); i++)
             {
@@ -133,7 +133,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual NSObject Copy()
+        public NSObject Copy()
         {
             RotatedCircle2 rotatedCircle = (RotatedCircle2)new RotatedCircle2().Init();
             rotatedCircle.x = x;
@@ -225,7 +225,7 @@ namespace CutTheRope.game
             base.Dealloc();
         }
 
-        public virtual void UpdateChildPositions()
+        public void UpdateChildPositions()
         {
             vinilCenter.x = x;
             vinilCenter.y = y;
@@ -252,7 +252,7 @@ namespace CutTheRope.game
             vinilActiveControllerR.y = vinilControllerR.y;
         }
 
-        public virtual bool ContainsSameObjectWithCircle(RotatedCircle2 anotherCircle)
+        public bool ContainsSameObjectWithCircle(RotatedCircle2 anotherCircle)
         {
             if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
             {

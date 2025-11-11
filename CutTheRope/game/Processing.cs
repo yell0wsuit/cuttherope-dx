@@ -5,14 +5,14 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Processing : RectangleElement, ITimelineDelegate
+    internal sealed class Processing : RectangleElement, ITimelineDelegate
     {
         private static NSObject CreateWithLoading()
         {
             return new Processing().InitWithLoading(true);
         }
 
-        public virtual NSObject InitWithLoading(bool loading)
+        public NSObject InitWithLoading(bool loading)
         {
             if (Init() != null)
             {

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.iframework.media
 {
-    internal class MovieMgr : NSObject, System.IDisposable
+    internal sealed class MovieMgr : NSObject, System.IDisposable
     {
         public void PlayURL(NSString moviePath, bool mute)
         {

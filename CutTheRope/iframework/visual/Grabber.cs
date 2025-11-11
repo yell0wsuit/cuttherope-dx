@@ -3,7 +3,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Grabber : NSObject
+    internal sealed class Grabber : NSObject
     {
         public override NSObject Init()
         {
@@ -16,7 +16,7 @@ namespace CutTheRope.iframework.visual
             base.Dealloc();
         }
 
-        public virtual CTRTexture2D Grab()
+        public static CTRTexture2D Grab()
         {
             return (CTRTexture2D)new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
         }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class KeyFrame
+    internal sealed class KeyFrame
     {
         public KeyFrame()
         {

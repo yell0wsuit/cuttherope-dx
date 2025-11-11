@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class TileMap : BaseElement
+    internal sealed class TileMap : BaseElement
     {
         public override void Draw()
         {
@@ -26,7 +26,7 @@ namespace CutTheRope.iframework.visual
             base.Dealloc();
         }
 
-        public virtual TileMap InitWithRowsColumns(int r, int c)
+        public TileMap InitWithRowsColumns(int r, int c)
         {
             if (Init() != null)
             {
@@ -55,7 +55,7 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
+        public void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
         {
             if (q == -1)
             {
@@ -100,7 +100,7 @@ namespace CutTheRope.iframework.visual
             tiles[ti] = tileEntry;
         }
 
-        public virtual void FillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
+        public void FillStartAtRowColumnRowsColumnswithTile(int r, int c, int rs, int cs, int ti)
         {
             for (int i = c; i < c + cs; i++)
             {
@@ -111,24 +111,24 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void SetParallaxRatio(float r)
+        public void SetParallaxRatio(float r)
         {
             parallaxRatio = r;
         }
 
-        public virtual void SetRepeatHorizontally(Repeat r)
+        public void SetRepeatHorizontally(Repeat r)
         {
             repeatedHorizontally = r;
             UpdateVars();
         }
 
-        public virtual void SetRepeatVertically(Repeat r)
+        public void SetRepeatVertically(Repeat r)
         {
             repeatedVertically = r;
             UpdateVars();
         }
 
-        public virtual void UpdateWithCameraPos(Vector pos)
+        public void UpdateWithCameraPos(Vector pos)
         {
             float num = (float)Math.Round((double)(pos.x / parallaxRatio));
             float num2 = (float)Math.Round((double)(pos.y / parallaxRatio));
@@ -254,7 +254,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void UpdateVars()
+        public void UpdateVars()
         {
             maxColsOnScreen = 2 + (int)Math.Floor((double)(cameraViewWidth / (tileWidth + 1)));
             maxRowsOnScreen = 2 + (int)Math.Floor((double)(cameraViewHeight / (tileHeight + 1)));

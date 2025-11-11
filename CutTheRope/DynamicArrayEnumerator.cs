@@ -2,7 +2,7 @@ using CutTheRope.ios;
 using System;
 using System.Collections;
 
-internal class DynamicArrayEnumerator(NSObject[] list, int highestIndex) : IEnumerator
+internal sealed class DynamicArrayEnumerator(NSObject[] list, int highestIndex) : IEnumerator
 {
     // (get) Token: 0x06000018 RID: 24 RVA: 0x00002436 File Offset: 0x00000636
     object IEnumerator.Current => Current;

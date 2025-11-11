@@ -3,7 +3,7 @@ using CutTheRope.iframework.core;
 
 namespace CutTheRope.game
 {
-    internal class MovieView : MenuView
+    internal sealed class MovieView : MenuView
     {
         public override void Update(float t)
         {

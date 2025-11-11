@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class RotatedCircle : BaseElement
+    internal sealed class RotatedCircle : BaseElement
     {
         public override NSObject Init()
         {
@@ -59,7 +59,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual void SetSize(float value)
+        public void SetSize(float value)
         {
             size = value;
             float num = size / 167f;
@@ -78,37 +78,37 @@ namespace CutTheRope.game
             UpdateChildPositions();
         }
 
-        public virtual bool HasOneHandle()
+        public bool HasOneHandle()
         {
             return !vinilControllerL.visible;
         }
 
-        public virtual void SetHasOneHandle(bool value)
+        public void SetHasOneHandle(bool value)
         {
             vinilControllerL.visible = !value;
         }
 
-        public virtual bool IsLeftControllerActive()
+        public bool IsLeftControllerActive()
         {
             return vinilActiveControllerL.visible;
         }
 
-        public virtual void SetIsLeftControllerActive(bool value)
+        public void SetIsLeftControllerActive(bool value)
         {
             vinilActiveControllerL.visible = value;
         }
 
-        public virtual bool IsRightControllerActive()
+        public bool IsRightControllerActive()
         {
             return vinilActiveControllerR.visible;
         }
 
-        public virtual void SetIsRightControllerActive(bool value)
+        public void SetIsRightControllerActive(bool value)
         {
             vinilActiveControllerR.visible = value;
         }
 
-        public virtual bool ContainsSameObjectWithAnotherCircle()
+        public bool ContainsSameObjectWithAnotherCircle()
         {
             foreach (object obj in circlesArray)
             {
@@ -161,7 +161,7 @@ namespace CutTheRope.game
             vinilCenter.Draw();
         }
 
-        public virtual void UpdateChildPositions()
+        public void UpdateChildPositions()
         {
             vinil.x = vinilCenter.x = x;
             vinil.y = vinilCenter.y = y;
@@ -180,7 +180,7 @@ namespace CutTheRope.game
             vinilActiveControllerR.y = vinilControllerR.y;
         }
 
-        public virtual bool ContainsSameObjectWithCircle(RotatedCircle anotherCircle)
+        public bool ContainsSameObjectWithCircle(RotatedCircle anotherCircle)
         {
             if (x == anotherCircle.x && y == anotherCircle.y && size == anotherCircle.size)
             {
@@ -197,7 +197,7 @@ namespace CutTheRope.game
             return false;
         }
 
-        public virtual NSObject Copy()
+        public NSObject Copy()
         {
             RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
             rotatedCircle.x = x;

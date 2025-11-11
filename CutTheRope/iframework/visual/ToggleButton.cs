@@ -1,8 +1,8 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ToggleButton : BaseElement, IButtonDelegation
+    internal sealed class ToggleButton : BaseElement, IButtonDelegation
     {
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n <= 1)
             {

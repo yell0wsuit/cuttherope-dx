@@ -4,7 +4,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Bouncer : CTRGameObject
+    internal sealed class Bouncer : CTRGameObject
     {
         private static Bouncer Bouncer_create(CTRTexture2D t)
         {
@@ -23,7 +23,7 @@ namespace CutTheRope.game
             return bouncer;
         }
 
-        public virtual NSObject InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
+        public NSObject InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             int textureResID = -1;
             if (w != 1)
@@ -59,7 +59,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void UpdateRotation()
+        public void UpdateRotation()
         {
             t1.x = x - (width / 2);
             t2.x = x + (width / 2);

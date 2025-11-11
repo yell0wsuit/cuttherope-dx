@@ -2,9 +2,9 @@ using CutTheRope.iframework.core;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class TiledImage : Image
+    internal sealed class TiledImage : Image
     {
-        public virtual void SetTile(int t)
+        public void SetTile(int t)
         {
             q = t;
         }

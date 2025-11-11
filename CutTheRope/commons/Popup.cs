@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.commons
 {
-    internal class Popup : BaseElement, ITimelineDelegate
+    internal sealed class Popup : BaseElement, ITimelineDelegate
     {
         public override NSObject Init()
         {
@@ -30,24 +30,24 @@ namespace CutTheRope.commons
             return this;
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             View view = (View)parent;
             view?.RemoveChild(this);
         }
 
-        public virtual void ShowPopup()
+        public void ShowPopup()
         {
             Application.SharedRootController().DeactivateAllButtons();
             isShow = true;
             PlayTimeline(0);
         }
 
-        public virtual void HidePopup()
+        public void HidePopup()
         {
             isShow = false;
             PlayTimeline(1);

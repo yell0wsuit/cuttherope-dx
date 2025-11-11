@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class CTRMover : Mover
+    internal sealed class CTRMover : Mover
     {
         public override void SetPathFromStringandStart(NSString p, Vector s)
         {

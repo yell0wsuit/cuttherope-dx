@@ -6,7 +6,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class Star : CTRGameObject
+    internal sealed class Star : CTRGameObject
     {
         public static Star Star_create(CTRTexture2D t)
         {
@@ -49,7 +49,7 @@ namespace CutTheRope.game
             base.Draw();
         }
 
-        public virtual void CreateAnimations()
+        public void CreateAnimations()
         {
             if (timeout > 0.0)
             {

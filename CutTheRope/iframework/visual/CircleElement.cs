@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class CircleElement : BaseElement
+    internal sealed class CircleElement : BaseElement
     {
         public override NSObject Init()
         {

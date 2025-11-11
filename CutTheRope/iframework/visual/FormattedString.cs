@@ -2,9 +2,9 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class FormattedString : NSObject
+    internal sealed class FormattedString : NSObject
     {
-        public virtual FormattedString InitWithStringAndWidth(NSString str, float w)
+        public FormattedString InitWithStringAndWidth(NSString str, float w)
         {
             if (base.Init() != null)
             {

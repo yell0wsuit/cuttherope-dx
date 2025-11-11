@@ -3,7 +3,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class StarsBreak : RotateableMultiParticles
+    internal sealed class StarsBreak : RotateableMultiParticles
     {
         public override Particles InitWithTotalParticlesandImageGrid(int p, Image grid)
         {

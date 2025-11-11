@@ -2,9 +2,9 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class DispatchClass : NSObject
+    internal sealed class DispatchClass : NSObject
     {
-        public virtual DispatchClass InitWithObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc callThisFunc, NSObject p, float d)
+        public DispatchClass InitWithObjectSelectorParamafterDelay(DelayedDispatcher.DispatchFunc callThisFunc, NSObject p, float d)
         {
             callThis = callThisFunc;
             param = p;
@@ -12,7 +12,7 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void Dispatch()
+        public void Dispatch()
         {
             callThis?.Invoke(param);
         }

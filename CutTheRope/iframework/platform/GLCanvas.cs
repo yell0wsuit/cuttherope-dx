@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace CutTheRope.iframework.platform
 {
-    internal class GLCanvas : NSObject
+    internal sealed class GLCanvas : NSObject
     {
         // (get) Token: 0x060002F3 RID: 755 RVA: 0x00011F34 File Offset: 0x00010134
         public NSRect Bounds
@@ -25,12 +25,12 @@ namespace CutTheRope.iframework.platform
             }
         }
 
-        public virtual NSObject InitWithFrame(Rectangle frame)
+        public NSObject InitWithFrame(Rectangle frame)
         {
             return InitWithFrame(new NSRect(frame));
         }
 
-        public virtual NSObject InitWithFrame(NSRect frame_UNUSED)
+        public NSObject InitWithFrame(NSRect frame_UNUSED)
         {
             xOffset = 0;
             yOffset = 0;
@@ -41,13 +41,13 @@ namespace CutTheRope.iframework.platform
             return this;
         }
 
-        public virtual void InitFPSMeterWithFont(Font font)
+        public void InitFPSMeterWithFont(Font font)
         {
             fpsFont = font;
             fpsText = new Text().InitWithFont(fpsFont);
         }
 
-        public virtual void DrawFPS(float fps)
+        public void DrawFPS(float fps)
         {
             if (fpsText != null && fpsFont != null)
             {
@@ -65,18 +65,18 @@ namespace CutTheRope.iframework.platform
             }
         }
 
-        public virtual void PrepareOpenGL()
+        public static void PrepareOpenGL()
         {
             OpenGL.GlEnableClientState(11);
             OpenGL.GlEnableClientState(12);
         }
 
-        public virtual void SetDefaultRealProjection()
+        public void SetDefaultRealProjection()
         {
             SetDefaultProjection();
         }
 
-        public virtual void SetDefaultProjection()
+        public void SetDefaultProjection()
         {
             if (Global.ScreenSizeManager.IsFullScreen)
             {
@@ -98,20 +98,20 @@ namespace CutTheRope.iframework.platform
             OpenGL.GlLoadIdentity();
         }
 
-        public virtual void DrawRect(NSRect rect)
+        public static void DrawRect(NSRect rect)
         {
         }
 
-        public virtual void Show()
+        public void Show()
         {
             SetDefaultProjection();
         }
 
-        public virtual void Hide()
+        public static void Hide()
         {
         }
 
-        public virtual void Reshape()
+        public void Reshape()
         {
             Rectangle scaledViewRect = Global.ScreenSizeManager.ScaledViewRect;
             backingWidth = scaledViewRect.Width;
@@ -119,36 +119,36 @@ namespace CutTheRope.iframework.platform
             SetDefaultProjection();
         }
 
-        public virtual void SwapBuffers()
+        public static void SwapBuffers()
         {
         }
 
-        public virtual void TouchesBeganwithEvent(IList<TouchLocation> touches)
+        public void TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             _ = (touchDelegate?.TouchesBeganwithEvent(touches));
         }
 
-        public virtual void TouchesMovedwithEvent(IList<TouchLocation> touches)
+        public void TouchesMovedwithEvent(IList<TouchLocation> touches)
         {
             _ = (touchDelegate?.TouchesMovedwithEvent(touches));
         }
 
-        public virtual void TouchesEndedwithEvent(IList<TouchLocation> touches)
+        public void TouchesEndedwithEvent(IList<TouchLocation> touches)
         {
             _ = (touchDelegate?.TouchesEndedwithEvent(touches));
         }
 
-        public virtual void TouchesCancelledwithEvent(IList<TouchLocation> touches)
+        public void TouchesCancelledwithEvent(IList<TouchLocation> touches)
         {
             _ = (touchDelegate?.TouchesCancelledwithEvent(touches));
         }
 
-        public virtual bool BackButtonPressed()
+        public bool BackButtonPressed()
         {
             return touchDelegate != null && touchDelegate.BackButtonPressed();
         }
 
-        public virtual bool MenuButtonPressed()
+        public bool MenuButtonPressed()
         {
             return touchDelegate != null && touchDelegate.MenuButtonPressed();
         }
@@ -158,17 +158,17 @@ namespace CutTheRope.iframework.platform
             return touches;
         }
 
-        public virtual bool AcceptsFirstResponder()
+        public static bool AcceptsFirstResponder()
         {
             return true;
         }
 
-        public virtual bool BecomeFirstResponder()
+        public static bool BecomeFirstResponder()
         {
             return true;
         }
 
-        public virtual void BeforeRender()
+        public void BeforeRender()
         {
             SetDefaultProjection();
             OpenGL.GlDisable(1);
@@ -176,7 +176,7 @@ namespace CutTheRope.iframework.platform
             OpenGL.GlEnableClientState(12);
         }
 
-        public virtual void AfterRender()
+        public void AfterRender()
         {
         }
 

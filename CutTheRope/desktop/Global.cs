@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.desktop
 {
-    internal class Global
+    internal sealed class Global
     {
         // (get) Token: 0x0600004B RID: 75 RVA: 0x000036C8 File Offset: 0x000018C8
         // (set) Token: 0x0600004C RID: 76 RVA: 0x000036CF File Offset: 0x000018CF

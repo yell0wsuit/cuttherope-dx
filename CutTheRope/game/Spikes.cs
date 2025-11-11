@@ -7,9 +7,9 @@ using System;
 
 namespace CutTheRope.game
 {
-    internal class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
+    internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
-        public virtual NSObject InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
+        public NSObject InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
             int textureResID = -1;
             if (t != -1)
@@ -76,7 +76,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual void UpdateRotation()
+        public void UpdateRotation()
         {
             float num = !electro ? texture.quadRects[quadToDraw].w : width - RTPD(400.0);
             num /= 2f;
@@ -93,7 +93,7 @@ namespace CutTheRope.game
             b2 = VectRotateAround(b2, angle, x, y);
         }
 
-        public virtual void TurnElectroOff()
+        public void TurnElectroOff()
         {
             electroOn = false;
             PlayTimeline(0);
@@ -105,7 +105,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void TurnElectroOn()
+        public void TurnElectroOn()
         {
             electroOn = true;
             PlayTimeline(1);
@@ -113,7 +113,7 @@ namespace CutTheRope.game
             sndElectric = CTRSoundMgr.PlaySoundLooped(28);
         }
 
-        public virtual void RotateSpikes()
+        public void RotateSpikes()
         {
             spikesNormal = !spikesNormal;
             RemoveTimeline(2);
@@ -129,12 +129,12 @@ namespace CutTheRope.game
             rotateButton.scaleX = 0f - rotateButton.scaleX;
         }
 
-        public virtual void SetToggled(int t)
+        public void SetToggled(int t)
         {
             toggled = t;
         }
 
-        public virtual int GetToggled()
+        public int GetToggled()
         {
             return toggled;
         }
@@ -169,16 +169,16 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void TimelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public static void TimelineReachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             updateRotationFlag = false;
         }
 
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n == 0)
             {
@@ -192,7 +192,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class ScrollableContainer : BaseElement
+    internal sealed class ScrollableContainer : BaseElement
     {
         public void ProvideScrollPosMaxScrollPosScrollCoeff(ref Vector sp, ref Vector mp, ref Vector sc)
         {
@@ -364,7 +364,7 @@ namespace CutTheRope.iframework.visual
             base.Dealloc();
         }
 
-        public virtual ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
+        public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)
         {
             if (Init() != null)
             {
@@ -406,7 +406,7 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual ScrollableContainer InitWithWidthHeightContainerWidthHeight(float w, float h, float cw, float ch)
+        public ScrollableContainer InitWithWidthHeightContainerWidthHeight(float w, float h, float cw, float ch)
         {
             container = (BaseElement)new BaseElement().Init();
             container.width = (int)cw;
@@ -415,25 +415,25 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void TurnScrollPointsOnWithCapacity(int n)
+        public void TurnScrollPointsOnWithCapacity(int n)
         {
             spointsCapacity = n;
             spoints = new Vector[spointsCapacity];
             spointsNum = 0;
         }
 
-        public virtual int AddScrollPointAtXY(double sx, double sy)
+        public int AddScrollPointAtXY(double sx, double sy)
         {
             return AddScrollPointAtXY((float)sx, (float)sy);
         }
 
-        public virtual int AddScrollPointAtXY(float sx, float sy)
+        public int AddScrollPointAtXY(float sx, float sy)
         {
             AddScrollPointAtXYwithID(sx, sy, spointsNum);
             return spointsNum - 1;
         }
 
-        public virtual void AddScrollPointAtXYwithID(float sx, float sy, int i)
+        public void AddScrollPointAtXYwithID(float sx, float sy, int i)
         {
             spoints[i] = Vect(0f - sx, 0f - sy);
             if (i > spointsNum - 1)
@@ -442,27 +442,27 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual int GetTotalScrollPoints()
+        public int GetTotalScrollPoints()
         {
             return spointsNum;
         }
 
-        public virtual Vector GetScrollPoint(int i)
+        public Vector GetScrollPoint(int i)
         {
             return spoints[i];
         }
 
-        public virtual Vector GetScroll()
+        public Vector GetScroll()
         {
             return Vect(0f - container.x, 0f - container.y);
         }
 
-        public virtual Vector GetMaxScroll()
+        public Vector GetMaxScroll()
         {
             return Vect(container.width - width, container.height - height);
         }
 
-        public virtual void SetScroll(Vector s)
+        public void SetScroll(Vector s)
         {
             move = vectZero;
             container.x = 0f - s.x;
@@ -472,7 +472,7 @@ namespace CutTheRope.iframework.visual
             lastTargetSpoint = -1;
         }
 
-        public virtual void PlaceToScrollPoint(int sp)
+        public void PlaceToScrollPoint(int sp)
         {
             move = vectZero;
             container.x = spoints[sp].x;
@@ -483,12 +483,12 @@ namespace CutTheRope.iframework.visual
             delegateScrollableContainerProtocol?.ScrollableContainerreachedScrollPoint(this, sp);
         }
 
-        public virtual void MoveToScrollPointmoveMultiplier(int sp, double m)
+        public void MoveToScrollPointmoveMultiplier(int sp, double m)
         {
             MoveToScrollPointmoveMultiplier(sp, (float)m);
         }
 
-        public virtual void MoveToScrollPointmoveMultiplier(int sp, float m)
+        public void MoveToScrollPointmoveMultiplier(int sp, float m)
         {
             movingToSpoint = true;
             movingByInertion = false;
@@ -497,7 +497,7 @@ namespace CutTheRope.iframework.visual
             lastTargetSpoint = targetSpoint;
         }
 
-        public virtual void CalculateNearsetScrollPointInDirection(Vector d)
+        public void CalculateNearsetScrollPointInDirection(Vector d)
         {
             spointMoveDirection = d;
             int num = -1;
@@ -536,7 +536,7 @@ namespace CutTheRope.iframework.visual
             lastTargetSpoint = targetSpoint;
         }
 
-        public virtual Vector MoveContainerBy(Vector off)
+        public Vector MoveContainerBy(Vector off)
         {
             float val = container.x + off.x;
             float val2 = container.y + off.y;
@@ -554,7 +554,7 @@ namespace CutTheRope.iframework.visual
             return vector;
         }
 
-        public virtual void MoveToPointDeltaSpeed(Vector tsp, float delta, float speed)
+        public void MoveToPointDeltaSpeed(Vector tsp, float delta, float speed)
         {
             Vector v = VectSub(tsp, Vect(container.x, container.y));
             v = VectNormalize(v);
@@ -565,7 +565,7 @@ namespace CutTheRope.iframework.visual
             move = vectZero;
         }
 
-        public virtual void StartMovingToSpointInDirection(Vector d)
+        public void StartMovingToSpointInDirection(Vector d)
         {
             movingToSpoint = true;
             targetSpoint = lastTargetSpoint = -1;

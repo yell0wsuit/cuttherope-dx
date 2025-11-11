@@ -8,7 +8,7 @@ using System;
 
 namespace CutTheRope.game
 {
-    internal class PollenDrawer : BaseElement
+    internal sealed class PollenDrawer : BaseElement
     {
         public override NSObject Init()
         {
@@ -46,7 +46,7 @@ namespace CutTheRope.game
             base.Dealloc();
         }
 
-        public virtual void AddPollenAtparentIndex(Vector v, int pi)
+        public void AddPollenAtparentIndex(Vector v, int pi)
         {
             float num = 1f;
             float num2 = 1f;
@@ -101,7 +101,7 @@ namespace CutTheRope.game
             pollenCount++;
         }
 
-        public virtual void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
+        public void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
             int num = 44;
             Vector vector = g.mover.path[p1];

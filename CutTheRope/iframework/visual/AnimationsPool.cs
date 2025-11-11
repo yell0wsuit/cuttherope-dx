@@ -2,18 +2,18 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class AnimationsPool : BaseElement, ITimelineDelegate
+    internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
         public AnimationsPool()
         {
             _ = Init();
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             if (GetChildId(t.element) != -1)
             {
@@ -37,7 +37,7 @@ namespace CutTheRope.iframework.visual
             base.Draw();
         }
 
-        public virtual void ParticlesFinished(Particles p)
+        public void ParticlesFinished(Particles p)
         {
             if (GetChildId(p) != -1)
             {

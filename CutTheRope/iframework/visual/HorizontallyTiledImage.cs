@@ -3,7 +3,7 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class HorizontallyTiledImage : Image
+    internal sealed class HorizontallyTiledImage : Image
     {
         public override Image InitWithTexture(CTRTexture2D t)
         {
@@ -43,7 +43,7 @@ namespace CutTheRope.iframework.visual
             PostDraw();
         }
 
-        public virtual void SetTileHorizontallyLeftCenterRight(int l, int c, int r)
+        public void SetTileHorizontallyLeftCenterRight(int l, int c, int r)
         {
             tiles[0] = l;
             tiles[1] = c;

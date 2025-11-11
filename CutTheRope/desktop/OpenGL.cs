@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.desktop
 {
-    internal class OpenGL
+    internal sealed class OpenGL
     {
         public static void GlGenTextures(int n, object textures)
         {
@@ -677,7 +677,7 @@ namespace CutTheRope.desktop
 
         private static double s_LineWidth;
 
-        private class GLVertexPointer(int size, object pointer)
+        private sealed class GLVertexPointer(int size, object pointer)
         {
             // (get) Token: 0x06000653 RID: 1619 RVA: 0x00033AD0 File Offset: 0x00031CD0
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
@@ -687,7 +687,7 @@ namespace CutTheRope.desktop
             public float[] pointer_ = pointer != null ? (float[])pointer : null;
         }
 
-        private class GLTexCoordPointer(int size, object pointer)
+        private sealed class GLTexCoordPointer(int size, object pointer)
         {
             // (get) Token: 0x06000655 RID: 1621 RVA: 0x00033B16 File Offset: 0x00031D16
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;

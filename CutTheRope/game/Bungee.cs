@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class Bungee : ConstraintSystem
+    internal sealed class Bungee : ConstraintSystem
     {
         private static void DrawAntialiasedLineContinued(float x1, float y1, float x2, float y2, float size, RGBAColor color, ref float lx, ref float ly, ref float rx, ref float ry, bool highlighted)
         {
@@ -200,7 +200,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual NSObject InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
+        public NSObject InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
             if (Init() != null)
             {
@@ -237,7 +237,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual int GetLength()
+        public int GetLength()
         {
             int num = 0;
             Vector pos = vectZero;
@@ -254,12 +254,12 @@ namespace CutTheRope.game
             return num;
         }
 
-        public virtual void Roll(float rollLen)
+        public void Roll(float rollLen)
         {
             RollplacingWithOffset(rollLen, vectZero);
         }
 
-        public virtual void RollplacingWithOffset(float rollLen, Vector off)
+        public void RollplacingWithOffset(float rollLen, Vector off)
         {
             ConstraintedPoint i = parts[^2];
             int num = (int)tail.RestLengthFor(i);
@@ -294,7 +294,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual float RollBack(float amount)
+        public float RollBack(float amount)
         {
             float num = amount;
             ConstraintedPoint i = parts[^2];
@@ -339,7 +339,7 @@ namespace CutTheRope.game
             return num;
         }
 
-        public virtual void RemovePart(int part)
+        public void RemovePart(int part)
         {
             forceWhite = false;
             ConstraintedPoint constraintedPoint = parts[part];
@@ -376,14 +376,14 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void SetCut(int part)
+        public void SetCut(int part)
         {
             cut = part;
             cutTime = 2f;
             forceWhite = true;
         }
 
-        public virtual void Strengthen()
+        public void Strengthen()
         {
             int count = parts.Count;
             for (int i = 0; i < count; i++)
@@ -412,7 +412,7 @@ namespace CutTheRope.game
             Update(delta, 1f);
         }
 
-        public virtual void Update(float delta, float koeff)
+        public void Update(float delta, float koeff)
         {
             if (cutTime > 0.0)
             {

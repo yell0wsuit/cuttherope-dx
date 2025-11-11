@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
+    internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
         public override void Update(float t)
         {
@@ -40,7 +40,7 @@ namespace CutTheRope.game
             ShowView(0);
         }
 
-        public virtual void CreateGameView()
+        public void CreateGameView()
         {
             for (int i = 0; i < 5; i++)
             {
@@ -105,13 +105,13 @@ namespace CutTheRope.game
             _ = gameView.AddChildwithID(boxOpenClose, 4);
         }
 
-        public virtual void InitGameView()
+        public void InitGameView()
         {
             SetPaused(false);
             LevelFirstStart();
         }
 
-        public virtual void LevelFirstStart()
+        public void LevelFirstStart()
         {
             View view = GetView(0);
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
@@ -121,7 +121,7 @@ namespace CutTheRope.game
             view.GetChild(2).touchable = true;
         }
 
-        public virtual void LevelStart()
+        public void LevelStart()
         {
             View view = GetView(0);
             ((BoxOpenClose)view.GetChild(4)).LevelStart();
@@ -132,7 +132,7 @@ namespace CutTheRope.game
             view.GetChild(4).touchable = false;
         }
 
-        public virtual void LevelQuit()
+        public void LevelQuit()
         {
             View view = GetView(0);
             ((BoxOpenClose)view.GetChild(4)).LevelQuit();
@@ -160,7 +160,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void BoxClosed()
+        public void BoxClosed()
         {
             CTRPreferences cTRPreferences = Application.SharedPreferences();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
@@ -220,7 +220,7 @@ namespace CutTheRope.game
             boxCloseHandled = true;
         }
 
-        public virtual void LevelWon()
+        public void LevelWon()
         {
             boxCloseHandled = false;
             _ = Application.SharedPreferences();
@@ -275,23 +275,23 @@ namespace CutTheRope.game
             UnlockNextLevel();
         }
 
-        public virtual void LevelLost()
+        public void LevelLost()
         {
             ((BoxOpenClose)GetView(0).GetChild(4)).LevelLost();
         }
 
-        public virtual void GameWon()
+        public void GameWon()
         {
             PostFlurryLevelEvent(NSS("LEVEL_WON"));
             LevelWon();
         }
 
-        public virtual void GameLost()
+        public void GameLost()
         {
             PostFlurryLevelEvent(NSS("LEVEL_LOST"));
         }
 
-        public virtual bool LastLevelInPack()
+        public bool LastLevelInPack()
         {
             if (((CTRRootController)Application.SharedRootController()).GetLevel() == CTRPreferences.GetLevelsInPackCount() - 1)
             {
@@ -302,7 +302,7 @@ namespace CutTheRope.game
             return false;
         }
 
-        public virtual void UnlockNextLevel()
+        public static void UnlockNextLevel()
         {
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
             int pack = ctrrootController.GetPack();
@@ -313,7 +313,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             CTRSoundMgr.PlaySound(9);
@@ -437,7 +437,7 @@ namespace CutTheRope.game
             LevelStart();
         }
 
-        public virtual void SetPaused(bool p)
+        public void SetPaused(bool p)
         {
             if (!p)
             {
@@ -612,7 +612,7 @@ namespace CutTheRope.game
             return true;
         }
 
-        public virtual void OnNextLevel()
+        public void OnNextLevel()
         {
             CTRPreferences.GameViewChanged(NSS("game"));
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -626,7 +626,7 @@ namespace CutTheRope.game
             LevelStart();
         }
 
-        public virtual void ReleaseAllTouches(GameScene gs)
+        public void ReleaseAllTouches(GameScene gs)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -635,7 +635,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void SetAdSkipper(object skipper)
+        public void SetAdSkipper(object skipper)
         {
             _ = (GameView)GetView(0);
         }

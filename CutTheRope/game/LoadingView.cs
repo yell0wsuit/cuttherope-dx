@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class LoadingView : View
+    internal sealed class LoadingView : View
     {
         public override void Draw()
         {

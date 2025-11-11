@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.desktop
 {
-    internal class BlendParams
+    internal sealed class BlendParams
     {
         public BlendParams()
         {

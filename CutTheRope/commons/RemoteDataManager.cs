@@ -1,6 +1,6 @@
 namespace CutTheRope.commons
 {
-    internal class RemoteDataManager
+    internal sealed class RemoteDataManager
     {
         public static int GetBoxForCrossPromo()
         {

@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class VBox : BaseElement
+    internal sealed class VBox : BaseElement
     {
         public override int AddChildwithID(BaseElement c, int i)
         {
@@ -23,12 +23,12 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual VBox InitWithOffsetAlignWidth(double of, int a, double w)
+        public VBox InitWithOffsetAlignWidth(double of, int a, double w)
         {
             return InitWithOffsetAlignWidth((float)of, a, (float)w);
         }
 
-        public virtual VBox InitWithOffsetAlignWidth(float of, int a, float w)
+        public VBox InitWithOffsetAlignWidth(float of, int a, float w)
         {
             if (Init() != null)
             {

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace CutTheRope.game
 {
-    internal class CTRSoundMgr : SoundMgr
+    internal sealed class CTRSoundMgr : SoundMgr
     {
         public static new void PlaySound(int s)
         {

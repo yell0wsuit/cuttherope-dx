@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal class BoxOpenClose : BaseElement, ITimelineDelegate
+    internal sealed class BoxOpenClose : BaseElement, ITimelineDelegate
     {
         public override void Update(float delta)
         {
@@ -158,7 +158,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual NSObject InitWithButtonDelegate(IButtonDelegation b)
+        public NSObject InitWithButtonDelegate(IButtonDelegation b)
         {
             if (Init() != null)
             {
@@ -247,7 +247,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual BaseElement CreateConfettiParticleNear(Vector p)
+        public static BaseElement CreateConfettiParticleNear(Vector p)
         {
             Confetti confetti = Confetti.Confetti_createWithResID(65);
             confetti.DoRestoreCutTransparency();
@@ -288,7 +288,7 @@ namespace CutTheRope.game
             return confetti;
         }
 
-        public virtual void LevelFirstStart()
+        public void LevelFirstStart()
         {
             boxAnim = 0;
             RemoveOpenCloseAnims();
@@ -299,7 +299,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void LevelStart()
+        public void LevelStart()
         {
             boxAnim = 1;
             RemoveOpenCloseAnims();
@@ -310,7 +310,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void LevelWon()
+        public void LevelWon()
         {
             boxAnim = 2;
             raState = -1;
@@ -326,14 +326,14 @@ namespace CutTheRope.game
             stamp.SetEnabled(false);
         }
 
-        public virtual void LevelLost()
+        public void LevelLost()
         {
             boxAnim = 3;
             RemoveOpenCloseAnims();
             ShowCloseAnim();
         }
 
-        public virtual void LevelQuit()
+        public void LevelQuit()
         {
             boxAnim = 4;
             result.SetEnabled(false);
@@ -341,17 +341,17 @@ namespace CutTheRope.game
             ShowCloseAnim();
         }
 
-        public virtual void ShowOpenAnim()
+        public void ShowOpenAnim()
         {
             ShowOpenCloseAnim(true);
         }
 
-        public virtual void ShowCloseAnim()
+        public void ShowCloseAnim()
         {
             ShowOpenCloseAnim(false);
         }
 
-        public virtual void ShowConfetti()
+        public void ShowConfetti()
         {
             for (int i = 0; i < 70; i++)
             {
@@ -359,7 +359,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void ShowOpenCloseAnim(bool open)
+        public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -518,11 +518,11 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             switch (boxAnim)
             {
@@ -555,7 +555,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void PostBoxClosed()
+        public void PostBoxClosed()
         {
             delegateboxClosed?.Invoke();
             if (shouldShowConfetti)
@@ -564,7 +564,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void RemoveOpenCloseAnims()
+        public void RemoveOpenCloseAnims()
         {
             if (GetChild(0) != null)
             {
@@ -577,7 +577,7 @@ namespace CutTheRope.game
             baseElement.color.a = text2.color.a = text3.color.a = 1f;
         }
 
-        public virtual void CreateOpenCloseAnims()
+        public void CreateOpenCloseAnims()
         {
             openCloseAnims = (BaseElement)new BaseElement().Init();
             _ = AddChildwithID(openCloseAnims, 0);
@@ -662,7 +662,7 @@ namespace CutTheRope.game
         // (Invoke) Token: 0x06000674 RID: 1652
         public delegate void boxClosed();
 
-        private class Confetti : Animation
+        private sealed class Confetti : Animation
         {
             public static Confetti Confetti_createWithResID(int r)
             {

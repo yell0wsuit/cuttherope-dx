@@ -5,7 +5,7 @@ using System;
 
 namespace CutTheRope.desktop
 {
-    internal class ScreenSizeManager(int gameWidth, int gameHeight)
+    internal sealed class ScreenSizeManager(int gameWidth, int gameHeight)
     {
         // (get) Token: 0x060000AF RID: 175 RVA: 0x00004B78 File Offset: 0x00002D78
         public static int MAX_WINDOW_WIDTH => Global.GraphicsDeviceManager.GraphicsProfile == GraphicsProfile.HiDef ? 4096 : 2048;

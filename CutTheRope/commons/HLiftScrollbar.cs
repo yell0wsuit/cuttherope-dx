@@ -3,14 +3,14 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.commons
 {
-    internal class HLiftScrollbar : Image
+    internal sealed class HLiftScrollbar : Image
     {
         public static HLiftScrollbar CreateWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             return new HLiftScrollbar().InitWithResIDBackQuadLiftQuadLiftQuadPressed(resID, bq, lq, lqp);
         }
 
-        public virtual HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
+        public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             if (base.InitWithTexture(Application.GetTexture(resID)) != null)
             {
@@ -36,17 +36,17 @@ namespace CutTheRope.commons
             return this;
         }
 
-        public virtual Vector GetScrollPoint(int i)
+        public Vector GetScrollPoint(int i)
         {
             return spoints[i];
         }
 
-        public virtual int GetTotalScrollPoints()
+        public int GetTotalScrollPoints()
         {
             return spointsNum;
         }
 
-        public virtual void UpdateActiveSpoint()
+        public void UpdateActiveSpoint()
         {
             int i = 0;
             while (i < spointsNum)
@@ -120,7 +120,7 @@ namespace CutTheRope.commons
             container.SetScroll(Vect(maxScroll.x * px, maxScroll.y * py));
         }
 
-        public virtual void UpdateLift()
+        public void UpdateLift()
         {
             Vector scroll = container.GetScroll();
             Vector maxScroll = container.GetMaxScroll();
@@ -138,7 +138,7 @@ namespace CutTheRope.commons
             lift.y = ((lift.maxY - lift.minY) * num2) + lift.minY;
         }
 
-        public virtual void CalcScrollPoints()
+        public void CalcScrollPoints()
         {
             Vector maxScroll = container.GetMaxScroll();
             spointsNum = container.GetTotalScrollPoints();
@@ -194,7 +194,7 @@ namespace CutTheRope.commons
             }
         }
 
-        public virtual void SetContainer(ScrollableContainer c)
+        public void SetContainer(ScrollableContainer c)
         {
             container = c;
             if (container != null)

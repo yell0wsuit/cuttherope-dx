@@ -4,9 +4,9 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class ImageMultiDrawer : BaseElement
+    internal sealed class ImageMultiDrawer : BaseElement
     {
-        public virtual ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
+        public ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
         {
             if (Init() == null)
             {

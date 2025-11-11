@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class CTRRootController : RootController
+    internal sealed class CTRRootController : RootController
     {
         public static void LogEvent(NSString s)
         {
@@ -17,32 +17,32 @@ namespace CutTheRope.game
         {
         }
 
-        public virtual void SetMap(XMLNode map)
+        public void SetMap(XMLNode map)
         {
             loadedMap = map;
         }
 
-        public virtual XMLNode GetMap()
+        public XMLNode GetMap()
         {
             return loadedMap;
         }
 
-        public virtual NSString GetMapName()
+        public NSString GetMapName()
         {
             return mapName;
         }
 
-        public virtual void SetMapName(NSString map)
+        public void SetMapName(NSString map)
         {
             NSREL(mapName);
             mapName = map;
         }
 
-        public virtual void SetMapsList(Dictionary<string, XMLNode> l)
+        public static void SetMapsList(Dictionary<string, XMLNode> l)
         {
         }
 
-        public virtual int GetPack()
+        public int GetPack()
         {
             return pack;
         }
@@ -75,7 +75,7 @@ namespace CutTheRope.game
             Application.SharedCanvas().AfterRender();
         }
 
-        public virtual void DeleteMenu()
+        public void DeleteMenu()
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
@@ -83,11 +83,11 @@ namespace CutTheRope.game
             GC.Collect();
         }
 
-        public virtual void DisableGameCenter()
+        public static void DisableGameCenter()
         {
         }
 
-        public virtual void EnableGameCenter()
+        public static void EnableGameCenter()
         {
         }
 
@@ -312,37 +312,37 @@ namespace CutTheRope.game
         {
         }
 
-        public virtual void SetPack(int p)
+        public void SetPack(int p)
         {
             pack = p;
         }
 
-        public virtual void SetLevel(int l)
+        public void SetLevel(int l)
         {
             level = l;
         }
 
-        public virtual int GetLevel()
+        public int GetLevel()
         {
             return level;
         }
 
-        public virtual void SetPicker(bool p)
+        public void SetPicker(bool p)
         {
             picker = p;
         }
 
-        public virtual bool IsPicker()
+        public bool IsPicker()
         {
             return picker;
         }
 
-        public virtual void SetSurvival(bool s)
+        public void SetSurvival(bool s)
         {
             survival = s;
         }
 
-        public virtual bool IsSurvival()
+        public bool IsSurvival()
         {
             return survival;
         }

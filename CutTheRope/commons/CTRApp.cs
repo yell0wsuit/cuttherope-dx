@@ -4,29 +4,29 @@ using System;
 
 namespace CutTheRope.commons
 {
-    internal class CTRApp : Application
+    internal sealed class CTRApp : Application
     {
         public override void Dealloc()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void ApplicationWillTerminate(UIApplication application)
+        public static void ApplicationWillTerminate(UIApplication application)
         {
             SharedPreferences().savePreferences();
         }
 
-        public virtual void ApplicationDidReceiveMemoryWarning(UIApplication application)
+        public void ApplicationDidReceiveMemoryWarning(UIApplication application)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void ChallengeStartedWithGameConfig(NSString gameConfig)
+        public void ChallengeStartedWithGameConfig(NSString gameConfig)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void ApplicationWillResignActive(UIApplication application)
+        public void ApplicationWillResignActive(UIApplication application)
         {
             SharedPreferences().savePreferences();
             if (root != null && !root.IsSuspended())
@@ -35,7 +35,7 @@ namespace CutTheRope.commons
             }
         }
 
-        public virtual void ApplicationDidBecomeActive(UIApplication application)
+        public void ApplicationDidBecomeActive(UIApplication application)
         {
             if (root != null && root.IsSuspended())
             {

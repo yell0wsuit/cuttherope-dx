@@ -4,7 +4,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CharAnimation : Animation
+    internal sealed class CharAnimation : Animation
     {
         public static CharAnimation CharAnimation_create(CTRTexture2D t)
         {

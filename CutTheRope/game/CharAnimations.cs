@@ -5,7 +5,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class CharAnimations : GameObject
+    internal sealed class CharAnimations : GameObject
     {
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
@@ -19,7 +19,7 @@ namespace CutTheRope.game
             return charAnimations;
         }
 
-        public virtual void AddImage(int resId)
+        public void AddImage(int resId)
         {
             animations ??= (DynamicArray)new DynamicArray().Init();
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
@@ -38,17 +38,17 @@ namespace CutTheRope.game
             base.Dealloc();
         }
 
-        public virtual void AddAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)
+        public void AddAnimationWithIDDelayLoopFirstLast(int a, int aid, float d, Timeline.LoopType l, int s, int e)
         {
             ((CharAnimation)animations.ObjectAtIndex(a - 101)).AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
         }
 
-        public virtual Animation GetAnimation(int resID)
+        public Animation GetAnimation(int resID)
         {
             return resID == 80 ? this : (Animation)animations.ObjectAtIndex(resID - 101);
         }
 
-        public virtual void SwitchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
+        public void SwitchToAnimationatEndOfAnimationDelay(int i2, int a2, int i1, int a1, float d)
         {
             Animation animation = GetAnimation(i1);
             Animation animation2 = GetAnimation(i2);
@@ -67,7 +67,7 @@ namespace CutTheRope.game
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }
 
-        public virtual void PlayAnimationtimeline(int resID, int t)
+        public void PlayAnimationtimeline(int resID, int t)
         {
             if (GetCurrentTimeline() != null)
             {

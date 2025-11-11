@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Track : NSObject
+    internal sealed class Track : NSObject
     {
         public Track()
         {
@@ -12,7 +12,7 @@ namespace CutTheRope.iframework.visual
             currentStepAcceleration = new KeyFrame();
         }
 
-        public virtual Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
+        public Track InitWithTimelineTypeandMaxKeyFrames(Timeline timeline, TrackType trackType, int m)
         {
             t = timeline;
             type = trackType;
@@ -29,7 +29,7 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public virtual void InitActionKeyFrameandTime(KeyFrame kf, float time)
+        public void InitActionKeyFrameandTime(KeyFrame kf, float time)
         {
             keyFrameTimeLeft = time;
             SetElementFromKeyFrame(kf);
@@ -40,7 +40,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void SetKeyFrameAt(KeyFrame k, int i)
+        public void SetKeyFrameAt(KeyFrame k, int i)
         {
             keyFrames[i] = k;
             if (i >= keyFramesCount)
@@ -53,7 +53,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual float GetFrameTime(int f)
+        public float GetFrameTime(int f)
         {
             float num = 0f;
             for (int i = 0; i <= f; i++)
@@ -63,7 +63,7 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual void UpdateRange()
+        public void UpdateRange()
         {
             startTime = GetFrameTime(0);
             endTime = GetFrameTime(keyFramesCount - 1);
@@ -185,7 +185,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual void SetElementFromKeyFrame(KeyFrame kf)
+        public void SetElementFromKeyFrame(KeyFrame kf)
         {
             switch (type)
             {

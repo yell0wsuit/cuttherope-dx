@@ -4,20 +4,20 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.core
 {
-    internal class ApplicationSettings : NSObject
+    internal sealed class ApplicationSettings : NSObject
     {
-        public virtual int GetInt(int s)
+        public int GetInt(int s)
         {
             return s == 5 ? fps : s != 6 ? throw new NotImplementedException() : (int)orientation;
         }
 
-        public virtual bool GetBool(int s)
+        public static bool GetBool(int s)
         {
             _ = DEFAULT_APP_SETTINGS.TryGetValue((AppSettings)s, out bool value);
             return value;
         }
 
-        public virtual NSString GetString(int s)
+        public NSString GetString(int s)
         {
             return s != 8
                 ? NSS("")
@@ -35,7 +35,7 @@ namespace CutTheRope.iframework.core
                 };
         }
 
-        public virtual void SetString(int sid, NSString str)
+        public void SetString(int sid, NSString str)
         {
             if (sid == 8)
             {

@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace CutTheRope.game
 {
-    internal class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
+    internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
         public static Button CreateButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
         {
@@ -321,7 +321,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public virtual void CreateMainMenu()
+        public void CreateMainMenu()
         {
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             BaseElement baseElement = CreateBackgroundWithLogo(true);
@@ -375,7 +375,7 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 0);
         }
 
-        public virtual void CreateOptions()
+        public void CreateOptions()
         {
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
@@ -438,7 +438,7 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 1);
         }
 
-        public virtual void CreateReset()
+        public void CreateReset()
         {
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
@@ -464,7 +464,7 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 4);
         }
 
-        public virtual void CreateMovieView()
+        public void CreateMovieView()
         {
             MovieView movieView = (MovieView)new MovieView().InitFullscreen();
             RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
@@ -475,7 +475,7 @@ namespace CutTheRope.game
             AddViewwithID(movieView, 7);
         }
 
-        public virtual void CreateAbout()
+        public void CreateAbout()
         {
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
@@ -527,7 +527,7 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 3);
         }
 
-        public virtual HBox CreateTextWithStar(NSString t)
+        public static HBox CreateTextWithStar(NSString t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
             Text text = new Text().InitWithFont(Application.GetFont(3));
@@ -541,19 +541,19 @@ namespace CutTheRope.game
             return hbox;
         }
 
-        public virtual float GetBoxWidth()
+        public static float GetBoxWidth()
         {
             return Image.GetQuadSize(52, 4).x + (Image.GetQuadOffset(52, 4).x * 2f);
         }
 
-        public virtual float GetPackOffset()
+        public static float GetPackOffset()
         {
             float num = SCREEN_WIDTH + (Canvas.xOffset * 2);
             float boxWidth = GetBoxWidth();
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
-        public virtual BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
+        public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
             touchBaseElement.delegateValue = this;
@@ -683,7 +683,7 @@ namespace CutTheRope.game
             return touchBaseElement;
         }
 
-        public virtual void CreatePackSelect()
+        public void CreatePackSelect()
         {
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
@@ -775,15 +775,15 @@ namespace CutTheRope.game
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
 
-        public virtual void CreateLeaderboards()
+        public static void CreateLeaderboards()
         {
         }
 
-        public virtual void CreateAchievements()
+        public static void CreateAchievements()
         {
         }
 
-        public virtual void ShowCantUnlockPopup()
+        public void ShowCantUnlockPopup()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             Popup popup = (Popup)new Popup().Init();
@@ -828,7 +828,7 @@ namespace CutTheRope.game
             _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void ShowGameFinishedPopup()
+        public void ShowGameFinishedPopup()
         {
             Popup popup = (Popup)new Popup().Init();
             popup.SetName("popup");
@@ -857,7 +857,7 @@ namespace CutTheRope.game
             _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void ShowYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
+        public void ShowYesNoPopup(NSString str, int buttonYesId, int buttonNoId)
         {
             Popup popup = (Popup)new Popup().Init();
             popup.SetName("popup");
@@ -885,7 +885,7 @@ namespace CutTheRope.game
             _ = ActiveView().AddChild(popup);
         }
 
-        public virtual void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
+        public void ScrollableContainerreachedScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
             pack = i;
@@ -923,14 +923,14 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void ScrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
+        public void ScrollableContainerchangedTargetScrollPoint(ScrollableContainer e, int i)
         {
             currentPack = i;
             pack = i;
             CTRPreferences.SetLastPack(i);
         }
 
-        public virtual BaseElement CreateButtonForLevelPack(int l, int p)
+        public BaseElement CreateButtonForLevelPack(int l, int p)
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
@@ -966,7 +966,7 @@ namespace CutTheRope.game
             return touchBaseElement;
         }
 
-        public virtual void CreateLevelSelect()
+        public void CreateLevelSelect()
         {
             float num = 0.3f;
             MenuView menuView = (MenuView)new MenuView().InitFullscreen();
@@ -1102,7 +1102,7 @@ namespace CutTheRope.game
             CTRSoundMgr.PlayMusic(145);
         }
 
-        public virtual void ShowNextPack()
+        public void ShowNextPack()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             int num = cTRRootController.GetPack();
@@ -1127,7 +1127,7 @@ namespace CutTheRope.game
             Deactivate();
         }
 
-        public virtual void MoviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(NSString url)
         {
             if (replayingIntroMovie)
             {
@@ -1157,7 +1157,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void PreLevelSelect()
+        public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
             int[] array = null;
@@ -1207,7 +1207,7 @@ namespace CutTheRope.game
             CreateLevelSelect();
         }
 
-        public virtual void TimelineFinished(Timeline t)
+        public void TimelineFinished(Timeline t)
         {
             CTRSoundMgr.StopMusic();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
@@ -1227,13 +1227,13 @@ namespace CutTheRope.game
             ActivateChild(0);
         }
 
-        public virtual void RecreateOptions()
+        public void RecreateOptions()
         {
             DeleteView(1);
             CreateOptions();
         }
 
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n is not (-1) and not 34)
             {
@@ -1568,7 +1568,7 @@ namespace CutTheRope.game
             return flag;
         }
 
-        public virtual void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
+        public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }
 
@@ -1808,7 +1808,7 @@ namespace CutTheRope.game
 
         private Popup ep;
 
-        public class TouchBaseElement : BaseElement
+        public sealed class TouchBaseElement : BaseElement
         {
             public override bool OnTouchDownXY(float tx, float ty)
             {
@@ -1830,7 +1830,7 @@ namespace CutTheRope.game
             public IButtonDelegation delegateValue;
         }
 
-        public class MonsterSlot : Image
+        public sealed class MonsterSlot : Image
         {
             public static MonsterSlot MonsterSlot_create(CTRTexture2D t)
             {

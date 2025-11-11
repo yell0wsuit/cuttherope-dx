@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.ios
 {
-    internal class NSString : NSObject
+    internal sealed class NSString : NSObject
     {
         public NSString()
         {

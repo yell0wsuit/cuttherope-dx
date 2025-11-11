@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class GameView : View
+    internal sealed class GameView : View
     {
         public override NSObject InitFullscreen()
         {

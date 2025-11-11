@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.ios
 {
-    internal class NSTimer : NSObject
+    internal sealed class NSTimer : NSObject
     {
         private static new void Init()
         {
@@ -68,7 +68,7 @@ namespace CutTheRope.ios
 
         private static bool is_init;
 
-        private class Entry
+        private sealed class Entry
         {
             public DelayedDispatcher.DispatchFunc f;
 

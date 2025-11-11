@@ -2,7 +2,7 @@ using System;
 
 namespace CutTheRope.iframework
 {
-    internal class Md5
+    internal sealed class Md5
     {
         private static void GET_UINT32(ref uint n, byte[] b, int dataIndex, int i)
         {
@@ -216,7 +216,7 @@ namespace CutTheRope.iframework
 
         private static readonly byte[] md5_padding;
 
-        public class Md5_context
+        public sealed class Md5_context
         {
             public Md5_context()
             {

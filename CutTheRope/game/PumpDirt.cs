@@ -5,9 +5,9 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class PumpDirt : MultiParticles
+    internal sealed class PumpDirt : MultiParticles
     {
-        public virtual PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
+        public PumpDirt InitWithTotalParticlesAngleandImageGrid(int p, float a, Image grid)
         {
             if (base.InitWithTotalParticlesandImageGrid(p, grid) == null)
             {

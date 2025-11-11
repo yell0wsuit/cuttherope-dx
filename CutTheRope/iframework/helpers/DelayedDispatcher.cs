@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class DelayedDispatcher : NSObject
+    internal sealed class DelayedDispatcher : NSObject
     {
         public DelayedDispatcher()
         {
@@ -18,18 +18,18 @@ namespace CutTheRope.iframework.helpers
             base.Dealloc();
         }
 
-        public virtual void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)
         {
             CallObjectSelectorParamafterDelay(s, p, (float)d);
         }
 
-        public virtual void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
+        public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, float d)
         {
             DispatchClass item = new DispatchClass().InitWithObjectSelectorParamafterDelay(s, p, d);
             dispatchers.Add(item);
         }
 
-        public virtual void Update(float d)
+        public void Update(float d)
         {
             int count = dispatchers.Count;
             for (int i = 0; i < count; i++)
@@ -46,12 +46,12 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void CancelAllDispatches()
+        public void CancelAllDispatches()
         {
             dispatchers.Clear();
         }
 
-        public virtual void CancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
+        public void CancelDispatchWithObjectSelectorParam(DispatchFunc s, NSObject p)
         {
             throw new NotImplementedException();
         }

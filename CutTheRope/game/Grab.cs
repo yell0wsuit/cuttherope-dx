@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace CutTheRope.game
 {
-    internal class Grab : CTRGameObject
+    internal sealed class Grab : CTRGameObject
     {
         private static void DrawGrabCircle(Grab s, float x, float y, float radius, int vertexCount, RGBAColor color)
         {
@@ -40,18 +40,18 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
+        public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
             Vector v3 = VectSub(v1, c);
             return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
         }
 
-        public virtual void HandleWheelTouch(Vector v)
+        public void HandleWheelTouch(Vector v)
         {
             lastWheelTouch = v;
         }
 
-        public virtual void HandleWheelRotate(Vector v)
+        public void HandleWheelRotate(Vector v)
         {
             if (lastWheelTouch.x - v.x == 0f && lastWheelTouch.y - v.y == 0f)
             {
@@ -148,7 +148,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void UpdateSpider(float delta)
+        public void UpdateSpider(float delta)
         {
             if (hasSpider && shouldActivate)
             {
@@ -206,7 +206,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void DrawBack()
+        public void DrawBack()
         {
             if (moveLength > 0.0)
             {
@@ -268,12 +268,12 @@ namespace CutTheRope.game
             base.PostDraw();
         }
 
-        public virtual void DrawSpider()
+        public void DrawSpider()
         {
             spider.Draw();
         }
 
-        public virtual void SetRope(Bungee r)
+        public void SetRope(Bungee r)
         {
             rope = r;
             radius = -1f;
@@ -283,7 +283,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void SetLauncher()
+        public void SetLauncher()
         {
             launcher = true;
             launcherIncreaseSpeed = true;
@@ -294,12 +294,12 @@ namespace CutTheRope.game
             mover.Start();
         }
 
-        public virtual void ReCalcCircle()
+        public void ReCalcCircle()
         {
             GLDrawer.CalcCircle(x, y, radius, vertexCount, vertices);
         }
 
-        public virtual void SetRadius(float r)
+        public void SetRadius(float r)
         {
             radius = r;
             if (radius == -1f)
@@ -357,7 +357,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual void SetMoveLengthVerticalOffset(float l, bool v, float o)
+        public void SetMoveLengthVerticalOffset(float l, bool v, float o)
         {
             moveLength = l;
             moveVertical = v;
@@ -401,7 +401,7 @@ namespace CutTheRope.game
             moverDragging = -1;
         }
 
-        public virtual void SetBee()
+        public void SetBee()
         {
             bee = Image_createWithResIDQuad(98, 1);
             bee.blendingMode = 1;
@@ -423,7 +423,7 @@ namespace CutTheRope.game
             _ = AddChild(bee);
         }
 
-        public virtual void SetSpider(bool s)
+        public void SetSpider(bool s)
         {
             hasSpider = s;
             shouldActivate = false;
@@ -441,7 +441,7 @@ namespace CutTheRope.game
             _ = AddChild(spider);
         }
 
-        public virtual void DestroyRope()
+        public void DestroyRope()
         {
             rope.Release();
             rope = null;

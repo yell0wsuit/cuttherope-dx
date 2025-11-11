@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal class CTRPreferences : Preferences
+    internal sealed class CTRPreferences : Preferences
     {
         public override NSObject Init()
         {

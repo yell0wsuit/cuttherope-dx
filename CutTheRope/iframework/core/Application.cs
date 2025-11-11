@@ -82,7 +82,7 @@ namespace CutTheRope.iframework.core
         {
             appSettings = CreateAppSettings();
             prefs = CreatePreferences();
-            if (appSettings.GetBool(7))
+            if (ApplicationSettings.GetBool(7))
             {
                 string text = SharedPreferences().GetStringForKey("PREFS_LOCALE");
                 if (text == null || text.Length == 0)

@@ -2,7 +2,7 @@ using CutTheRope.ios;
 using System;
 using System.Collections;
 
-internal class DynamicArray : NSObject, IEnumerable
+internal sealed class DynamicArray : NSObject, IEnumerable
 {
     public NSObject this[int key] => map[key];
 
@@ -17,7 +17,7 @@ internal class DynamicArray : NSObject, IEnumerable
         return this;
     }
 
-    public virtual NSObject InitWithCapacity(int c)
+    public NSObject InitWithCapacity(int c)
     {
         if (base.Init() != null)
         {
@@ -30,7 +30,7 @@ internal class DynamicArray : NSObject, IEnumerable
         return this;
     }
 
-    public virtual NSObject InitWithCapacityandOverReallocValue(int c, int v)
+    public NSObject InitWithCapacityandOverReallocValue(int c, int v)
     {
         if (InitWithCapacity(c) != null)
         {
@@ -39,17 +39,17 @@ internal class DynamicArray : NSObject, IEnumerable
         return this;
     }
 
-    public virtual int Count()
+    public int Count()
     {
         return highestIndex + 1;
     }
 
-    public virtual int Capacity()
+    public int Capacity()
     {
         return size;
     }
 
-    public virtual void SetNewSize(int k)
+    public void SetNewSize(int k)
     {
         int num = k + overRealloc;
         NSObject[] array = new NSObject[num];
@@ -58,14 +58,14 @@ internal class DynamicArray : NSObject, IEnumerable
         size = num;
     }
 
-    public virtual int AddObject(NSObject obj)
+    public int AddObject(NSObject obj)
     {
         int num = highestIndex + 1;
         SetObjectAt(obj, num);
         return num;
     }
 
-    public virtual void SetObjectAt(NSObject obj, int k)
+    public void SetObjectAt(NSObject obj, int k)
     {
         if (k >= size)
         {
@@ -85,22 +85,22 @@ internal class DynamicArray : NSObject, IEnumerable
         mutationsCount += 1UL;
     }
 
-    public virtual NSObject FirstObject()
+    public NSObject FirstObject()
     {
         return ObjectAtIndex(0);
     }
 
-    public virtual NSObject LastObject()
+    public NSObject LastObject()
     {
         return highestIndex == -1 ? null : ObjectAtIndex(highestIndex);
     }
 
-    public virtual NSObject ObjectAtIndex(int k)
+    public NSObject ObjectAtIndex(int k)
     {
         return map[k];
     }
 
-    public virtual void UnsetAll()
+    public void UnsetAll()
     {
         for (int i = 0; i <= highestIndex; i++)
         {
@@ -111,14 +111,14 @@ internal class DynamicArray : NSObject, IEnumerable
         }
     }
 
-    public virtual void UnsetObjectAtIndex(int k)
+    public void UnsetObjectAtIndex(int k)
     {
         map[k].Release();
         map[k] = null;
         mutationsCount += 1UL;
     }
 
-    public virtual void InsertObjectatIndex(NSObject obj, int k)
+    public void InsertObjectatIndex(NSObject obj, int k)
     {
         if (k >= size || highestIndex + 1 >= size)
         {
@@ -134,7 +134,7 @@ internal class DynamicArray : NSObject, IEnumerable
         mutationsCount += 1UL;
     }
 
-    public virtual void RemoveObjectAtIndex(int k)
+    public void RemoveObjectAtIndex(int k)
     {
         NSObject nSObject = map[k];
         nSObject?.Release();
@@ -147,13 +147,13 @@ internal class DynamicArray : NSObject, IEnumerable
         mutationsCount += 1UL;
     }
 
-    public virtual void RemoveAllObjects()
+    public void RemoveAllObjects()
     {
         UnsetAll();
         highestIndex = -1;
     }
 
-    public virtual void RemoveObject(NSObject obj)
+    public void RemoveObject(NSObject obj)
     {
         for (int i = 0; i <= highestIndex; i++)
         {
@@ -165,7 +165,7 @@ internal class DynamicArray : NSObject, IEnumerable
         }
     }
 
-    public virtual int GetFirstEmptyIndex()
+    public int GetFirstEmptyIndex()
     {
         for (int i = 0; i < size; i++)
         {
@@ -177,7 +177,7 @@ internal class DynamicArray : NSObject, IEnumerable
         return size;
     }
 
-    public virtual int GetObjectIndex(NSObject obj)
+    public int GetObjectIndex(NSObject obj)
     {
         for (int i = 0; i < size; i++)
         {

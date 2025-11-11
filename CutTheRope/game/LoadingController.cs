@@ -5,7 +5,7 @@ using System;
 
 namespace CutTheRope.game
 {
-    internal class LoadingController : ViewController, IResourceMgrDelegate
+    internal sealed class LoadingController : ViewController, IResourceMgrDelegate
     {
         public override NSObject InitWithParent(ViewController p)
         {
@@ -30,11 +30,11 @@ namespace CutTheRope.game
             ShowView(0);
         }
 
-        public virtual void ResourceLoaded(int res)
+        public void ResourceLoaded(int res)
         {
         }
 
-        public virtual void AllResourcesLoaded()
+        public void AllResourcesLoaded()
         {
             GC.Collect();
             AndroidAPI.HideBanner();

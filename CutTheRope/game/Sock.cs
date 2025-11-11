@@ -3,7 +3,7 @@ using CutTheRope.iframework.visual;
 
 namespace CutTheRope.game
 {
-    internal class Sock : CTRGameObject
+    internal sealed class Sock : CTRGameObject
     {
         public static Sock Sock_create(CTRTexture2D t)
         {
@@ -22,7 +22,7 @@ namespace CutTheRope.game
             return sock;
         }
 
-        public virtual void CreateAnimations()
+        public void CreateAnimations()
         {
             light = Animation_createWithResID(85);
             light.anchor = 34;
@@ -35,7 +35,7 @@ namespace CutTheRope.game
             _ = AddChild(light);
         }
 
-        public virtual void UpdateRotation()
+        public void UpdateRotation()
         {
             float num = 140f;
             t1.x = x - (num / 2f) - 20f;

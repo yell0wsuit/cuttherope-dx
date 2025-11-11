@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class MapPickerController : ViewController, IButtonDelegation
+    internal sealed class MapPickerController : ViewController, IButtonDelegation
     {
         public override NSObject InitWithParent(ViewController p)
         {
@@ -32,7 +32,7 @@ namespace CutTheRope.game
             return this;
         }
 
-        public virtual void CreatePickerView()
+        public void CreatePickerView()
         {
             View view = (View)new View().InitFullscreen();
             RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
@@ -69,7 +69,7 @@ namespace CutTheRope.game
             LoadList();
         }
 
-        public virtual void LoadList()
+        public static void LoadList()
         {
         }
 
@@ -78,25 +78,25 @@ namespace CutTheRope.game
             base.Deactivate();
         }
 
-        public virtual void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
         {
             if (rootNode != null)
             {
                 CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
                 ctrrootController.SetMap(rootNode);
                 ctrrootController.SetMapName(selectedMap);
-                ctrrootController.SetMapsList(maplist);
+                CTRRootController.SetMapsList(maplist);
                 Deactivate();
             }
         }
 
-        public virtual void SetNormalMode()
+        public void SetNormalMode()
         {
             autoLoad = false;
             ((CTRRootController)Application.SharedRootController()).SetPicker(true);
         }
 
-        public virtual void SetAutoLoadMap(NSString map)
+        public void SetAutoLoadMap(NSString map)
         {
             autoLoad = true;
             ((CTRRootController)Application.SharedRootController()).SetPicker(false);
@@ -104,7 +104,7 @@ namespace CutTheRope.game
             selectedMap = (NSString)NSRET(map);
         }
 
-        public virtual void OnButtonPressed(int n)
+        public void OnButtonPressed(int n)
         {
             if (n == 0)
             {

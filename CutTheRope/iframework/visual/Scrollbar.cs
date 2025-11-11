@@ -5,7 +5,7 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Scrollbar : BaseElement
+    internal sealed class Scrollbar : BaseElement
     {
         public override void Update(float delta)
         {
@@ -60,7 +60,7 @@ namespace CutTheRope.iframework.visual
             base.PostDraw();
         }
 
-        public virtual Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)
+        public Scrollbar InitWithWidthHeightVertical(float w, float h, bool v)
         {
             if (Init() != null)
             {

@@ -5,7 +5,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate
+    internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate
     {
         public override NSObject InitWithParent(ViewController p)
         {
@@ -36,7 +36,7 @@ namespace CutTheRope.game
             bar.width = (int)(barTotalWidth * num / 100f);
         }
 
-        public virtual void MoviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(NSString url)
         {
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.resourcesDelegate = this;
@@ -56,11 +56,11 @@ namespace CutTheRope.game
             MoviePlaybackFinished(null);
         }
 
-        public virtual void ResourceLoaded(int resName)
+        public void ResourceLoaded(int resName)
         {
         }
 
-        public virtual void AllResourcesLoaded()
+        public void AllResourcesLoaded()
         {
             Application.SharedRootController().SetViewTransition(4);
             Deactivate();

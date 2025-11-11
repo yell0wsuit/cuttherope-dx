@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace CutTheRope.ios
 {
-    internal class XMLNode
+    internal sealed class XMLNode
     {
         // (get) Token: 0x060000FB RID: 251 RVA: 0x000057CA File Offset: 0x000039CA
         public string Name { get; private set; }

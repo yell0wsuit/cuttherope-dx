@@ -3,7 +3,7 @@ using System;
 
 namespace CutTheRope.commons
 {
-    internal class Lift : Button
+    internal sealed class Lift : Button
     {
         public override bool OnTouchDownXY(float tx, float ty)
         {

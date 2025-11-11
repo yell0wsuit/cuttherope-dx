@@ -3,9 +3,9 @@ using System;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class Font : FontGeneric
+    internal sealed class Font : FontGeneric
     {
-        public virtual Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
         {
             if (base.Init() != null)
             {

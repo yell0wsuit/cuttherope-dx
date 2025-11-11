@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class CTRResourceMgr : ResourceMgr
+    internal sealed class CTRResourceMgr : ResourceMgr
     {
         public override NSObject Init()
         {
