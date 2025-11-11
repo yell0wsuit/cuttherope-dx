@@ -2,15 +2,18 @@ using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace CutTheRope.iframework.core
 {
     internal class Preferences : NSObject
     {
-        private static readonly Dictionary<string, int> IntData = [];
-        private static readonly Dictionary<string, string> StringData = [];
+        private static readonly Dictionary<string, object> PreferencesData = [];
         private static bool _gameSaveRequested;
-        private const string SaveFileName = "ctr_save.bin";
+        private const string SaveFileName = "ctr_preferences.json";
+        private const string LegacyBinaryFileName = "ctr_save.bin";
+        private const string MigratedBinaryFileName = "ctr_bin_candeletethis.bin";
+        private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
         public static bool GameSaveRequested
         {
@@ -32,7 +35,7 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static void SetIntForKey(int value, string key, bool commit = false)
         {
-            IntData[key] = value;
+            PreferencesData[key] = value;
             if (commit)
                 RequestSave();
         }
@@ -50,7 +53,7 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static void SetStringForKey(string value, string key, bool commit = false)
         {
-            StringData[key] = value;
+            PreferencesData[key] = value;
             if (commit)
                 RequestSave();
         }
@@ -60,7 +63,17 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static int GetIntForKey(string key)
         {
-            return IntData.TryGetValue(key, out int value) ? value : 0;
+            if (PreferencesData.TryGetValue(key, out var value))
+            {
+                return value switch
+                {
+                    int intVal => intVal,
+                    long longVal => (int)longVal,
+                    JsonElement jsonElement => jsonElement.GetInt32(),
+                    _ => 0
+                };
+            }
+            return 0;
         }
 
         /// <summary>
@@ -76,7 +89,16 @@ namespace CutTheRope.iframework.core
         /// </summary>
         public static string GetStringForKey(string key)
         {
-            return StringData.TryGetValue(key, out string value) ? value : "";
+            if (PreferencesData.TryGetValue(key, out var value))
+            {
+                return value switch
+                {
+                    string strVal => strVal,
+                    JsonElement jsonElement => jsonElement.GetString() ?? "",
+                    _ => ""
+                };
+            }
+            return "";
         }
 
         /// <summary>
@@ -99,10 +121,8 @@ namespace CutTheRope.iframework.core
 
             try
             {
-                using (FileStream fileStream = File.Create(SaveFileName))
-                {
-                    SaveToStream(fileStream);
-                }
+                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                File.WriteAllText(SaveFileName, json);
                 GameSaveRequested = false;
             }
             catch (Exception ex)
@@ -113,28 +133,15 @@ namespace CutTheRope.iframework.core
         }
 
         /// <summary>
-        /// Serializes all preferences to a binary stream.
+        /// Serializes all preferences to a JSON stream.
         /// </summary>
         public static bool SaveToStream(Stream stream)
         {
             try
             {
-                using BinaryWriter writer = new(stream);
-                // Save integers
-                writer.Write(IntData.Count);
-                foreach (var kvp in IntData)
-                {
-                    writer.Write(kvp.Key);
-                    writer.Write(kvp.Value);
-                }
-
-                // Save strings
-                writer.Write(StringData.Count);
-                foreach (var kvp in StringData)
-                {
-                    writer.Write(kvp.Key);
-                    writer.Write(kvp.Value);
-                }
+                string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                using StreamWriter writer = new(stream);
+                writer.Write(json);
                 return true;
             }
             catch (Exception ex)
@@ -145,29 +152,23 @@ namespace CutTheRope.iframework.core
         }
 
         /// <summary>
-        /// Deserializes all preferences from a binary stream.
+        /// Deserializes all preferences from a JSON stream.
         /// </summary>
         public static bool LoadFromStream(Stream stream)
         {
             try
             {
-                using BinaryReader reader = new(stream);
-                // Load integers
-                int intCount = reader.ReadInt32();
-                for (int i = 0; i < intCount; i++)
-                {
-                    string key = reader.ReadString();
-                    int value = reader.ReadInt32();
-                    IntData.Add(key, value);
-                }
+                using StreamReader reader = new(stream);
+                string json = reader.ReadToEnd();
+                var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
 
-                // Load strings
-                int stringCount = reader.ReadInt32();
-                for (int i = 0; i < stringCount; i++)
+                if (data != null)
                 {
-                    string key = reader.ReadString();
-                    string value = reader.ReadString();
-                    StringData.Add(key, value);
+                    PreferencesData.Clear();
+                    foreach (var kvp in data)
+                    {
+                        PreferencesData[kvp.Key] = kvp.Value;
+                    }
                 }
                 return true;
             }
@@ -180,20 +181,110 @@ namespace CutTheRope.iframework.core
 
         /// <summary>
         /// Loads preferences from disk if the save file exists.
+        /// Supports migration from legacy binary format to JSON.
         /// </summary>
         public static void LoadPreferences()
         {
+            PreferencesData.Clear();
+
+            // Try to load from JSON first (preferred format)
             if (File.Exists(SaveFileName))
             {
                 try
                 {
-                    using FileStream fileStream = File.OpenRead(SaveFileName);
-                    LoadFromStream(fileStream);
+                    string json = File.ReadAllText(SaveFileName);
+                    var data = JsonSerializer.Deserialize<Dictionary<string, object>>(json, JsonOptions);
+
+                    if (data != null)
+                    {
+                        foreach (var kvp in data)
+                        {
+                            PreferencesData[kvp.Key] = kvp.Value;
+                        }
+                    }
+                    return;
                 }
                 catch (Exception ex)
                 {
-                    LOG($"Error loading preferences: {ex}");
+                    LOG($"Error loading JSON preferences: {ex}");
                 }
+            }
+
+            // Fall back to legacy binary format
+            if (File.Exists(LegacyBinaryFileName))
+            {
+                try
+                {
+                    using FileStream fileStream = File.OpenRead(LegacyBinaryFileName);
+                    if (LoadLegacyBinaryFormat(fileStream))
+                    {
+                        LOG("Successfully migrated preferences from binary to JSON format");
+
+                        // Save as JSON
+                        try
+                        {
+                            string json = JsonSerializer.Serialize(PreferencesData, JsonOptions);
+                            File.WriteAllText(SaveFileName, json);
+                        }
+                        catch (Exception ex)
+                        {
+                            LOG($"Error saving migrated preferences as JSON: {ex}");
+                        }
+
+                        // Rename old binary file
+                        try
+                        {
+                            if (File.Exists(MigratedBinaryFileName))
+                                File.Delete(MigratedBinaryFileName);
+                            File.Move(LegacyBinaryFileName, MigratedBinaryFileName);
+                            LOG($"Moved legacy binary to {MigratedBinaryFileName}");
+                        }
+                        catch (Exception ex)
+                        {
+                            LOG($"Error renaming legacy binary file: {ex}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LOG($"Error loading legacy binary preferences: {ex}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Loads preferences from legacy binary format.
+        /// </summary>
+        private static bool LoadLegacyBinaryFormat(Stream stream)
+        {
+            try
+            {
+                using BinaryReader reader = new(stream);
+
+                // Load integers
+                int intCount = reader.ReadInt32();
+                for (int i = 0; i < intCount; i++)
+                {
+                    string key = reader.ReadString();
+                    int value = reader.ReadInt32();
+                    PreferencesData[key] = value;
+                }
+
+                // Load strings
+                int stringCount = reader.ReadInt32();
+                for (int i = 0; i < stringCount; i++)
+                {
+                    string key = reader.ReadString();
+                    string value = reader.ReadString();
+                    PreferencesData[key] = value;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LOG($"Error: cannot load legacy binary format, {ex}");
+                return false;
             }
         }
 
