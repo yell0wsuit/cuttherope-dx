@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    internal class ToggleButton : BaseElement, IButtonDelegate
+    internal class ToggleButton : BaseElement, IButtonDelegation
     {
         public virtual void OnButtonPressed(int n)
         {
@@ -52,7 +52,7 @@ namespace CutTheRope.iframework.visual
             return b2.IsEnabled();
         }
 
-        public IButtonDelegate delegateButtonDelegate;
+        public IButtonDelegation delegateButtonDelegate;
 
         private int buttonID;
 

@@ -138,7 +138,7 @@ namespace CutTheRope.iframework.visual
 
         public BUTTON_STATE state;
 
-        public IButtonDelegate delegateButtonDelegate;
+        public IButtonDelegation delegateButtonDelegate;
 
         public float touchLeftInc;
 

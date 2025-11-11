@@ -15,9 +15,9 @@ using System.Reflection;
 
 namespace CutTheRope.game
 {
-    internal class MenuController : ViewController, IButtonDelegate, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
+    internal class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
-        public static Button CreateButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegate d)
+        public static Button CreateButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
@@ -36,7 +36,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static Button CreateShortButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegate d)
+        public static Button CreateShortButtonWithTextIDDelegate(NSString str, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(61, 1);
             Image image2 = Image.Image_createWithResIDQuad(61, 0);
@@ -55,7 +55,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, IButtonDelegate d)
+        public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(NSString str1, NSString str2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(2, 0);
             Image image2 = Image.Image_createWithResIDQuad(2, 1);
@@ -84,14 +84,14 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public static Button CreateBackButtonWithDelegateID(IButtonDelegate d, int bid)
+        public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, int bid)
         {
             Button button = CreateButtonWithImageQuad1Quad2IDDelegate(54, 0, 1, bid, d);
             button.anchor = button.parentAnchor = 33;
             return button;
         }
 
-        public static Button CreateButtonWithImageIDDelegate(int resID, int bid, IButtonDelegate d)
+        public static Button CreateButtonWithImageIDDelegate(int resID, int bid, IButtonDelegation d)
         {
             CTRTexture2D texture = Application.GetTexture(resID);
             Image up = Image.Image_create(texture);
@@ -104,7 +104,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static Button CreateButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegate d)
+        public static Button CreateButton2WithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
         {
             Image up = Image.Image_createWithResIDQuad(res, q1);
             Image image = Image.Image_createWithResIDQuad(res, q2);
@@ -116,7 +116,7 @@ namespace CutTheRope.game
             return button;
         }
 
-        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegate d)
+        public static Button CreateButtonWithImageQuad1Quad2IDDelegate(int res, int q1, int q2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(res, q1);
             Image image2 = Image.Image_createWithResIDQuad(res, q2);
@@ -196,7 +196,7 @@ namespace CutTheRope.game
             return image;
         }
 
-        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegate delegateValue, int bid, Vector offset)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, int bid, Vector offset)
         {
             Image u = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, offset);
             Image d = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, offset);
@@ -207,7 +207,7 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public static Button CreateLanguageButtonWithIDDelegate(int bid, IButtonDelegate d)
+        public static Button CreateLanguageButtonWithIDDelegate(int bid, IButtonDelegation d)
         {
             NSString @string = Application.SharedAppSettings().GetString(8);
             int q = 7;
@@ -254,7 +254,7 @@ namespace CutTheRope.game
             return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : (BaseElement)new BaseElement().Init();
         }
 
-        public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegate delegateValue)
+        public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             BaseElement baseElement = CreateElementWithResIdquad(res, quad);
             BaseElement baseElement2 = CreateElementWithResIdquad(res, quad);
@@ -272,7 +272,7 @@ namespace CutTheRope.game
             return toggleButton;
         }
 
-        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, IButtonDelegate delegateValue)
+        public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, NSString str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(8, q);
             Text text = Text.CreateWithFontandString(4, str);
@@ -311,7 +311,7 @@ namespace CutTheRope.game
             return image3;
         }
 
-        public static Button CreateScoresButtonWithIconbuttonIDdelegate(int quad, int bId, IButtonDelegate delegateValue)
+        public static Button CreateScoresButtonWithIconbuttonIDdelegate(int quad, int bId, IButtonDelegation delegateValue)
         {
             Image up = CreateBlankScoresButtonWithIconpressed(quad, false);
             Image image = CreateBlankScoresButtonWithIconpressed(quad, true);
@@ -1827,7 +1827,7 @@ namespace CutTheRope.game
 
             public CTRRectangle bbc;
 
-            public IButtonDelegate delegateValue;
+            public IButtonDelegation delegateValue;
         }
 
         public class MonsterSlot : Image

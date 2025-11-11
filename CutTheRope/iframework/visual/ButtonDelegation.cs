@@ -1,6 +1,6 @@
 namespace CutTheRope.iframework.visual
 {
-    public interface IButtonDelegate
+    public interface IButtonDelegation
     {
         void OnButtonPressed(int n);
     }

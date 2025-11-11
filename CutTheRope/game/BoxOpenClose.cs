@@ -158,7 +158,7 @@ namespace CutTheRope.game
             }
         }
 
-        public virtual NSObject InitWithButtonDelegate(IButtonDelegate b)
+        public virtual NSObject InitWithButtonDelegate(IButtonDelegation b)
         {
             if (Init() != null)
             {

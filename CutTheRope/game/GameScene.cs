@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal class GameScene : BaseElement, ITimelineDelegate, IButtonDelegate
+    internal class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
         private static void DrawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
@@ -42,7 +42,7 @@ namespace CutTheRope.game
                 : v2 <= v1 && v2 <= v3 && v2 <= v4 ? v2 : v3 <= v2 && v3 <= v1 && v3 <= v4 ? v3 : v4 <= v2 && v4 <= v3 && v4 <= v1 ? v4 : -1f;
         }
 
-        public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegate d)
+        public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
             Image u = Image.Image_createWithResIDQuad(78, 56);
             Image d2 = Image.Image_createWithResIDQuad(78, 56);

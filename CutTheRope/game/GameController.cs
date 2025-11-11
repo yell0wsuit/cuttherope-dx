@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class GameController : ViewController, IButtonDelegate, IGameSceneDelegate
+    internal class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
         public override void Update(float t)
         {

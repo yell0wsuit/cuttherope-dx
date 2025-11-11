@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace CutTheRope.game
 {
-    internal class MapPickerController : ViewController, IButtonDelegate
+    internal class MapPickerController : ViewController, IButtonDelegation
     {
         public override NSObject InitWithParent(ViewController p)
         {

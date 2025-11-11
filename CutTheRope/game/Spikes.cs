@@ -7,7 +7,7 @@ using System;
 
 namespace CutTheRope.game
 {
-    internal class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegate
+    internal class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
         public virtual NSObject InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
