@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace CutTheRope.game
 {
-    internal sealed class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
+    internal sealed partial class GameScene : BaseElement, ITimelineDelegate, IButtonDelegation
     {
         private static void DrawCut(Vector fls, Vector frs, Vector start, Vector end, float startSize, float endSize, RGBAColor c, ref Vector le, ref Vector re)
         {
@@ -42,67 +42,9 @@ namespace CutTheRope.game
                 : v2 <= v1 && v2 <= v3 && v2 <= v4 ? v2 : v3 <= v2 && v3 <= v1 && v3 <= v4 ? v3 : v4 <= v2 && v4 <= v3 && v4 <= v1 ? v4 : -1f;
         }
 
-        public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
-        {
-            Image u = Image.Image_createWithResIDQuad(78, 56);
-            Image d2 = Image.Image_createWithResIDQuad(78, 56);
-            Image u2 = Image.Image_createWithResIDQuad(78, 57);
-            Image d3 = Image.Image_createWithResIDQuad(78, 57);
-            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, 0);
-            toggleButton.delegateButtonDelegate = d;
-            return toggleButton;
-        }
-
         public bool PointOutOfScreen(ConstraintedPoint p)
         {
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
-        }
-
-        public override NSObject Init()
-        {
-            if (base.Init() != null)
-            {
-                CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                dd = (DelayedDispatcher)new DelayedDispatcher().Init();
-                initialCameraToStarDistance = -1f;
-                restartState = -1;
-                aniPool = (AnimationsPool)new AnimationsPool().Init();
-                aniPool.visible = false;
-                _ = AddChild(aniPool);
-                staticAniPool = (AnimationsPool)new AnimationsPool().Init();
-                staticAniPool.visible = false;
-                _ = AddChild(staticAniPool);
-                camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-                int textureResID = 104 + (cTRRootController.GetPack() * 2);
-                back = new TileMap().InitWithRowsColumns(1, 1);
-                back.SetRepeatHorizontally(TileMap.Repeat.NONE);
-                back.SetRepeatVertically(TileMap.Repeat.ALL);
-                back.AddTileQuadwithID(Application.GetTexture(textureResID), 0, 0);
-                back.FillStartAtRowColumnRowsColumnswithTile(0, 0, 1, 1, 0);
-                if (Canvas.isFullscreen)
-                {
-                    back.scaleX = Global.ScreenSizeManager.ScreenWidth / (float)Canvas.backingWidth;
-                }
-                back.scaleX *= 1.25f;
-                back.scaleY *= 1.25f;
-                for (int i = 0; i < 3; i++)
-                {
-                    hudStar[i] = Animation.Animation_createWithResID(79);
-                    hudStar[i].DoRestoreCutTransparency();
-                    _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
-                    hudStar[i].SetPauseAtIndexforAnimation(10, 0);
-                    hudStar[i].x = (hudStar[i].width * i) + Canvas.xOffsetScaled;
-                    hudStar[i].y = 0f;
-                    _ = AddChild(hudStar[i]);
-                }
-                for (int j = 0; j < 5; j++)
-                {
-                    fingerCuts[j] = (DynamicArray)new DynamicArray().Init();
-                    fingerCuts[j].Retain();
-                }
-                clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
-            }
-            return this;
         }
 
         public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
@@ -114,71 +56,6 @@ namespace CutTheRope.game
                 return;
             }
             Restart();
-        }
-
-        public void Reload()
-        {
-            dd.CancelAllDispatches();
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (cTRRootController.IsPicker())
-            {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://reload"), NSS("mappicker://reload"), true);
-                return;
-            }
-            int pack = cTRRootController.GetPack();
-            int level = cTRRootController.GetLevel();
-            XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
-        }
-
-        public void LoadNextMap()
-        {
-            dd.CancelAllDispatches();
-            initialCameraToStarDistance = -1f;
-            animateRestartDim = false;
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (cTRRootController.IsPicker())
-            {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://next"), NSS("mappicker://next"), true);
-                return;
-            }
-            int pack = cTRRootController.GetPack();
-            int level = cTRRootController.GetLevel();
-            if (level < CTRPreferences.GetLevelsInPackCount() - 1)
-            {
-                cTRRootController.SetLevel(++level);
-                cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
-            }
-        }
-
-        public void Restart()
-        {
-            Hide();
-            Show();
-        }
-
-        public void CreateEarthImageWithOffsetXY(float xs, float ys)
-        {
-            Image image = Image.Image_createWithResIDQuad(78, 58);
-            image.anchor = 18;
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            image.AddTimelinewithID(timeline, 1);
-            timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(180.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(0.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3));
-            image.AddTimelinewithID(timeline, 0);
-            Image.SetElementPositionWithQuadOffset(image, 118, 1);
-            if (Canvas.isFullscreen)
-            {
-                _ = Global.ScreenSizeManager.ScreenWidth;
-            }
-            image.scaleX = 0.8f;
-            image.scaleY = 0.8f;
-            image.x += xs;
-            image.y += ys;
-            _ = earthAnims.AddObject(image);
         }
 
         public static bool ShouldSkipTutorialElement(XMLNode c)
@@ -1236,8 +1113,8 @@ namespace CutTheRope.game
                         noCandy = false;
                         noCandyL = true;
                         noCandyR = true;
-                        int num20 = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
-                        Preferences.SetIntForKey(num20, "PREFS_CANDIES_UNITED", false);
+                        int num20 = Preferences._getIntForKey("PREFS_CANDIES_UNITED") + 1;
+                        Preferences._setIntforKey(num20, "PREFS_CANDIES_UNITED", false);
                         if (num20 == 100)
                         {
                             CTRRootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
@@ -1756,8 +1633,8 @@ namespace CutTheRope.game
                 }
                 if (restartState != 0)
                 {
-                    int num21 = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
-                    Preferences.SetIntForKey(num21, "PREFS_CANDIES_LOST", false);
+                    int num21 = Preferences._getIntForKey("PREFS_CANDIES_LOST") + 1;
+                    Preferences._setIntforKey(num21, "PREFS_CANDIES_LOST", false);
                     if (num21 == 50)
                     {
                         CTRRootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
@@ -2373,8 +2250,8 @@ namespace CutTheRope.game
 
         public void SpiderBusted(Grab g)
         {
-            int num = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
-            Preferences.SetIntForKey(num, "PREFS_SPIDERS_BUSTED", false);
+            int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
+            Preferences._setIntforKey(num, "PREFS_SPIDERS_BUSTED", false);
             if (num == 40)
             {
                 CTRRootController.PostAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));
@@ -2507,8 +2384,8 @@ namespace CutTheRope.game
             if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
-                int num = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
-                Preferences.SetIntForKey(num, "PREFS_BUBBLES_POPPED", false);
+                int num = Preferences._getIntForKey("PREFS_BUBBLES_POPPED") + 1;
+                Preferences._setIntforKey(num, "PREFS_BUBBLES_POPPED", false);
                 if (num == 50)
                 {
                     CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
@@ -2978,8 +2855,8 @@ namespace CutTheRope.game
                         ropesCutAtOnce = num4;
                     }
                     ropeAtOnceTimer = 0.1f;
-                    int num5 = Preferences.GetIntForKey("PREFS_ROPES_CUT") + 1;
-                    Preferences.SetIntForKey(num5, "PREFS_ROPES_CUT", false);
+                    int num5 = Preferences._getIntForKey("PREFS_ROPES_CUT") + 1;
+                    Preferences._setIntforKey(num5, "PREFS_ROPES_CUT", false);
                     if (num5 == 100)
                     {
                         CTRRootController.PostAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));
