@@ -239,12 +239,12 @@ namespace CutTheRope.desktop
 
         public static void GlVertexPointer(int size, int type, int stride, object pointer)
         {
-            s_GLVertexPointer = new GLVertexPointer(size, type, stride, pointer);
+            s_GLVertexPointer = new GLVertexPointer(size, pointer);
         }
 
         public static void GlTexCoordPointer(int size, int type, int stride, object pointer)
         {
-            s_GLTexCoordPointer = new GLTexCoordPointer(size, type, stride, pointer);
+            s_GLTexCoordPointer = new GLTexCoordPointer(size, pointer);
         }
 
         public static void GlDrawArrays(int mode, int first, int count)
@@ -274,7 +274,7 @@ namespace CutTheRope.desktop
 
         public static void GlVertexPointer_setAdditive(int size, int type, int stride, int length)
         {
-            s_GLVertexPointer = new GLVertexPointer(size, type, stride, new float[length]);
+            s_GLVertexPointer = new GLVertexPointer(size, new float[length]);
             s_GLVertexPointer_additive_position = 0;
         }
 
@@ -677,7 +677,7 @@ namespace CutTheRope.desktop
 
         private static double s_LineWidth;
 
-        private class GLVertexPointer(int size, int type, int stride, object pointer)
+        private class GLVertexPointer(int size, object pointer)
         {
             // (get) Token: 0x06000653 RID: 1619 RVA: 0x00033AD0 File Offset: 0x00031CD0
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
@@ -687,7 +687,7 @@ namespace CutTheRope.desktop
             public float[] pointer_ = pointer != null ? (float[])pointer : null;
         }
 
-        private class GLTexCoordPointer(int size, int type, int stride, object pointer)
+        private class GLTexCoordPointer(int size, object pointer)
         {
             // (get) Token: 0x06000655 RID: 1621 RVA: 0x00033B16 File Offset: 0x00031D16
             public int Count => pointer_ == null || size_ == 0 ? 0 : pointer_.Length / size_;
