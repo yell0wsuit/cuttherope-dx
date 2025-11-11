@@ -1,7 +1,7 @@
 using CutTheRope.iframework.visual;
 using System;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
     internal class Lift : Button
     {

@@ -2,7 +2,7 @@ using CutTheRope.iframework.core;
 using CutTheRope.ios;
 using System;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
     internal class CTRApp : Application
     {

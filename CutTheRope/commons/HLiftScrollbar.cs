@@ -1,7 +1,7 @@
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
     internal class HLiftScrollbar : Image
     {

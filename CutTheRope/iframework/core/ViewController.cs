@@ -1,4 +1,4 @@
-using CutTheRope.ctr_commons;
+using CutTheRope.commons;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework.Input.Touch;

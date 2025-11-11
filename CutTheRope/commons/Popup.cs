@@ -5,7 +5,7 @@ using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
     internal class Popup : BaseElement, ITimelineDelegate
     {

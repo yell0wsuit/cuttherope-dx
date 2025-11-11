@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace CutTheRope.ctr_commons
+namespace CutTheRope.commons
 {
     internal class CtrRenderer : NSObject
     {
