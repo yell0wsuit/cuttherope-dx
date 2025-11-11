@@ -168,11 +168,10 @@ namespace CutTheRope.iframework.sfe
                 return;
             }
             int count = p.constraints.Count;
-            Vector vector = vectZero;
-            int i = 0;
-            while (i < count)
+            for (int i = 0; i < count; i++)
             {
                 Constraint constraint = p.constraints[i];
+                Vector vector;
                 vector.x = constraint.cp.pos.x - p.pos.x;
                 vector.y = constraint.cp.pos.y - p.pos.y;
                 if (vector.x == 0f && vector.y == 0f)
@@ -182,27 +181,17 @@ namespace CutTheRope.iframework.sfe
                 float num = VectLength(vector);
                 float restLength = constraint.restLength;
                 Constraint.CONSTRAINT type = constraint.type;
-                if (type != Constraint.CONSTRAINT.NOT_MORE_THAN)
+
+                bool shouldApplyConstraint = (type == Constraint.CONSTRAINT.DISTANCE)
+                    || (type == Constraint.CONSTRAINT.NOT_MORE_THAN && num > restLength)
+                    || (type == Constraint.CONSTRAINT.NOT_LESS_THAN && num < restLength);
+
+                if (!shouldApplyConstraint)
                 {
-                    if (type != Constraint.CONSTRAINT.NOT_LESS_THAN)
-                    {
-                        goto IL_00F8;
-                    }
-                    if (num < restLength)
-                    {
-                        goto IL_00F8;
-                    }
+                    continue;
                 }
-                else if (num > restLength)
-                {
-                    goto IL_00F8;
-                }
-            IL_01D6:
-                i++;
-                continue;
-                Vector vector2;
-            IL_00F8:
-                vector2 = vector;
+
+                Vector vector2 = vector;
                 float num2 = constraint.cp.invWeight;
                 float num3 = num > 1f ? num : 1f;
                 float num4 = (num - restLength) / (num3 * (p.invWeight + num2));
@@ -217,9 +206,7 @@ namespace CutTheRope.iframework.sfe
                 if (constraint.cp.pin.x == -1f)
                 {
                     constraint.cp.pos = VectSub(constraint.cp.pos, vector2);
-                    goto IL_01D6;
                 }
-                goto IL_01D6;
             }
         }
 
