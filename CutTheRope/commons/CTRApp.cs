@@ -26,7 +26,7 @@ namespace CutTheRope.commons
             throw new NotImplementedException();
         }
 
-        public void ApplicationWillResignActive(UIApplication application)
+        public static void ApplicationWillResignActive(UIApplication application)
         {
             SharedPreferences().savePreferences();
             if (root != null && !root.IsSuspended())
@@ -35,7 +35,7 @@ namespace CutTheRope.commons
             }
         }
 
-        public void ApplicationDidBecomeActive(UIApplication application)
+        public static void ApplicationDidBecomeActive(UIApplication application)
         {
             if (root != null && root.IsSuspended())
             {

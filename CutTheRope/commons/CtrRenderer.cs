@@ -189,7 +189,7 @@ namespace CutTheRope.commons
                 CTRSoundMgr.Pause();
                 Application.SharedMovieMgr().Pause();
                 gPaused = true;
-                gApp?.ApplicationWillResignActive(null);
+                CTRApp.ApplicationWillResignActive(null);
                 CTRTexture2D.SuspendAll();
             }
         }
@@ -203,7 +203,7 @@ namespace CutTheRope.commons
                 CTRTexture2D.SuspendAll();
                 CTRTexture2D.ResumeAll();
                 gPaused = false;
-                gApp?.ApplicationDidBecomeActive(null);
+                CTRApp.ApplicationDidBecomeActive(null);
             }
         }
 

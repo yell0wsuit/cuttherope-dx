@@ -176,7 +176,7 @@ namespace CutTheRope.iframework.platform
             OpenGL.GlEnableClientState(12);
         }
 
-        public void AfterRender()
+        public static void AfterRender()
         {
         }
 

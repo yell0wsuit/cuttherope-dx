@@ -1,4 +1,5 @@
 using CutTheRope.desktop;
+using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
 using CutTheRope.ios;
 using Microsoft.Xna.Framework;
@@ -73,7 +74,7 @@ namespace CutTheRope.iframework.core
                 }
             }
             OpenGL.GlPopMatrix();
-            Application.SharedCanvas().AfterRender();
+            GLCanvas.AfterRender();
         }
 
         private static void ApplyLandscape()

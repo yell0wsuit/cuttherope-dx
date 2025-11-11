@@ -1,5 +1,6 @@
 using CutTheRope.commons;
 using CutTheRope.iframework.core;
+using CutTheRope.iframework.platform;
 using CutTheRope.ios;
 using System;
 using System.Collections.Generic;
@@ -72,7 +73,7 @@ namespace CutTheRope.game
             ActivateChild(0);
             Application.SharedCanvas().BeforeRender();
             ActiveChild().ActiveView().Draw();
-            Application.SharedCanvas().AfterRender();
+            GLCanvas.AfterRender();
         }
 
         public void DeleteMenu()
