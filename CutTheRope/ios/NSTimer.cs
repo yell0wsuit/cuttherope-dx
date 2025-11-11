@@ -5,7 +5,7 @@ namespace CutTheRope.ios
 {
     internal class NSTimer : NSObject
     {
-        private static void Init()
+        private static new void Init()
         {
             Timers = [];
             dd = new DelayedDispatcher();
