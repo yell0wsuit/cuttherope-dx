@@ -19,8 +19,8 @@ namespace CutTheRope.game
             if (PointInRect(tx + camera.pos.x, ty + camera.pos.y, s.pos.x - 60f, s.pos.y - 60f, 120f, 120f))
             {
                 PopCandyBubble(s == starL);
-                int num = Preferences._getIntForKey("PREFS_BUBBLES_POPPED") + 1;
-                Preferences._setIntforKey(num, "PREFS_BUBBLES_POPPED", false);
+                int num = Preferences.GetIntForKey("PREFS_BUBBLES_POPPED") + 1;
+                Preferences.SetIntForKey(num, "PREFS_BUBBLES_POPPED", false);
                 if (num == 50)
                 {
                     CTRRootController.PostAchievementName("681513183", ACHIEVEMENT_STRING("\"Bubble Popper\""));
@@ -427,8 +427,8 @@ namespace CutTheRope.game
                         ropesCutAtOnce = num4;
                     }
                     ropeAtOnceTimer = 0.1f;
-                    int num5 = Preferences._getIntForKey("PREFS_ROPES_CUT") + 1;
-                    Preferences._setIntforKey(num5, "PREFS_ROPES_CUT", false);
+                    int num5 = Preferences.GetIntForKey("PREFS_ROPES_CUT") + 1;
+                    Preferences.SetIntForKey(num5, "PREFS_ROPES_CUT", false);
                     if (num5 == 100)
                     {
                         CTRRootController.PostAchievementName("681461850", ACHIEVEMENT_STRING("\"Rope Cutter\""));

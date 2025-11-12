@@ -297,8 +297,8 @@ namespace CutTheRope.game
                         noCandy = false;
                         noCandyL = true;
                         noCandyR = true;
-                        int num20 = Preferences._getIntForKey("PREFS_CANDIES_UNITED") + 1;
-                        Preferences._setIntforKey(num20, "PREFS_CANDIES_UNITED", false);
+                        int num20 = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
+                        Preferences.SetIntForKey(num20, "PREFS_CANDIES_UNITED", false);
                         if (num20 == 100)
                         {
                             CTRRootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
@@ -817,8 +817,8 @@ namespace CutTheRope.game
                 }
                 if (restartState != 0)
                 {
-                    int num21 = Preferences._getIntForKey("PREFS_CANDIES_LOST") + 1;
-                    Preferences._setIntforKey(num21, "PREFS_CANDIES_LOST", false);
+                    int num21 = Preferences.GetIntForKey("PREFS_CANDIES_LOST") + 1;
+                    Preferences.SetIntForKey(num21, "PREFS_CANDIES_LOST", false);
                     if (num21 == 50)
                     {
                         CTRRootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));

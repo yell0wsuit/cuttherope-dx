@@ -154,8 +154,8 @@ namespace CutTheRope.game
         /// </summary>
         public void SpiderBusted(Grab g)
         {
-            int num = Preferences._getIntForKey("PREFS_SPIDERS_BUSTED") + 1;
-            Preferences._setIntforKey(num, "PREFS_SPIDERS_BUSTED", false);
+            int num = Preferences.GetIntForKey("PREFS_SPIDERS_BUSTED") + 1;
+            Preferences.SetIntForKey(num, "PREFS_SPIDERS_BUSTED", false);
             if (num == 40)
             {
                 CTRRootController.PostAchievementName("681486608", ACHIEVEMENT_STRING("\"Spider Busted\""));

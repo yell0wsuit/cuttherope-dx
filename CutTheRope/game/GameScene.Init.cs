@@ -64,7 +64,7 @@ namespace CutTheRope.game
                     fingerCuts[j] = (DynamicArray)new DynamicArray().Init();
                     fingerCuts[j].Retain();
                 }
-                clickToCut = Preferences._getBooleanForKey("PREFS_CLICK_TO_CUT");
+                clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
             }
             return this;
         }
