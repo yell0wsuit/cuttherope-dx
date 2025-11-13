@@ -238,7 +238,7 @@ namespace CutTheRope.iframework.visual
                 passTouches = false;
             }
             touchState = TOUCH_STATE.DOWN;
-            movingByInertion = false;
+            // movingByInertion = false;
             movingToSpoint = false;
             targetSpoint = -1;
             dragStart = Vect(tx, ty);
@@ -335,7 +335,7 @@ namespace CutTheRope.iframework.visual
             {
                 float num = inertiaTimeoutLeft / inertiaTimeout;
                 move = VectMult(staticMove, (float)((double)num * 50.0));
-                movingByInertion = true;
+                // movingByInertion = true;
             }
             if (spointsNum > 0)
             {
@@ -376,9 +376,9 @@ namespace CutTheRope.iframework.visual
                 spointsCapacity = -1;
                 targetSpoint = -1;
                 lastTargetSpoint = -1;
-                deaccelerationSpeed = 3f;
+                // deaccelerationSpeed = 3f;
                 inertiaTimeout = 0.1f;
-                scrollToPointDuration = 0.35f;
+                // scrollToPointDuration = 0.35f;
                 canSkipScrollPoints = false;
                 shouldBounceHorizontally = false;
                 shouldBounceVertically = false;
@@ -492,7 +492,7 @@ namespace CutTheRope.iframework.visual
         public void MoveToScrollPointmoveMultiplier(int sp, float m)
         {
             movingToSpoint = true;
-            movingByInertion = false;
+            // movingByInertion = false;
             spointMoveMultiplier = m;
             targetSpoint = sp;
             lastTargetSpoint = targetSpoint;
@@ -500,7 +500,7 @@ namespace CutTheRope.iframework.visual
 
         public void CalculateNearsetScrollPointInDirection(Vector d)
         {
-            spointMoveDirection = d;
+            // spointMoveDirection = d;
             int num = -1;
             float num2 = 9999999f;
             float num3 = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(d)));
@@ -525,7 +525,7 @@ namespace CutTheRope.iframework.visual
             targetSpoint = num;
             if (!canSkipScrollPoints && targetSpoint != lastTargetSpoint)
             {
-                movingByInertion = false;
+                //movingByInertion = false;
             }
             if (lastTargetSpoint != targetSpoint && targetSpoint != -1 && delegateScrollableContainerProtocol != null)
             {
@@ -585,7 +585,7 @@ namespace CutTheRope.iframework.visual
 
         private Vector move;
 
-        private bool movingByInertion;
+        // private bool movingByInertion;
 
         private float inertiaTimeoutLeft;
 
@@ -603,7 +603,7 @@ namespace CutTheRope.iframework.visual
 
         private int spointsCapacity;
 
-        private Vector spointMoveDirection;
+        // private Vector spointMoveDirection;
 
         private Vector targetPoint;
 
@@ -621,11 +621,11 @@ namespace CutTheRope.iframework.visual
 
         private float fixedDelta;
 
-        private float deaccelerationSpeed;
+        // private float deaccelerationSpeed;
 
         private float inertiaTimeout;
 
-        private float scrollToPointDuration;
+        // private float scrollToPointDuration;
 
         private bool canSkipScrollPoints;
 
