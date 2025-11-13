@@ -29,7 +29,7 @@ namespace CutTheRope.game
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString _, bool _1)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -340,7 +340,7 @@ namespace CutTheRope.game
 
         private float lastCandyRotateDeltaR;
 
-        private bool spiderTookCandy;
+        // private bool spiderTookCandy;
 
         private int special;
 

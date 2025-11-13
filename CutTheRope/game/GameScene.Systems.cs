@@ -210,7 +210,7 @@ namespace CutTheRope.game
                 }
             }
             sg.hasSpider = false;
-            spiderTookCandy = true;
+            // spiderTookCandy = true;
             noCandy = true;
             Image image = Image.Image_createWithResIDQuad(64, 12);
             image.DoRestoreCutTransparency();

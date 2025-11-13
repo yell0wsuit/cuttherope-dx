@@ -50,7 +50,7 @@ namespace CutTheRope.game
             noCandyL = false;
             noCandyR = false;
             blink.PlayTimeline(0);
-            spiderTookCandy = false;
+            // spiderTookCandy = false;
             time = 0f;
             score = 0;
             gravityNormal = true;
