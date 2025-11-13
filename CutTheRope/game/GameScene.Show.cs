@@ -177,295 +177,43 @@ namespace CutTheRope.game
                     }
                     else if (item3.Name == "star")
                     {
-                        Star star = Star.Star_createWithResID(78);
-                        star.x = (item3["x"].IntValue() * num) + num3 + num4;
-                        star.y = (item3["y"].IntValue() * num) + num2 + num5;
-                        star.timeout = item3["timeout"].FloatValue();
-                        star.CreateAnimations();
-                        star.bb = MakeRectangle(70.0, 64.0, 82.0, 82.0);
-                        star.ParseMover(item3);
-                        star.Update(0f);
-                        _ = stars.AddObject(star);
+                        LoadStar(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "tutorialText")
                     {
-                        if (!ShouldSkipTutorialElement(item3))
-                        {
-                            TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(4));
-                            tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
-                            tutorialText.x = (item3["x"].IntValue() * num) + num3 + num4;
-                            tutorialText.y = (item3["y"].IntValue() * num) + num2 + num5;
-                            tutorialText.special = item3["special"].IntValue();
-                            tutorialText.SetAlignment(2);
-                            NSString newString = item3["text"];
-                            tutorialText.SetStringandWidth(newString, item3["width"].IntValue() * num);
-                            tutorialText.color = RGBAColor.transparentRGBA;
-                            float num6 = tutorialText.special == 3 ? 12f : 0f;
-                            Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num6));
-                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
-                            {
-                                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
-                            }
-                            else
-                            {
-                                timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.0));
-                            }
-                            timeline3.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                            tutorialText.AddTimelinewithID(timeline3, 0);
-                            if (tutorialText.special is 0 or 3)
-                            {
-                                tutorialText.PlayTimeline(0);
-                            }
-                            _ = tutorials.AddObject(tutorialText);
-                        }
+                        LoadTutorialText(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name is "tutorial01" or "tutorial02" or "tutorial03" or "tutorial04" or "tutorial05" or "tutorial06" or "tutorial07" or "tutorial08" or "tutorial09" or "tutorial10" or "tutorial11")
                     {
-                        if (!ShouldSkipTutorialElement(item3))
-                        {
-                            int q = new NSString(item3.Name[8..]).IntValue() - 1;
-                            GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
-                            gameObjectSpecial.color = RGBAColor.transparentRGBA;
-                            gameObjectSpecial.x = (item3["x"].IntValue() * num) + num3 + num4;
-                            gameObjectSpecial.y = (item3["y"].IntValue() * num) + num2 + num5;
-                            gameObjectSpecial.rotation = item3["angle"].IntValue();
-                            gameObjectSpecial.special = item3["special"].IntValue();
-                            gameObjectSpecial.ParseMover(item3);
-                            float num7 = gameObjectSpecial.special is 3 or 4 ? 12f : 0f;
-                            Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(4);
-                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num7));
-                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                            if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 0)
-                            {
-                                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 10.0));
-                            }
-                            else
-                            {
-                                timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 5.2));
-                            }
-                            timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                            gameObjectSpecial.AddTimelinewithID(timeline4, 0);
-                            if (gameObjectSpecial.special is 0 or 3)
-                            {
-                                gameObjectSpecial.PlayTimeline(0);
-                            }
-                            if (gameObjectSpecial.special is 2 or 4)
-                            {
-                                Timeline timeline5 = new Timeline().InitWithMaxKeyFramesOnTrack(12);
-                                for (int j = 0; j < 2; j++)
-                                {
-                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, j == 1 ? 0f : num7));
-                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.1));
-                                    timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, (double)(j == 1 ? 0f : num7)));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.0));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 230.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.5));
-                                    timeline5.AddKeyFrame(KeyFrame.MakePos(gameObjectSpecial.x + 440.0, gameObjectSpecial.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.6));
-                                }
-                                timeline5.SetTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
-                                gameObjectSpecial.AddTimelinewithID(timeline5, 1);
-                                gameObjectSpecial.PlayTimeline(1);
-                                gameObjectSpecial.rotation = 10f;
-                            }
-                            _ = tutorialImages.AddObject(gameObjectSpecial);
-                        }
+                        LoadTutorialImage(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "bubble")
                     {
-                        int q2 = RND_RANGE(1, 3);
-                        Bubble bubble = Bubble.Bubble_createWithResIDQuad(75, q2);
-                        bubble.DoRestoreCutTransparency();
-                        bubble.bb = MakeRectangle(48.0, 48.0, 152.0, 152.0);
-                        bubble.initial_x = bubble.x = (item3["x"].IntValue() * num) + num3 + num4;
-                        bubble.initial_y = bubble.y = (item3["y"].IntValue() * num) + num2 + num5;
-                        bubble.initial_rotation = 0f;
-                        bubble.initial_rotatedCircle = null;
-                        bubble.anchor = 18;
-                        bubble.popped = false;
-                        Image image = Image.Image_createWithResIDQuad(75, 0);
-                        image.DoRestoreCutTransparency();
-                        image.parentAnchor = image.anchor = 18;
-                        _ = bubble.AddChild(image);
-                        _ = bubbles.AddObject(bubble);
+                        LoadBubble(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "pump")
                     {
-                        Pump pump = Pump.Pump_createWithResID(83);
-                        pump.DoRestoreCutTransparency();
-                        _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
-                        pump.bb = MakeRectangle(300f, 300f, 175f, 175f);
-                        pump.initial_x = pump.x = (item3["x"].IntValue() * num) + num3 + num4;
-                        pump.initial_y = pump.y = (item3["y"].IntValue() * num) + num2 + num5;
-                        pump.initial_rotation = 0f;
-                        pump.initial_rotatedCircle = null;
-                        pump.rotation = item3["angle"].FloatValue() + 90f;
-                        pump.UpdateRotation();
-                        pump.anchor = 18;
-                        _ = pumps.AddObject(pump);
+                        LoadPump(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "sock")
                     {
-                        Sock sock = Sock.Sock_createWithResID(85);
-                        sock.CreateAnimations();
-                        sock.scaleX = sock.scaleY = 0.7f;
-                        sock.DoRestoreCutTransparency();
-                        sock.x = (item3["x"].IntValue() * num) + num3 + num4;
-                        sock.y = (item3["y"].IntValue() * num) + num2 + num5;
-                        sock.group = item3["group"].IntValue();
-                        sock.anchor = 10;
-                        sock.rotationCenterY -= (sock.height / 2f) - 85f;
-                        if (sock.group == 0)
-                        {
-                            sock.SetDrawQuad(0);
-                        }
-                        else
-                        {
-                            sock.SetDrawQuad(1);
-                        }
-                        sock.state = Sock.SOCK_IDLE;
-                        sock.ParseMover(item3);
-                        sock.rotation += 90f;
-                        if (sock.mover != null)
-                        {
-                            sock.mover.angle_ += 90.0;
-                            sock.mover.angle_initial = sock.mover.angle_;
-                            if (cTRRootController.GetPack() == 3 && cTRRootController.GetLevel() == 24)
-                            {
-                                sock.mover.use_angle_initial = true;
-                            }
-                        }
-                        sock.UpdateRotation();
-                        _ = socks.AddObject(sock);
+                        LoadSock(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name is "spike1" or "spike2" or "spike3" or "spike4" or "electro")
                     {
-                        float px = (item3["x"].IntValue() * num) + num3 + num4;
-                        float py = (item3["y"].IntValue() * num) + num2 + num5;
-                        int w = item3["size"].IntValue();
-                        double an = item3["angle"].IntValue();
-                        NSString nSString2 = item3["toggled"];
-                        int num8 = -1;
-                        if (nSString2.Length() > 0)
-                        {
-                            num8 = nSString2.IsEqualToString("false") ? -1 : nSString2.IntValue();
-                        }
-                        Spikes spikes = (Spikes)new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
-                        spikes.ParseMover(item3);
-                        if (num8 != 0)
-                        {
-                            spikes.delegateRotateAllSpikesWithID = new Spikes.rotateAllSpikesWithID(RotateAllSpikesWithID);
-                        }
-                        if (item3.Name == "electro")
-                        {
-                            spikes.electro = true;
-                            spikes.initialDelay = item3["initialDelay"].FloatValue();
-                            spikes.onTime = item3["onTime"].FloatValue();
-                            spikes.offTime = item3["offTime"].FloatValue();
-                            spikes.electroTimer = 0f;
-                            spikes.TurnElectroOff();
-                            spikes.electroTimer += spikes.initialDelay;
-                            spikes.UpdateRotation();
-                        }
-                        else
-                        {
-                            spikes.electro = false;
-                        }
-                        _ = this.spikes.AddObject(spikes);
+                        LoadSpike(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "rotatedCircle")
                     {
-                        float num9 = (item3["x"].IntValue() * num) + num3 + num4;
-                        float num10 = (item3["y"].IntValue() * num) + num2 + num5;
-                        float num11 = item3["size"].IntValue();
-                        float d = item3["handleAngle"].IntValue();
-                        bool hasOneHandle = item3["oneHandle"].BoolValue();
-                        RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
-                        rotatedCircle.anchor = 18;
-                        rotatedCircle.x = num9;
-                        rotatedCircle.y = num10;
-                        rotatedCircle.rotation = d;
-                        rotatedCircle.inithanlde1 = rotatedCircle.handle1 = Vect(rotatedCircle.x - (num11 * num), rotatedCircle.y);
-                        rotatedCircle.inithanlde2 = rotatedCircle.handle2 = Vect(rotatedCircle.x + (num11 * num), rotatedCircle.y);
-                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.SetSize(num11);
-                        rotatedCircle.SetHasOneHandle(hasOneHandle);
-                        _ = rotatedCircles.AddObject(rotatedCircle);
+                        LoadRotatedCircle(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name is "bouncer1" or "bouncer2")
                     {
-                        float px2 = (item3["x"].IntValue() * num) + num3 + num4;
-                        float py2 = (item3["y"].IntValue() * num) + num2 + num5;
-                        int w2 = item3["size"].IntValue();
-                        double an2 = item3["angle"].IntValue();
-                        Bouncer bouncer = (Bouncer)new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
-                        bouncer.ParseMover(item3);
-                        _ = bouncers.AddObject(bouncer);
+                        LoadBouncer(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "grab")
                     {
-                        float hx = (item3["x"].IntValue() * num) + num3 + num4;
-                        float hy = (item3["y"].IntValue() * num) + num2 + num5;
-                        float len = item3["length"].IntValue() * num;
-                        float num12 = item3["radius"].FloatValue();
-                        bool wheel = item3["wheel"].IsEqualToString("true");
-                        float k = item3["moveLength"].FloatValue() * num;
-                        bool v = item3["moveVertical"].IsEqualToString("true");
-                        float o = item3["moveOffset"].FloatValue() * num;
-                        bool spider = item3["spider"].IsEqualToString("true");
-                        bool flag = item3["part"].IsEqualToString("L");
-                        bool flag2 = item3["hidePath"].IsEqualToString("true");
-                        Grab grab = (Grab)new Grab().Init();
-                        grab.initial_x = grab.x = hx;
-                        grab.initial_y = grab.y = hy;
-                        grab.initial_rotation = 0f;
-                        grab.wheel = wheel;
-                        grab.SetSpider(spider);
-                        grab.ParseMover(item3);
-                        if (grab.mover != null)
-                        {
-                            grab.SetBee();
-                            if (!flag2)
-                            {
-                                int num13 = 3;
-                                bool flag3 = item3["path"].HasPrefix(NSS("R"));
-                                for (int l = 0; l < grab.mover.pathLen - 1; l++)
-                                {
-                                    if (!flag3 || l % num13 == 0)
-                                    {
-                                        pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(l, l + 1, grab);
-                                    }
-                                }
-                                if (grab.mover.pathLen > 2)
-                                {
-                                    pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(0, grab.mover.pathLen - 1, grab);
-                                }
-                            }
-                        }
-                        if (num12 != -1f)
-                        {
-                            num12 *= num;
-                        }
-                        if (num12 == -1f)
-                        {
-                            ConstraintedPoint constraintedPoint = star;
-                            if (twoParts != 2)
-                            {
-                                constraintedPoint = flag ? starL : starR;
-                            }
-                            Bungee bungee = (Bungee)new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, hx, hy, constraintedPoint, constraintedPoint.pos.x, constraintedPoint.pos.y, len);
-                            bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
-                            grab.SetRope(bungee);
-                        }
-                        grab.SetRadius(num12);
-                        grab.SetMoveLengthVerticalOffset(k, v, o);
-                        _ = bungees.AddObject(grab);
+                        LoadGrab(item3, num, num3 + num4, num2 + num5, 0, 0);
                     }
                     else if (item3.Name == "target")
                     {
