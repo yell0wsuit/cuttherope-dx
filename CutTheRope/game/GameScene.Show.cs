@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Globalization;
 
 using CutTheRope.desktop;
@@ -29,67 +28,9 @@ namespace CutTheRope.game
             // Load level metadata (map dimensions, game design settings, candy positions)
             LoadAllLevelMetadata(map, num, num2, out float num3, out int num4, out int num5);
 
-            List<XMLNode> list = map.Childs();
-            foreach (XMLNode xmlnode2 in list)
-            {
-                foreach (XMLNode item3 in xmlnode2.Childs())
-                {
-                    switch (item3.Name)
-                    {
-                        case "gravitySwitch":
-                            LoadGravityButton(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "star":
-                            LoadStar(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "tutorialText":
-                            LoadTutorialText(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "tutorial01":
-                        case "tutorial02":
-                        case "tutorial03":
-                        case "tutorial04":
-                        case "tutorial05":
-                        case "tutorial06":
-                        case "tutorial07":
-                        case "tutorial08":
-                        case "tutorial09":
-                        case "tutorial10":
-                        case "tutorial11":
-                            LoadTutorialImage(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "bubble":
-                            LoadBubble(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "pump":
-                            LoadPump(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "sock":
-                            LoadSock(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "spike1":
-                        case "spike2":
-                        case "spike3":
-                        case "spike4":
-                        case "electro":
-                            LoadSpike(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "rotatedCircle":
-                            LoadRotatedCircle(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "bouncer1":
-                        case "bouncer2":
-                            LoadBouncer(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "grab":
-                            LoadGrab(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                        case "target":
-                            LoadTarget(item3, num, num3 + num4, num2 + num5, 0, 0);
-                            break;
-                    }
-                }
-            }
+            // Load all game objects from XML
+            LoadObjectsFromMap(map, num, num3, num2, num4, num5);
+
             // Load two-parts candy bubble animations
             LoadCandyBubbleAnimations();
             foreach (object obj in rotatedCircles)
