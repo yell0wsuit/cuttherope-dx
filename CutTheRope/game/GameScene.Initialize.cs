@@ -40,6 +40,7 @@ namespace CutTheRope.game
             bouncers = new DynamicArray<Bouncer>();
             rotatedCircles = new DynamicArray<RotatedCircle>();
             earthAnims = null;
+            pollenDrawer = (PollenDrawer)new PollenDrawer().Init();
         }
 
         /// <summary>
