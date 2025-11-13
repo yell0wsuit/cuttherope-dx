@@ -164,7 +164,6 @@ namespace CutTheRope.game
 
         public void BoxClosed()
         {
-            CTRPreferences cTRPreferences = Application.SharedPreferences();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
             int pack = ctrrootController.GetPack();
             _ = ctrrootController.GetLevel();
@@ -574,11 +573,11 @@ namespace CutTheRope.game
             return true;
         }
 
-        private static void PostFlurryLevelEvent(string s)
+        private static void PostFlurryLevelEvent(string _)
         {
         }
 
-        private static void PostFlurryLevelEvent(NSString s)
+        private static void PostFlurryLevelEvent(NSString _)
         {
         }
 
@@ -637,7 +636,7 @@ namespace CutTheRope.game
             }
         }
 
-        public void SetAdSkipper(object skipper)
+        public void SetAdSkipper(object _)
         {
             _ = (GameView)GetView(0);
         }
