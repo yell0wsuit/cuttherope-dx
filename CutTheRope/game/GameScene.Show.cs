@@ -15,152 +15,21 @@ namespace CutTheRope.game
     {
         public override void Show()
         {
-            CTRSoundMgr.EnableLoopedSounds(true);
-            aniPool.RemoveAllChilds();
-            staticAniPool.RemoveAllChilds();
-            gravityButton = null;
-            gravityTouchDown = -1;
-            twoParts = 2;
-            partsDist = 0f;
-            targetSock = null;
-            CTRSoundMgr.StopLoopedSounds();
+            // Initialize game state and load level data
+            InitializeGameState();
+            InitializeCandyObjects();
+            InitializeHUDStars();
+
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             XMLNode map = cTRRootController.GetMap();
-            bungees = (DynamicArray)new DynamicArray().Init();
-            razors = (DynamicArray)new DynamicArray().Init();
-            spikes = (DynamicArray)new DynamicArray().Init();
-            stars = (DynamicArray)new DynamicArray().Init();
-            bubbles = (DynamicArray)new DynamicArray().Init();
-            pumps = (DynamicArray)new DynamicArray().Init();
-            socks = (DynamicArray)new DynamicArray().Init();
-            tutorialImages = (DynamicArray)new DynamicArray().Init();
-            tutorials = (DynamicArray)new DynamicArray().Init();
-            bouncers = (DynamicArray)new DynamicArray().Init();
-            rotatedCircles = (DynamicArray)new DynamicArray().Init();
-            pollenDrawer = (PollenDrawer)new PollenDrawer().Init();
-            star = (ConstraintedPoint)new ConstraintedPoint().Init();
-            star.SetWeight(1f);
-            starL = (ConstraintedPoint)new ConstraintedPoint().Init();
-            starL.SetWeight(1f);
-            starR = (ConstraintedPoint)new ConstraintedPoint().Init();
-            starR.SetWeight(1f);
-            candy = GameObject.GameObject_createWithResIDQuad(63, 0);
-            candy.DoRestoreCutTransparency();
-            candy.Retain();
-            candy.anchor = 18;
-            candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
-            candy.passTransformationsToChilds = false;
-            candy.scaleX = candy.scaleY = 0.71f;
-            candyMain = GameObject.GameObject_createWithResIDQuad(63, 1);
-            candyMain.DoRestoreCutTransparency();
-            candyMain.anchor = candyMain.parentAnchor = 18;
-            _ = candy.AddChild(candyMain);
-            candyMain.scaleX = candyMain.scaleY = 0.71f;
-            candyTop = GameObject.GameObject_createWithResIDQuad(63, 2);
-            candyTop.DoRestoreCutTransparency();
-            candyTop.anchor = candyTop.parentAnchor = 18;
-            _ = candy.AddChild(candyTop);
-            candyTop.scaleX = candyTop.scaleY = 0.71f;
-            candyBlink = Animation.Animation_createWithResID(63);
-            candyBlink.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 8, 17);
-            candyBlink.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 18, [18]);
-            Timeline timeline7 = candyBlink.GetTimeline(1);
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
-            timeline7.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
-            candyBlink.visible = false;
-            candyBlink.anchor = candyBlink.parentAnchor = 18;
-            candyBlink.scaleX = candyBlink.scaleY = 0.71f;
-            _ = candy.AddChild(candyBlink);
-            candyBubbleAnimation = Animation.Animation_createWithResID(72);
-            candyBubbleAnimation.x = candy.x;
-            candyBubbleAnimation.y = candy.y;
-            candyBubbleAnimation.parentAnchor = candyBubbleAnimation.anchor = 18;
-            _ = candyBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-            candyBubbleAnimation.PlayTimeline(0);
-            _ = candy.AddChild(candyBubbleAnimation);
-            candyBubbleAnimation.visible = false;
+
             float num = 3f;
             float num2 = 0f;
-            float num3 = 0f;
-            for (int i = 0; i < 3; i++)
-            {
-                Timeline timeline2 = hudStar[i].GetCurrentTimeline();
-                timeline2?.StopTimeline();
-                hudStar[i].SetDrawQuad(0);
-            }
-            int num4 = 0;
-            int num5 = 0;
+
+            // Load level metadata (map dimensions, game design settings, candy positions)
+            LoadAllLevelMetadata(map, num, num2, out float num3, out int num4, out int num5);
+
             List<XMLNode> list = map.Childs();
-            foreach (XMLNode xmlnode in list)
-            {
-                foreach (XMLNode item2 in xmlnode.Childs())
-                {
-                    if (item2.Name == "map")
-                    {
-                        mapWidth = item2["width"].FloatValue();
-                        mapHeight = item2["height"].FloatValue();
-                        num3 = (2560f - (mapWidth * num)) / 2f;
-                        mapWidth *= num;
-                        mapHeight *= num;
-                        if (cTRRootController.GetPack() == 7)
-                        {
-                            earthAnims = (DynamicArray)new DynamicArray().Init();
-                            if (mapWidth > SCREEN_WIDTH)
-                            {
-                                CreateEarthImageWithOffsetXY(back.width, 0f);
-                            }
-                            if (mapHeight > SCREEN_HEIGHT)
-                            {
-                                CreateEarthImageWithOffsetXY(0f, back.height);
-                            }
-                            CreateEarthImageWithOffsetXY(0f, 0f);
-                        }
-                    }
-                    else if (item2.Name == "gameDesign")
-                    {
-                        num4 = item2["mapOffsetX"].IntValue();
-                        num5 = item2["mapOffsetY"].IntValue();
-                        special = item2["special"].IntValue();
-                        ropePhysicsSpeed = item2["ropePhysicsSpeed"].FloatValue();
-                        nightLevel = item2["nightLevel"].IsEqualToString("true");
-                        twoParts = !item2["twoParts"].IsEqualToString("true") ? 2 : 0;
-                        ropePhysicsSpeed *= 1.4f;
-                    }
-                    else if (item2.Name == "candyL")
-                    {
-                        starL.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
-                        starL.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
-                        candyL = GameObject.GameObject_createWithResIDQuad(63, 19);
-                        candyL.scaleX = candyL.scaleY = 0.71f;
-                        candyL.passTransformationsToChilds = false;
-                        candyL.DoRestoreCutTransparency();
-                        candyL.Retain();
-                        candyL.anchor = 18;
-                        candyL.x = starL.pos.x;
-                        candyL.y = starL.pos.y;
-                        candyL.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
-                    }
-                    else if (item2.Name == "candyR")
-                    {
-                        starR.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
-                        starR.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
-                        candyR = GameObject.GameObject_createWithResIDQuad(63, 20);
-                        candyR.scaleX = candyR.scaleY = 0.71f;
-                        candyR.passTransformationsToChilds = false;
-                        candyR.DoRestoreCutTransparency();
-                        candyR.Retain();
-                        candyR.anchor = 18;
-                        candyR.x = starR.pos.x;
-                        candyR.y = starR.pos.y;
-                        candyR.bb = MakeRectangle(155.0, 176.0, 88.0, 76.0);
-                    }
-                    else if (item2.Name == "candy")
-                    {
-                        star.pos.x = (item2["x"].IntValue() * num) + num3 + num4;
-                        star.pos.y = (item2["y"].IntValue() * num) + num2 + num5;
-                    }
-                }
-            }
             foreach (XMLNode xmlnode2 in list)
             {
                 foreach (XMLNode item3 in xmlnode2.Childs())
