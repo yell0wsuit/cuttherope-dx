@@ -18,9 +18,9 @@
     <Description>Cut The Rope</Description>
     <Copyright>Copyright © 2012</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
-
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>

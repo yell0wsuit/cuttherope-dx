@@ -1,8 +1,9 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
-using System;
-using System.Collections.Generic;
 
 namespace CutTheRope.iframework.visual
 {
@@ -56,7 +57,7 @@ namespace CutTheRope.iframework.visual
             float num2 = container.y;
             container.x = (float)Math.Round(container.x);
             container.y = (float)Math.Round(container.y);
-            base.PreDraw();
+            PreDraw();
             OpenGL.GlEnable(4);
             OpenGL.SetScissorRectangle(drawX, drawY, width, height);
             PostDraw();
@@ -571,28 +572,6 @@ namespace CutTheRope.iframework.visual
             targetSpoint = lastTargetSpoint = -1;
             CalculateNearsetScrollPointInDirection(d);
         }
-
-        private const double DEFAULT_BOUNCE_MOVEMENT_DIVIDE = 2.0;
-
-        private const double DEFAULT_BOUNCE_DURATION = 0.1;
-
-        private const double DEFAULT_DEACCELERATION = 3.0;
-
-        private const double DEFAULT_INERTIAL_TIMEOUT = 0.1;
-
-        private const double DEFAULT_SCROLL_TO_POINT_DURATION = 0.35;
-
-        private const double MIN_SCROLL_POINTS_MOVE = 50.0;
-
-        private const double CALC_NEAREST_DEFAULT_TIMEOUT = 0.02;
-
-        private const double DEFAULT_MAX_TOUCH_MOVE_LENGTH = 40.0;
-
-        private const double DEFAULT_TOUCH_PASS_TIMEOUT = 0.5;
-
-        private const double AUTO_RELEASE_TOUCH_TIMEOUT = 0.2;
-
-        private const double MOVE_APPROXIMATION = 0.2;
 
         public IScrollableContainerProtocol delegateScrollableContainerProtocol;
 
