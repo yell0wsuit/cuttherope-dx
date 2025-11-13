@@ -79,10 +79,10 @@ namespace CutTheRope.game
                     return true;
                 }
             }
-            int num = pumps.Count();
+            int num = pumps.Count;
             for (int i = 0; i < num; i++)
             {
-                Pump pump = (Pump)pumps.ObjectAtIndex(i);
+                Pump pump = pumps.ObjectAtIndex(i);
                 if (GameObject.PointInObject(Vect(tx + camera.pos.x, ty + camera.pos.y), pump))
                 {
                     pump.pumpTouchTimer = 0.05f;
@@ -130,7 +130,7 @@ namespace CutTheRope.game
                     break;
                 }
             }
-            if (rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count() - 1 && flag2 && !flag)
+            if (rotatedCircle != null && rotatedCircles.GetObjectIndex(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
