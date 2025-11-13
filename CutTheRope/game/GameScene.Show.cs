@@ -90,21 +90,8 @@ namespace CutTheRope.game
                     }
                 }
             }
-            if (twoParts != 2)
-            {
-                candyBubbleAnimationL = Animation.Animation_createWithResID(72);
-                candyBubbleAnimationL.parentAnchor = candyBubbleAnimationL.anchor = 18;
-                _ = candyBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-                candyBubbleAnimationL.PlayTimeline(0);
-                _ = candyL.AddChild(candyBubbleAnimationL);
-                candyBubbleAnimationL.visible = false;
-                candyBubbleAnimationR = Animation.Animation_createWithResID(72);
-                candyBubbleAnimationR.parentAnchor = candyBubbleAnimationR.anchor = 18;
-                _ = candyBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
-                candyBubbleAnimationR.PlayTimeline(0);
-                _ = candyR.AddChild(candyBubbleAnimationR);
-                candyBubbleAnimationR.visible = false;
-            }
+            // Load two-parts candy bubble animations
+            LoadCandyBubbleAnimations();
             foreach (object obj in rotatedCircles)
             {
                 RotatedCircle rotatedCircle2 = (RotatedCircle)obj;
