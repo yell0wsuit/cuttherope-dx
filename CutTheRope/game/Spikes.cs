@@ -197,8 +197,6 @@ namespace CutTheRope.game
         {
         }
 
-        private const float SPIKES_HEIGHT = 10f;
-
         private int toggled;
 
         public double angle;
