@@ -6,13 +6,13 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class Font : FontGeneric
     {
-        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object _)
         {
             if (Init() != null)
             {
                 _isWvga = charmapfile.IsWvga();
                 charmap = new Image().InitWithTexture(charmapfile);
-                quadsCount = charmapfile.quadsCount;
+                // quadsCount = charmapfile.quadsCount;
                 height = charmapfile.quadRects[0].h;
                 chars = strParam.Copy();
                 sortedChars = chars.GetCharacters();
@@ -91,7 +91,7 @@ namespace CutTheRope.iframework.visual
 
         private bool _isWvga;
 
-        private int quadsCount;
+        // private int quadsCount;
 
         private float height;
 
