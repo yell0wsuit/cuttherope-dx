@@ -34,53 +34,59 @@ namespace CutTheRope.game
             {
                 foreach (XMLNode item3 in xmlnode2.Childs())
                 {
-                    if (item3.Name == "gravitySwitch")
+                    switch (item3.Name)
                     {
-                        LoadGravityButton(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "star")
-                    {
-                        LoadStar(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "tutorialText")
-                    {
-                        LoadTutorialText(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name is "tutorial01" or "tutorial02" or "tutorial03" or "tutorial04" or "tutorial05" or "tutorial06" or "tutorial07" or "tutorial08" or "tutorial09" or "tutorial10" or "tutorial11")
-                    {
-                        LoadTutorialImage(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "bubble")
-                    {
-                        LoadBubble(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "pump")
-                    {
-                        LoadPump(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "sock")
-                    {
-                        LoadSock(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name is "spike1" or "spike2" or "spike3" or "spike4" or "electro")
-                    {
-                        LoadSpike(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "rotatedCircle")
-                    {
-                        LoadRotatedCircle(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name is "bouncer1" or "bouncer2")
-                    {
-                        LoadBouncer(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "grab")
-                    {
-                        LoadGrab(item3, num, num3 + num4, num2 + num5, 0, 0);
-                    }
-                    else if (item3.Name == "target")
-                    {
-                        LoadTarget(item3, num, num3 + num4, num2 + num5, 0, 0);
+                        case "gravitySwitch":
+                            LoadGravityButton(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "star":
+                            LoadStar(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "tutorialText":
+                            LoadTutorialText(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "tutorial01":
+                        case "tutorial02":
+                        case "tutorial03":
+                        case "tutorial04":
+                        case "tutorial05":
+                        case "tutorial06":
+                        case "tutorial07":
+                        case "tutorial08":
+                        case "tutorial09":
+                        case "tutorial10":
+                        case "tutorial11":
+                            LoadTutorialImage(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "bubble":
+                            LoadBubble(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "pump":
+                            LoadPump(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "sock":
+                            LoadSock(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "spike1":
+                        case "spike2":
+                        case "spike3":
+                        case "spike4":
+                        case "electro":
+                            LoadSpike(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "rotatedCircle":
+                            LoadRotatedCircle(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "bouncer1":
+                        case "bouncer2":
+                            LoadBouncer(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "grab":
+                            LoadGrab(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
+                        case "target":
+                            LoadTarget(item3, num, num3 + num4, num2 + num5, 0, 0);
+                            break;
                     }
                 }
             }
