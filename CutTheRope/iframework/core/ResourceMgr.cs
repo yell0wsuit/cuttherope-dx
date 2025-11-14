@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 using CutTheRope.game;
 using CutTheRope.iframework.helpers;
@@ -81,11 +83,11 @@ namespace CutTheRope.iframework.core
         public NSString LoadStringsInfo(int key)
         {
             key &= 65535;
-            xmlStrings ??= XMLNode.ParseXML("menu_strings.xml");
-            XMLNode xMLNode = null;
+            xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
+            XElement xMLNode = null;
             try
             {
-                xMLNode = xmlStrings.Childs()[key];
+                xMLNode = xmlStrings?.Elements().ElementAtOrDefault(key);
             }
             catch (Exception)
             {
@@ -105,36 +107,40 @@ namespace CutTheRope.iframework.core
                 {
                     tag = "de";
                 }
-                XMLNode xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
+                XElement xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
                 xMLNode2 ??= xMLNode.FindChildWithTagNameRecursively("en", false);
-                return xMLNode2.Data;
+                return xMLNode2?.ValueAsNSString() ?? new NSString();
             }
             return new NSString();
         }
 
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
-            XMLNode xmlnode = XMLNode.ParseXML(path);
-            int num = xmlnode["charoff"].IntValue();
-            int num2 = xmlnode["lineoff"].IntValue();
-            int num3 = xmlnode["space"].IntValue();
-            XMLNode xMLNode2 = xmlnode.FindChildWithTagNameRecursively("chars", false);
-            XMLNode xMLNode3 = xmlnode.FindChildWithTagNameRecursively("kerning", false);
-            NSString data = xMLNode2.Data;
+            XElement xmlnode = XElementExtensions.LoadContentXml(path);
+            int num = xmlnode.AttributeAsNSString("charoff").IntValue();
+            int num2 = xmlnode.AttributeAsNSString("lineoff").IntValue();
+            int num3 = xmlnode.AttributeAsNSString("space").IntValue();
+            XElement xMLNode2 = xmlnode.FindChildWithTagNameRecursively("chars", false);
+            XElement xMLNode3 = xmlnode.FindChildWithTagNameRecursively("kerning", false);
+            NSString data = xMLNode2.ValueAsNSString();
             if (xMLNode3 != null)
             {
-                _ = xMLNode3.Data;
+                _ = xMLNode3.ValueAsNSString();
             }
             Font font = new Font().InitWithVariableSizeCharscharMapFileKerning(data, (CTRTexture2D)LoadResource(resID, ResourceType.IMAGE), null);
             font.SetCharOffsetLineOffsetSpaceWidth(num, num2, num3);
             return font;
         }
 
-        public virtual CTRTexture2D LoadTextureImageInfo(string path, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D LoadTextureImageInfo(string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
-            i ??= XMLNode.ParseXML(path);
-            bool flag = (i["filter"].IntValue() & 1) == 1;
-            int defaultAlphaPixelFormat = i["format"].IntValue();
+            i ??= XElementExtensions.LoadContentXml(path);
+            if (i == null)
+            {
+                return null;
+            }
+            bool flag = (i.AttributeAsNSString("filter").IntValue() & 1) == 1;
+            int defaultAlphaPixelFormat = i.AttributeAsNSString("format").IntValue();
             string text = FullPathFromRelativePath(path);
             if (flag)
             {
@@ -157,13 +163,13 @@ namespace CutTheRope.iframework.core
             return texture2D;
         }
 
-        public virtual void SetTextureInfo(CTRTexture2D t, XMLNode i, bool isWvga, float scaleX, float scaleY)
+        public virtual void SetTextureInfo(CTRTexture2D t, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             t.preCutSize = vectUndefined;
-            XMLNode xMLNode = i.FindChildWithTagNameRecursively("quads", false);
+            XElement xMLNode = i.FindChildWithTagNameRecursively("quads", false);
             if (xMLNode != null)
             {
-                List<NSString> list = xMLNode.Data.ComponentsSeparatedByString(',');
+                List<NSString> list = xMLNode.ValueAsNSString().ComponentsSeparatedByString(',');
                 if (list != null && list.Count > 0)
                 {
                     float[] array = new float[list.Count];
@@ -174,12 +180,12 @@ namespace CutTheRope.iframework.core
                     SetQuadsInfo(t, array, list.Count, scaleX, scaleY);
                 }
             }
-            XMLNode xMLNode2 = i.FindChildWithTagNameRecursively("offsets", false);
+            XElement xMLNode2 = i.FindChildWithTagNameRecursively("offsets", false);
             if (xMLNode2 == null)
             {
                 return;
             }
-            List<NSString> list2 = xMLNode2.Data.ComponentsSeparatedByString(',');
+            List<NSString> list2 = xMLNode2.ValueAsNSString().ComponentsSeparatedByString(',');
             if (list2 == null || list2.Count <= 0)
             {
                 return;
@@ -190,11 +196,11 @@ namespace CutTheRope.iframework.core
                 array2[k] = list2[k].FloatValue();
             }
             SetOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
-            XMLNode xMLNode3 = i.FindChildWithTagNameRecursively(NSS("preCutWidth"), false);
-            XMLNode xMLNode4 = i.FindChildWithTagNameRecursively(NSS("preCutHeight"), false);
+            XElement xMLNode3 = i.FindChildWithTagNameRecursively(NSS("preCutWidth"), false);
+            XElement xMLNode4 = i.FindChildWithTagNameRecursively(NSS("preCutHeight"), false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
-                t.preCutSize = Vect(xMLNode3.Data.IntValue(), xMLNode4.Data.IntValue());
+                t.preCutSize = Vect(xMLNode3.ValueAsNSString().IntValue(), xMLNode4.ValueAsNSString().IntValue());
                 if (isWvga)
                 {
                     t.preCutSize.x /= 1.5f;
@@ -367,7 +373,7 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-                xmlStrings ??= XMLNode.ParseXML("menu_strings.xml");
+            xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
                 return;
             }
             if (IsSound(resId))
@@ -416,7 +422,7 @@ namespace CutTheRope.iframework.core
 
         private Dictionary<int, NSObject> s_Resources = [];
 
-        private XMLNode xmlStrings;
+        private XElement xmlStrings;
 
         private int loaded;
 

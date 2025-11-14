@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -62,8 +63,8 @@ namespace CutTheRope.game
                 string text = "maps/";
                 NSString nsstring = selectedMap;
                 NSString nSString = NSS(text + (nsstring?.ToString()));
-                XMLNode xMLNode = XMLNode.ParseXML(nSString.ToString());
-                XmlLoaderFinishedWithfromwithSuccess(xMLNode, nSString, xMLNode != null);
+                XElement mapElement = XElementExtensions.LoadContentXml(nSString.ToString());
+                XmlLoaderFinishedWithfromwithSuccess(mapElement, nSString, mapElement != null);
                 return;
             }
             ShowView(0);
@@ -79,7 +80,7 @@ namespace CutTheRope.game
             base.Deactivate();
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, NSString url, bool success)
         {
             if (rootNode != null)
             {
@@ -121,7 +122,7 @@ namespace CutTheRope.game
 
         private NSString selectedMap;
 
-        private Dictionary<string, XMLNode> maplist;
+        private Dictionary<string, XElement> maplist;
 
         private bool autoLoad;
     }

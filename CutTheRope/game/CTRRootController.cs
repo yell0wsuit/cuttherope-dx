@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 using CutTheRope.commons;
 using CutTheRope.iframework.core;
@@ -19,12 +20,12 @@ namespace CutTheRope.game
         {
         }
 
-        public void SetMap(XMLNode map)
+        public void SetMap(XElement map)
         {
             loadedMap = map;
         }
 
-        public XMLNode GetMap()
+        public XElement GetMap()
         {
             return loadedMap;
         }
@@ -40,7 +41,7 @@ namespace CutTheRope.game
             mapName = map;
         }
 
-        public static void SetMapsList(Dictionary<string, XMLNode> l)
+        public static void SetMapsList(Dictionary<string, XElement> l)
         {
         }
 
@@ -399,7 +400,7 @@ namespace CutTheRope.game
 
         private NSString mapName;
 
-        private XMLNode loadedMap;
+        private XElement loadedMap;
 
         private int level;
 

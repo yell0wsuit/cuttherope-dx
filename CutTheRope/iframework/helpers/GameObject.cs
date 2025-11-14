@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
@@ -81,17 +82,17 @@ namespace CutTheRope.iframework.helpers
             base.Dealloc();
         }
 
-        public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XMLNode xml)
+        public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)
         {
             if (base.InitWithTexture(Application.GetTexture(t)) != null)
             {
-                float num = xml["x"].IntValue();
-                float num2 = xml["y"].IntValue();
+                float num = xml.AttributeAsNSString("x").IntValue();
+                float num2 = xml.AttributeAsNSString("y").IntValue();
                 x = tx + num;
                 y = ty + num2;
                 type = t;
-                NSString nSString = xml["bb"];
-                if (nSString != null)
+                NSString nSString = xml.AttributeAsNSString("bb");
+                if (nSString.Length() != 0)
                 {
                     List<NSString> list = nSString.ComponentsSeparatedByString(',');
                     bb = new CTRRectangle(list[0].IntValue(), list[1].IntValue(), list[2].IntValue(), list[3].IntValue());
@@ -106,10 +107,10 @@ namespace CutTheRope.iframework.helpers
             return this;
         }
 
-        public virtual void ParseMover(XMLNode xml)
+        public virtual void ParseMover(XElement xml)
         {
-            rotation = xml["angle"].FloatValue();
-            NSString nSString = xml["path"];
+            rotation = xml.AttributeAsNSString("angle").FloatValue();
+            NSString nSString = xml.AttributeAsNSString("path");
             if (nSString != null && nSString.Length() != 0)
             {
                 int i = 100;
@@ -117,8 +118,8 @@ namespace CutTheRope.iframework.helpers
                 {
                     i = (nSString.SubstringFromIndex(2).IntValue() / 2) + 1;
                 }
-                float m_ = xml["moveSpeed"].FloatValue();
-                float r_ = xml["rotateSpeed"].FloatValue();
+                float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue();
+                float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
                 Mover mover = new Mover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
                 mover.angle_ = rotation;
                 mover.angle_initial = mover.angle_;

@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
@@ -29,7 +31,7 @@ namespace CutTheRope.game
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XMLNode rootNode, NSString _, bool _1)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, NSString _, bool _1)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -40,7 +42,7 @@ namespace CutTheRope.game
             Restart();
         }
 
-        public static bool ShouldSkipTutorialElement(XMLNode c)
+        public static bool ShouldSkipTutorialElement(XElement c)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.GetPack() == 0 && cTRRootController.GetLevel() == 1)
@@ -48,7 +50,7 @@ namespace CutTheRope.game
                 return true;
             }
             NSString @string = Application.SharedAppSettings().GetString(8);
-            NSString nSString = c["locale"];
+            NSString nSString = c.AttributeAsNSString("locale");
             if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
             {
                 if (!nSString.IsEqualToString(@string))

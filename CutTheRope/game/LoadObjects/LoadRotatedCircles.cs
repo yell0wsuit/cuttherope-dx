@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using CutTheRope.ios;
 
 namespace CutTheRope.game
@@ -11,13 +13,13 @@ namespace CutTheRope.game
         /// <summary>
         /// Loads a rotated circle object from XML node data
         /// </summary>
-        private void LoadRotatedCircle(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadRotatedCircle(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float num9 = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            float num10 = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            float num11 = xmlNode["size"].IntValue();
-            float d = xmlNode["handleAngle"].IntValue();
-            bool hasOneHandle = xmlNode["oneHandle"].BoolValue();
+            float num9 = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+            float num10 = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+            float num11 = xmlNode.AttributeAsNSString("size").IntValue();
+            float d = xmlNode.AttributeAsNSString("handleAngle").IntValue();
+            bool hasOneHandle = xmlNode.AttributeAsNSString("oneHandle").BoolValue();
             RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
             rotatedCircle.anchor = 18;
             rotatedCircle.x = num9;

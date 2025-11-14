@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using CutTheRope.iframework.sfe;
 using CutTheRope.ios;
 
@@ -13,19 +15,19 @@ namespace CutTheRope.game
         /// Loads a grab/rope object from XML node data
         /// Handles spider and bee variants, path-based movement, and rope physics
         /// </summary>
-        private void LoadGrab(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadGrab(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float hx = (xmlNode["x"].IntValue() * scale) + offsetX + mapOffsetX;
-            float hy = (xmlNode["y"].IntValue() * scale) + offsetY + mapOffsetY;
-            float len = xmlNode["length"].IntValue() * scale;
-            float num12 = xmlNode["radius"].FloatValue();
-            bool wheel = xmlNode["wheel"].IsEqualToString("true");
-            float k = xmlNode["moveLength"].FloatValue() * scale;
-            bool v = xmlNode["moveVertical"].IsEqualToString("true");
-            float o = xmlNode["moveOffset"].FloatValue() * scale;
-            bool spider = xmlNode["spider"].IsEqualToString("true");
-            bool flag = xmlNode["part"].IsEqualToString("L");
-            bool flag2 = xmlNode["hidePath"].IsEqualToString("true");
+            float hx = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
+            float hy = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
+            float len = xmlNode.AttributeAsNSString("length").IntValue() * scale;
+            float num12 = xmlNode.AttributeAsNSString("radius").FloatValue();
+            bool wheel = xmlNode.AttributeAsNSString("wheel").IsEqualToString("true");
+            float k = xmlNode.AttributeAsNSString("moveLength").FloatValue() * scale;
+            bool v = xmlNode.AttributeAsNSString("moveVertical").IsEqualToString("true");
+            float o = xmlNode.AttributeAsNSString("moveOffset").FloatValue() * scale;
+            bool spider = xmlNode.AttributeAsNSString("spider").IsEqualToString("true");
+            bool flag = xmlNode.AttributeAsNSString("part").IsEqualToString("L");
+            bool flag2 = xmlNode.AttributeAsNSString("hidePath").IsEqualToString("true");
             Grab grab = (Grab)new Grab().Init();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
@@ -39,7 +41,7 @@ namespace CutTheRope.game
                 if (!flag2)
                 {
                     int num13 = 3;
-                    bool flag3 = xmlNode["path"].HasPrefix(NSS("R"));
+                    bool flag3 = xmlNode.AttributeAsNSString("path").HasPrefix(NSS("R"));
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
                         if (!flag3 || l % num13 == 0)

@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 
 using CutTheRope.ios;
 
@@ -128,7 +129,7 @@ namespace CutTheRope.iframework.visual
             return num;
         }
 
-        public virtual BaseElement CreateFromXML(XMLNode xml)
+        public virtual BaseElement CreateFromXML(XElement xml)
         {
             throw new NotImplementedException();
         }

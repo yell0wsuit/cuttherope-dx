@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
@@ -15,7 +17,7 @@ namespace CutTheRope.game
         /// Loads Om Nom from XML node data
         /// Sets up Om Nom animations, blink animation, and greeting if needed
         /// </summary>
-        private void LoadTarget(XMLNode xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
+        private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
             support = Image.Image_createWithResIDQuad(100, pack);
@@ -26,9 +28,9 @@ namespace CutTheRope.game
             target = CharAnimations.CharAnimations_createWithResID(80);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
-            NSString nSString3 = xmlNode["x"];
+            NSString nSString3 = xmlNode.AttributeAsNSString("x");
             target.x = support.x = (nSString3.IntValue() * scale) + offsetX + mapOffsetX;
-            NSString nSString4 = xmlNode["y"];
+            NSString nSString4 = xmlNode.AttributeAsNSString("y");
             target.y = support.y = (nSString4.IntValue() * scale) + offsetY + mapOffsetY;
 
             target.AddImage(101);

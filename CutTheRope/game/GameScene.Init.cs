@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
@@ -71,12 +73,12 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://reload"), NSS("mappicker://reload"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://reload"), NSS("mappicker://reload"), true);
                 return;
             }
             int pack = cTRRootController.GetPack();
             int level = cTRRootController.GetLevel();
-            XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+            XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
         }
 
         public void LoadNextMap()
@@ -87,7 +89,7 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("mappicker://next"), NSS("mappicker://next"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://next"), NSS("mappicker://next"), true);
                 return;
             }
             int pack = cTRRootController.GetPack();
@@ -96,7 +98,7 @@ namespace CutTheRope.game
             {
                 cTRRootController.SetLevel(++level);
                 cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
-                XmlLoaderFinishedWithfromwithSuccess(XMLNode.ParseXML("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), NSS("maps/" + LevelsList.LEVEL_NAMES[pack, level].ToString()), true);
             }
         }
 
