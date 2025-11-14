@@ -48,7 +48,7 @@ namespace CutTheRope.ios
 
         public static string Copy(this string value)
         {
-            return value == null ? string.Empty : new string(value.ToCharArray());
+            return value ?? string.Empty;
         }
 
         public static void GetCharacters(this string value, char[] destination)
@@ -71,7 +71,7 @@ namespace CutTheRope.ios
         public static char[] GetCharacters(this string value)
         {
             char[] buffer = new char[SafeValue(value).Length + 1];
-            value.GetCharacters(buffer);
+            value?.GetCharacters(buffer);
             return buffer;
         }
 
