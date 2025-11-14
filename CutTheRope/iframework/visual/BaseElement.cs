@@ -102,7 +102,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override NSObject Init()
+        public BaseElement()
         {
             visible = true;
             touchable = true;
@@ -133,7 +133,6 @@ namespace CutTheRope.iframework.visual
             passColorToChilds = true;
             passTouchEventsToAllChilds = false;
             blendingMode = -1;
-            return this;
         }
 
         public virtual void PreDraw()
@@ -656,9 +655,9 @@ namespace CutTheRope.iframework.visual
 
         public RGBAColor color;
 
-        private float translateX;
+        private readonly float translateX;
 
-        private float translateY;
+        private readonly float translateY;
 
         public sbyte anchor;
 
@@ -668,7 +667,7 @@ namespace CutTheRope.iframework.visual
 
         public bool passColorToChilds;
 
-        private bool passTouchEventsToAllChilds;
+        private readonly bool passTouchEventsToAllChilds;
 
         public int blendingMode;
 

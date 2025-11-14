@@ -409,9 +409,11 @@ namespace CutTheRope.iframework.visual
 
         public ScrollableContainer InitWithWidthHeightContainerWidthHeight(float w, float h, float cw, float ch)
         {
-            container = (BaseElement)new BaseElement().Init();
-            container.width = (int)cw;
-            container.height = (int)ch;
+            container = new BaseElement
+            {
+                width = (int)cw,
+                height = (int)ch
+            };
             _ = InitWithWidthHeightContainer(w, h, container);
             return this;
         }

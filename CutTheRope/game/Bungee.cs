@@ -210,14 +210,14 @@ namespace CutTheRope.game
                 cut = -1;
                 bungeeMode = 0;
                 highlighted = false;
-                bungeeAnchor = h ?? (ConstraintedPoint)new ConstraintedPoint().Init();
+                bungeeAnchor = h ?? new ConstraintedPoint();
                 if (t != null)
                 {
                     tail = t;
                 }
                 else
                 {
-                    tail = (ConstraintedPoint)new ConstraintedPoint().Init();
+                    tail = new ConstraintedPoint();
                     tail.SetWeight(1f);
                 }
                 bungeeAnchor.SetWeight(0.02f);
@@ -269,7 +269,7 @@ namespace CutTheRope.game
                 if (rollLen >= BUNGEE_REST_LEN)
                 {
                     ConstraintedPoint constraintedPoint = parts[^2];
-                    ConstraintedPoint constraintedPoint2 = (ConstraintedPoint)new ConstraintedPoint().Init();
+                    ConstraintedPoint constraintedPoint2 = new();
                     constraintedPoint2.SetWeight(0.02f);
                     constraintedPoint2.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(constraintedPoint2, parts.Count - 1);
@@ -357,7 +357,7 @@ namespace CutTheRope.game
                     if (constraint.cp == constraintedPoint)
                     {
                         _ = constraintedPoint2.constraints.Remove(constraint);
-                        ConstraintedPoint constraintedPoint3 = (ConstraintedPoint)new ConstraintedPoint().Init();
+                        ConstraintedPoint constraintedPoint3 = new();
                         constraintedPoint3.SetWeight(1E-05f);
                         constraintedPoint3.pos = constraintedPoint2.pos;
                         constraintedPoint3.prevPos = constraintedPoint2.prevPos;

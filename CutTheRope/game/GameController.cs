@@ -48,9 +48,11 @@ namespace CutTheRope.game
             {
                 touchAddressMap[i] = 0;
             }
-            GameView gameView = (GameView)new GameView().InitFullscreen();
-            GameScene gameScene = (GameScene)new GameScene().Init();
-            gameScene.gameSceneDelegate = this;
+            GameView gameView = new();
+            GameScene gameScene = new()
+            {
+                gameSceneDelegate = this
+            };
             _ = gameView.AddChildwithID(gameScene, 0);
             Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
             button.x = -(float)Canvas.xOffsetScaled;

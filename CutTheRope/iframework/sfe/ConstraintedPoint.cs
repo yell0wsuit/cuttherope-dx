@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.sfe
 {
@@ -13,24 +12,21 @@ namespace CutTheRope.iframework.sfe
             base.Dealloc();
         }
 
-        public override NSObject Init()
+        public ConstraintedPoint()
         {
-            if (base.Init() != null)
-            {
-                prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
-                pin = Vect(-1f, -1f);
-                constraints = [];
-            }
-            return this;
+            prevPos = Vect(2.1474836E+09f, 2.1474836E+09f);
+            pin = Vect(-1f, -1f);
+            constraints = [];
         }
 
         public virtual void AddConstraintwithRestLengthofType(ConstraintedPoint c, float r, Constraint.CONSTRAINT t)
         {
-            Constraint constraint = new();
-            _ = constraint.Init();
-            constraint.cp = c;
-            constraint.restLength = r;
-            constraint.type = t;
+            Constraint constraint = new()
+            {
+                cp = c,
+                restLength = r,
+                type = t
+            };
             constraints.Add(constraint);
         }
 

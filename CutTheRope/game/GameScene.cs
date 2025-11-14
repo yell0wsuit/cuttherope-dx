@@ -227,17 +227,17 @@ namespace CutTheRope.game
         public const int EARTH_NORMAL_ANIM = 0;
 
         public const int EARTH_UPSIDEDOWN_ANIM = 1;
-        private DelayedDispatcher dd;
+        private readonly DelayedDispatcher dd;
 
         public IGameSceneDelegate gameSceneDelegate;
 
-        private AnimationsPool aniPool;
+        private readonly AnimationsPool aniPool;
 
-        private AnimationsPool staticAniPool;
+        private readonly AnimationsPool staticAniPool;
 
         private PollenDrawer pollenDrawer;
 
-        private TileMap back;
+        private readonly TileMap back;
 
         private CharAnimations target;
 
@@ -307,7 +307,7 @@ namespace CutTheRope.game
 
         private readonly Animation[] hudStar = new Animation[3];
 
-        private Camera2D camera;
+        private readonly Camera2D camera;
 
         private float mapWidth;
 
@@ -343,7 +343,7 @@ namespace CutTheRope.game
 
         private float ropeAtOnceTimer;
 
-        private bool clickToCut;
+        private readonly bool clickToCut;
 
         public int starsCollected;
 

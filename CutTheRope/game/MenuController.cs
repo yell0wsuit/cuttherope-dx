@@ -133,9 +133,11 @@ namespace CutTheRope.game
 
         public static BaseElement CreateBackgroundWithLogowithShadow(bool l, bool s)
         {
-            BaseElement baseElement = (BaseElement)new BaseElement().Init();
-            baseElement.width = (int)SCREEN_WIDTH;
-            baseElement.height = (int)SCREEN_HEIGHT;
+            BaseElement baseElement = new()
+            {
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
             Image image = Image.Image_createWithResIDQuad(48, 0);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
@@ -253,7 +255,7 @@ namespace CutTheRope.game
 
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
-            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : (BaseElement)new BaseElement().Init();
+            return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
         }
 
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
@@ -325,7 +327,7 @@ namespace CutTheRope.game
 
         public void CreateMainMenu()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(true);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5.0, 2, SCREEN_WIDTH);
             vBox.anchor = vBox.parentAnchor = 34;
@@ -340,7 +342,7 @@ namespace CutTheRope.game
             bool flag = Application.GetString(655507).Length() > 0;
             if (flag)
             {
-                BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
+                BaseElement baseElement2 = new();
                 baseElement2.SetName("container");
                 baseElement2.parentAnchor = baseElement2.anchor = 18;
                 baseElement2.width = baseElement.width;
@@ -379,7 +381,7 @@ namespace CutTheRope.game
 
         public void CreateOptions()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false);
             _ = menuView.AddChild(baseElement);
             BaseElement baseElement2 = CreateControlButtontitleAnchortextbuttonIDdelegate(5, 10, Application.GetString(655423), -1, null);
@@ -442,7 +444,7 @@ namespace CutTheRope.game
 
         public void CreateReset()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             Text text = new Text().InitWithFont(Application.GetFont(3));
             text.SetAlignment(2);
@@ -468,18 +470,20 @@ namespace CutTheRope.game
 
         public void CreateMovieView()
         {
-            MovieView movieView = (MovieView)new MovieView().InitFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-            rectangleElement.width = (int)SCREEN_WIDTH;
-            rectangleElement.height = (int)SCREEN_HEIGHT;
-            rectangleElement.color = RGBAColor.blackRGBA;
+            MovieView movieView = new();
+            RectangleElement rectangleElement = new()
+            {
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT,
+                color = RGBAColor.blackRGBA
+            };
             _ = movieView.AddChild(rectangleElement);
             AddViewwithID(movieView, 7);
         }
 
         public void CreateAbout()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             string text = Application.GetString(655416).ToString();
             string[] separator = ["%@"];
@@ -501,9 +505,11 @@ namespace CutTheRope.game
             float num = 1300f;
             float h = 1100f;
             VBox vBox = new VBox().InitWithOffsetAlignWidth(0f, 2, num);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
-            baseElement2.width = (int)num;
-            baseElement2.height = 100;
+            BaseElement baseElement2 = new()
+            {
+                width = (int)num,
+                height = 100
+            };
             _ = vBox.AddChild(baseElement2);
             Image c = Image.Image_createWithResIDQuad(50, 1);
             _ = vBox.AddChild(c);
@@ -557,9 +563,11 @@ namespace CutTheRope.game
 
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
-            touchBaseElement.delegateValue = this;
-            BaseElement baseElement = (BaseElement)new BaseElement().Init();
+            TouchBaseElement touchBaseElement = new()
+            {
+                delegateValue = this
+            };
+            BaseElement baseElement = new();
             baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
@@ -687,7 +695,7 @@ namespace CutTheRope.game
 
         public void CreatePackSelect()
         {
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
             string text = Application.GetString(655388).ToString();
             text = text.Replace("%d", "");
@@ -716,9 +724,11 @@ namespace CutTheRope.game
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
             CTRTexture2D texture = Application.GetTexture(52);
-            BaseElement baseElement2 = (BaseElement)new BaseElement().Init();
-            baseElement2.width = (int)texture.preCutSize.x;
-            baseElement2.height = (int)texture.preCutSize.y;
+            BaseElement baseElement2 = new()
+            {
+                width = (int)texture.preCutSize.x,
+                height = (int)texture.preCutSize.y
+            };
             _ = hBox2.AddChild(baseElement2);
             float num3 = 0f + GetPackOffset();
             for (int i = 0; i < CTRPreferences.GetPacksCount() + 1; i++)
@@ -788,7 +798,7 @@ namespace CutTheRope.game
         public void ShowCantUnlockPopup()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -832,7 +842,7 @@ namespace CutTheRope.game
 
         public void ShowGameFinishedPopup()
         {
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -861,7 +871,7 @@ namespace CutTheRope.game
 
         public void ShowYesNoPopup(string str, int buttonYesId, int buttonNoId)
         {
-            Popup popup = (Popup)new Popup().Init();
+            Popup popup = new();
             popup.SetName("popup");
             Image image = Image.Image_createWithResIDQuad(49, 0);
             image.DoRestoreCutTransparency();
@@ -936,9 +946,11 @@ namespace CutTheRope.game
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
-            TouchBaseElement touchBaseElement = (TouchBaseElement)new TouchBaseElement().Init();
-            touchBaseElement.bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0);
-            touchBaseElement.delegateValue = this;
+            TouchBaseElement touchBaseElement = new()
+            {
+                bbc = MakeRectangle(5.0, 0.0, -10.0, 0.0),
+                delegateValue = this
+            };
             Image image;
             if (flag)
             {
@@ -971,7 +983,7 @@ namespace CutTheRope.game
         public void CreateLevelSelect()
         {
             float num = 0.3f;
-            MenuView menuView = (MenuView)new MenuView().InitFullscreen();
+            MenuView menuView = new();
             int num4 = 126 + pack;
             Image image = Image.Image_createWithResIDQuad(num4, 0);
             Image image2 = Image.Image_createWithResIDQuad(num4, 0);
@@ -1061,8 +1073,8 @@ namespace CutTheRope.game
         {
             if (base.InitWithParent(p) != null)
             {
-                ddMainMenu = (DelayedDispatcher)new DelayedDispatcher().Init();
-                ddPackSelect = (DelayedDispatcher)new DelayedDispatcher().Init();
+                ddMainMenu = new DelayedDispatcher();
+                ddPackSelect = new DelayedDispatcher();
                 CreateMainMenu();
                 CreateOptions();
                 CreateReset();

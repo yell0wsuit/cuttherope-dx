@@ -163,7 +163,7 @@ namespace CutTheRope.game
         {
             if (Init() != null)
             {
-                result = (BaseElement)new BaseElement().Init();
+                result = new BaseElement();
                 _ = AddChildwithID(result, 1);
                 anchor = parentAnchor = 18;
                 result.anchor = result.parentAnchor = 18;
@@ -239,7 +239,7 @@ namespace CutTheRope.game
                 text4.anchor = 18;
                 Image.SetElementPositionWithQuadOffset(text4, 67, 8);
                 _ = result.AddChild(text4);
-                confettiAnims = (BaseElement)new BaseElement().Init();
+                confettiAnims = new BaseElement();
                 _ = result.AddChild(confettiAnims);
                 openCloseAnims = null;
                 boxAnim = -1;
@@ -580,7 +580,7 @@ namespace CutTheRope.game
 
         public void CreateOpenCloseAnims()
         {
-            openCloseAnims = (BaseElement)new BaseElement().Init();
+            openCloseAnims = new BaseElement();
             _ = AddChildwithID(openCloseAnims, 0);
         }
 

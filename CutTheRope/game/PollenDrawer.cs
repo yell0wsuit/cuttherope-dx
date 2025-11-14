@@ -5,26 +5,21 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class PollenDrawer : BaseElement
     {
-        public override NSObject Init()
+        public PollenDrawer()
         {
-            if (base.Init() != null)
-            {
-                Image image = Image.Image_createWithResID(99);
-                qw = image.width * 1.5f;
-                qh = image.height * 1.5f;
-                totalCapacity = 200;
-                drawer = new ImageMultiDrawer().InitWithImageandCapacity(image, totalCapacity);
-                pollens = new Pollen[totalCapacity];
-                colors = new RGBAColor[4 * totalCapacity];
-                OpenGL.GlGenBuffers(1, ref colorsID);
-            }
-            return this;
+            Image image = Image.Image_createWithResID(99);
+            qw = image.width * 1.5f;
+            qh = image.height * 1.5f;
+            totalCapacity = 200;
+            drawer = new ImageMultiDrawer().InitWithImageandCapacity(image, totalCapacity);
+            pollens = new Pollen[totalCapacity];
+            colors = new RGBAColor[4 * totalCapacity];
+            OpenGL.GlGenBuffers(1, ref colorsID);
         }
 
         public override void Dealloc()
@@ -180,9 +175,9 @@ namespace CutTheRope.game
 
         private Pollen[] pollens;
 
-        private float qw;
+        private readonly float qw;
 
-        private float qh;
+        private readonly float qh;
 
         private RGBAColor[] colors;
 

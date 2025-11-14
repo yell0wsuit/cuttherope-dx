@@ -12,7 +12,7 @@ namespace CutTheRope.game
         {
             if (base.InitWithParent(p) != null)
             {
-                LoadingView loadingView = (LoadingView)new LoadingView().InitFullscreen();
+                LoadingView loadingView = new();
                 AddViewwithID(loadingView, 0);
                 Text text = new Text().InitWithFont(Application.GetFont(3));
                 text.SetAlignment(2);

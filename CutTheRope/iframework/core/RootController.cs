@@ -21,7 +21,7 @@ namespace CutTheRope.iframework.core
                 transitionTime = -1f;
                 previousView = null;
                 transitionDelay = 0.4f;
-                screenGrabber = (Grabber)new Grabber().Init();
+                screenGrabber = new Grabber();
                 prevScreenImage = null;
                 nextScreenImage = null;
                 deactivateCurrentController = false;

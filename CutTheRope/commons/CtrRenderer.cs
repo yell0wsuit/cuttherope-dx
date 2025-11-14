@@ -166,7 +166,6 @@ namespace CutTheRope.commons
             LANGUAGE = language;
             FmInit();
             gApp = new CTRApp();
-            _ = gApp.Init();
             gApp.ApplicationDidFinishLaunching();
         }
 

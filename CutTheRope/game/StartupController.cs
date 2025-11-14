@@ -11,7 +11,7 @@ namespace CutTheRope.game
         {
             if (base.InitWithParent(p) != null)
             {
-                View view = (View)new View().InitFullscreen();
+                View view = new();
                 Image image = Image.Image_createWithResID(0);
                 image.parentAnchor = image.anchor = 18;
                 image.scaleX = image.scaleY = 1.25f;

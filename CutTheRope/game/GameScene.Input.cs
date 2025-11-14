@@ -398,12 +398,14 @@ namespace CutTheRope.game
             {
                 Vector start = VectAdd(startPos[ti], camera.pos);
                 Vector end = VectAdd(Vect(tx, ty), camera.pos);
-                FingerCut fingerCut = (FingerCut)new FingerCut().Init();
-                fingerCut.start = start;
-                fingerCut.end = end;
-                fingerCut.startSize = 5f;
-                fingerCut.endSize = 5f;
-                fingerCut.c = RGBAColor.whiteRGBA;
+                FingerCut fingerCut = new()
+                {
+                    start = start,
+                    end = end,
+                    startSize = 5f,
+                    endSize = 5f,
+                    c = RGBAColor.whiteRGBA
+                };
                 _ = fingerCuts[ti].AddObject(fingerCut);
                 int num4 = 0;
                 foreach (object obj2 in fingerCuts[ti])

@@ -28,7 +28,7 @@ namespace CutTheRope.game
             bool spider = xmlNode.AttributeAsNSString("spider").IsEqualToString("true");
             bool flag = xmlNode.AttributeAsNSString("part").IsEqualToString("L");
             bool flag2 = xmlNode.AttributeAsNSString("hidePath").IsEqualToString("true");
-            Grab grab = (Grab)new Grab().Init();
+            Grab grab = new();
             grab.initial_x = grab.x = hx;
             grab.initial_y = grab.y = hy;
             grab.initial_rotation = 0f;

@@ -17,11 +17,13 @@ namespace CutTheRope.game
                 selectedMap = null;
                 maplist = null;
                 CreatePickerView();
-                View view = (View)new View().InitFullscreen();
-                RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-                rectangleElement.color = RGBAColor.whiteRGBA;
-                rectangleElement.width = (int)SCREEN_WIDTH;
-                rectangleElement.height = (int)SCREEN_HEIGHT;
+                View view = new();
+                RectangleElement rectangleElement = new()
+                {
+                    color = RGBAColor.whiteRGBA,
+                    width = (int)SCREEN_WIDTH,
+                    height = (int)SCREEN_HEIGHT
+                };
                 _ = view.AddChild(rectangleElement);
                 FontGeneric font = Application.GetFont(4);
                 Text text = new Text().InitWithFont(font);
@@ -36,11 +38,13 @@ namespace CutTheRope.game
 
         public void CreatePickerView()
         {
-            View view = (View)new View().InitFullscreen();
-            RectangleElement rectangleElement = (RectangleElement)new RectangleElement().Init();
-            rectangleElement.color = RGBAColor.whiteRGBA;
-            rectangleElement.width = (int)SCREEN_WIDTH;
-            rectangleElement.height = (int)SCREEN_HEIGHT;
+            View view = new();
+            RectangleElement rectangleElement = new()
+            {
+                color = RGBAColor.whiteRGBA,
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
             _ = view.AddChild(rectangleElement);
             FontGeneric font = Application.GetFont(4);
             Text text = new Text().InitWithFont(font);

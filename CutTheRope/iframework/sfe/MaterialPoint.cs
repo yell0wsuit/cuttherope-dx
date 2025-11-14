@@ -5,15 +5,11 @@ namespace CutTheRope.iframework.sfe
 {
     internal class MaterialPoint : NSObject
     {
-        public override NSObject Init()
+        public MaterialPoint()
         {
-            if (base.Init() != null)
-            {
-                forces = new Vector[10];
-                SetWeight(1f);
-                ResetAll();
-            }
-            return this;
+            forces = new Vector[10];
+            SetWeight(1f);
+            ResetAll();
         }
 
         public virtual void SetWeight(float w)

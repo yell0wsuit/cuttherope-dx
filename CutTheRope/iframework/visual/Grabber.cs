@@ -5,12 +5,6 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class Grabber : NSObject
     {
-        public override NSObject Init()
-        {
-            _ = base.Init();
-            return this;
-        }
-
         public override void Dealloc()
         {
             base.Dealloc();

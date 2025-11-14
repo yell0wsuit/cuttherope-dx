@@ -17,15 +17,9 @@ namespace CutTheRope.iframework.core
 
         public static bool GameSaveRequested { get; set; }
 
-        public override NSObject Init()
+        public Preferences()
         {
-            if (base.Init() == null)
-            {
-                return null;
-            }
-
             LoadPreferences();
-            return this;
         }
 
         /// <summary>

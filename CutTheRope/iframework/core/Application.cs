@@ -40,7 +40,7 @@ namespace CutTheRope.iframework.core
 
         public static SoundMgr SharedSoundMgr()
         {
-            soundMgr ??= new SoundMgr().Init();
+            soundMgr ??= new SoundMgr();
             return soundMgr;
         }
 
@@ -52,7 +52,7 @@ namespace CutTheRope.iframework.core
 
         public virtual ApplicationSettings CreateAppSettings()
         {
-            return (ApplicationSettings)new ApplicationSettings().Init();
+            return new ApplicationSettings();
         }
 
         public virtual GLCanvas CreateCanvas()
@@ -62,17 +62,17 @@ namespace CutTheRope.iframework.core
 
         public virtual CTRResourceMgr CreateResourceMgr()
         {
-            return (CTRResourceMgr)new CTRResourceMgr().Init();
+            return new CTRResourceMgr();
         }
 
         public virtual SoundMgr CreateSoundMgr()
         {
-            return new SoundMgr().Init();
+            return new SoundMgr();
         }
 
         public virtual CTRPreferences CreatePreferences()
         {
-            return (CTRPreferences)new CTRPreferences().Init();
+            return new CTRPreferences();
         }
 
         public virtual RootController CreateRootController()
@@ -136,7 +136,7 @@ namespace CutTheRope.iframework.core
 
         private static CTRPreferences prefs;
 
-        private static readonly CTRResourceMgr resourceMgr = (CTRResourceMgr)new CTRResourceMgr().Init();
+        private static readonly CTRResourceMgr resourceMgr = new();
 
         protected static RootController root;
 

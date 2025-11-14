@@ -4,11 +4,6 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class AnimationsPool : BaseElement, ITimelineDelegate
     {
-        public AnimationsPool()
-        {
-            _ = Init();
-        }
-
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
         {
         }

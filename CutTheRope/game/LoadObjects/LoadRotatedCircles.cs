@@ -20,11 +20,13 @@ namespace CutTheRope.game
             float num11 = xmlNode.AttributeAsNSString("size").IntValue();
             float d = xmlNode.AttributeAsNSString("handleAngle").IntValue();
             bool hasOneHandle = xmlNode.AttributeAsNSString("oneHandle").BoolValue();
-            RotatedCircle rotatedCircle = (RotatedCircle)new RotatedCircle().Init();
-            rotatedCircle.anchor = 18;
-            rotatedCircle.x = num9;
-            rotatedCircle.y = num10;
-            rotatedCircle.rotation = d;
+            RotatedCircle rotatedCircle = new()
+            {
+                anchor = 18,
+                x = num9,
+                y = num10,
+                rotation = d
+            };
             rotatedCircle.inithanlde1 = rotatedCircle.handle1 = Vect(rotatedCircle.x - (num11 * scale), rotatedCircle.y);
             rotatedCircle.inithanlde2 = rotatedCircle.handle2 = Vect(rotatedCircle.x + (num11 * scale), rotatedCircle.y);
             rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, (double)DEGREES_TO_RADIANS(d), rotatedCircle.x, rotatedCircle.y);

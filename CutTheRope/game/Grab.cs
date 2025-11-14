@@ -3,7 +3,6 @@ using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
@@ -29,16 +28,12 @@ namespace CutTheRope.game
             OpenGL.GlLineWidth(1.0);
         }
 
-        public override NSObject Init()
+        public Grab()
         {
-            if (base.Init() != null)
-            {
-                rope = null;
-                wheelOperating = -1;
-                CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                baloon = cTRRootController.IsSurvival();
-            }
-            return this;
+            rope = null;
+            wheelOperating = -1;
+            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            baloon = cTRRootController.IsSurvival();
         }
 
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)

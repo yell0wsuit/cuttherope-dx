@@ -7,14 +7,10 @@ namespace CutTheRope.iframework.sfe
 {
     internal class ConstraintSystem : NSObject
     {
-        public override NSObject Init()
+        public ConstraintSystem()
         {
-            if (base.Init() != null)
-            {
-                relaxationTimes = 1;
-                parts = [];
-            }
-            return this;
+            relaxationTimes = 1;
+            parts = [];
         }
 
         public virtual void AddPart(ConstraintedPoint cp)

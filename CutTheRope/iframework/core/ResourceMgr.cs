@@ -79,7 +79,7 @@ namespace CutTheRope.iframework.core
 
         public virtual NSObject LoadSoundInfo(string path)
         {
-            return new NSObject().Init();
+            return new NSObject();
         }
 
         public string LoadStringsInfo(int key)
