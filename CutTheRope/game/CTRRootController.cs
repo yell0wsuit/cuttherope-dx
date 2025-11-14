@@ -11,11 +11,6 @@ namespace CutTheRope.game
 {
     internal sealed class CTRRootController : RootController
     {
-        public static void LogEvent(NSString s)
-        {
-            LogEvent(s.ToString());
-        }
-
         public static void LogEvent(string s)
         {
         }
@@ -30,14 +25,13 @@ namespace CutTheRope.game
             return loadedMap;
         }
 
-        public NSString GetMapName()
+        public string GetMapName()
         {
             return mapName;
         }
 
-        public void SetMapName(NSString map)
+        public void SetMapName(string map)
         {
-            NSREL(mapName);
             mapName = map;
         }
 
@@ -62,7 +56,6 @@ namespace CutTheRope.game
                 ctrresourceMgr.LoadImmediately();
                 StartupController startupController = (StartupController)new StartupController().InitWithParent(this);
                 AddChildwithID(startupController, 0);
-                NSREL(startupController);
                 viewTransition = -1;
             }
             return this;
@@ -366,7 +359,7 @@ namespace CutTheRope.game
         {
         }
 
-        public static void PostAchievementName(NSString name)
+        public static void PostAchievementName(string name)
         {
             Scorer.PostAchievementName(name);
         }
@@ -398,7 +391,7 @@ namespace CutTheRope.game
 
         public int pack;
 
-        private NSString mapName;
+        private string mapName;
 
         private XElement loadedMap;
 

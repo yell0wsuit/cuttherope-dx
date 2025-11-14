@@ -4,7 +4,7 @@ namespace CutTheRope.ios
 {
     internal class NSObject : FrameworkTypes
     {
-        public static void NSREL(NSObject obj)
+        public static void NSREL(object obj)
         {
         }
 
@@ -13,9 +13,9 @@ namespace CutTheRope.ios
             return obj;
         }
 
-        public static NSString NSS(string s)
+        public static string NSS(string s)
         {
-            return new NSString(s);
+            return s;
         }
 
         public virtual NSObject Init()

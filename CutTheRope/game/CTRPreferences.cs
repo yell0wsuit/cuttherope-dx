@@ -181,7 +181,7 @@ namespace CutTheRope.game
             return Math.Min(Math.Max(0, val), GetPacksCount() + 1);
         }
 
-        public static void GameViewChanged(NSString NameOfView)
+        public static void GameViewChanged(string NameOfView)
         {
         }
 
@@ -291,7 +291,7 @@ namespace CutTheRope.game
 
         public static void SetScoreHash()
         {
-            NSString sha256Str = GetSHA256Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
+            string sha256Str = GetSHA256Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
             SetStringForKey(sha256Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 

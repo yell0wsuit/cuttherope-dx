@@ -43,7 +43,7 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public virtual void SetPathFromStringandStart(NSString p, Vector s)
+        public virtual void SetPathFromStringandStart(string p, Vector s)
         {
             if (p.CharacterAtIndex(0) == 'R')
             {
@@ -70,11 +70,11 @@ namespace CutTheRope.iframework.helpers
             {
                 p = p.SubstringToIndex(p.Length() - 1);
             }
-            List<NSString> list = p.ComponentsSeparatedByString(',');
+            List<string> list = p.ComponentsSeparatedByString(',');
             for (int j = 0; j < list.Count; j += 2)
             {
-                NSString nSString2 = list[j];
-                NSString nSString3 = list[j + 1];
+                string nSString2 = list[j];
+                string nSString3 = list[j + 1];
                 AddPathPoint(Vect(s.x + nSString2.FloatValue(), s.y + nSString3.FloatValue()));
             }
         }

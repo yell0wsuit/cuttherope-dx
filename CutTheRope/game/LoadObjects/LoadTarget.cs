@@ -28,9 +28,9 @@ namespace CutTheRope.game
             target = CharAnimations.CharAnimations_createWithResID(80);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
-            NSString nSString3 = xmlNode.AttributeAsNSString("x");
+            string nSString3 = xmlNode.AttributeAsNSString("x");
             target.x = support.x = (nSString3.IntValue() * scale) + offsetX + mapOffsetX;
-            NSString nSString4 = xmlNode.AttributeAsNSString("y");
+            string nSString4 = xmlNode.AttributeAsNSString("y");
             target.y = support.y = (nSString4.IntValue() * scale) + offsetY + mapOffsetY;
 
             target.AddImage(101);

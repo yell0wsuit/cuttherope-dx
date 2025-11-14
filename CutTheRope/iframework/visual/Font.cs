@@ -6,7 +6,7 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class Font : FontGeneric
     {
-        public Font InitWithVariableSizeCharscharMapFileKerning(NSString strParam, CTRTexture2D charmapfile, object k)
+        public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile, object k)
         {
             if (Init() != null)
             {
@@ -85,7 +85,7 @@ namespace CutTheRope.iframework.visual
             return charmap;
         }
 
-        private NSString chars;
+        private string chars;
 
         private char[] sortedChars;
 

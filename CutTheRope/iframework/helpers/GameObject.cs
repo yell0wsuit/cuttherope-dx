@@ -78,7 +78,6 @@ namespace CutTheRope.iframework.helpers
 
         public override void Dealloc()
         {
-            NSREL(mover);
             base.Dealloc();
         }
 
@@ -91,10 +90,10 @@ namespace CutTheRope.iframework.helpers
                 x = tx + num;
                 y = ty + num2;
                 type = t;
-                NSString nSString = xml.AttributeAsNSString("bb");
+                string nSString = xml.AttributeAsNSString("bb");
                 if (nSString.Length() != 0)
                 {
-                    List<NSString> list = nSString.ComponentsSeparatedByString(',');
+                    List<string> list = nSString.ComponentsSeparatedByString(',');
                     bb = new CTRRectangle(list[0].IntValue(), list[1].IntValue(), list[2].IntValue(), list[3].IntValue());
                 }
                 else
@@ -110,7 +109,7 @@ namespace CutTheRope.iframework.helpers
         public virtual void ParseMover(XElement xml)
         {
             rotation = xml.AttributeAsNSString("angle").FloatValue();
-            NSString nSString = xml.AttributeAsNSString("path");
+            string nSString = xml.AttributeAsNSString("path");
             if (nSString != null && nSString.Length() != 0)
             {
                 int i = 100;

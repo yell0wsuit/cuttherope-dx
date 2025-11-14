@@ -36,7 +36,7 @@ namespace CutTheRope.game
             bar.width = (int)(barTotalWidth * num / 100f);
         }
 
-        public void MoviePlaybackFinished(NSString url)
+        public void MoviePlaybackFinished(string url)
         {
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.resourcesDelegate = this;

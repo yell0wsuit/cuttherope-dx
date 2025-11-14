@@ -25,7 +25,7 @@ namespace CutTheRope.game
                 _ = view.AddChild(rectangleElement);
                 FontGeneric font = Application.GetFont(4);
                 Text text = new Text().InitWithFont(font);
-                text.SetString(NSS("Loading..."));
+                text.SetString("Loading...");
                 text.anchor = text.parentAnchor = 18;
                 _ = view.AddChild(text);
                 AddViewwithID(view, 1);
@@ -44,9 +44,9 @@ namespace CutTheRope.game
             _ = view.AddChild(rectangleElement);
             FontGeneric font = Application.GetFont(4);
             Text text = new Text().InitWithFont(font);
-            text.SetString(NSS("START"));
+            text.SetString("START");
             Text text2 = new Text().InitWithFont(font);
-            text2.SetString(NSS("START"));
+            text2.SetString("START");
             text2.scaleX = text2.scaleY = 1.2f;
             Button button = new Button().InitWithUpElementDownElementandID(text, text2, 0);
             button.anchor = button.parentAnchor = 34;
@@ -61,8 +61,8 @@ namespace CutTheRope.game
             if (autoLoad)
             {
                 string text = "maps/";
-                NSString nsstring = selectedMap;
-                NSString nSString = NSS(text + (nsstring?.ToString()));
+                string nsstring = selectedMap;
+                string nSString = NSS(text + (nsstring?.ToString()));
                 XElement mapElement = XElementExtensions.LoadContentXml(nSString.ToString());
                 XmlLoaderFinishedWithfromwithSuccess(mapElement, nSString, mapElement != null);
                 return;
@@ -80,7 +80,7 @@ namespace CutTheRope.game
             base.Deactivate();
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, NSString url, bool success)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string url, bool success)
         {
             if (rootNode != null)
             {
@@ -98,12 +98,11 @@ namespace CutTheRope.game
             ((CTRRootController)Application.SharedRootController()).SetPicker(true);
         }
 
-        public void SetAutoLoadMap(NSString map)
+        public void SetAutoLoadMap(string map)
         {
             autoLoad = true;
             ((CTRRootController)Application.SharedRootController()).SetPicker(false);
-            NSREL(selectedMap);
-            selectedMap = (NSString)NSRET(map);
+            selectedMap = (string)NSRET(map);
         }
 
         public void OnButtonPressed(int n)
@@ -116,11 +115,10 @@ namespace CutTheRope.game
 
         public override void Dealloc()
         {
-            NSREL(selectedMap);
             base.Dealloc();
         }
 
-        private NSString selectedMap;
+        private string selectedMap;
 
         private Dictionary<string, XElement> maplist;
 

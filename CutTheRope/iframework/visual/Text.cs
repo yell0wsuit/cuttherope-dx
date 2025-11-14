@@ -10,11 +10,6 @@ namespace CutTheRope.iframework.visual
     {
         public static Text CreateWithFontandString(int i, string str)
         {
-            return CreateWithFontandString(i, NSS(str));
-        }
-
-        public static Text CreateWithFontandString(int i, NSString str)
-        {
             Text text = new Text().InitWithFont(Application.GetFont(i));
             text.SetString(str);
             return text;
@@ -39,23 +34,18 @@ namespace CutTheRope.iframework.visual
 
         public virtual void SetString(string newString)
         {
-            SetString(NSS(newString));
-        }
-
-        public virtual void SetString(NSString newString)
-        {
             SetStringandWidth(newString, -1f);
         }
 
-        public virtual void SetStringandWidth(NSString newString, double w)
+        public virtual void SetStringandWidth(string newString, double w)
         {
             SetStringandWidth(newString, (float)w);
         }
 
-        public virtual void SetStringandWidth(NSString newString, float w)
+        public virtual void SetStringandWidth(string newString, float w)
         {
             string_ = newString;
-            string_ ??= new NSString("");
+            string_ ??= new string("");
             font.NotifyTextChanged(this);
             if (w == -1f)
             {
@@ -101,7 +91,7 @@ namespace CutTheRope.iframework.visual
             float num4 = 0f;
             int num5 = (int)font.FontHeight();
             int num6 = 0;
-            char[] characters2 = NSS("..").GetCharacters();
+            char[] characters2 = "..".GetCharacters();
             int num7 = (int)font.GetCharOffset(characters2, 0, 2);
             int num8 = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (num5 + font.GetLineOffset())));
             bool flag = num8 != formattedStrings.Count;
@@ -173,7 +163,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public virtual NSString GetString()
+        public virtual string GetString()
         {
             return string_;
         }
@@ -273,7 +263,7 @@ namespace CutTheRope.iframework.visual
                 int num11 = array[(i << 1) + 1];
                 range.location = (uint)num10;
                 range.length = (uint)(num11 - num10);
-                NSString str = string_.SubstringWithRange(range);
+                string str = string_.SubstringWithRange(range);
                 float w = font.StringWidth(str);
                 FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
                 formattedStrings.Add(item);
@@ -293,7 +283,7 @@ namespace CutTheRope.iframework.visual
 
         public int align;
 
-        public NSString string_;
+        public string string_;
 
         public int stringLength;
 

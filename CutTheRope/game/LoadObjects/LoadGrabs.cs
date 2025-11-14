@@ -41,7 +41,7 @@ namespace CutTheRope.game
                 if (!flag2)
                 {
                     int num13 = 3;
-                    bool flag3 = xmlNode.AttributeAsNSString("path").HasPrefix(NSS("R"));
+                    bool flag3 = xmlNode.AttributeAsNSString("path").HasPrefix("R");
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
                         if (!flag3 || l % num13 == 0)

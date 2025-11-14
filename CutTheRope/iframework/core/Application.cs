@@ -118,9 +118,10 @@ namespace CutTheRope.iframework.core
             return (CTRTexture2D)SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
         }
 
-        internal static NSString GetString(int strResID)
+        internal static string GetString(int strResID)
         {
-            return (NSString)SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            NSObject obj = SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            return obj?.ToString() ?? string.Empty;
         }
 
         public virtual void UpdateOrientation()

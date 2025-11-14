@@ -10,12 +10,12 @@ namespace CutTheRope.game
         public override void ParseMover(XElement xml)
         {
             rotation = 0f;
-            NSString nSString = xml.AttributeAsNSString("angle");
+            string nSString = xml.AttributeAsNSString("angle");
             if (nSString.Length() != 0)
             {
                 rotation = nSString.FloatValue();
             }
-            NSString nSString2 = xml.AttributeAsNSString("path");
+            string nSString2 = xml.AttributeAsNSString("path");
             if (nSString2 != null && nSString2.Length() != 0)
             {
                 int i = 100;

@@ -73,7 +73,7 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://reload"), NSS("mappicker://reload"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://reload"), "mappicker://reload", true);
                 return;
             }
             int pack = cTRRootController.GetPack();
@@ -89,7 +89,7 @@ namespace CutTheRope.game
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             if (cTRRootController.IsPicker())
             {
-                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://next"), NSS("mappicker://next"), true);
+                XmlLoaderFinishedWithfromwithSuccess(XElementExtensions.LoadContentXml("mappicker://next"), "mappicker://next", true);
                 return;
             }
             int pack = cTRRootController.GetPack();

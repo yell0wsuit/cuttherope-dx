@@ -11,6 +11,22 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {
+    /// <summary>Wrapper class to store strings in NSObject dictionary</summary>
+    internal class StringWrapper : NSObject
+    {
+        private readonly string _value;
+
+        public StringWrapper(string value)
+        {
+            _value = value ?? string.Empty;
+        }
+
+        public override string ToString()
+        {
+            return _value;
+        }
+    }
+
     internal class ResourceMgr : NSObject
     {
         public virtual bool HasResource(int resID)
@@ -58,8 +74,10 @@ namespace CutTheRope.iframework.core
                     value = LoadSoundInfo(path);
                     break;
                 case ResourceType.STRINGS:
-                    value = LoadStringsInfo(resID);
-                    value = NSS(value.ToString().Replace('\u00a0', ' '));
+                    {
+                        string strValue = LoadStringsInfo(resID);
+                        value = new StringWrapper(strValue.Replace('\u00a0', ' '));
+                    }
                     break;
                 case ResourceType.BINARY:
                     break;
@@ -80,7 +98,7 @@ namespace CutTheRope.iframework.core
             return new NSObject().Init();
         }
 
-        public NSString LoadStringsInfo(int key)
+        public string LoadStringsInfo(int key)
         {
             key &= 65535;
             xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
@@ -109,9 +127,9 @@ namespace CutTheRope.iframework.core
                 }
                 XElement xMLNode2 = xMLNode.FindChildWithTagNameRecursively(tag, false);
                 xMLNode2 ??= xMLNode.FindChildWithTagNameRecursively("en", false);
-                return xMLNode2?.ValueAsNSString() ?? new NSString();
+                return xMLNode2?.ValueAsNSString() ?? string.Empty;
             }
-            return new NSString();
+            return string.Empty;
         }
 
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
@@ -122,7 +140,7 @@ namespace CutTheRope.iframework.core
             int num3 = xmlnode.AttributeAsNSString("space").IntValue();
             XElement xMLNode2 = xmlnode.FindChildWithTagNameRecursively("chars", false);
             XElement xMLNode3 = xmlnode.FindChildWithTagNameRecursively("kerning", false);
-            NSString data = xMLNode2.ValueAsNSString();
+            string data = xMLNode2.ValueAsNSString();
             if (xMLNode3 != null)
             {
                 _ = xMLNode3.ValueAsNSString();
@@ -169,7 +187,7 @@ namespace CutTheRope.iframework.core
             XElement xMLNode = i.FindChildWithTagNameRecursively("quads", false);
             if (xMLNode != null)
             {
-                List<NSString> list = xMLNode.ValueAsNSString().ComponentsSeparatedByString(',');
+                List<string> list = xMLNode.ValueAsNSString().ComponentsSeparatedByString(',');
                 if (list != null && list.Count > 0)
                 {
                     float[] array = new float[list.Count];
@@ -185,7 +203,7 @@ namespace CutTheRope.iframework.core
             {
                 return;
             }
-            List<NSString> list2 = xMLNode2.ValueAsNSString().ComponentsSeparatedByString(',');
+            List<string> list2 = xMLNode2.ValueAsNSString().ComponentsSeparatedByString(',');
             if (list2 == null || list2.Count <= 0)
             {
                 return;
@@ -196,8 +214,8 @@ namespace CutTheRope.iframework.core
                 array2[k] = list2[k].FloatValue();
             }
             SetOffsetsInfo(t, array2, list2.Count, scaleX, scaleY);
-            XElement xMLNode3 = i.FindChildWithTagNameRecursively(NSS("preCutWidth"), false);
-            XElement xMLNode4 = i.FindChildWithTagNameRecursively(NSS("preCutHeight"), false);
+            XElement xMLNode3 = i.FindChildWithTagNameRecursively("preCutWidth", false);
+            XElement xMLNode4 = i.FindChildWithTagNameRecursively("preCutHeight", false);
             if (xMLNode3 != null && xMLNode4 != null)
             {
                 t.preCutSize = Vect(xMLNode3.ValueAsNSString().IntValue(), xMLNode4.ValueAsNSString().IntValue());

@@ -41,11 +41,6 @@ namespace CutTheRope.ios
             return document?.Root;
         }
 
-        public static XElement FindChildWithTagNameRecursively(this XElement element, NSString tag, bool recursively)
-        {
-            return element.FindChildWithTagNameRecursively(tag?.ToString(), recursively);
-        }
-
         public static XElement FindChildWithTagNameRecursively(this XElement element, string tag, bool recursively)
         {
             if (element == null || string.IsNullOrEmpty(tag))
@@ -73,14 +68,14 @@ namespace CutTheRope.ios
             return null;
         }
 
-        public static NSString AttributeAsNSString(this XElement element, string attributeName)
+        public static string AttributeAsNSString(this XElement element, string attributeName)
         {
-            return new NSString(element?.Attribute(attributeName)?.Value ?? string.Empty);
+            return element?.Attribute(attributeName)?.Value ?? string.Empty;
         }
 
-        public static NSString ValueAsNSString(this XElement element)
+        public static string ValueAsNSString(this XElement element)
         {
-            return new NSString(element?.Value ?? string.Empty);
+            return element?.Value ?? string.Empty;
         }
     }
 }

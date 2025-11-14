@@ -184,7 +184,6 @@ namespace CutTheRope.iframework.visual
 
         public override void Dealloc()
         {
-            NSREL(texture);
             base.Dealloc();
         }
 

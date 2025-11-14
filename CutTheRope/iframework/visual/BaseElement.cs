@@ -251,11 +251,6 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public BaseElement GetChildWithName(NSString n)
-        {
-            return GetChildWithName(n.ToString());
-        }
-
         public BaseElement GetChildWithName(string n)
         {
             foreach (KeyValuePair<int, BaseElement> child in childs)
@@ -577,13 +572,6 @@ namespace CutTheRope.iframework.visual
 
         public void SetName(string n)
         {
-            NSREL(name);
-            name = new NSString(n);
-        }
-
-        public void SetName(NSString n)
-        {
-            NSREL(name);
             name = n;
         }
 
@@ -617,7 +605,6 @@ namespace CutTheRope.iframework.visual
             childs = null;
             timelines.Clear();
             timelines = null;
-            NSREL(name);
             base.Dealloc();
         }
 
@@ -643,7 +630,7 @@ namespace CutTheRope.iframework.visual
 
         public bool updateable;
 
-        private NSString name;
+        private string name;
 
         public float x;
 

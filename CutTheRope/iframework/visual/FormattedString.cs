@@ -4,11 +4,11 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class FormattedString : NSObject
     {
-        public FormattedString InitWithStringAndWidth(NSString str, float w)
+        public FormattedString InitWithStringAndWidth(string str, float w)
         {
             if (Init() != null)
             {
-                string_ = (NSString)NSRET(str);
+                string_ = (string)NSRET(str);
                 width = w;
             }
             return this;
@@ -20,7 +20,7 @@ namespace CutTheRope.iframework.visual
             base.Dealloc();
         }
 
-        public NSString string_;
+        public string string_;
 
         public float width;
     }

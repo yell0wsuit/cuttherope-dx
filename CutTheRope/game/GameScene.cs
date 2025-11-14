@@ -31,7 +31,7 @@ namespace CutTheRope.game
             return p.pos.y > mapHeight + 400f || p.pos.y < -400f;
         }
 
-        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, NSString _, bool _1)
+        public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)
         {
             ((CTRRootController)Application.SharedRootController()).SetMap(rootNode);
             if (animateRestartDim)
@@ -49,8 +49,8 @@ namespace CutTheRope.game
             {
                 return true;
             }
-            NSString @string = Application.SharedAppSettings().GetString(8);
-            NSString nSString = c.AttributeAsNSString("locale");
+            string @string = Application.SharedAppSettings().GetString(8);
+            string nSString = c.AttributeAsNSString("locale");
             if (@string.IsEqualToString("en") || @string.IsEqualToString("ru") || @string.IsEqualToString("de") || @string.IsEqualToString("fr"))
             {
                 if (!nSString.IsEqualToString(@string))

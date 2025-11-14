@@ -8,7 +8,7 @@ namespace CutTheRope.game
         {
         }
 
-        public static void PostAchievementName(NSString name)
+        public static void PostAchievementName(string name)
         {
         }
 

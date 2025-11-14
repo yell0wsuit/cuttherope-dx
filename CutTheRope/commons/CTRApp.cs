@@ -22,7 +22,7 @@ namespace CutTheRope.commons
             throw new NotImplementedException();
         }
 
-        public void ChallengeStartedWithGameConfig(NSString gameConfig)
+        public void ChallengeStartedWithGameConfig(string gameConfig)
         {
             throw new NotImplementedException();
         }

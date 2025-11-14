@@ -8,7 +8,7 @@ namespace CutTheRope.iframework.media
 {
     internal sealed class MovieMgr : NSObject, System.IDisposable
     {
-        public void PlayURL(NSString moviePath, bool mute)
+        public void PlayURL(string moviePath, bool mute)
         {
             url = moviePath;
             video = Global.ScreenSizeManager.CurrentSize.Width <= 1024
@@ -85,7 +85,7 @@ namespace CutTheRope.iframework.media
 
         private VideoPlayer player;
 
-        public NSString url;
+        public string url;
 
         public IMovieMgrDelegate delegateMovieMgrDelegate;
 

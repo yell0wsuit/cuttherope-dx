@@ -67,10 +67,8 @@ namespace CutTheRope.iframework.core
                 if (lastTime > transitionTime)
                 {
                     transitionTime = -1f;
-                    NSREL(prevScreenImage);
                     prevScreenImage?.xnaTexture_.Dispose();
                     prevScreenImage = null;
-                    NSREL(nextScreenImage);
                     nextScreenImage?.xnaTexture_.Dispose();
                     nextScreenImage = null;
                 }
@@ -192,7 +190,6 @@ namespace CutTheRope.iframework.core
                 transitionTime = lastTime + transitionDelay;
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
-                NSREL(nextScreenImage);
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = Grabber.Grab();
                 _ = NSRET(nextScreenImage);
@@ -210,7 +207,6 @@ namespace CutTheRope.iframework.core
                 OpenGL.GlClear(0);
                 ApplyLandscape();
                 previousView.Draw();
-                NSREL(prevScreenImage);
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = Grabber.Grab();
                 _ = NSRET(prevScreenImage);

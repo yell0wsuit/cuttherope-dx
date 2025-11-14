@@ -206,18 +206,13 @@ namespace CutTheRope.iframework
 
         public sealed class FlurryAPI
         {
-            public static void LogEvent(NSString s)
+            public static void LogEvent(string s)
             {
             }
         }
 
         public sealed class AndroidAPI
         {
-            public static void OpenUrl(NSString url)
-            {
-                OpenUrl(url.ToString());
-            }
-
             public static void OpenUrl(string url)
             {
                 try
