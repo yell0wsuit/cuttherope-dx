@@ -13,26 +13,21 @@ namespace CutTheRope.iframework.platform
     internal sealed class GLCanvas : NSObject
     {
         // (get) Token: 0x060002F3 RID: 755 RVA: 0x00011F34 File Offset: 0x00010134
-        public NSRect Bounds
+        public Rectangle Bounds
         {
             get
             {
                 _ = Global.XnaGame.GraphicsDevice.Viewport.Bounds;
                 Rectangle currentSize = Global.ScreenSizeManager.CurrentSize;
-                _bounds.size.width = currentSize.Width;
-                _bounds.size.height = currentSize.Height;
-                _bounds.origin.x = currentSize.X;
-                _bounds.origin.y = currentSize.Y;
+                _bounds.Width = currentSize.Width;
+                _bounds.Height = currentSize.Height;
+                _bounds.X = currentSize.X;
+                _bounds.Y = currentSize.Y;
                 return _bounds;
             }
         }
 
-        public NSObject InitWithFrame(Rectangle frame)
-        {
-            return InitWithFrame(new NSRect(frame));
-        }
-
-        public NSObject InitWithFrame(NSRect frame_UNUSED)
+        public NSObject InitWithFrame(Rectangle frame_UNUSED)
         {
             xOffset = 0;
             yOffset = 0;
@@ -100,7 +95,7 @@ namespace CutTheRope.iframework.platform
             OpenGL.GlLoadIdentity();
         }
 
-        public static void DrawRect(NSRect rect)
+        public static void DrawRect(Rectangle rect)
         {
         }
 
@@ -194,7 +189,7 @@ namespace CutTheRope.iframework.platform
         private Font fpsFont;
 
         private Text fpsText;
-        private NSRect _bounds;
+        private Rectangle _bounds;
 
         public bool isFullscreen;
 
