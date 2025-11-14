@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.iframework.core;

@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.game
 {
     /// <summary>
@@ -17,7 +15,7 @@ namespace CutTheRope.game
         /// </summary>
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            List<XElement> list = new List<XElement>(map.Elements());
+            List<XElement> list = [.. map.Elements()];
             foreach (XElement xmlnode2 in list)
             {
                 foreach (XElement item3 in xmlnode2.Elements())

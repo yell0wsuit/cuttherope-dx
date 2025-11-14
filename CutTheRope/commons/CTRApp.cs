@@ -1,7 +1,6 @@
 using System;
 
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.commons
 {

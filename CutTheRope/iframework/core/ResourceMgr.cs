@@ -375,7 +375,7 @@ namespace CutTheRope.iframework.core
             }
             if (10 == resId)
             {
-            xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
+                xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
                 return;
             }
             if (IsSound(resId))
@@ -423,7 +423,7 @@ namespace CutTheRope.iframework.core
         public IResourceMgrDelegate resourcesDelegate;
 
         /// <summary>Stores all cached resources (textures, fonts, sounds, strings)</summary>
-        private Dictionary<int, object> s_Resources = [];
+        private readonly Dictionary<int, object> s_Resources = [];
 
         private XElement xmlStrings;
 

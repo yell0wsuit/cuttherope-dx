@@ -7,7 +7,6 @@ using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.sfe;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {

@@ -142,7 +142,7 @@ namespace CutTheRope.iframework.core
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().InitWithFrame(default(Rectangle));
+        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().InitWithFrame(default);
 
         private static SoundMgr soundMgr;
 

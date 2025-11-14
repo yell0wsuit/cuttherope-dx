@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;

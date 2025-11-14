@@ -1,5 +1,3 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.game
 {
     internal sealed class Scorer

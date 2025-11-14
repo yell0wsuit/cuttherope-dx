@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;
 
 using CutTheRope.iframework;
@@ -60,7 +61,7 @@ namespace CutTheRope.game
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                int q = new string(xmlNode.Name.LocalName[8..]).IntValue() - 1;
+                int q = new string(xmlNode.Name.LocalName.AsSpan()[8..]).IntValue() - 1;
                 GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
                 gameObjectSpecial.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;

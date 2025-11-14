@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+
 using CutTheRope.iframework.helpers;
 
 namespace CutTheRope.ios
@@ -28,7 +30,7 @@ namespace CutTheRope.ios
             }
 
             EnsureInitialized();
-            timers.Remove(timerId);
+            _ = timers.Remove(timerId);
         }
 
         public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc callback, NSObject parameter, double interval)
@@ -91,29 +93,22 @@ namespace CutTheRope.ios
             }
         }
 
-        private static readonly Dictionary<int, TimerEntry> timers = new();
-        private static readonly List<int> updateKeys = new();
-        private static readonly object initLock = new();
-        private static DelayedDispatcher delayedDispatcher = null!;
+        private static readonly Dictionary<int, TimerEntry> timers = [];
+        private static readonly List<int> updateKeys = [];
+        private static readonly Lock initLock = new();
+        private static DelayedDispatcher delayedDispatcher;
         private static bool initialized;
         private static int nextTimerId;
 
-        private sealed class TimerEntry
+        private sealed class TimerEntry(DelayedDispatcher.DispatchFunc callback, NSObject parameter, float delay)
         {
-            public TimerEntry(DelayedDispatcher.DispatchFunc callback, NSObject parameter, float delay)
-            {
-                Callback = callback;
-                Parameter = parameter;
-                Delay = delay;
-            }
-
-            public float Delay { get; }
+            public float Delay { get; } = delay;
 
             public float Accumulator { get; set; }
 
-            public DelayedDispatcher.DispatchFunc Callback { get; }
+            public DelayedDispatcher.DispatchFunc Callback { get; } = callback;
 
-            public NSObject Parameter { get; }
+            public NSObject Parameter { get; } = parameter;
 
             public void Invoke()
             {
