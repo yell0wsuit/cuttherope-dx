@@ -6,11 +6,8 @@ namespace CutTheRope.iframework.visual
     {
         public FormattedString InitWithStringAndWidth(string str, float w)
         {
-            if (Init() != null)
-            {
-                string_ = (string)NSRET(str);
-                width = w;
-            }
+            string_ = (string)NSRET(str);
+            width = w;
             return this;
         }
 

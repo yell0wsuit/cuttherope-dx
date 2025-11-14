@@ -6,7 +6,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
-    internal sealed class CTRMover : Mover
+    internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {
         public override void SetPathFromStringandStart(string p, Vector s)
         {

@@ -284,7 +284,7 @@ namespace CutTheRope.game
             launcher = true;
             launcherIncreaseSpeed = true;
             launcherSpeed = 130f;
-            Mover mover = new Mover().InitWithPathCapacityMoveSpeedRotateSpeed(100, launcherSpeed, 0f);
+            Mover mover = new(100, launcherSpeed, 0f);
             mover.SetPathFromStringandStart("RC30", Vect(x, y));
             SetMover(mover);
             mover.Start();

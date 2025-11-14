@@ -44,21 +44,18 @@ namespace CutTheRope.game
             return pack;
         }
 
-        public override NSObject InitWithParent(ViewController p)
+        public CTRRootController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                hacked = false;
-                loadedMap = null;
-                CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
-                ctrresourceMgr.InitLoading();
-                ctrresourceMgr.LoadPack(PACK_STARTUP);
-                ctrresourceMgr.LoadImmediately();
-                StartupController startupController = (StartupController)new StartupController().InitWithParent(this);
-                AddChildwithID(startupController, 0);
-                viewTransition = -1;
-            }
-            return this;
+            hacked = false;
+            loadedMap = null;
+            CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
+            ctrresourceMgr.InitLoading();
+            ctrresourceMgr.LoadPack(PACK_STARTUP);
+            ctrresourceMgr.LoadImmediately();
+            StartupController startupController = new(this);
+            AddChildwithID(startupController, 0);
+            viewTransition = -1;
         }
 
         public override void Activate()
@@ -109,9 +106,9 @@ namespace CutTheRope.game
                 case 0:
                     {
                         SetViewTransition(4);
-                        LoadingController c2 = (LoadingController)new LoadingController().InitWithParent(this);
+                        LoadingController c2 = new(this);
                         AddChildwithID(c2, 2);
-                        MenuController menuController2 = (MenuController)new MenuController().InitWithParent(this);
+                        MenuController menuController2 = new(this);
                         AddChildwithID(menuController2, 1);
                         DeleteChild(0);
                         resourceMgr.FreePack(PACK_STARTUP);
@@ -190,7 +187,7 @@ namespace CutTheRope.game
                         if (nextController == 0)
                         {
                             SetShowGreeting(true);
-                            GameController c3 = (GameController)new GameController().InitWithParent(this);
+                            GameController c3 = new(this);
                             AddChildwithID(c3, 3);
                             ActivateChild(3);
                             return;
@@ -199,7 +196,7 @@ namespace CutTheRope.game
                         {
                             return;
                         }
-                        MenuController menuController3 = (MenuController)new MenuController().InitWithParent(this);
+                        MenuController menuController3 = new(this);
                         AddChildwithID(menuController3, 1);
                         resourceMgr.FreePack(PACK_GAME_COVER_01);
                         resourceMgr.FreePack(PACK_GAME_COVER_02);
@@ -367,7 +364,7 @@ namespace CutTheRope.game
         internal void RecreateLoadingController()
         {
             DeleteChild(2);
-            LoadingController c = (LoadingController)new LoadingController().InitWithParent(this);
+            LoadingController c = new(this);
             AddChildwithID(c, 2);
         }
 

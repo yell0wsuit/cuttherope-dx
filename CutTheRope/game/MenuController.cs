@@ -1069,24 +1069,21 @@ namespace CutTheRope.game
             AddViewwithID(menuView, 6);
         }
 
-        public override NSObject InitWithParent(ViewController p)
+        public MenuController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                ddMainMenu = new DelayedDispatcher();
-                ddPackSelect = new DelayedDispatcher();
-                CreateMainMenu();
-                CreateOptions();
-                CreateReset();
-                CreateAbout();
-                CreateMovieView();
-                CreatePackSelect();
-                CreateLeaderboards();
-                CreateAchievements();
-                MapPickerController c = (MapPickerController)new MapPickerController().InitWithParent(this);
-                AddChildwithID(c, 0);
-            }
-            return this;
+            ddMainMenu = new DelayedDispatcher();
+            ddPackSelect = new DelayedDispatcher();
+            CreateMainMenu();
+            CreateOptions();
+            CreateReset();
+            CreateAbout();
+            CreateMovieView();
+            CreatePackSelect();
+            CreateLeaderboards();
+            CreateAchievements();
+            MapPickerController c = new(this);
+            AddChildwithID(c, 0);
         }
 
         public override void Dealloc()

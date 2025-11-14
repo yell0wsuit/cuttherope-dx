@@ -171,10 +171,6 @@ namespace CutTheRope.iframework.visual
 
         public CTRTexture2D InitWithPath(string path, bool assets)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             _resName = path;
             _name = 65536U;
             _localTexParams = _texParams;
@@ -245,10 +241,6 @@ namespace CutTheRope.iframework.visual
 
         public NSObject InitFromPixels(int x, int y, int w, int h)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             _name = 65536U;
             _lowypoint = -1;
             _localTexParams = _defaultTexParams;

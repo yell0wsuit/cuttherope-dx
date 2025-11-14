@@ -4,7 +4,6 @@ using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
@@ -22,13 +21,10 @@ namespace CutTheRope.game
             base.Update(t);
         }
 
-        public override NSObject InitWithParent(ViewController p)
+        public GameController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                CreateGameView();
-            }
-            return this;
+            CreateGameView();
         }
 
         public override void Activate()
@@ -147,20 +143,7 @@ namespace CutTheRope.game
         {
             if (CTRPreferences.IsPackPerfect(pack))
             {
-                CTRRootController.PostAchievementName((new string[]
-                {
-                    "1058364368",
-                    "1058328727",
-                    "1058324751",
-                    "1515793567",
-                    "1432760157",
-                    "1058327768",
-                    "1058407145",
-                    "1991641832",
-                    "1335599628",
-                    "99928734496",
-                    "com.zeptolab.ctr.djboxperfect"
-                })[pack]);
+                CTRRootController.PostAchievementName(name[pack]);
             }
         }
 
@@ -181,20 +164,7 @@ namespace CutTheRope.game
             }
             if (flag)
             {
-                CTRRootController.PostAchievementName((new string[]
-                {
-                    "681486798",
-                    "681462993",
-                    "681520253",
-                    "1515813296",
-                    "1432721430",
-                    "681512374",
-                    "1058310903",
-                    "1991474812",
-                    "1321820679",
-                    "23523272771",
-                    "com.zeptolab.ctr.djboxcompleted"
-                })[pack]);
+                CTRRootController.PostAchievementName(nameArray[pack]);
             }
             CheckForBoxPerfect(pack);
             int totalStars = CTRPreferences.GetTotalStars();
@@ -687,5 +657,33 @@ namespace CutTheRope.game
         private int tmpDimTime;
 
         private bool boxCloseHandled;
+        internal static readonly string[] name =
+                [
+                    "1058364368",
+                    "1058328727",
+                    "1058324751",
+                    "1515793567",
+                    "1432760157",
+                    "1058327768",
+                    "1058407145",
+                    "1991641832",
+                    "1335599628",
+                    "99928734496",
+                    "com.zeptolab.ctr.djboxperfect"
+                ];
+        internal static readonly string[] nameArray =
+                [
+                    "681486798",
+                    "681462993",
+                    "681520253",
+                    "1515813296",
+                    "1432721430",
+                    "681512374",
+                    "1058310903",
+                    "1991474812",
+                    "1321820679",
+                    "23523272771",
+                    "com.zeptolab.ctr.djboxcompleted"
+                ];
     }
 }

@@ -4,31 +4,14 @@ using System.Collections.Generic;
 using CutTheRope.desktop;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.iframework.core
 {
-    internal class RootController : ViewController
+    internal class RootController(ViewController parent) : ViewController(parent)
     {
-        public override NSObject InitWithParent(ViewController p)
-        {
-            if (base.InitWithParent(p) != null)
-            {
-                viewTransition = -1;
-                transitionTime = -1f;
-                previousView = null;
-                transitionDelay = 0.4f;
-                screenGrabber = new Grabber();
-                prevScreenImage = null;
-                nextScreenImage = null;
-                deactivateCurrentController = false;
-            }
-            return this;
-        }
-
         public void PerformTick(float delta)
         {
             lastTime += delta;
@@ -303,21 +286,21 @@ namespace CutTheRope.iframework.core
 
         public const float TRANSITION_DEFAULT_DELAY = 0.4f;
 
-        public int viewTransition;
+        public int viewTransition = -1;
 
-        public float transitionTime;
+        public float transitionTime = -1f;
 
-        private float transitionDelay;
+        private readonly float transitionDelay = 0.4f;
 
-        private View previousView;
+        private View previousView = null;
 
-        private CTRTexture2D prevScreenImage;
+        private CTRTexture2D prevScreenImage = null;
 
-        private CTRTexture2D nextScreenImage;
+        private CTRTexture2D nextScreenImage = null;
 
-        private Grabber screenGrabber;
+        private readonly Grabber screenGrabber = new();
 
-        private bool deactivateCurrentController;
+        private bool deactivateCurrentController = false;
 
         private ViewController currentController;
 

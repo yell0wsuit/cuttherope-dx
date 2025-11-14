@@ -14,16 +14,13 @@ namespace CutTheRope.iframework.visual
 
         public virtual Button InitWithID(int n)
         {
-            if (Init() != null)
-            {
-                buttonID = n;
-                state = BUTTON_STATE.BUTTON_UP;
-                touchLeftInc = 0f;
-                touchRightInc = 0f;
-                touchTopInc = 0f;
-                touchBottomInc = 0f;
-                forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
-            }
+            buttonID = n;
+            state = BUTTON_STATE.BUTTON_UP;
+            touchLeftInc = 0f;
+            touchRightInc = 0f;
+            touchTopInc = 0f;
+            touchBottomInc = 0f;
+            forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
             return this;
         }
 

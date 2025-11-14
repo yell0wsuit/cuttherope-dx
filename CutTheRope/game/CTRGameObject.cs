@@ -25,8 +25,10 @@ namespace CutTheRope.game
                 }
                 float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue() * 3.3f;
                 float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
-                CTRMover cTRMover = (CTRMover)new CTRMover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                cTRMover.angle_ = rotation;
+                CTRMover cTRMover = new(i, m_, r_)
+                {
+                    angle_ = rotation
+                };
                 cTRMover.angle_initial = cTRMover.angle_;
                 cTRMover.SetPathFromStringandStart(nSString2, Vect(x, y));
                 SetMover(cTRMover);

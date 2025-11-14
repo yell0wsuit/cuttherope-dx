@@ -17,17 +17,14 @@ namespace CutTheRope.iframework.visual
 
         public virtual Text InitWithFont(FontGeneric i)
         {
-            if (Init() != null)
-            {
-                font = (FontGeneric)NSRET(i);
-                formattedStrings = [];
-                width = -1;
-                height = -1;
-                align = 1;
-                multiDrawers = [];
-                wrapLongWords = false;
-                maxHeight = -1f;
-            }
+            font = (FontGeneric)NSRET(i);
+            formattedStrings = [];
+            width = -1;
+            height = -1;
+            align = 1;
+            multiDrawers = [];
+            wrapLongWords = false;
+            maxHeight = -1f;
             font.NotifyTextCreated(this);
             return this;
         }

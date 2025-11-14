@@ -8,18 +8,15 @@ namespace CutTheRope.iframework.visual
     {
         public Font InitWithVariableSizeCharscharMapFileKerning(string strParam, CTRTexture2D charmapfile, object k)
         {
-            if (Init() != null)
-            {
-                _isWvga = charmapfile.IsWvga();
-                charmap = new Image().InitWithTexture(charmapfile);
-                quadsCount = charmapfile.quadsCount;
-                height = charmapfile.quadRects[0].h;
-                chars = strParam.Copy();
-                sortedChars = chars.GetCharacters();
-                Array.Sort(sortedChars);
-                charOffset = 0f;
-                lineOffset = 0f;
-            }
+            _isWvga = charmapfile.IsWvga();
+            charmap = new Image().InitWithTexture(charmapfile);
+            quadsCount = charmapfile.quadsCount;
+            height = charmapfile.quadRects[0].h;
+            chars = strParam.Copy();
+            sortedChars = chars.GetCharacters();
+            Array.Sort(sortedChars);
+            charOffset = 0f;
+            lineOffset = 0f;
             return this;
         }
 

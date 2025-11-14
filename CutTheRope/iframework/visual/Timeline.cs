@@ -150,15 +150,12 @@ namespace CutTheRope.iframework.visual
 
         public Timeline InitWithMaxKeyFramesOnTrack(int m)
         {
-            if (Init() != null)
-            {
-                maxKeyFrames = m;
-                time = 0f;
-                length = 0f;
-                state = TimelineState.TIMELINE_STOPPED;
-                loopsLimit = -1;
-                timelineLoopType = LoopType.TIMELINE_NO_LOOP;
-            }
+            maxKeyFrames = m;
+            time = 0f;
+            length = 0f;
+            state = TimelineState.TIMELINE_STOPPED;
+            loopsLimit = -1;
+            timelineLoopType = LoopType.TIMELINE_NO_LOOP;
             return this;
         }
 

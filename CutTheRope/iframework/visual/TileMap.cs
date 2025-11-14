@@ -29,30 +29,27 @@ namespace CutTheRope.iframework.visual
 
         public TileMap InitWithRowsColumns(int r, int c)
         {
-            if (Init() != null)
+            rows = r;
+            columns = c;
+            cameraViewWidth = (int)SCREEN_WIDTH;
+            cameraViewHeight = (int)SCREEN_HEIGHT;
+            parallaxRatio = 1f;
+            drawers = [];
+            tiles = [];
+            matrix = new int[columns, rows];
+            for (int i = 0; i < columns; i++)
             {
-                rows = r;
-                columns = c;
-                cameraViewWidth = (int)SCREEN_WIDTH;
-                cameraViewHeight = (int)SCREEN_HEIGHT;
-                parallaxRatio = 1f;
-                drawers = [];
-                tiles = [];
-                matrix = new int[columns, rows];
-                for (int i = 0; i < columns; i++)
+                for (int j = 0; j < rows; j++)
                 {
-                    for (int j = 0; j < rows; j++)
-                    {
-                        matrix[i, j] = -1;
-                    }
+                    matrix[i, j] = -1;
                 }
-                repeatedVertically = Repeat.NONE;
-                repeatedHorizontally = Repeat.NONE;
-                horizontalRandom = false;
-                verticalRandom = false;
-                restoreTileTransparency = true;
-                randomSeed = RND_RANGE(1000, 2000);
             }
+            repeatedVertically = Repeat.NONE;
+            repeatedHorizontally = Repeat.NONE;
+            horizontalRandom = false;
+            verticalRandom = false;
+            restoreTileTransparency = true;
+            randomSeed = RND_RANGE(1000, 2000);
             return this;
         }
 

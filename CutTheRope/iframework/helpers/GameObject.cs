@@ -119,8 +119,10 @@ namespace CutTheRope.iframework.helpers
                 }
                 float m_ = xml.AttributeAsNSString("moveSpeed").FloatValue();
                 float r_ = xml.AttributeAsNSString("rotateSpeed").FloatValue();
-                Mover mover = new Mover().InitWithPathCapacityMoveSpeedRotateSpeed(i, m_, r_);
-                mover.angle_ = rotation;
+                Mover mover = new(i, m_, r_)
+                {
+                    angle_ = rotation
+                };
                 mover.angle_initial = mover.angle_;
                 mover.SetPathFromStringandStart(nSString, Vect(x, y));
                 SetMover(mover);

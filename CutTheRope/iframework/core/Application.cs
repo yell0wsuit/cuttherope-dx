@@ -24,7 +24,7 @@ namespace CutTheRope.iframework.core
 
         public static RootController SharedRootController()
         {
-            root ??= (CTRRootController)new CTRRootController().InitWithParent(null);
+            root ??= new CTRRootController(null);
             return root;
         }
 
@@ -77,7 +77,7 @@ namespace CutTheRope.iframework.core
 
         public virtual RootController CreateRootController()
         {
-            return (CTRRootController)new CTRRootController().InitWithParent(null);
+            return new CTRRootController(null);
         }
 
         public virtual void ApplicationDidFinishLaunching()

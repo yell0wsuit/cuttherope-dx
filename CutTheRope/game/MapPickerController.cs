@@ -10,30 +10,27 @@ namespace CutTheRope.game
 {
     internal sealed class MapPickerController : ViewController, IButtonDelegation
     {
-        public override NSObject InitWithParent(ViewController p)
+        public MapPickerController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
+            selectedMap = null;
+            maplist = null;
+            CreatePickerView();
+            View view = new();
+            RectangleElement rectangleElement = new()
             {
-                selectedMap = null;
-                maplist = null;
-                CreatePickerView();
-                View view = new();
-                RectangleElement rectangleElement = new()
-                {
-                    color = RGBAColor.whiteRGBA,
-                    width = (int)SCREEN_WIDTH,
-                    height = (int)SCREEN_HEIGHT
-                };
-                _ = view.AddChild(rectangleElement);
-                FontGeneric font = Application.GetFont(4);
-                Text text = new Text().InitWithFont(font);
-                text.SetString("Loading...");
-                text.anchor = text.parentAnchor = 18;
-                _ = view.AddChild(text);
-                AddViewwithID(view, 1);
-                SetNormalMode();
-            }
-            return this;
+                color = RGBAColor.whiteRGBA,
+                width = (int)SCREEN_WIDTH,
+                height = (int)SCREEN_HEIGHT
+            };
+            _ = view.AddChild(rectangleElement);
+            FontGeneric font = Application.GetFont(4);
+            Text text = new Text().InitWithFont(font);
+            text.SetString("Loading...");
+            text.anchor = text.parentAnchor = 18;
+            _ = view.AddChild(text);
+            AddViewwithID(view, 1);
+            SetNormalMode();
         }
 
         public void CreatePickerView()
@@ -124,7 +121,7 @@ namespace CutTheRope.game
 
         private string selectedMap;
 
-        private Dictionary<string, XElement> maplist;
+        private readonly Dictionary<string, XElement> maplist;
 
         private bool autoLoad;
     }

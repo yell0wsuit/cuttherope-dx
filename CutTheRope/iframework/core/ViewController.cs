@@ -11,24 +11,20 @@ namespace CutTheRope.iframework.core
 {
     internal class ViewController : NSObject, ITouchDelegate
     {
-        public ViewController()
+        protected ViewController()
+            : this(null)
         {
-            views = [];
         }
 
-        public virtual NSObject InitWithParent(ViewController p)
+        protected ViewController(ViewController parent)
         {
-            if (base.Init() != null)
-            {
-                controllerState = ControllerState.CONTROLLER_DEACTIVE;
-                views = [];
-                childs = [];
-                activeViewID = -1;
-                activeChildID = -1;
-                pausedViewID = -1;
-                parent = p;
-            }
-            return this;
+            controllerState = ControllerState.CONTROLLER_DEACTIVE;
+            views = [];
+            childs = [];
+            activeViewID = -1;
+            activeChildID = -1;
+            pausedViewID = -1;
+            this.parent = parent;
         }
 
         public virtual void Activate()

@@ -203,38 +203,35 @@ namespace CutTheRope.game
 
         public NSObject InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
         {
-            if (Init() != null)
+            relaxationTimes = 30;
+            lineWidth = 10f;
+            cut = -1;
+            bungeeMode = 0;
+            highlighted = false;
+            bungeeAnchor = h ?? new ConstraintedPoint();
+            if (t != null)
             {
-                relaxationTimes = 30;
-                lineWidth = 10f;
-                cut = -1;
-                bungeeMode = 0;
-                highlighted = false;
-                bungeeAnchor = h ?? new ConstraintedPoint();
-                if (t != null)
-                {
-                    tail = t;
-                }
-                else
-                {
-                    tail = new ConstraintedPoint();
-                    tail.SetWeight(1f);
-                }
-                bungeeAnchor.SetWeight(0.02f);
-                bungeeAnchor.pos = Vect(hx, hy);
-                tail.pos = Vect(tx, ty);
-                AddPart(bungeeAnchor);
-                AddPart(tail);
-                tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
-                Vector v = VectSub(tail.pos, bungeeAnchor.pos);
-                int num = (int)((len / BUNGEE_REST_LEN) + 2f);
-                v = VectDiv(v, num);
-                RollplacingWithOffset(len, v);
-                forceWhite = false;
-                initialCandleAngle = -1f;
-                chosenOne = false;
-                hideTailParts = false;
+                tail = t;
             }
+            else
+            {
+                tail = new ConstraintedPoint();
+                tail.SetWeight(1f);
+            }
+            bungeeAnchor.SetWeight(0.02f);
+            bungeeAnchor.pos = Vect(hx, hy);
+            tail.pos = Vect(tx, ty);
+            AddPart(bungeeAnchor);
+            AddPart(tail);
+            tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
+            Vector v = VectSub(tail.pos, bungeeAnchor.pos);
+            int num = (int)((len / BUNGEE_REST_LEN) + 2f);
+            v = VectDiv(v, num);
+            RollplacingWithOffset(len, v);
+            forceWhite = false;
+            initialCandleAngle = -1f;
+            chosenOne = false;
+            hideTailParts = false;
             return this;
         }
 

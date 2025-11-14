@@ -8,31 +8,27 @@ namespace CutTheRope.iframework.helpers
 {
     internal class Mover : NSObject
     {
-        public virtual Mover InitWithPathCapacityMoveSpeedRotateSpeed(int l, float m_, float r_)
+        public Mover(int l, float m_, float r_)
         {
             int num = (int)m_;
             int num2 = (int)r_;
-            if (base.Init() != null)
+            pathLen = 0;
+            pathCapacity = l;
+            rotateSpeed = num2;
+            if (pathCapacity > 0)
             {
-                pathLen = 0;
-                pathCapacity = l;
-                rotateSpeed = num2;
-                if (pathCapacity > 0)
+                path = new Vector[pathCapacity];
+                for (int i = 0; i < path.Length; i++)
                 {
-                    path = new Vector[pathCapacity];
-                    for (int i = 0; i < path.Length; i++)
-                    {
-                        path[i] = default;
-                    }
-                    moveSpeed = new float[pathCapacity];
-                    for (int j = 0; j < moveSpeed.Length; j++)
-                    {
-                        moveSpeed[j] = num;
-                    }
+                    path[i] = default;
                 }
-                paused = false;
+                moveSpeed = new float[pathCapacity];
+                for (int j = 0; j < moveSpeed.Length; j++)
+                {
+                    moveSpeed[j] = num;
+                }
             }
-            return this;
+            paused = false;
         }
 
         public virtual void SetMoveSpeed(float ms)
@@ -247,7 +243,7 @@ namespace CutTheRope.iframework.helpers
 
         public int pathLen;
 
-        private int pathCapacity;
+        private readonly int pathCapacity;
 
         public Vector pos;
 

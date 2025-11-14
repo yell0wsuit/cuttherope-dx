@@ -7,10 +7,6 @@ namespace CutTheRope.iframework.visual
     {
         public virtual Particles InitWithTotalParticlesandImageGrid(int numberOfParticles, Image image)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             imageGrid = image;
             drawer = new ImageMultiDrawer().InitWithImageandCapacity(imageGrid, numberOfParticles);
             width = (int)SCREEN_WIDTH;

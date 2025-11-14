@@ -116,10 +116,6 @@ namespace CutTheRope.iframework.visual
 
         public virtual Particles InitWithTotalParticles(int numberOfParticles)
         {
-            if (Init() == null)
-            {
-                return null;
-            }
             width = (int)SCREEN_WIDTH;
             height = (int)SCREEN_HEIGHT;
             totalParticles = numberOfParticles;

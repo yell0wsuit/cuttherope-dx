@@ -1,32 +1,28 @@
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate
     {
-        public override NSObject InitWithParent(ViewController p)
+        public StartupController(ViewController parent)
+            : base(parent)
         {
-            if (base.InitWithParent(p) != null)
-            {
-                View view = new();
-                Image image = Image.Image_createWithResID(0);
-                image.parentAnchor = image.anchor = 18;
-                image.scaleX = image.scaleY = 1.25f;
-                _ = view.AddChild(image);
-                bar = TiledImage.TiledImage_createWithResID(1);
-                bar.parentAnchor = bar.anchor = 9;
-                bar.SetTile(-1);
-                bar.x = 738f;
-                bar.y = 1056f;
-                _ = image.AddChild(bar);
-                barTotalWidth = bar.width;
-                AddViewwithID(view, 1);
-                view.Release();
-            }
-            return this;
+            View view = new();
+            Image image = Image.Image_createWithResID(0);
+            image.parentAnchor = image.anchor = 18;
+            image.scaleX = image.scaleY = 1.25f;
+            _ = view.AddChild(image);
+            bar = TiledImage.TiledImage_createWithResID(1);
+            bar.parentAnchor = bar.anchor = 9;
+            bar.SetTile(-1);
+            bar.x = 738f;
+            bar.y = 1056f;
+            _ = image.AddChild(bar);
+            barTotalWidth = bar.width;
+            AddViewwithID(view, 1);
+            view.Release();
         }
 
         public override void Update(float t)
@@ -66,8 +62,8 @@ namespace CutTheRope.game
             Deactivate();
         }
 
-        private float barTotalWidth;
+        private readonly float barTotalWidth;
 
-        private TiledImage bar;
+        private readonly TiledImage bar;
     }
 }

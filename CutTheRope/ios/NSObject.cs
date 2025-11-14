@@ -18,11 +18,6 @@ namespace CutTheRope.ios
             return s;
         }
 
-        public virtual NSObject Init()
-        {
-            return this;
-        }
-
         public virtual void Dealloc()
         {
         }
