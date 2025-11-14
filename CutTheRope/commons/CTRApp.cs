@@ -12,12 +12,12 @@ namespace CutTheRope.commons
             throw new NotImplementedException();
         }
 
-        public static void ApplicationWillTerminate(UIApplication application)
+        public static void ApplicationWillTerminate()
         {
             Preferences.RequestSave();
         }
 
-        public void ApplicationDidReceiveMemoryWarning(UIApplication application)
+        public void ApplicationDidReceiveMemoryWarning()
         {
             throw new NotImplementedException();
         }
@@ -27,7 +27,7 @@ namespace CutTheRope.commons
             throw new NotImplementedException();
         }
 
-        public static void ApplicationWillResignActive(UIApplication application)
+        public static void ApplicationWillResignActive()
         {
             Preferences.RequestSave();
             if (root != null && !root.IsSuspended())
@@ -36,7 +36,7 @@ namespace CutTheRope.commons
             }
         }
 
-        public static void ApplicationDidBecomeActive(UIApplication application)
+        public static void ApplicationDidBecomeActive()
         {
             if (root != null && root.IsSuspended())
             {

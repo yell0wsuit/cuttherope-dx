@@ -80,7 +80,7 @@ namespace CutTheRope.iframework.core
             return (CTRRootController)new CTRRootController().InitWithParent(null);
         }
 
-        public virtual void ApplicationDidFinishLaunching(UIApplication application)
+        public virtual void ApplicationDidFinishLaunching()
         {
             appSettings = CreateAppSettings();
             prefs = CreatePreferences();
