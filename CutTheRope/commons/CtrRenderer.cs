@@ -297,7 +297,7 @@ namespace CutTheRope.commons
             if (gApp != null && !gPaused)
             {
                 float delta2 = delta / 1000f;
-                NSTimer.FireTimers(delta2);
+                TimerManager.Update(delta2);
                 Application.SharedRootController().PerformTick(delta2);
             }
         }

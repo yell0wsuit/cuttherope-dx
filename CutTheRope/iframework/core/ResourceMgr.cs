@@ -332,7 +332,7 @@ namespace CutTheRope.iframework.core
             if (resourcesDelegate != null)
             {
                 DelayedDispatcher.DispatchFunc dispatchFunc = new(Rmgr_internalUpdate);
-                Timer = NSTimer.Schedule(dispatchFunc, this, 0.022222223f);
+                Timer = TimerManager.Schedule(dispatchFunc, this, 0.022222223f);
             }
             bUseFake = loadQueue.Count < 100;
         }
@@ -355,7 +355,7 @@ namespace CutTheRope.iframework.core
             {
                 if (Timer >= 0)
                 {
-                    NSTimer.StopTimer(Timer);
+                    TimerManager.StopTimer(Timer);
                 }
                 Timer = -1;
                 resourcesDelegate.AllResourcesLoaded();

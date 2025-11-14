@@ -531,7 +531,7 @@ namespace CutTheRope.game
                 case 1:
                     {
                         DelayedDispatcher.DispatchFunc dispatchFunc = new(Selector_removeOpenCloseAnims);
-                        NSTimer.RegisterDelayedObjectCall(dispatchFunc, this, 0.001);
+                        TimerManager.RegisterDelayedObjectCall(dispatchFunc, this, 0.001);
                         if (result.IsEnabled())
                         {
                             confettiAnims.RemoveAllChilds();
@@ -543,7 +543,7 @@ namespace CutTheRope.game
                 case 2:
                     {
                         DelayedDispatcher.DispatchFunc dispatchFunc2 = new(Selector_postBoxClosed);
-                        NSTimer.RegisterDelayedObjectCall(dispatchFunc2, this, 0.001);
+                        TimerManager.RegisterDelayedObjectCall(dispatchFunc2, this, 0.001);
                         break;
                     }
                 case 3:
