@@ -1,11 +1,13 @@
-using CutTheRope.game;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+
+using CutTheRope.game;
+
+using Microsoft.Xna.Framework;
 
 namespace CutTheRope.ios
 {
@@ -15,9 +17,9 @@ namespace CutTheRope.ios
         public string Name { get; private set; }
 
         // (get) Token: 0x060000FC RID: 252 RVA: 0x000057D2 File Offset: 0x000039D2
-        public string Data { get; private set; }
+        public NSString Data { get; private set; }
 
-        public string this[string key] => !attributes_.TryGetValue(key, out string rhs) ? string.Empty : rhs;
+        public NSString this[string key] => !attributes_.TryGetValue(key, out string rhs) ? new NSString("") : new NSString(rhs);
 
         public XMLNode()
         {
@@ -58,6 +60,11 @@ namespace CutTheRope.ios
                 }
             }
             return null;
+        }
+
+        public XMLNode FindChildWithTagNameRecursively(NSString tag, bool recursively)
+        {
+            return FindChildWithTagNameRecursively(tag.ToString(), recursively);
         }
 
         public XMLNode FindChildWithTagNameRecursively(string tag, bool recursively)
@@ -112,7 +119,7 @@ namespace CutTheRope.ios
             bool flag = false;
             try
             {
-                xMLNode.Data = textReader.ReadElementContentAsString();
+                xMLNode.Data = new NSString(textReader.ReadElementContentAsString());
                 goto IL_00A3;
             }
             catch (Exception)
@@ -147,7 +154,7 @@ namespace CutTheRope.ios
             string text = (string)nodeLinq;
             if (text != null)
             {
-                xMLNode.Data = text;
+                xMLNode.Data = new NSString(text);
             }
             foreach (XAttribute item in nodeLinq.Attributes())
             {
