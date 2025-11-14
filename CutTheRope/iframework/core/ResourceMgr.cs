@@ -11,28 +11,12 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {
-    /// <summary>Wrapper class to store strings in NSObject dictionary</summary>
-    internal class StringWrapper : NSObject
-    {
-        private readonly string _value;
-
-        public StringWrapper(string value)
-        {
-            _value = value ?? string.Empty;
-        }
-
-        public override string ToString()
-        {
-            return _value;
-        }
-    }
-
     internal class ResourceMgr : NSObject
     {
+
         public virtual bool HasResource(int resID)
         {
-            _ = s_Resources.TryGetValue(resID, out NSObject value);
-            return value != null;
+            return s_Resources.TryGetValue(resID, out _);
         }
 
         public virtual void AddResourceToLoadQueue(int resID)
@@ -43,12 +27,12 @@ namespace CutTheRope.iframework.core
 
         public void ClearCachedResources()
         {
-            s_Resources = [];
+            s_Resources.Clear();
         }
 
-        public virtual NSObject LoadResource(int resID, ResourceType resType)
+        public virtual object LoadResource(int resID, ResourceType resType)
         {
-            if (s_Resources.TryGetValue(resID, out NSObject value))
+            if (s_Resources.TryGetValue(resID, out object value))
             {
                 return value;
             }
@@ -76,7 +60,7 @@ namespace CutTheRope.iframework.core
                 case ResourceType.STRINGS:
                     {
                         string strValue = LoadStringsInfo(resID);
-                        value = new StringWrapper(strValue.Replace('\u00a0', ' '));
+                        value = strValue.Replace('\u00a0', ' ');
                     }
                     break;
                 case ResourceType.BINARY:
@@ -429,16 +413,17 @@ namespace CutTheRope.iframework.core
                 Application.SharedSoundMgr().FreeSound(resId);
                 return;
             }
-            if (s_Resources.TryGetValue(resId, out NSObject value))
+            if (s_Resources.TryGetValue(resId, out object value))
             {
-                value?.Dealloc();
+                (value as NSObject)?.Dealloc();
                 _ = s_Resources.Remove(resId);
             }
         }
 
         public IResourceMgrDelegate resourcesDelegate;
 
-        private Dictionary<int, NSObject> s_Resources = [];
+        /// <summary>Stores all cached resources (textures, fonts, sounds, strings)</summary>
+        private Dictionary<int, object> s_Resources = [];
 
         private XElement xmlStrings;
 

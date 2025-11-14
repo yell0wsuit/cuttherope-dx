@@ -110,18 +110,20 @@ namespace CutTheRope.iframework.core
 
         internal static FontGeneric GetFont(int fontResID)
         {
-            return (FontGeneric)SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
+            return resource as FontGeneric;
         }
 
         internal static CTRTexture2D GetTexture(int textureResID)
         {
-            return (CTRTexture2D)SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return resource as CTRTexture2D;
         }
 
         internal static string GetString(int strResID)
         {
-            NSObject obj = SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
-            return obj?.ToString() ?? string.Empty;
+            object resource = SharedResourceMgr().LoadResource(strResID, ResourceMgr.ResourceType.STRINGS);
+            return (resource as string) ?? string.Empty;
         }
 
         public virtual void UpdateOrientation()

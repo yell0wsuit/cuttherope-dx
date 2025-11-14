@@ -229,7 +229,7 @@ namespace CutTheRope.game
             return value;
         }
 
-        public override NSObject LoadResource(int resID, ResourceType resType)
+        public override object LoadResource(int resID, ResourceType resType)
         {
             return base.LoadResource(HandleLocalizedResource(resID), resType);
         }
