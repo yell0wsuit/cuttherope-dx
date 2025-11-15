@@ -24,10 +24,6 @@ namespace CutTheRope.iframework
         {
         }
 
-        public static void Free(object o)
-        {
-        }
-
         public void Dispose()
         {
             Dispose(true);

@@ -449,7 +449,6 @@ namespace CutTheRope.game
             {
                 if (vertices != null)
                 {
-                    Free(vertices);
                     vertices = null;
                 }
                 DestroyRope();
