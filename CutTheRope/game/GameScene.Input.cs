@@ -146,7 +146,6 @@ namespace CutTheRope.game
                 rotatedCircle.Retain();
                 rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
                 _ = rotatedCircles.AddObject(rotatedCircle);
-                rotatedCircle.Release();
             }
             foreach (object obj4 in bungees)
             {

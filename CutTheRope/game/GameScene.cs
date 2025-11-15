@@ -76,15 +76,6 @@ namespace CutTheRope.game
             {
                 RemoveChild(gravityButton);
             }
-            pollenDrawer.Release();
-            candy.Release();
-            star.Release();
-            candyL?.Release();
-            candyR?.Release();
-            starL.Release();
-            starR.Release();
-            target.Release();
-            support.Release();
             candyL = null;
             candyR = null;
             starL = null;

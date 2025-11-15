@@ -16,10 +16,6 @@ namespace CutTheRope.iframework
             return s;
         }
 
-        public virtual void Release()
-        {
-        }
-
         public virtual void Retain()
         {
         }

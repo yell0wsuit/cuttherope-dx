@@ -22,7 +22,6 @@ namespace CutTheRope.game
             _ = image.AddChild(bar);
             barTotalWidth = bar.width;
             AddViewwithID(view, 1);
-            view.Release();
         }
 
         public override void Update(float t)
