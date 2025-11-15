@@ -20,9 +20,7 @@ namespace CutTheRope.iframework.core
         {
             return s != 8
                 ? ""
-                : locale != null
-                ? NSS(locale)
-                : LANGUAGE switch
+                : locale ?? LANGUAGE switch
                 {
                     Language.LANGEN => "en",
                     Language.LANGRU => "ru",

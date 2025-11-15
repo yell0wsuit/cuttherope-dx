@@ -11,11 +11,6 @@ namespace CutTheRope.iframework
 {
     internal class FrameworkTypes : CTRMathHelper, IDisposable
     {
-        public static string NSS(string s)
-        {
-            return s;
-        }
-
         public void Dispose()
         {
             Dispose(true);

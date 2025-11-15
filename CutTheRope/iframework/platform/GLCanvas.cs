@@ -47,7 +47,7 @@ namespace CutTheRope.iframework.platform
         {
             if (fpsText != null && fpsFont != null)
             {
-                string @string = NSS(fps.ToString("F1", CultureInfo.InvariantCulture));
+                string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
                 fpsText.SetString(@string);
                 OpenGL.GlColor4f(Color.White);
                 OpenGL.GlEnable(0);

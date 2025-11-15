@@ -90,7 +90,7 @@ namespace CutTheRope.iframework.core
                 {
                     text = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru" ? "ru" : CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "de" ? "de" : !(CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fr") ? "en" : "fr";
                 }
-                appSettings.SetString(8, NSS(text));
+                appSettings.SetString(8, text);
             }
             UpdateOrientation();
             IS_IPAD = false;

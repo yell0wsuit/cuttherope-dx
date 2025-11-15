@@ -286,7 +286,7 @@ namespace CutTheRope.game
 
         public static void SetScoreHash()
         {
-            string sha256Str = GetSHA256Str(NSS(GetTotalScore().ToString(CultureInfo.InvariantCulture)));
+            string sha256Str = GetSHA256Str(GetTotalScore().ToString(CultureInfo.InvariantCulture));
             SetStringForKey(sha256Str.ToString(), "PREFS_SCORE_HASH", true);
         }
 

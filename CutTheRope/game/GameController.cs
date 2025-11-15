@@ -437,7 +437,7 @@ namespace CutTheRope.game
                 return;
             }
             int scoreForPackLevel = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
-            mapNameLabel.SetString(NSS(Application.GetString(655380) + ": " + scoreForPackLevel));
+            mapNameLabel.SetString(Application.GetString(655380) + ": " + scoreForPackLevel);
         }
 
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)

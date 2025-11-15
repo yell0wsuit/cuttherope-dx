@@ -63,7 +63,7 @@ namespace CutTheRope.game
             {
                 string text = "maps/";
                 string nsstring = selectedMap;
-                string nSString = NSS(text + (nsstring?.ToString()));
+                string nSString = text + (nsstring?.ToString());
                 XElement mapElement = XElementExtensions.LoadContentXml(nSString.ToString());
                 XmlLoaderFinishedWithfromwithSuccess(mapElement, nSString, mapElement != null);
                 return;
