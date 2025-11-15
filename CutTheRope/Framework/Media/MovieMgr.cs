@@ -1,9 +1,9 @@
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
-namespace CutTheRope.iframework.media
+namespace CutTheRope.Framework.Media
 {
     internal sealed class MovieMgr : FrameworkTypes, System.IDisposable
     {

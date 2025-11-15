@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class TileEntry : FrameworkTypes
     {

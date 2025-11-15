@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework
+namespace CutTheRope.Framework
 {
     public struct RGBAColor
     {

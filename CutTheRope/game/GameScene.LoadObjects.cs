@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// GameScene.LoadObjects - Partial class coordinating object loading from XML

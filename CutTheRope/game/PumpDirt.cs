@@ -1,9 +1,9 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class PumpDirt : MultiParticles
     {

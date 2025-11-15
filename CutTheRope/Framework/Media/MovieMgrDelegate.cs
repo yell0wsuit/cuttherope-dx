@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.media
+namespace CutTheRope.Framework.Media
 {
     internal interface IMovieMgrDelegate
     {

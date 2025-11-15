@@ -1,7 +1,7 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal sealed class Camera2D : FrameworkTypes
     {

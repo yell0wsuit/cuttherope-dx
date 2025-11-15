@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework
+namespace CutTheRope.Framework
 {
     internal struct Quad2D(float x, float y, float w, float h)
     {

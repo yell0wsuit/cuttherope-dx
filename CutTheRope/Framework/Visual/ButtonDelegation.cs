@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     public interface IButtonDelegation
     {

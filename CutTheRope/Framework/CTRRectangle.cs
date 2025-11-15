@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework
+namespace CutTheRope.Framework
 {
     internal struct CTRRectangle
     {

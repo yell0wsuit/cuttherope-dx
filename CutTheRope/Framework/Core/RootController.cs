@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.platform;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Platform;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal class RootController(ViewController parent) : ViewController(parent)
     {

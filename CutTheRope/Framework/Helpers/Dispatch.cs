@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal sealed class DispatchClass : FrameworkTypes
     {

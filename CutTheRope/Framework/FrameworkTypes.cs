@@ -2,12 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.platform;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Platform;
 
-namespace CutTheRope.iframework
+namespace CutTheRope.Framework
 {
     internal class FrameworkTypes : CTRMathHelper, IDisposable
     {

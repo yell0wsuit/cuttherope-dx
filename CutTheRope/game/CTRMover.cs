@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class CTRMover(int l, float m_, float r_) : Mover(l, m_, r_)
     {

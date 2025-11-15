@@ -1,7 +1,7 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class StarsBreak : RotateableMultiParticles
     {

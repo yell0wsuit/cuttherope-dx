@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.iframework.platform
+namespace CutTheRope.Framework.Platform
 {
     internal sealed class GLCanvas : FrameworkTypes
     {

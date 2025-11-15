@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
 
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal class Mover : FrameworkTypes
     {

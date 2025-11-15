@@ -1,6 +1,6 @@
-using CutTheRope.iframework.helpers;
+using CutTheRope.Framework.Helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class Razor : GameObject
     {

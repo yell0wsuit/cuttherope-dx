@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
 using CutTheRope.Helpers;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal class BaseElement : FrameworkTypes
     {

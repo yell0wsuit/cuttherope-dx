@@ -1,21 +1,21 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// GameScene.LoadMetadata - Partial class handling level metadata loading
-    /// Loads map dimensions, game design settings, and candy positions from XML
+    /// Loads map dimensions, Game design settings, and candy positions from XML
     /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
         /// Loads all level metadata from XML in a single pass
-        /// Extracts map dimensions, game design settings, and candy positions
+        /// Extracts map dimensions, Game design settings, and candy positions
         /// </summary>
         private void LoadAllLevelMetadata(XElement mapNode, float scale, float offsetY, out float offsetX, out int mapOffsetX, out int mapOffsetY)
         {

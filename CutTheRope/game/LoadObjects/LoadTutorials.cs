@@ -1,12 +1,12 @@
 using System;
 using System.Xml.Linq;
 
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading tutorial objects from XML level data

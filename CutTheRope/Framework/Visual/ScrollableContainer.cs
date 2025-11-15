@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class ScrollableContainer : BaseElement
     {

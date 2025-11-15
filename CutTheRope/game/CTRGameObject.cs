@@ -1,9 +1,9 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Helpers;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal class CTRGameObject : GameObject
     {

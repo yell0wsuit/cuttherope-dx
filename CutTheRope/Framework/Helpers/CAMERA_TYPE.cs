@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     public enum CAMERATYPE
     {

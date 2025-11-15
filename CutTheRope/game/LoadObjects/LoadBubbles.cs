@@ -1,9 +1,9 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading bubble objects from XML level data

@@ -1,9 +1,9 @@
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.sfe;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed partial class GameScene
     {

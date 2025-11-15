@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class Track : FrameworkTypes
     {

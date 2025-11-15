@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-using CutTheRope.commons;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.platform;
+using CutTheRope.Commons;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Platform;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class CTRRootController : RootController
     {

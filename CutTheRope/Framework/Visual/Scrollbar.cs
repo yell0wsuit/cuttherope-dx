@@ -1,11 +1,11 @@
 using System;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class Scrollbar : BaseElement
     {

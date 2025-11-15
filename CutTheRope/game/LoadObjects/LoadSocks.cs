@@ -1,9 +1,9 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading sock objects from XML level data

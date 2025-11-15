@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal interface ITouchDelegate
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal sealed class ApplicationSettings : FrameworkTypes
     {

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
     {

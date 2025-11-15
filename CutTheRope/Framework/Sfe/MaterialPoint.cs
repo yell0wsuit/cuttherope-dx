@@ -1,6 +1,6 @@
-using CutTheRope.iframework.core;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.iframework.sfe
+namespace CutTheRope.Framework.Sfe
 {
     internal class MaterialPoint : FrameworkTypes
     {

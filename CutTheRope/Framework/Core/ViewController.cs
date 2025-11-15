@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.commons;
-using CutTheRope.iframework.visual;
+using CutTheRope.Commons;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal class ViewController : FrameworkTypes, ITouchDelegate
     {

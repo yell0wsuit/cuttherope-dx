@@ -1,6 +1,6 @@
 using CutTheRope.Helpers;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal abstract class FontGeneric : FrameworkTypes
     {

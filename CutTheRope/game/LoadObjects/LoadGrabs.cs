@@ -1,9 +1,9 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Sfe;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.sfe;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading grab/hook objects from XML level data

@@ -1,9 +1,9 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal class MenuView : View
     {

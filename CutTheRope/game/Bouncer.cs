@@ -1,7 +1,7 @@
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class Bouncer : CTRGameObject
     {

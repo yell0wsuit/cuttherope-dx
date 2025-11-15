@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework
+namespace CutTheRope.Framework
 {
     public enum Language
     {

@@ -2,7 +2,7 @@ using System;
 
 using CutTheRope.Helpers;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class Font : FontGeneric
     {

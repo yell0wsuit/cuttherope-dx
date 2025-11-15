@@ -2,7 +2,7 @@ using System.Globalization;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     public struct Vector
     {

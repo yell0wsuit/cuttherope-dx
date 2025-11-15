@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-using CutTheRope.game;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Visual;
+using CutTheRope.Game;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.visual;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal class ResourceMgr : FrameworkTypes
     {

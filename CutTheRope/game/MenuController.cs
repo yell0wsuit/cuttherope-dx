@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 
-using CutTheRope.commons;
-using CutTheRope.desktop;
+using CutTheRope.Commons;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Media;
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.media;
-using CutTheRope.iframework.visual;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {

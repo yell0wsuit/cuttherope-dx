@@ -1,6 +1,6 @@
-using CutTheRope.iframework;
+using CutTheRope.Framework;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class LevelsList : FrameworkTypes
     {

@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation
     {

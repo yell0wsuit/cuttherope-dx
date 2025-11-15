@@ -2,11 +2,11 @@ using System;
 using System.Globalization;
 using System.Security.Cryptography;
 
-using CutTheRope.game;
+using CutTheRope.Framework.Core;
+using CutTheRope.Game;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
 
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal class CTRMathHelper : ResDataPhoneFull
     {

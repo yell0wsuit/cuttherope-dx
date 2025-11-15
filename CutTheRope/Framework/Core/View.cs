@@ -1,9 +1,9 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal class View : BaseElement
     {

@@ -1,8 +1,8 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class CandyBreak : RotateableMultiParticles
     {

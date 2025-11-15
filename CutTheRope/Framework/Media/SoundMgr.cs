@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.game;
+using CutTheRope.Game;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 
-namespace CutTheRope.iframework.media
+namespace CutTheRope.Framework.Media
 {
     internal class SoundMgr : FrameworkTypes
     {

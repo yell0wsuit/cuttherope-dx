@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal class Button : BaseElement
     {

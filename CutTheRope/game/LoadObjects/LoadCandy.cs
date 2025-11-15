@@ -1,6 +1,6 @@
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading split candy bubble animations

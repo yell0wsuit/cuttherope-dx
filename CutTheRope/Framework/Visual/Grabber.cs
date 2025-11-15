@@ -1,6 +1,6 @@
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class Grabber : FrameworkTypes
     {

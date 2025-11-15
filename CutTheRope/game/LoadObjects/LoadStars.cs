@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// GameScene.LoadStars - Partial class handling loading of star objects from XML

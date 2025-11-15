@@ -1,18 +1,18 @@
-using CutTheRope.iframework;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.sfe;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Sfe;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
-    /// GameScene.Initialize - Partial class handling game state initialization
-    /// Initializes game state and collections for each new level
+    /// GameScene.Initialize - Partial class handling Game state initialization
+    /// Initializes Game state and collections for each new level
     /// </summary>
     internal sealed partial class GameScene
     {
         /// <summary>
-        /// Initializes core game state and object collections
+        /// Initializes core Game state and object collections
         /// Resets all state variables and creates fresh DynamicArray collections
         /// </summary>
         private void InitializeGameState()

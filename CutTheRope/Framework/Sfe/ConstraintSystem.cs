@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.iframework.sfe
+namespace CutTheRope.Framework.Sfe
 {
     internal class ConstraintSystem : FrameworkTypes
     {

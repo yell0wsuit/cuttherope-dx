@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.sfe
+namespace CutTheRope.Framework.Sfe
 {
     internal sealed class Constraint : FrameworkTypes
     {

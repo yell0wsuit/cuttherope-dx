@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 
-using CutTheRope.commons;
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
+using CutTheRope.Commons;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {

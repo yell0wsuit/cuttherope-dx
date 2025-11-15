@@ -1,4 +1,4 @@
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal struct Pollen
     {

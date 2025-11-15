@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-using CutTheRope.iframework;
-using CutTheRope.iframework.core;
+using CutTheRope.Framework;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class CTRResourceMgr : ResourceMgr
     {

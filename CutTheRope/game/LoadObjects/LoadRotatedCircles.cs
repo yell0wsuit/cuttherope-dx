@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading rotated circle objects from XML level data

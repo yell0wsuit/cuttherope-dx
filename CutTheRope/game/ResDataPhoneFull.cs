@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-using CutTheRope.iframework;
+using CutTheRope.Framework;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal class ResDataPhoneFull
     {

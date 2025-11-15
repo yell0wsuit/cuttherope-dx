@@ -1,8 +1,8 @@
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.media;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Media;
+using CutTheRope.Framework.Visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class StartupController : ViewController, IResourceMgrDelegate, IMovieMgrDelegate
     {

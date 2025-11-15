@@ -1,10 +1,10 @@
-using CutTheRope.commons;
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
+using CutTheRope.Commons;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class CTRTexture2D : FrameworkTypes
     {

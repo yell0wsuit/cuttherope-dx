@@ -1,10 +1,10 @@
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.visual;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Visual;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class LoadingView : View
     {

@@ -1,8 +1,8 @@
-using CutTheRope.desktop;
+using CutTheRope.Desktop;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal sealed class CircleElement : BaseElement
     {

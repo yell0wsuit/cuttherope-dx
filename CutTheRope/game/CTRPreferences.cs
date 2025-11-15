@@ -1,10 +1,10 @@
 using System;
 using System.Globalization;
 
-using CutTheRope.commons;
-using CutTheRope.iframework.core;
+using CutTheRope.Commons;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     internal sealed class CTRPreferences : Preferences
     {

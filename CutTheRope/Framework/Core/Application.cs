@@ -1,13 +1,13 @@
 using System.Globalization;
 
-using CutTheRope.game;
-using CutTheRope.iframework.media;
-using CutTheRope.iframework.platform;
-using CutTheRope.iframework.visual;
+using CutTheRope.Framework.Media;
+using CutTheRope.Framework.Platform;
+using CutTheRope.Framework.Visual;
+using CutTheRope.Game;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal class Application : FrameworkTypes
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-using CutTheRope.iframework.core;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal class Animation : Image
     {

@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Helpers;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading spike objects from XML level data

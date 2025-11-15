@@ -1,4 +1,4 @@
-namespace CutTheRope.iframework.core
+namespace CutTheRope.Framework.Core
 {
     internal interface IResourceMgrDelegate
     {

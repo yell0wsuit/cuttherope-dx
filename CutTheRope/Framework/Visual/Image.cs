@@ -1,10 +1,10 @@
 using System;
 using System.Xml.Linq;
 
-using CutTheRope.desktop;
-using CutTheRope.iframework.core;
+using CutTheRope.Desktop;
+using CutTheRope.Framework.Core;
 
-namespace CutTheRope.iframework.visual
+namespace CutTheRope.Framework.Visual
 {
     internal class Image : BaseElement
     {

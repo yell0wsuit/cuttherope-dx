@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.iframework.helpers
+namespace CutTheRope.Framework.Helpers
 {
     internal sealed class DelayedDispatcher : FrameworkTypes
     {

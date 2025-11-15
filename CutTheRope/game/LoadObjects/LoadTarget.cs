@@ -1,11 +1,11 @@
 using System.Xml.Linq;
 
+using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Helpers;
+using CutTheRope.Framework.Visual;
 using CutTheRope.Helpers;
-using CutTheRope.iframework.core;
-using CutTheRope.iframework.helpers;
-using CutTheRope.iframework.visual;
 
-namespace CutTheRope.game
+namespace CutTheRope.Game
 {
     /// <summary>
     /// Handles loading Om Nom from XML level data
