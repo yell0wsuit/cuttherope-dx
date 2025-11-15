@@ -11,15 +11,6 @@ namespace CutTheRope.iframework
 {
     internal class FrameworkTypes : CTRMathHelper, IDisposable
     {
-        public static void NSREL(object obj)
-        {
-        }
-
-        public static object NSRET(object obj)
-        {
-            return obj;
-        }
-
         public static string NSS(string s)
         {
             return s;
