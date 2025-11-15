@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using CutTheRope.desktop;
-using CutTheRope.ios;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.iframework.visual
 {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {

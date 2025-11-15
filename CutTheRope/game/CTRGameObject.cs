@@ -1,7 +1,7 @@
 using System.Xml.Linq;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework.helpers;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {

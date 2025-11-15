@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {

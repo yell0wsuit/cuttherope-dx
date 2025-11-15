@@ -1,4 +1,4 @@
-using CutTheRope.ios;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.iframework.visual
 {

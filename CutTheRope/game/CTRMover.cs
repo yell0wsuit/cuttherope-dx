@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.helpers;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRope.game;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.helpers;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {

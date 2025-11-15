@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CutTheRope.ios
+namespace CutTheRope.Helpers
 {
     internal static class StringExtensions
     {

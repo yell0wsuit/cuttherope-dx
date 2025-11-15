@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Security.Cryptography;
 
 using CutTheRope.game;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {

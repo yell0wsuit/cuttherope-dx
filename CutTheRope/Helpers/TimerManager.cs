@@ -5,7 +5,7 @@ using System.Threading;
 using CutTheRope.iframework;
 using CutTheRope.iframework.helpers;
 
-namespace CutTheRope.ios
+namespace CutTheRope.Helpers
 {
     internal static class TimerManager
     {

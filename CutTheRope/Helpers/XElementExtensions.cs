@@ -6,7 +6,7 @@ using CutTheRope.game;
 
 using Microsoft.Xna.Framework;
 
-namespace CutTheRope.ios
+namespace CutTheRope.Helpers
 {
     internal static class XElementExtensions
     {

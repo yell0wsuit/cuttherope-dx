@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-using CutTheRope.ios;
+using CutTheRope.Helpers;
 
 namespace CutTheRope.game
 {

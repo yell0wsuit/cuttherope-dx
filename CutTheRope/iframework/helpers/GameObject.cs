@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.desktop;
+using CutTheRope.Helpers;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
