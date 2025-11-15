@@ -253,14 +253,12 @@ namespace CutTheRope.iframework.visual
             }
             int num9 = num2 >> 1;
             formattedStrings.Clear();
-            NSRange range = default;
             for (int i = 0; i < num9; i++)
             {
                 int num10 = array[i << 1];
                 int num11 = array[(i << 1) + 1];
-                range.location = (uint)num10;
-                range.length = (uint)(num11 - num10);
-                string str = string_.SubstringWithRange(range);
+                int length = num11 - num10;
+                string str = string_.Substring(num10, length);
                 float w = font.StringWidth(str);
                 FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
                 formattedStrings.Add(item);

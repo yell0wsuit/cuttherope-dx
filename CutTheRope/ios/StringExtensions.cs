@@ -25,22 +25,6 @@ namespace CutTheRope.ios
             return SafeValue(value).IndexOf(c);
         }
 
-        public static NSRange RangeOfString(this string value, string str)
-        {
-            NSRange result = default;
-            string search = SafeValue(str);
-            if (search.Length > 0)
-            {
-                int index = SafeValue(value).IndexOf(search, StringComparison.Ordinal);
-                if (index > -1)
-                {
-                    result.length = (uint)search.Length;
-                    result.location = (uint)index;
-                }
-            }
-            return result;
-        }
-
         public static char CharacterAtIndex(this string value, int n)
         {
             return SafeValue(value)[n];
@@ -73,12 +57,6 @@ namespace CutTheRope.ios
             char[] buffer = new char[SafeValue(value).Length + 1];
             value?.GetCharacters(buffer);
             return buffer;
-        }
-
-        public static string SubstringWithRange(this string value, NSRange range)
-        {
-            string safeValue = SafeValue(value);
-            return safeValue.Substring((int)range.location, (int)range.length);
         }
 
         public static string SubstringFromIndex(this string value, int index)
