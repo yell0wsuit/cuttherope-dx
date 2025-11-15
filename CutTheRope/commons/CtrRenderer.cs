@@ -7,7 +7,7 @@ using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Platform;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Game;
+using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;

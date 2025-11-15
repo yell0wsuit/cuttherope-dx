@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Framework.Helpers;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Game;
+using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.Framework.Core

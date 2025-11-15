@@ -3,7 +3,7 @@ using System.Globalization;
 using CutTheRope.Framework.Media;
 using CutTheRope.Framework.Platform;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Game;
+using CutTheRope.GameMain;
 
 using Microsoft.Xna.Framework;
 

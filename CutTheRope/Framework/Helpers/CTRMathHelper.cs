@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 
 using CutTheRope.Framework.Core;
-using CutTheRope.Game;
+using CutTheRope.GameMain;
 using CutTheRope.Helpers;
 
 namespace CutTheRope.Framework.Helpers

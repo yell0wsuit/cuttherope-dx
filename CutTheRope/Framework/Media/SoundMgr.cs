@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.Game;
+using CutTheRope.GameMain;
 
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
