@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CutTheRope
 {
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Game
     {
         // (get) Token: 0x06000022 RID: 34 RVA: 0x00002517 File Offset: 0x00000717
         public Game1()
