@@ -1086,15 +1086,24 @@ namespace CutTheRope.game
             AddChildwithID(c, 0);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            ddMainMenu.CancelAllDispatches();
-            ddMainMenu.Dealloc();
-            ddMainMenu = null;
-            ddPackSelect.CancelAllDispatches();
-            ddPackSelect.Dealloc();
-            ddPackSelect = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (ddMainMenu != null)
+                {
+                    ddMainMenu.CancelAllDispatches();
+                    ddMainMenu.Dispose();
+                    ddMainMenu = null;
+                }
+                if (ddPackSelect != null)
+                {
+                    ddPackSelect.CancelAllDispatches();
+                    ddPackSelect.Dispose();
+                    ddPackSelect = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public override void Activate()

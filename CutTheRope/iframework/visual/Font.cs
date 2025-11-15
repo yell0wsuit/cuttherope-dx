@@ -20,12 +20,16 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            chars = null;
-            sortedChars = null;
-            charmap = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                chars = null;
+                sortedChars = null;
+                charmap?.Dispose();
+                charmap = null;
+            }
+            base.Dispose(disposing);
         }
 
         public override void SetCharOffsetLineOffsetSpaceWidth(float co, float lo, float sw)

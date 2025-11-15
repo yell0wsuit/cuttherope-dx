@@ -134,11 +134,15 @@ namespace CutTheRope.iframework.visual
             PostDraw();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            drawer = null;
-            imageGrid = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                drawer?.Dispose();
+                drawer = null;
+                imageGrid = null;
+            }
+            base.Dispose(disposing);
         }
 
         public ImageMultiDrawer drawer;

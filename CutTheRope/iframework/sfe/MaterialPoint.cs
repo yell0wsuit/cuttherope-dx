@@ -19,10 +19,13 @@ namespace CutTheRope.iframework.sfe
             gravity = Vect(0f, 784f * weight);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            forces = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                forces = null;
+            }
+            base.Dispose(disposing);
         }
 
         public virtual void ResetForces()

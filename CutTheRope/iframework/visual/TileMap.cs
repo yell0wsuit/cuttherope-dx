@@ -17,14 +17,24 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            matrix = null;
-            drawers.Clear();
-            drawers = null;
-            tiles.Clear();
-            tiles = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                matrix = null;
+                if (drawers != null)
+                {
+                    foreach (ImageMultiDrawer drawer in drawers)
+                    {
+                        drawer?.Dispose();
+                    }
+                    drawers.Clear();
+                    drawers = null;
+                }
+                tiles?.Clear();
+                tiles = null;
+            }
+            base.Dispose(disposing);
         }
 
         public TileMap InitWithRowsColumns(int r, int c)

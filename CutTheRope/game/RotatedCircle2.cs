@@ -208,20 +208,32 @@ namespace CutTheRope.game
             vinilCenter.Draw();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            vinilCenter = null;
-            vinilHighlightL = null;
-            vinilHighlightR = null;
-            vinilBL = null;
-            vinilBR = null;
-            vinilTL = null;
-            vinilTR = null;
-            vinilStickerL = null;
-            vinilStickerR = null;
-            containedObjects.Clear();
-            containedObjects = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                vinilCenter?.Dispose();
+                vinilCenter = null;
+                vinilHighlightL?.Dispose();
+                vinilHighlightL = null;
+                vinilHighlightR?.Dispose();
+                vinilHighlightR = null;
+                vinilBL?.Dispose();
+                vinilBL = null;
+                vinilBR?.Dispose();
+                vinilBR = null;
+                vinilTL?.Dispose();
+                vinilTL = null;
+                vinilTR?.Dispose();
+                vinilTR = null;
+                vinilStickerL?.Dispose();
+                vinilStickerL = null;
+                vinilStickerR?.Dispose();
+                vinilStickerR = null;
+                containedObjects?.Clear();
+                containedObjects = null;
+            }
+            base.Dispose(disposing);
         }
 
         public void UpdateChildPositions()

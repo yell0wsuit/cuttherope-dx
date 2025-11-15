@@ -359,10 +359,13 @@ namespace CutTheRope.iframework.visual
             return true;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            spoints = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                spoints = null;
+            }
+            base.Dispose(disposing);
         }
 
         public ScrollableContainer InitWithWidthHeightContainer(float w, float h, BaseElement c)

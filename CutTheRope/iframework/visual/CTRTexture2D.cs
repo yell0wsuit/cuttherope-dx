@@ -277,13 +277,17 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            if (xnaTexture_ != null)
+            if (disposing)
             {
-                Images.Free(_resName);
-                xnaTexture_ = null;
+                if (xnaTexture_ != null)
+                {
+                    Images.Free(_resName);
+                    xnaTexture_ = null;
+                }
             }
+            base.Dispose(disposing);
         }
 
         public Texture2D xnaTexture_;

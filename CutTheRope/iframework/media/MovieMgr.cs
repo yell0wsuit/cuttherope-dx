@@ -95,7 +95,7 @@ namespace CutTheRope.iframework.media
 
         private bool paused;
 
-        public void Dispose()
+        public new void Dispose()
         {
             throw new System.NotImplementedException();
         }

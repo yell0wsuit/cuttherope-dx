@@ -439,18 +439,26 @@ namespace CutTheRope.game
 
         public void DestroyRope()
         {
-            rope.Release();
+            rope?.Dispose();
             rope = null;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            if (vertices != null)
+            if (disposing)
             {
-                Free(vertices);
+                if (vertices != null)
+                {
+                    Free(vertices);
+                    vertices = null;
+                }
+                DestroyRope();
+                bee?.Dispose();
+                bee = null;
+                spider?.Dispose();
+                spider = null;
             }
-            DestroyRope();
-            base.Dealloc();
+            base.Dispose(disposing);
         }
 
         public const float SPIDER_SPEED = 117f;

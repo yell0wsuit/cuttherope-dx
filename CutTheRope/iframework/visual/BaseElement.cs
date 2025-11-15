@@ -369,7 +369,7 @@ namespace CutTheRope.iframework.visual
             {
                 if (value2 != c)
                 {
-                    value2.Dealloc();
+                    value2?.Dispose();
                 }
                 childs[i] = c;
             }
@@ -598,13 +598,16 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            childs.Clear();
-            childs = null;
-            timelines.Clear();
-            timelines = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                childs?.Clear();
+                childs = null;
+                timelines?.Clear();
+                timelines = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const string ACTION_SET_VISIBLE = "ACTION_SET_VISIBLE";

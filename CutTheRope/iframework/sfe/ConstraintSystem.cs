@@ -46,10 +46,20 @@ namespace CutTheRope.iframework.sfe
             throw new NotImplementedException();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            parts = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (parts != null)
+                {
+                    foreach (ConstraintedPoint part in parts)
+                    {
+                        part?.Dispose();
+                    }
+                    parts = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public List<ConstraintedPoint> parts;

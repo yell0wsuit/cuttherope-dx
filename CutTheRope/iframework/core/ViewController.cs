@@ -130,8 +130,10 @@ namespace CutTheRope.iframework.core
 
         public virtual void AddChildwithID(ViewController c, int n)
         {
-            ViewController viewController = null;
-            viewController?.Dealloc();
+            if (childs.TryGetValue(n, out ViewController viewController) && viewController != c)
+            {
+                viewController?.Dispose();
+            }
             childs[n] = c;
         }
 
@@ -139,7 +141,7 @@ namespace CutTheRope.iframework.core
         {
             if (childs.TryGetValue(n, out ViewController value))
             {
-                value.Dealloc();
+                value?.Dispose();
                 childs[n] = null;
             }
         }
@@ -280,13 +282,30 @@ namespace CutTheRope.iframework.core
             return false;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            views.Clear();
-            views = null;
-            childs.Clear();
-            childs = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                if (views != null)
+                {
+                    foreach (View view in views.Values)
+                    {
+                        view?.Dispose();
+                    }
+                    views.Clear();
+                    views = null;
+                }
+                if (childs != null)
+                {
+                    foreach (ViewController child in childs.Values)
+                    {
+                        child?.Dispose();
+                    }
+                    childs.Clear();
+                    childs = null;
+                }
+            }
+            base.Dispose(disposing);
         }
 
         public virtual bool BackButtonPressed()

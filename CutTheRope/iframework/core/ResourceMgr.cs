@@ -415,7 +415,10 @@ namespace CutTheRope.iframework.core
             }
             if (s_Resources.TryGetValue(resId, out object value))
             {
-                (value as NSObject)?.Dealloc();
+                if (value is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
                 _ = s_Resources.Remove(resId);
             }
         }

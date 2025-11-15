@@ -277,11 +277,14 @@ namespace CutTheRope.game
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            loadedMap = null;
-            mapName = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                loadedMap = null;
+                mapName = null;
+            }
+            base.Dispose(disposing);
         }
 
         public static void CheckMapIsValid(NSObject data)

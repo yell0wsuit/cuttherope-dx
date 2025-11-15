@@ -5,11 +5,6 @@ namespace CutTheRope.iframework.visual
 {
     internal sealed class Grabber : NSObject
     {
-        public override void Dealloc()
-        {
-            base.Dealloc();
-        }
-
         public static CTRTexture2D Grab()
         {
             return (CTRTexture2D)new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);

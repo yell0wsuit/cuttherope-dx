@@ -500,9 +500,17 @@ namespace CutTheRope.game
             OpenGL.GlLineWidth(1.0);
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            base.Dealloc();
+            if (disposing)
+            {
+                bungeeAnchor?.Dispose();
+                bungeeAnchor = null;
+                tail?.Dispose();
+                tail = null;
+                drawPts = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const int BUNGEE_RELAXION_TIMES = 30;

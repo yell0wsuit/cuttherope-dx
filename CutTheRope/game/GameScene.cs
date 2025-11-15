@@ -91,15 +91,18 @@ namespace CutTheRope.game
             starR = null;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            for (int i = 0; i < 5; i++)
+            if (disposing)
             {
+                dd?.Dispose();
+                dd = null;
+                camera?.Dispose();
+                camera = null;
+                back?.Dispose();
+                back = null;
             }
-            dd.Release();
-            camera.Release();
-            back.Release();
-            base.Dealloc();
+            base.Dispose(disposing);
         }
 
         public void FullscreenToggled(bool isFullscreen)
@@ -227,7 +230,7 @@ namespace CutTheRope.game
         public const int EARTH_NORMAL_ANIM = 0;
 
         public const int EARTH_UPSIDEDOWN_ANIM = 1;
-        private readonly DelayedDispatcher dd;
+        private DelayedDispatcher dd;
 
         public IGameSceneDelegate gameSceneDelegate;
 
@@ -237,7 +240,7 @@ namespace CutTheRope.game
 
         private PollenDrawer pollenDrawer;
 
-        private readonly TileMap back;
+        private TileMap back;
 
         private CharAnimations target;
 
@@ -307,7 +310,7 @@ namespace CutTheRope.game
 
         private readonly Animation[] hudStar = new Animation[3];
 
-        private readonly Camera2D camera;
+        private Camera2D camera;
 
         private float mapWidth;
 

@@ -195,11 +195,14 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            path = null;
-            moveSpeed = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                path = null;
+                moveSpeed = null;
+            }
+            base.Dispose(disposing);
         }
 
         public static bool MoveVariableToTarget(ref float v, double t, double speed, double delta)

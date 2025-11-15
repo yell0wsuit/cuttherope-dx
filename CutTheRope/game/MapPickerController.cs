@@ -114,11 +114,6 @@ namespace CutTheRope.game
             }
         }
 
-        public override void Dealloc()
-        {
-            base.Dealloc();
-        }
-
         private string selectedMap;
 
         private readonly Dictionary<string, XElement> maplist;

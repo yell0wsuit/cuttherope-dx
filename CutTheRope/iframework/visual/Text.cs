@@ -267,15 +267,18 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            font.NotifyTextDeleted(this);
-            string_ = null;
-            font = null;
-            formattedStrings = null;
-            multiDrawers.Clear();
-            multiDrawers = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                font?.NotifyTextDeleted(this);
+                string_ = null;
+                font = null;
+                formattedStrings = null;
+                multiDrawers?.Clear();
+                multiDrawers = null;
+            }
+            base.Dispose(disposing);
         }
 
         public int align;

@@ -25,11 +25,15 @@ namespace CutTheRope.iframework.visual
             indices = null;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            FreeWithCheck();
-            image = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                FreeWithCheck();
+                image = null;
+                verticesOptimized = null;
+            }
+            base.Dispose(disposing);
         }
 
         private void InitIndices()

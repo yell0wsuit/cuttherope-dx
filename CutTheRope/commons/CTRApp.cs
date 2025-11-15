@@ -6,9 +6,9 @@ namespace CutTheRope.commons
 {
     internal sealed class CTRApp : Application
     {
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            base.Dispose(disposing);
         }
 
         public static void ApplicationWillTerminate()

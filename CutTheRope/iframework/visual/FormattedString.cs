@@ -11,10 +11,13 @@ namespace CutTheRope.iframework.visual
             return this;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            string_ = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                string_ = null;
+            }
+            base.Dispose(disposing);
         }
 
         public string string_;

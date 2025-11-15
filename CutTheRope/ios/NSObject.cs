@@ -1,8 +1,10 @@
+using System;
+
 using CutTheRope.iframework;
 
 namespace CutTheRope.ios
 {
-    internal class NSObject : FrameworkTypes
+    internal class NSObject : FrameworkTypes, IDisposable
     {
         public static void NSREL(object obj)
         {
@@ -18,10 +20,6 @@ namespace CutTheRope.ios
             return s;
         }
 
-        public virtual void Dealloc()
-        {
-        }
-
         public virtual void Release()
         {
         }
@@ -31,6 +29,21 @@ namespace CutTheRope.ios
         }
 
         public static void Free(object o)
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~NSObject()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
         {
         }
     }

@@ -6,10 +6,13 @@ namespace CutTheRope.iframework.sfe
 {
     internal class ConstraintedPoint : MaterialPoint
     {
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            constraints = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                constraints = null;
+            }
+            base.Dispose(disposing);
         }
 
         public ConstraintedPoint()

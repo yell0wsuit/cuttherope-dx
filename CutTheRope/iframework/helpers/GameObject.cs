@@ -76,9 +76,14 @@ namespace CutTheRope.iframework.helpers
             }
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            base.Dealloc();
+            if (disposing)
+            {
+                mover?.Dispose();
+                mover = null;
+            }
+            base.Dispose(disposing);
         }
 
         public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)

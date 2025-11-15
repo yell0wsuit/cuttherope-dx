@@ -12,11 +12,14 @@ namespace CutTheRope.iframework.helpers
             dispatchers = [];
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            dispatchers.Clear();
-            dispatchers = null;
-            base.Dealloc();
+            if (disposing)
+            {
+                dispatchers?.Clear();
+                dispatchers = null;
+            }
+            base.Dispose(disposing);
         }
 
         public void CallObjectSelectorParamafterDelay(DispatchFunc s, NSObject p, double d)

@@ -178,9 +178,13 @@ namespace CutTheRope.iframework.visual
             throw new NotImplementedException();
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            base.Dealloc();
+            if (disposing)
+            {
+                texture = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const string ACTION_SET_DRAWQUAD = "ACTION_SET_DRAWQUAD";

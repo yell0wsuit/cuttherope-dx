@@ -216,13 +216,32 @@ namespace CutTheRope.game
             return rotatedCircle;
         }
 
-        public override void Dealloc()
+        protected override void Dispose(bool disposing)
         {
-            vinilCenter.Release();
-            vinilHighlightL.Release();
-            vinilHighlightR.Release();
-            vinil.Release();
-            base.Dealloc();
+            if (disposing)
+            {
+                vinilCenter?.Dispose();
+                vinilCenter = null;
+                vinilHighlightL?.Dispose();
+                vinilHighlightL = null;
+                vinilHighlightR?.Dispose();
+                vinilHighlightR = null;
+                vinil?.Dispose();
+                vinil = null;
+                vinilControllerL?.Dispose();
+                vinilControllerL = null;
+                vinilControllerR?.Dispose();
+                vinilControllerR = null;
+                vinilActiveControllerL?.Dispose();
+                vinilActiveControllerL = null;
+                vinilActiveControllerR?.Dispose();
+                vinilActiveControllerR = null;
+                vinilStickerL?.Dispose();
+                vinilStickerL = null;
+                vinilStickerR?.Dispose();
+                vinilStickerR = null;
+            }
+            base.Dispose(disposing);
         }
 
         public const int PM = 3;
@@ -261,25 +280,25 @@ namespace CutTheRope.game
 
         public bool removeOnNextUpdate;
 
-        private readonly Image vinilStickerL;
+        private Image vinilStickerL;
 
-        private readonly Image vinilStickerR;
+        private Image vinilStickerR;
 
-        private readonly Image vinilHighlightL;
+        private Image vinilHighlightL;
 
-        private readonly Image vinilHighlightR;
+        private Image vinilHighlightR;
 
-        private readonly Image vinilControllerL;
+        private Image vinilControllerL;
 
-        private readonly Image vinilControllerR;
+        private Image vinilControllerR;
 
-        private readonly Image vinilActiveControllerL;
+        private Image vinilActiveControllerL;
 
-        private readonly Image vinilActiveControllerR;
+        private Image vinilActiveControllerR;
 
-        private readonly Image vinilCenter;
+        private Image vinilCenter;
 
-        private readonly Image vinil;
+        private Image vinil;
 
         private readonly bool hasOneHandle_;
 
