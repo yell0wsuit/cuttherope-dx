@@ -26,7 +26,7 @@ namespace CutTheRope.game
             {
                 num8 = nSString2.IsEqualToString("false") ? -1 : nSString2.IntValue();
             }
-            Spikes spikes = (Spikes)new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
+            Spikes spikes = new Spikes().InitWithPosXYWidthAndAngleToggled(px, py, w, an, num8);
             spikes.ParseMover(xmlNode);
             if (num8 != 0)
             {

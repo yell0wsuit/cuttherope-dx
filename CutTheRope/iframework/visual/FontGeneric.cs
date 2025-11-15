@@ -2,7 +2,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal abstract class FontGeneric : NSObject
+    internal abstract class FontGeneric : FrameworkTypes
     {
         public virtual float StringWidth(string str)
         {

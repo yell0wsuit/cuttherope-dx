@@ -1,12 +1,11 @@
 using CutTheRope.desktop;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
 namespace CutTheRope.iframework.media
 {
-    internal sealed class MovieMgr : NSObject, System.IDisposable
+    internal sealed class MovieMgr : FrameworkTypes, System.IDisposable
     {
         public void PlayURL(string moviePath, bool mute)
         {

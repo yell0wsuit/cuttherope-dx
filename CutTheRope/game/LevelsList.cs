@@ -1,8 +1,8 @@
-using CutTheRope.ios;
+using CutTheRope.iframework;
 
 namespace CutTheRope.game
 {
-    internal sealed class LevelsList : NSObject
+    internal sealed class LevelsList : FrameworkTypes
     {
         // Note: this type is marked as 'beforefieldinit'.
         static LevelsList()

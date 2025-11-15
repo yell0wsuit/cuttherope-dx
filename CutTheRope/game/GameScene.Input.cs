@@ -138,7 +138,7 @@ namespace CutTheRope.game
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(1);
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2));
                 timeline2.delegateTimelineDelegate = this;
-                RotatedCircle rotatedCircle4 = (RotatedCircle)rotatedCircle.Copy();
+                RotatedCircle rotatedCircle4 = rotatedCircle.Copy();
                 _ = rotatedCircle4.AddTimeline(timeline2);
                 rotatedCircle4.PlayTimeline(0);
                 _ = rotatedCircle.AddTimeline(timeline);

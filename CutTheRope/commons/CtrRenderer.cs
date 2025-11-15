@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.commons
 {
-    internal sealed class CtrRenderer : NSObject
+    internal sealed class CtrRenderer : FrameworkTypes
     {
         public static void OnSurfaceCreated()
         {

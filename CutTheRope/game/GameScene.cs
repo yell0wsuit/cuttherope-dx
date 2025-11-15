@@ -125,33 +125,33 @@ namespace CutTheRope.game
             back.scaleX = 1.25f;
         }
 
-        private void Selector_gameLost(NSObject param)
+        private void Selector_gameLost(FrameworkTypes param)
         {
             GameLost();
         }
 
-        private void Selector_gameWon(NSObject param)
+        private void Selector_gameWon(FrameworkTypes param)
         {
             CTRSoundMgr.EnableLoopedSounds(false);
             gameSceneDelegate?.GameWon();
         }
 
-        private void Selector_animateLevelRestart(NSObject param)
+        private void Selector_animateLevelRestart(FrameworkTypes param)
         {
             AnimateLevelRestart();
         }
 
-        private void Selector_showGreeting(NSObject param)
+        private void Selector_showGreeting(FrameworkTypes param)
         {
             ShowGreeting();
         }
 
-        private void Selector_doCandyBlink(NSObject param)
+        private void Selector_doCandyBlink(FrameworkTypes param)
         {
             DoCandyBlink();
         }
 
-        private void Selector_teleport(NSObject param)
+        private void Selector_teleport(FrameworkTypes param)
         {
             Teleport();
         }
@@ -396,7 +396,7 @@ namespace CutTheRope.game
 
         public DynamicArray<FingerCut>[] fingerCuts = new DynamicArray<FingerCut>[5];
 
-        public sealed class FingerCut : NSObject
+        public sealed class FingerCut : FrameworkTypes
         {
             public Vector start;
 

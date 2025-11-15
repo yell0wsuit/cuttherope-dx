@@ -7,7 +7,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal class BaseElement : NSObject
+    internal class BaseElement : FrameworkTypes
     {
         // (get) Token: 0x0600015F RID: 351 RVA: 0x0000733B File Offset: 0x0000553B
         public bool HasParent => parent != null;

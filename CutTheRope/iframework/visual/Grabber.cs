@@ -1,13 +1,12 @@
 using CutTheRope.desktop;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class Grabber : NSObject
+    internal sealed class Grabber : FrameworkTypes
     {
         public static CTRTexture2D Grab()
         {
-            return (CTRTexture2D)new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
+            return new CTRTexture2D().InitFromPixels(0, 0, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT);
         }
 
         public static void DrawGrabbedImage(CTRTexture2D t, int x, int y)

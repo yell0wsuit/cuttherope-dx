@@ -1628,7 +1628,7 @@ namespace CutTheRope.game
             }
         }
 
-        public void Selector_recreateOptions(NSObject param)
+        public void Selector_recreateOptions(FrameworkTypes param)
         {
             RecreateOptions();
         }

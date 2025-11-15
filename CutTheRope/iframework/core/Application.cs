@@ -4,13 +4,12 @@ using CutTheRope.game;
 using CutTheRope.iframework.media;
 using CutTheRope.iframework.platform;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 
 namespace CutTheRope.iframework.core
 {
-    internal class Application : NSObject
+    internal class Application : FrameworkTypes
     {
         public static CTRPreferences SharedPreferences()
         {
@@ -57,7 +56,7 @@ namespace CutTheRope.iframework.core
 
         public virtual GLCanvas CreateCanvas()
         {
-            return (GLCanvas)new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
+            return new GLCanvas().InitWithFrame(new Rectangle((int)0f, (int)0f, (int)SCREEN_WIDTH, (int)SCREEN_HEIGHT));
         }
 
         public virtual CTRResourceMgr CreateResourceMgr()
@@ -142,7 +141,7 @@ namespace CutTheRope.iframework.core
 
         private static ApplicationSettings appSettings;
 
-        private static readonly GLCanvas _canvas = (GLCanvas)new GLCanvas().InitWithFrame(default);
+        private static readonly GLCanvas _canvas = new GLCanvas().InitWithFrame(default);
 
         private static SoundMgr soundMgr;
 

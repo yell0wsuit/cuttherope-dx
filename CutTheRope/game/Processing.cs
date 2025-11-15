@@ -1,13 +1,12 @@
 using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
     internal sealed class Processing : RectangleElement, ITimelineDelegate
     {
-        public NSObject InitWithLoading(bool loading)
+        public Processing InitWithLoading(bool loading)
         {
             width = (int)SCREEN_WIDTH_EXPANDED;
             height = (int)SCREEN_HEIGHT_EXPANDED + 1;

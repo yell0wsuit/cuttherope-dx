@@ -11,7 +11,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.core
 {
-    internal class ResourceMgr : NSObject
+    internal class ResourceMgr : FrameworkTypes
     {
 
         public virtual bool HasResource(int resID)
@@ -77,9 +77,9 @@ namespace CutTheRope.iframework.core
             return value;
         }
 
-        public virtual NSObject LoadSoundInfo(string path)
+        public virtual FrameworkTypes LoadSoundInfo(string path)
         {
-            return new NSObject();
+            return new FrameworkTypes();
         }
 
         public string LoadStringsInfo(int key)
@@ -362,7 +362,7 @@ namespace CutTheRope.iframework.core
             }
         }
 
-        private static void Rmgr_internalUpdate(NSObject obj)
+        private static void Rmgr_internalUpdate(FrameworkTypes obj)
         {
             ((ResourceMgr)obj).Update();
         }

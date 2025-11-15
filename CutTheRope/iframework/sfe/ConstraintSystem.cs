@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.sfe
 {
-    internal class ConstraintSystem : NSObject
+    internal class ConstraintSystem : FrameworkTypes
     {
         public ConstraintSystem()
         {

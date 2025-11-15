@@ -1,8 +1,6 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class CTRAction : NSObject
+    internal sealed class CTRAction : FrameworkTypes
     {
         public CTRAction()
         {

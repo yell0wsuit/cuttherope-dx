@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 using CutTheRope.commons;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.iframework.core
 {
-    internal class ViewController : NSObject, ITouchDelegate
+    internal class ViewController : FrameworkTypes, ITouchDelegate
     {
         protected ViewController()
             : this(null)

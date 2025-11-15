@@ -290,15 +290,15 @@ namespace CutTheRope.iframework.core
 
         private readonly float transitionDelay = 0.4f;
 
-        private View previousView = null;
+        private View previousView;
 
-        private CTRTexture2D prevScreenImage = null;
+        private CTRTexture2D prevScreenImage;
 
-        private CTRTexture2D nextScreenImage = null;
+        private CTRTexture2D nextScreenImage;
 
         private readonly Grabber screenGrabber = new();
 
-        private bool deactivateCurrentController = false;
+        private bool deactivateCurrentController;
 
         private ViewController currentController;
 

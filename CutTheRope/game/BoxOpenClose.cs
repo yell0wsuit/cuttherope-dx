@@ -159,7 +159,7 @@ namespace CutTheRope.game
             }
         }
 
-        public NSObject InitWithButtonDelegate(IButtonDelegation b)
+        public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
             result = new BaseElement();
             _ = AddChildwithID(result, 1);
@@ -581,12 +581,12 @@ namespace CutTheRope.game
             _ = AddChildwithID(openCloseAnims, 0);
         }
 
-        private static void Selector_removeOpenCloseAnims(NSObject obj)
+        private static void Selector_removeOpenCloseAnims(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).RemoveOpenCloseAnims();
         }
 
-        private static void Selector_postBoxClosed(NSObject obj)
+        private static void Selector_postBoxClosed(FrameworkTypes obj)
         {
             ((BoxOpenClose)obj).PostBoxClosed();
         }

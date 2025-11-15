@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using CutTheRope.iframework;
 using CutTheRope.iframework.helpers;
 
 namespace CutTheRope.ios
 {
     internal static class TimerManager
     {
-        public static int Schedule(DelayedDispatcher.DispatchFunc callback, NSObject parameter, float interval)
+        public static int Schedule(DelayedDispatcher.DispatchFunc callback, FrameworkTypes parameter, float interval)
         {
             ArgumentNullException.ThrowIfNull(callback);
 
@@ -33,7 +34,7 @@ namespace CutTheRope.ios
             _ = timers.Remove(timerId);
         }
 
-        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc callback, NSObject parameter, double interval)
+        public static void RegisterDelayedObjectCall(DelayedDispatcher.DispatchFunc callback, FrameworkTypes parameter, double interval)
         {
             ArgumentNullException.ThrowIfNull(callback);
 
@@ -100,7 +101,7 @@ namespace CutTheRope.ios
         private static bool initialized;
         private static int nextTimerId;
 
-        private sealed class TimerEntry(DelayedDispatcher.DispatchFunc callback, NSObject parameter, float delay)
+        private sealed class TimerEntry(DelayedDispatcher.DispatchFunc callback, FrameworkTypes parameter, float delay)
         {
             public float Delay { get; } = delay;
 
@@ -108,7 +109,7 @@ namespace CutTheRope.ios
 
             public DelayedDispatcher.DispatchFunc Callback { get; } = callback;
 
-            public NSObject Parameter { get; } = parameter;
+            public FrameworkTypes Parameter { get; } = parameter;
 
             public void Invoke()
             {

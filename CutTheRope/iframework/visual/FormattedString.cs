@@ -1,8 +1,6 @@
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class FormattedString : NSObject
+    internal sealed class FormattedString : FrameworkTypes
     {
         public FormattedString InitWithStringAndWidth(string str, float w)
         {

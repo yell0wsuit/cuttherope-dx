@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRope.commons;
+using CutTheRope.iframework;
 using CutTheRope.iframework.core;
 using CutTheRope.iframework.platform;
-using CutTheRope.ios;
 
 namespace CutTheRope.game
 {
@@ -287,7 +287,7 @@ namespace CutTheRope.game
             base.Dispose(disposing);
         }
 
-        public static void CheckMapIsValid(NSObject data)
+        public static void CheckMapIsValid(FrameworkTypes data)
         {
         }
 

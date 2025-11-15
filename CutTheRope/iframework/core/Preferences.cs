@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.core
 {
-    internal class Preferences : NSObject
+    internal class Preferences : FrameworkTypes
     {
         private static readonly Dictionary<string, object> PreferencesData = [];
         private const string SaveFileName = "ctr_preferences.json";

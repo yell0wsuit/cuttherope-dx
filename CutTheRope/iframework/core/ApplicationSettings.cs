@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.core
 {
-    internal sealed class ApplicationSettings : NSObject
+    internal sealed class ApplicationSettings : FrameworkTypes
     {
         public int GetInt(int s)
         {

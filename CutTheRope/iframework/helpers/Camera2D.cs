@@ -1,10 +1,9 @@
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal sealed class Camera2D : NSObject
+    internal sealed class Camera2D : FrameworkTypes
     {
         public Camera2D InitWithSpeedandType(float s, CAMERATYPE t)
         {

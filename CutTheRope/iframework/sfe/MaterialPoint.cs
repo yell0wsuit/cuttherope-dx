@@ -1,9 +1,8 @@
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 namespace CutTheRope.iframework.sfe
 {
-    internal class MaterialPoint : NSObject
+    internal class MaterialPoint : FrameworkTypes
     {
         public MaterialPoint()
         {

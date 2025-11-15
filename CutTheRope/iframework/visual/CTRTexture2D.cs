@@ -1,13 +1,12 @@
 using CutTheRope.commons;
 using CutTheRope.desktop;
 using CutTheRope.iframework.core;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class CTRTexture2D : NSObject
+    internal sealed class CTRTexture2D : FrameworkTypes
     {
         public static void DrawRectAtPoint(CTRTexture2D t, CTRRectangle rect, Vector point)
         {
@@ -239,7 +238,7 @@ namespace CutTheRope.iframework.visual
             }
         }
 
-        public NSObject InitFromPixels(int x, int y, int w, int h)
+        public CTRTexture2D InitFromPixels(int x, int y, int w, int h)
         {
             _name = 65536U;
             _lowypoint = -1;

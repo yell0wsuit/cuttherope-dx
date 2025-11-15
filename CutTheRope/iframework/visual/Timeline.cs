@@ -1,10 +1,8 @@
 using System;
 
-using CutTheRope.ios;
-
 namespace CutTheRope.iframework.visual
 {
-    internal sealed class Timeline : NSObject
+    internal sealed class Timeline : FrameworkTypes
     {
         public void StopTimeline()
         {

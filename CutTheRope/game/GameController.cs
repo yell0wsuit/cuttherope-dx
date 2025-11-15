@@ -100,7 +100,7 @@ namespace CutTheRope.game
             _ = image.AddChild(vBox);
             _ = gameView.AddChildwithID(image, 3);
             AddViewwithID(gameView, 0);
-            BoxOpenClose boxOpenClose = (BoxOpenClose)new BoxOpenClose().InitWithButtonDelegate(this);
+            BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
             boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
             _ = gameView.AddChildwithID(boxOpenClose, 4);
         }

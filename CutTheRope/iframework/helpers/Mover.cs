@@ -6,7 +6,7 @@ using CutTheRope.ios;
 
 namespace CutTheRope.iframework.helpers
 {
-    internal class Mover : NSObject
+    internal class Mover : FrameworkTypes
     {
         public Mover(int l, float m_, float r_)
         {

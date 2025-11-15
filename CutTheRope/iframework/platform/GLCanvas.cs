@@ -3,14 +3,13 @@ using System.Globalization;
 
 using CutTheRope.desktop;
 using CutTheRope.iframework.visual;
-using CutTheRope.ios;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace CutTheRope.iframework.platform
 {
-    internal sealed class GLCanvas : NSObject
+    internal sealed class GLCanvas : FrameworkTypes
     {
         // (get) Token: 0x060002F3 RID: 755 RVA: 0x00011F34 File Offset: 0x00010134
         public Rectangle Bounds
@@ -27,7 +26,7 @@ namespace CutTheRope.iframework.platform
             }
         }
 
-        public NSObject InitWithFrame(Rectangle frame_UNUSED)
+        public GLCanvas InitWithFrame(Rectangle frame_UNUSED)
         {
             xOffset = 0;
             yOffset = 0;
