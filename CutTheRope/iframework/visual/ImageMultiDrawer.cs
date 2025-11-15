@@ -8,7 +8,7 @@ namespace CutTheRope.iframework.visual
     {
         public ImageMultiDrawer InitWithImageandCapacity(Image i, int n)
         {
-            image = (Image)NSRET(i);
+            image = i;
             numberOfQuadsToDraw = -1;
             totalQuads = n;
             texCoordinates = new Quad2D[totalQuads];

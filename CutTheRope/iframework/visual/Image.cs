@@ -76,7 +76,6 @@ namespace CutTheRope.iframework.visual
         public virtual Image InitWithTexture(CTRTexture2D t)
         {
             texture = t;
-            _ = NSRET(texture);
             restoreCutTransparency = false;
             if (texture.quadsCount > 0)
             {

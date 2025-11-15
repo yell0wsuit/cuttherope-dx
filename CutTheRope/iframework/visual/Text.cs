@@ -17,7 +17,7 @@ namespace CutTheRope.iframework.visual
 
         public virtual Text InitWithFont(FontGeneric i)
         {
-            font = (FontGeneric)NSRET(i);
+            font = i;
             formattedStrings = [];
             width = -1;
             height = -1;

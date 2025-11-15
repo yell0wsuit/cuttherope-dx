@@ -175,7 +175,6 @@ namespace CutTheRope.iframework.core
                 currentController.ActiveView().Draw();
                 nextScreenImage?.xnaTexture_.Dispose();
                 nextScreenImage = Grabber.Grab();
-                _ = NSRET(nextScreenImage);
                 OpenGL.GlLoadIdentity();
             }
         }
@@ -192,7 +191,6 @@ namespace CutTheRope.iframework.core
                 previousView.Draw();
                 prevScreenImage?.xnaTexture_.Dispose();
                 prevScreenImage = Grabber.Grab();
-                _ = NSRET(prevScreenImage);
                 OpenGL.GlLoadIdentity();
             }
         }

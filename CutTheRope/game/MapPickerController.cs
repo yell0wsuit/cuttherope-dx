@@ -103,7 +103,7 @@ namespace CutTheRope.game
         {
             autoLoad = true;
             ((CTRRootController)Application.SharedRootController()).SetPicker(false);
-            selectedMap = (string)NSRET(map);
+            selectedMap = map;
         }
 
         public void OnButtonPressed(int n)
