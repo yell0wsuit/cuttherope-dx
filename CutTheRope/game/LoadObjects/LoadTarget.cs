@@ -21,7 +21,6 @@ namespace CutTheRope.game
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
             support = Image.Image_createWithResIDQuad(100, pack);
-            support.Retain();
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
@@ -95,8 +94,6 @@ namespace CutTheRope.game
             target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 80, 2, 0.05f);
             target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 3, 0.05f);
             target.SwitchToAnimationatEndOfAnimationDelay(80, 0, 101, 4, 0.05f);
-
-            target.Retain();
 
             // Show greeting if needed
             if (CTRRootController.IsShowGreeting())

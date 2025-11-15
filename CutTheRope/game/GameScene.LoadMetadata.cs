@@ -70,7 +70,6 @@ namespace CutTheRope.game
                         candyL.scaleX = candyL.scaleY = 0.71f;
                         candyL.passTransformationsToChilds = false;
                         candyL.DoRestoreCutTransparency();
-                        candyL.Retain();
                         candyL.anchor = 18;
                         candyL.x = starL.pos.x;
                         candyL.y = starL.pos.y;
@@ -84,7 +83,6 @@ namespace CutTheRope.game
                         candyR.scaleX = candyR.scaleY = 0.71f;
                         candyR.passTransformationsToChilds = false;
                         candyR.DoRestoreCutTransparency();
-                        candyR.Retain();
                         candyR.anchor = 18;
                         candyR.x = starR.pos.x;
                         candyR.y = starR.pos.y;

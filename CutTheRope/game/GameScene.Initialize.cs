@@ -60,7 +60,6 @@ namespace CutTheRope.game
             // Initialize main candy
             candy = GameObject.GameObject_createWithResIDQuad(63, 0);
             candy.DoRestoreCutTransparency();
-            candy.Retain();
             candy.anchor = 18;
             candy.bb = MakeRectangle(142f, 157f, 112f, 104f);
             candy.passTransformationsToChilds = false;

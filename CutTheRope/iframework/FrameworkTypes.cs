@@ -16,10 +16,6 @@ namespace CutTheRope.iframework
             return s;
         }
 
-        public virtual void Retain()
-        {
-        }
-
         public void Dispose()
         {
             Dispose(true);

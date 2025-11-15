@@ -30,7 +30,6 @@ namespace CutTheRope.game
             return false;
         }
 
-
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
             if (ignoreTouches)
@@ -143,7 +142,6 @@ namespace CutTheRope.game
                 rotatedCircle4.PlayTimeline(0);
                 _ = rotatedCircle.AddTimeline(timeline);
                 rotatedCircle.PlayTimeline(0);
-                rotatedCircle.Retain();
                 rotatedCircles.SetObjectAt(rotatedCircle4, rotatedCircles.GetObjectIndex(rotatedCircle));
                 _ = rotatedCircles.AddObject(rotatedCircle);
             }
