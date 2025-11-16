@@ -32,7 +32,7 @@ In TexturePacker:
 You can also visit <https://free-tex-packer.com/app/> for packing sprites online.
 
 > [!NOTE]
-> Always remember to uncheck "Allow rotation" option in TexturePacker
+> Always remember to **uncheck** "Allow rotation" option in TexturePacker
 > ![Allow rotation option location](images/texturepacker_allowrotation.png)
 
 **File naming is critical:** The JSON and XNB must share the same base name (e.g., `obj_candy_02.json` and `obj_candy_02.xnb`)
@@ -50,17 +50,17 @@ public static string XNA_ResName(int resId)
         { 149, "menu_extra_buttons_en" },
 
         // ADD YOUR NEW ENTRY HERE:
-        { 150, "my_new_texture" },  // New resource ID and name
+        { 150, "my_new_texture" },  // New resource ID and name WITHOUT extension
     };
     _ = resNames_.TryGetValue(HandleLocalizedResource(resId), out string value);
     return value;
 }
 ```
 
-**Important:**
-
-- Use the next available ID (start from 150 if 149 is the last)
-- The name must match your JSON/XNB filenames (`my_new_texture.json` + `my_new_texture.xnb`)
+> [!WARNING]
+>
+> - Use the next available ID (start from 150 if 149 is the last)
+> - The name must match your JSON and XNB filenames (`my_new_texture.json` + `my_new_texture.xnb`)
 
 ### 3. Register in `TexturePackerRegistry.json`
 
@@ -90,6 +90,8 @@ Edit `content/TexturePackerRegistry.json` and add your texture to the `textures`
 ```
 
 **No code changes needed!** Just add the entry to the JSON and it's automatically loaded.
+
+To replace texture, simply add same `resourceId` number and filename in `TexturePackerRegistry.json`.
 
 ### 4. Configuration options
 
@@ -129,7 +131,7 @@ No XML quad definitions needed!
 ### Sprite displays but coordinates are wrong
 
 - **Cause:** Frame coordinates in JSON don't match actual sprite sheet
-- **Fix:** Re-export from TexturePacker with correct sprite sheet alignment
+- **Fix:** Re-export from TexturePacker with correct sprite sheet alignment; also make sure the sprite is not rotated
 
 ### Frames are in wrong order
 
