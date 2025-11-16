@@ -5,13 +5,13 @@
             "atlasPath": "obj_ghost.json",
             "useAntialias": true,
             "frameOrder": [
-                "bubbles/0000",
-                "bubbles/0001",
-                "bubbles/0002",
-                "bubbles/0003",
-                "bubbles/0004",
-                "body",
-                "face"
+                "bubbles_0000",
+                "bubbles_0001",
+                "bubbles_0002",
+                "bubbles_0003",
+                "bubbles_0004",
+                "00_body",
+                "01_face"
             ],
             "centerOffsets": false
         },
@@ -20,13 +20,13 @@
             "atlasPath": "obj_ghost.json",
             "useAntialias": true,
             "frameOrder": [
-                "body",
-                "face",
-                "bubbles/0000",
-                "bubbles/0001",
-                "bubbles/0002",
-                "bubbles/0003",
-                "bubbles/0004"
+                "00_body",
+                "01_face",
+                "bubbles_0000",
+                "bubbles_0001",
+                "bubbles_0002",
+                "bubbles_0003",
+                "bubbles_0004"
             ],
             "centerOffsets": false
         }
