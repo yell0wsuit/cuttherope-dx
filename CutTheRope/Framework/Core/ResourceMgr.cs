@@ -148,16 +148,9 @@ namespace CutTheRope.Framework.Core
             }
 
             ParsedTexturePackerAtlas parsedAtlas = null;
-            string texturePath = path;
             if (preferTexturePacker || xmlInfo == null)
             {
                 parsedAtlas = TryLoadTexturePackerAtlas(atlasConfig, path);
-                if (parsedAtlas != null)
-                {
-                    // Derive texture path from atlas path: obj_candy_01.json -> obj_candy_01.xnb
-                    string atlasPath = ResolveAtlasPath(atlasConfig, path);
-                    texturePath = Path.ChangeExtension(atlasPath, ".xnb");
-                }
                 if (parsedAtlas == null && preferTexturePacker && xmlInfo == null)
                 {
                     xmlInfo = XElementExtensions.LoadContentXml(path);
@@ -183,7 +176,7 @@ namespace CutTheRope.Framework.Core
                 pixelFormat = atlasConfig?.PixelFormat ?? CTRTexture2D.kTexture2DPixelFormat_Default;
             }
 
-            string text = FullPathFromRelativePath(texturePath);
+            string text = FullPathFromRelativePath(path);
             if (useAntialias)
             {
                 CTRTexture2D.SetAntiAliasTexParameters();
