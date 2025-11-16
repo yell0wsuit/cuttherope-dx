@@ -33,6 +33,7 @@ You can also visit <https://free-tex-packer.com/app/> for packing sprites online
 
 > [!NOTE]
 > Always remember to uncheck "Allow rotation" option in TexturePacker
+> ![Allow rotation option location](images/texturepacker_allowrotation.png)
 
 **File naming is critical:** The JSON and XNB must share the same base name (e.g., `obj_candy_02.json` and `obj_candy_02.xnb`)
 
