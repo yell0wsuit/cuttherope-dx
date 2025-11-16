@@ -202,14 +202,14 @@ namespace CutTheRope.GameMain
                     break;
                 case 2:
                     {
-                        GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(180, RND_RANGE(1, 3));
+                        GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(75, RND_RANGE(1, 3));
                         ghostBubble.DoRestoreCutTransparency();
                         ghostBubble.bb = MakeRectangle(0.0, 0.0, 57.0, 57.0);
                         ghostBubble.x = x;
                         ghostBubble.y = y;
                         ghostBubble.anchor = 18;
                         ghostBubble.popped = false;
-                        Image image = Image.Image_createWithResIDQuad(180, 2);
+                        Image image = Image.Image_createWithResIDQuad(75, 2);
                         image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);
