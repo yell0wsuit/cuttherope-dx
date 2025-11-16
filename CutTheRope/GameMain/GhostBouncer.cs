@@ -11,7 +11,7 @@ namespace CutTheRope.GameMain
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
             {
-                backCloud2 = Image_createWithResIDQuad(180, 2);
+                backCloud2 = Image_createWithResIDQuad(180, 4);
                 float radius = (float)Math.Sqrt(925.0);
                 backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(170.0 + angle))));
                 backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(170.0 + angle))));
@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
                 backCloud2.AddTimelinewithID(timeline, 0);
                 backCloud2.PlayTimeline(0);
 
-                backCloud = Image_createWithResIDQuad(180, 2);
+                backCloud = Image_createWithResIDQuad(180, 4);
                 float radius2 = (float)Math.Sqrt(925.0);
                 backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(10.0 + angle))));
                 backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(10.0 + angle))));
@@ -55,7 +55,7 @@ namespace CutTheRope.GameMain
                 backCloud.AddTimelinewithID(timeline2, 0);
                 backCloud.PlayTimeline(0);
 
-                Image image = Image_createWithResIDQuad(180, 1);
+                Image image = Image_createWithResIDQuad(180, 3);
                 image.x = x + 20f;
                 image.y = y + 20f;
                 image.anchor = 18;
@@ -76,7 +76,7 @@ namespace CutTheRope.GameMain
                 image.AddTimelinewithID(timeline3, 0);
                 image.PlayTimeline(0);
 
-                Image image2 = Image_createWithResIDQuad(180, 0);
+                Image image2 = Image_createWithResIDQuad(180, 2);
                 image2.x = x - 15f;
                 image2.y = y + 20f;
                 image2.anchor = 18;

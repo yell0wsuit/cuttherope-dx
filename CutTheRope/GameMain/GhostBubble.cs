@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
 
         public void AddSupportingCloudsTimelines()
         {
-            backCloud = Image_createWithResIDQuad(180, 4);
+            backCloud = Image_createWithResIDQuad(180, 6);
             backCloud.x = x + 28f;
             backCloud.y = y + 8f;
             backCloud.anchor = 18;
@@ -44,7 +44,7 @@ namespace CutTheRope.GameMain
             backCloud.AddTimelinewithID(timeline, 0);
             backCloud.PlayTimeline(0);
 
-            backCloud2 = Image_createWithResIDQuad(180, 3);
+            backCloud2 = Image_createWithResIDQuad(180, 5);
             backCloud2.x = x + 22f;
             backCloud2.y = y + 16f;
             backCloud2.anchor = 18;
@@ -64,7 +64,7 @@ namespace CutTheRope.GameMain
             backCloud2.AddTimelinewithID(timeline2, 0);
             backCloud2.PlayTimeline(0);
 
-            backCloud3 = Image_createWithResIDQuad(180, 3);
+            backCloud3 = Image_createWithResIDQuad(180, 5);
             backCloud3.x = x - 28f;
             backCloud3.y = y + 5f;
             backCloud3.anchor = 18;
@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
             backCloud3.AddTimelinewithID(timeline3, 0);
             backCloud3.PlayTimeline(0);
 
-            Image image = Image_createWithResIDQuad(180, 4);
+            Image image = Image_createWithResIDQuad(180, 6);
             image.x = x - 23f;
             image.y = y + 16f;
             image.anchor = 18;
@@ -105,7 +105,7 @@ namespace CutTheRope.GameMain
             image.AddTimelinewithID(timeline4, 0);
             image.PlayTimeline(0);
 
-            Image image2 = Image_createWithResIDQuad(180, 0);
+            Image image2 = Image_createWithResIDQuad(180, 2);
             image2.x = x - 5f;
             image2.y = y + 25f;
             image2.anchor = 18;
