@@ -209,7 +209,7 @@ namespace CutTheRope.GameMain
                         ghostBubble.y = y;
                         ghostBubble.anchor = 18;
                         ghostBubble.popped = false;
-                        Image image = Image.Image_createWithResIDQuad(75, 2);
+                        Image image = Image.Image_createWithResIDQuad(75, 0);
                         image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);
