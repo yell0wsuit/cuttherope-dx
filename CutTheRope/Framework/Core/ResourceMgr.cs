@@ -162,8 +162,8 @@ namespace CutTheRope.Framework.Core
                 return null;
             }
 
-            bool useAntialias = true;
-            CTRTexture2D.Texture2DPixelFormat pixelFormat = CTRTexture2D.kTexture2DPixelFormat_Default;
+            bool useAntialias;
+            CTRTexture2D.Texture2DPixelFormat pixelFormat;
             if (parsedAtlas == null && xmlInfo != null)
             {
                 useAntialias = (xmlInfo.AttributeAsNSString("filter").IntValue() & 1) == 1;
@@ -213,7 +213,7 @@ namespace CutTheRope.Framework.Core
             return null;
         }
 
-        private ParsedTexturePackerAtlas TryLoadTexturePackerAtlas(TextureAtlasConfig config, string textureName)
+        private static ParsedTexturePackerAtlas TryLoadTexturePackerAtlas(TextureAtlasConfig config, string textureName)
         {
             string atlasPath = ResolveAtlasPath(config, textureName);
             if (string.IsNullOrEmpty(atlasPath))
@@ -280,7 +280,7 @@ namespace CutTheRope.Framework.Core
             return null;
         }
 
-        private void ApplyTexturePackerInfo(CTRTexture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
+        private static void ApplyTexturePackerInfo(CTRTexture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
         {
             texture.preCutSize = vectUndefined;
             if (atlas == null || atlas.Rects.Count == 0)
