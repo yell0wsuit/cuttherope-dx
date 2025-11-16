@@ -1,0 +1,69 @@
+{
+    "frames": [
+        {
+            "filename": "body",
+            "frame": { "x": 0, "y": 0, "w": 166, "h": 229 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 2, "y": 1, "w": 166, "h": 229 },
+            "sourceSize": { "w": 169, "h": 231 }
+        },
+        {
+            "filename": "bubbles/0000",
+            "frame": { "x": 167, "y": 63, "w": 72, "h": 63 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 91, "y": 83, "w": 72, "h": 63 },
+            "sourceSize": { "w": 245, "h": 245 }
+        },
+        {
+            "filename": "bubbles/0001",
+            "frame": { "x": 167, "y": 127, "w": 71, "h": 66 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 92, "y": 82, "w": 71, "h": 66 },
+            "sourceSize": { "w": 245, "h": 245 }
+        },
+        {
+            "filename": "bubbles/0002",
+            "frame": { "x": 167, "y": 194, "w": 67, "h": 66 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 94, "y": 82, "w": 67, "h": 66 },
+            "sourceSize": { "w": 245, "h": 245 }
+        },
+        {
+            "filename": "bubbles/0003",
+            "frame": { "x": 134, "y": 261, "w": 101, "h": 72 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 77, "y": 82, "w": 101, "h": 72 },
+            "sourceSize": { "w": 245, "h": 245 }
+        },
+        {
+            "filename": "bubbles/0004",
+            "frame": { "x": 0, "y": 230, "w": 133, "h": 77 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 57, "y": 79, "w": 133, "h": 77 },
+            "sourceSize": { "w": 245, "h": 245 }
+        },
+        {
+            "filename": "face",
+            "frame": { "x": 167, "y": 0, "w": 87, "h": 62 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 41, "y": 71, "w": 87, "h": 62 },
+            "sourceSize": { "w": 169, "h": 231 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "sheet-2x.png",
+        "format": "RGBA8888",
+        "size": { "w": 254, "h": 333 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:e9debfa1dc1ba684f4905e0fe87c6558:16417a56e8315013b75bc9385061144f:1cbd29238421f6664e303bb7b9164bbd$"
+    }
+}

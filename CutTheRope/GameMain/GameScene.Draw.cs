@@ -100,6 +100,17 @@ namespace CutTheRope.GameMain
                 sock.Draw();
                 sock.y += 85f;
             }
+
+            OpenGL.GlBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
+            if (ghosts != null)
+            {
+                foreach (object objGhost in ghosts)
+                {
+                    Ghost ghost = (Ghost)objGhost;
+                    ghost?.Draw();
+                }
+            }
+
             OpenGL.GlBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             foreach (object obj11 in bungees)
             {

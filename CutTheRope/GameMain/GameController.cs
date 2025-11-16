@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayRandomMusic(146, 147, 148, 150);
+            CTRSoundMgr.PlayRandomMusic(146, 148);
             InitGameView();
             ShowView(0);
         }
@@ -381,7 +381,7 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        CTRSoundMgr.PlayRandomMusic(146, 147, 148, 150);
+                        CTRSoundMgr.PlayRandomMusic(146, 148);
                         return;
                     }
                 case 11:
