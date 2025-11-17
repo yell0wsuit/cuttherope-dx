@@ -13,11 +13,7 @@ namespace CutTheRope.GameMain
         {
             if (twoParts == 2)
             {
-                if (!noCandy && star != null)
-                {
-                    return star;
-                }
-                return star ?? starL ?? starR;
+                return !noCandy && star != null ? star : star ?? starL ?? starR;
             }
 
             ConstraintedPoint best = null;
@@ -41,17 +37,7 @@ namespace CutTheRope.GameMain
             Consider(starL, noCandyL);
             Consider(starR, noCandyR);
 
-            if (best != null)
-            {
-                return best;
-            }
-
-            if (!noCandy && star != null)
-            {
-                return star;
-            }
-
-            return star ?? starL ?? starR;
+            return best ?? (!noCandy && star != null ? star : star ?? starL ?? starR);
         }
     }
 }
