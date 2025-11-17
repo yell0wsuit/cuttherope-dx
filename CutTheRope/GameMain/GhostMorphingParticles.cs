@@ -24,8 +24,8 @@ namespace CutTheRope.GameMain
         {
             if (InitWithTotalParticlesandImageGrid(numberOfParticles, Image.Image_createWithResID(180)) != null)
             {
-                size = 0.6f;
-                sizeVar = 0.2f;
+                size = 0.8f;
+                sizeVar = 0.4f;
                 angle = RND_RANGE(0, 360);
                 angleVar = 15f;
                 rotateSpeedVar = 30f;
