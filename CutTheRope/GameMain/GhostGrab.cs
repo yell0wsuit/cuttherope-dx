@@ -17,7 +17,7 @@ namespace CutTheRope.GameMain
             image.x = x - 20f;
             image.y = y + 2f;
             image.anchor = 18;
-            image.DoRestoreCutTransparency();
+            // image.DoRestoreCutTransparency();
             _ = AddChild(image);
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
@@ -38,7 +38,7 @@ namespace CutTheRope.GameMain
             image2.x = x + 18f;
             image2.y = y + 8f;
             image2.anchor = 18;
-            image2.DoRestoreCutTransparency();
+            // image2.DoRestoreCutTransparency();
             _ = AddChild(image2);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             timeline2.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
@@ -59,7 +59,7 @@ namespace CutTheRope.GameMain
             image3.x = x - 5f;
             image3.y = y + 15f;
             image3.anchor = 18;
-            image3.DoRestoreCutTransparency();
+            // image3.DoRestoreCutTransparency();
             _ = AddChild(image3);
             Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             timeline3.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);

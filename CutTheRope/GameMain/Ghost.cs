@@ -52,7 +52,6 @@ namespace CutTheRope.GameMain
             ghostImageBody.x = position.x;
             ghostImageBody.y = position.y;
             ghostImageBody.anchor = 18;
-            ghostImageBody.DoRestoreCutTransparency();
             _ = ghostImage.AddChild(ghostImageBody);
 
             float random = RND_0_1;
@@ -67,7 +66,6 @@ namespace CutTheRope.GameMain
             ghostImageFace.x = position.x;
             ghostImageFace.y = position.y;
             ghostImageFace.anchor = 18;
-            ghostImageFace.DoRestoreCutTransparency();
             _ = ghostImage.AddChild(ghostImageFace);
 
             Timeline faceFloat = new Timeline().InitWithMaxKeyFramesOnTrack(2);
