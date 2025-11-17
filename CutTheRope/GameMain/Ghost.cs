@@ -1,5 +1,6 @@
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
+using CutTheRope.Framework.Sfe;
 using CutTheRope.Framework.Visual;
 
 namespace CutTheRope.GameMain
@@ -13,8 +14,10 @@ namespace CutTheRope.GameMain
             float bouncerAngle,
             DynamicArray<Bubble> bubbles,
             DynamicArray<Grab> bungees,
-            DynamicArray<Bouncer> bouncers)
+            DynamicArray<Bouncer> bouncers,
+            GameScene owner)
         {
+            hostScene = owner;
             possibleStatesMask = possibleStateMask | 1;
             ghostState = 1;
             this.bouncerAngle = bouncerAngle;
@@ -228,6 +231,29 @@ namespace CutTheRope.GameMain
                     grab.wheel = false;
                     grab.spider = null;
                     grab.SetRadius(grabRadius);
+                    if (grabRadius == -1f)
+                    {
+                        ConstraintedPoint ropeAnchor = hostScene?.GetGhostRopeAnchor(Vect(x, y));
+                        if (ropeAnchor != null)
+                        {
+                            Vector anchorPos = ropeAnchor.pos;
+                            float ropeLength = VectLength(VectSub(Vect(x, y), anchorPos));
+                            if (ropeLength <= 0f)
+                            {
+                                ropeLength = Bungee.BUNGEE_REST_LEN;
+                            }
+                            Bungee autoRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
+                                null,
+                                x,
+                                y,
+                                ropeAnchor,
+                                anchorPos.x,
+                                anchorPos.y,
+                                ropeLength);
+                            autoRope.bungeeAnchor.pin = autoRope.bungeeAnchor.pos;
+                            grab.SetRope(autoRope);
+                        }
+                    }
                     _ = gsBungees.AddObject(grab);
                     grab.AddTimelinewithID(morphIn, 10);
                     grab.PlayTimeline(10);
@@ -326,5 +352,6 @@ namespace CutTheRope.GameMain
         public DynamicArray<Bouncer> gsBouncers;
         public GhostMorphingParticles morphingBubbles;
         public GhostMorphingCloud morphingCloud;
+        private GameScene hostScene;
     }
 }
