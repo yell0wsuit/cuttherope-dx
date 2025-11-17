@@ -27,10 +27,7 @@ namespace CutTheRope.GameMain
             gsBouncers = bouncers;
             x = position.x;
             y = position.y;
-            ghostImage = new BaseElement
-            {
-                anchor = 18  // Center anchor to properly position children
-            };
+            ghostImage = new BaseElement();
             _ = AddChild(ghostImage);
             morphingBubbles = new GhostMorphingParticles().InitWithTotalParticles(7);
             morphingBubbles.x = position.x;
