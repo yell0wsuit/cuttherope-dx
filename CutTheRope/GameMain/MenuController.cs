@@ -1049,12 +1049,13 @@ namespace CutTheRope.GameMain
             vBox.SetName("levelsBox");
             vBox.x = 0f;
             vBox.y = 110f;
-            int num2 = 5;
+            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
+            int columnsPerRow = 5;
             int num3 = 0;
-            for (int i = 0; i < num2; i++)
+            for (int i = 0; i < levelsInPack; i += columnsPerRow)
             {
                 HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
-                for (int j = 0; j < num2; j++)
+                for (int j = 0; j < columnsPerRow && num3 < levelsInPack; j++)
                 {
                     _ = hBox2.AddChild(CreateButtonForLevelPack(num3++, pack));
                 }
