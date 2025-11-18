@@ -1,15 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{723C61AE-DBFF-4CA5-AD5B-F30D8FA3D8C4}</ProjectGuid>
-    <TargetFramework>net9.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <ProjectGuid>{9A732C70-39B7-456E-8029-91F641C29567}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>CutTheRope</RootNamespace>
+    <AssemblyName>CutTheRope</AssemblyName>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>CutTheRope.ico</ApplicationIcon>
+    <AssemblyVersion>1.0.0.33</AssemblyVersion>
+    <FileVersion>1.0.0.33</FileVersion>
+    <InformationalVersion>1.0.0.33</InformationalVersion>
+    <Company>ZeptoLab</Company>
+    <Product>Cut The Rope</Product>
+    <Description>Cut The Rope</Description>
+    <Copyright>Copyright © 2012</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Microsoft.Xna.Framework.RuntimeProfile" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\content\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
   </ItemGroup>
 </Project>
