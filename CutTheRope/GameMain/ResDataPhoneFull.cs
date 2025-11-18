@@ -607,7 +607,7 @@ namespace CutTheRope.GameMain
 
         internal const string STR_MENU_QUIT = "QUIT";
 
-        internal const string STR_MENU_QUIT_BUTTON = "QUIT";
+        internal const string STR_MENU_QUIT_BUTTON = "QUIT_BUTTON";
 
         internal const string STR_MENU_FACEBOOK_BUTTON = "FACEBOOK_BUTTON";
 
