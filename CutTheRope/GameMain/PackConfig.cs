@@ -8,28 +8,22 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class PackDefinition
+    internal sealed class PackDefinition(int unlockStars, int[] packResources, int supportResources, int[] coverResources, int levelCount)
     {
-        public PackDefinition(int unlockStars, int[] packResources, int[] coverResources, int levelCount)
-        {
-            UnlockStars = unlockStars;
-            PackResources = packResources;
-            CoverResources = coverResources;
-            LevelCount = levelCount;
-        }
+        public int UnlockStars { get; } = unlockStars;
 
-        public int UnlockStars { get; }
+        public int[] PackResources { get; } = packResources;
 
-        public int[] PackResources { get; }
+        public int SupportResources { get; } = supportResources;
 
-        public int[] CoverResources { get; }
+        public int[] CoverResources { get; } = coverResources;
 
-        public int LevelCount { get; }
+        public int LevelCount { get; } = levelCount;
     }
 
     internal static class PackConfig
     {
-        private static readonly int[] EmptyResources = { -1 };
+        private static readonly int[] EmptyResources = [-1];
 
         private static readonly List<PackDefinition> packs;
 
@@ -63,6 +57,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].CoverResources : EmptyResources;
         }
 
+        public static int GetSupportResources(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].SupportResources : 100;
+        }
+
         public static int GetUnlockStars(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].UnlockStars : 0;
@@ -71,7 +70,7 @@ namespace CutTheRope.GameMain
         private static List<PackDefinition> LoadFromXml()
         {
             XElement root = XElementExtensions.LoadContentXml("packs.xml");
-            List<PackDefinition> results = new();
+            List<PackDefinition> results = [];
 
             if (root == null)
             {
@@ -82,19 +81,20 @@ namespace CutTheRope.GameMain
             {
                 int unlockStars = ParseIntAttribute(packElement, "unlockStars");
                 int[] packResources = ParseResources(packElement, "resources");
+                int supportResources = ParseIntAttribute(packElement, "supportResources", 100);
                 int[] coverResources = ParseResources(packElement, "coverResources");
                 int levelCount = ParseLevelCount(packElement);
 
-                results.Add(new PackDefinition(unlockStars, packResources, coverResources, levelCount));
+                results.Add(new PackDefinition(unlockStars, packResources, supportResources, coverResources, levelCount));
             }
 
             return results;
         }
 
-        private static int ParseIntAttribute(XElement element, string attributeName)
+        private static int ParseIntAttribute(XElement element, string attributeName, int defaultValue = 0)
         {
             string value = element.AttributeAsNSString(attributeName);
-            return string.IsNullOrWhiteSpace(value) ? 0 : int.Parse(value, CultureInfo.InvariantCulture);
+            return string.IsNullOrWhiteSpace(value) ? defaultValue : int.Parse(value, CultureInfo.InvariantCulture);
         }
 
         private static int[] ParseResources(XElement element, string attributeName)
@@ -105,11 +105,9 @@ namespace CutTheRope.GameMain
                 return EmptyResources;
             }
 
-            List<int> ids = value.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(part => int.Parse(part.Trim(), CultureInfo.InvariantCulture))
-                .ToList();
+            List<int> ids = [.. value.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => int.Parse(part.Trim(), CultureInfo.InvariantCulture))];
             ids.Add(-1);
-            return ids.ToArray();
+            return [.. ids];
         }
 
         private static int ParseLevelCount(XElement element)
