@@ -957,124 +957,6 @@ namespace CutTheRope.GameMain
             CTRPreferences.SetLastPack(i);
         }
 
-        private static int CalculateTotalLevelPages(int totalLevels)
-        {
-            if (totalLevels <= MAX_LEVELS_PER_PAGE)
-            {
-                return 1;
-            }
-
-            int standardPages = (int)Math.Ceiling(totalLevels / (double)MAX_LEVELS_PER_PAGE);
-            int remainder = totalLevels % MAX_LEVELS_PER_PAGE;
-
-            if (remainder > 0 && remainder < 10)
-            {
-                return 2;
-            }
-
-            return standardPages;
-        }
-
-        private static int GetLevelsPerPage(int totalLevels, int pageIndex)
-        {
-            if (totalLevels <= MAX_LEVELS_PER_PAGE)
-            {
-                return totalLevels;
-            }
-
-            int remainder = totalLevels % MAX_LEVELS_PER_PAGE;
-
-            if (remainder > 0 && remainder < 10)
-            {
-                if (pageIndex == 0)
-                {
-                    int halfSplit = (int)Math.Ceiling(totalLevels / 2f);
-
-                    if (halfSplit > 12 && totalLevels - halfSplit > 12)
-                    {
-                        return halfSplit;
-                    }
-
-                    int page1Count = ((totalLevels - remainder) / 5) * 5;
-                    if (page1Count >= 15 && page1Count <= MAX_LEVELS_PER_PAGE)
-                    {
-                        return page1Count;
-                    }
-
-                    return MAX_LEVELS_PER_PAGE - remainder;
-                }
-
-                int page0Count = GetLevelsPerPage(totalLevels, 0);
-                return totalLevels - page0Count;
-            }
-
-            return MAX_LEVELS_PER_PAGE;
-        }
-
-        private static int GetColumnsForLevelCount(int count)
-        {
-            if (count > 12)
-            {
-                return 5;
-            }
-
-            if (count > 9)
-            {
-                return 4;
-            }
-
-            return 3;
-        }
-
-        private void UpdateLevelPageButtons(int totalPages)
-        {
-            bool showNavigation = totalPages > 1;
-
-            levelPrevPageButton?.SetEnabled(showNavigation && levelPage > 0);
-            levelNextPageButton?.SetEnabled(showNavigation && levelPage < totalPages - 1);
-        }
-
-        private void PopulateLevelButtons(VBox vBox)
-        {
-            int totalLevels = CTRPreferences.GetLevelsInPackCount(pack);
-            int totalPages = CalculateTotalLevelPages(totalLevels);
-
-            levelPage = Math.Max(0, Math.Min(levelPage, totalPages - 1));
-
-            int startIndex = 0;
-            for (int i = 0; i < levelPage; i++)
-            {
-                startIndex += GetLevelsPerPage(totalLevels, i);
-            }
-
-            int levelsThisPage = GetLevelsPerPage(totalLevels, levelPage);
-            int visibleLevels = Math.Min(levelsThisPage, Math.Max(0, totalLevels - startIndex));
-            int columnsPerRow = GetColumnsForLevelCount(visibleLevels);
-
-            float of = 55f;
-            float of2 = columnsPerRow == 5 ? 10f : 20f;
-            float h = 202.79999f;
-
-            vBox.RemoveAllChilds();
-
-            int currentLevel = startIndex;
-            for (int i = 0; i < visibleLevels; i += columnsPerRow)
-            {
-                HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
-                for (int j = 0; j < columnsPerRow && currentLevel < startIndex + visibleLevels; j++)
-                {
-                    _ = hBox2.AddChild(CreateButtonForLevelPack(currentLevel++, pack));
-                }
-                _ = vBox.AddChild(hBox2);
-            }
-
-            // Center the vBox both horizontally and vertically
-            vBox.x = (SCREEN_WIDTH / 2f) - (vBox.width / 2f);
-            vBox.y = (SCREEN_HEIGHT / 2f) - (vBox.height / 2f);
-
-            UpdateLevelPageButtons(totalPages);
-        }
-
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
@@ -1160,13 +1042,29 @@ namespace CutTheRope.GameMain
             HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
             hBox.x = -20f;
             hBox.y = 20f;
-            levelButtonsBox = new VBox().InitWithOffsetAlignWidth(55f, 2, SCREEN_WIDTH);
-            levelButtonsBox.SetName("levelsBox");
-            PopulateLevelButtons(levelButtonsBox);
+            float of = 55f;
+            float of2 = 10f;
+            float h = 202.79999f;
+            VBox vBox = new VBox().InitWithOffsetAlignWidth(of, 2, SCREEN_WIDTH);
+            vBox.SetName("levelsBox");
+            vBox.x = 0f;
+            vBox.y = 110f;
+            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
+            int columnsPerRow = 5;
+            int num3 = 0;
+            for (int i = 0; i < levelsInPack; i += columnsPerRow)
+            {
+                HBox hBox2 = new HBox().InitWithOffsetAlignHeight(of2, 16, h);
+                for (int j = 0; j < columnsPerRow && num3 < levelsInPack; j++)
+                {
+                    _ = hBox2.AddChild(CreateButtonForLevelPack(num3++, pack));
+                }
+                _ = vBox.AddChild(hBox2);
+            }
             Timeline timeline4 = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline4.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
-            _ = levelButtonsBox.AddTimeline(timeline4);
+            _ = vBox.AddTimeline(timeline4);
             hBox.anchor = hBox.parentAnchor = 12;
             hBox.SetName("starText");
             hBox.x = -(float)Canvas.xOffsetScaled;
@@ -1175,28 +1073,7 @@ namespace CutTheRope.GameMain
             timeline5.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, num));
             _ = hBox.AddTimeline(timeline5);
             _ = menuView.AddChild(hBox);
-            _ = menuView.AddChild(levelButtonsBox);
-            BaseElement baseElement2 = new()
-            {
-                anchor = 18,
-                parentAnchor = 18,
-                x = SCREEN_WIDTH / 2f,
-                y = 270f
-            };
-            levelPrevPageButton = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, BUTTON_LEVEL_PAGE_PREV, this);
-            levelPrevPageButton.anchor = levelPrevPageButton.parentAnchor = 18;
-            levelPrevPageButton.x = -250f;
-            levelPrevPageButton.y = 0f;
-            _ = baseElement2.AddChild(levelPrevPageButton);
-            levelNextPageButton = CreateButton2WithImageQuad1Quad2IDDelegate(52, 13, 14, BUTTON_LEVEL_PAGE_NEXT, this);
-            levelNextPageButton.anchor = levelNextPageButton.parentAnchor = 18;
-            levelNextPageButton.scaleX = -1f;
-            levelNextPageButton.x = 250f;
-            levelNextPageButton.y = 0f;
-            _ = baseElement2.AddChild(levelNextPageButton);
-            int totalPages = CalculateTotalLevelPages(CTRPreferences.GetLevelsInPackCount(pack));
-            UpdateLevelPageButtons(totalPages);
-            _ = menuView.AddChild(baseElement2);
+            _ = menuView.AddChild(vBox);
             Button button = CreateBackButtonWithDelegateID(this, 12);
             button.SetName("backButton");
             Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -1321,11 +1198,6 @@ namespace CutTheRope.GameMain
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
             int[] array = null;
             array = PackConfig.GetCoverResources(pack);
-            if (lastLevelSelectPack != pack)
-            {
-                levelPage = 0;
-                lastLevelSelectPack = pack;
-            }
             cTRResourceMgr.InitLoading();
             cTRResourceMgr.LoadPack(array);
             cTRResourceMgr.LoadImmediately();
@@ -1380,29 +1252,6 @@ namespace CutTheRope.GameMain
             }
             switch (n)
             {
-                case BUTTON_LEVEL_PAGE_PREV:
-                    if (levelPage > 0)
-                    {
-                        levelPage--;
-                        if (levelButtonsBox != null)
-                        {
-                            PopulateLevelButtons(levelButtonsBox);
-                        }
-                    }
-                    return;
-                case BUTTON_LEVEL_PAGE_NEXT:
-                    {
-                        int totalPages = CalculateTotalLevelPages(CTRPreferences.GetLevelsInPackCount(pack));
-                        if (levelPage < totalPages - 1)
-                        {
-                            levelPage++;
-                            if (levelButtonsBox != null)
-                            {
-                                PopulateLevelButtons(levelButtonsBox);
-                            }
-                        }
-                        return;
-                    }
                 case 0:
                     {
                         for (int i = 0; i < CTRPreferences.GetPacksCount(); i++)
@@ -1816,12 +1665,6 @@ namespace CutTheRope.GameMain
         public const int VIEW_LEADERBOARDS = 8;
 
         public const int VIEW_ACHIEVEMENTS = 9;
-        private const int BUTTON_LEVEL_PAGE_PREV = 50;
-
-        private const int BUTTON_LEVEL_PAGE_NEXT = 51;
-
-        private const int MAX_LEVELS_PER_PAGE = 25;
-
         public const int BUTTON_LEVEL_1 = 1000;
         public DelayedDispatcher ddMainMenu;
 
@@ -1850,19 +1693,9 @@ namespace CutTheRope.GameMain
 
         private Button prevb;
 
-        private Button levelPrevPageButton;
-
-        private Button levelNextPageButton;
-
-        private VBox levelButtonsBox;
-
         private int pack;
 
         private int level;
-
-        private int levelPage;
-
-        private int lastLevelSelectPack = -1;
 
         public int viewToShow;
 
