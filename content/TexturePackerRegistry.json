@@ -1,6 +1,12 @@
 {
     "textures": [
         {
+            "resourceId": 53,
+            "atlasPath": "menu_pack_selection2.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
             "resourceId": 100,
             "atlasPath": "char_supports.json",
             "useAntialias": true,
