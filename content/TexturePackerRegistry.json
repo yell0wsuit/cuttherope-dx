@@ -1,6 +1,12 @@
 {
     "textures": [
         {
+            "resourceId": 100,
+            "atlasPath": "char_supports.json",
+            "useAntialias": true,
+            "centerOffsets": false
+        },
+        {
             "resourceId": 180,
             "atlasPath": "obj_ghost.json",
             "useAntialias": true,

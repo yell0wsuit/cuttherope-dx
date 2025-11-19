@@ -1485,6 +1485,8 @@ namespace CutTheRope.GameMain
 
         internal const int IMG_CHAR_SUPPORTS_support_11 = 10;
 
+        internal const int IMG_CHAR_SUPPORTS_support_12 = 10;
+
         internal const int IMG_CHAR_ANIMATIONS2_excited_start = 0;
 
         internal const int IMG_CHAR_ANIMATIONS2_excited_end = 19;
