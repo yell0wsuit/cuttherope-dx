@@ -11,7 +11,7 @@
         <bouncer1 x="287" y="415" angle="-8" size="1" />
         <bouncer1 x="118" y="420" angle="1" size="1" />
         <ghost x="202" y="420" bouncer="true" bubble="true" grab="false" radius="30" angle="-1" />
-        <bouncer1 x="36" y="415" angle="9" size="1" />
+        <bouncer1 x="36" y="415" angle="8" size="1" />
         <star x="50" y="380" timeout="-1" />
         <star x="270" y="380" timeout="-1" />
         <hiddenElement x="65" y="65" radius="30" />
