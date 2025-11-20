@@ -12,9 +12,9 @@ namespace CutTheRope.GameMain
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
             {
                 backCloud2 = Image_createWithResIDQuad(180, 4);
-                float radius = (float)Math.Sqrt(2500.0);
-                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) - 45f;
-                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) + 30f;
+                float radius = (float)Math.Sqrt(925.0);
+                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(170.0 + angle)))) - 65f;
+                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(170.0 + angle)))) + 10f;
                 backCloud2.anchor = 18;
                 backCloud2.visible = false;
                 _ = AddChild(backCloud2);
@@ -34,9 +34,9 @@ namespace CutTheRope.GameMain
                 backCloud2.PlayTimeline(0);
 
                 backCloud = Image_createWithResIDQuad(180, 4);
-                float radius2 = (float)Math.Sqrt(2500.0);
-                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 45f;
-                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 30f;
+                float radius2 = (float)Math.Sqrt(925.0);
+                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(-10.0 + angle)))) + 65f;
+                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(-10.0 + angle)))) + 20f;
                 backCloud.anchor = 18;
                 backCloud.visible = false;
                 _ = AddChild(backCloud);
