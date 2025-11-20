@@ -13,10 +13,10 @@ namespace CutTheRope.GameMain
             {
                 backCloud2 = Image_createWithResIDQuad(180, 4);
                 float radius = (float)Math.Sqrt(2500.0);
-                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) - 40f;
-                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) + 50f;
+                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) - 45f;
+                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS((float)(200.0 + angle)))) + 30f;
                 backCloud2.anchor = 18;
-                backCloud2.visible = true;
+                backCloud2.visible = false;
                 _ = AddChild(backCloud2);
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);
                 timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
@@ -35,10 +35,10 @@ namespace CutTheRope.GameMain
 
                 backCloud = Image_createWithResIDQuad(180, 4);
                 float radius2 = (float)Math.Sqrt(2500.0);
-                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 40f;
-                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 50f;
+                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 45f;
+                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS((float)(-20.0 + angle)))) + 30f;
                 backCloud.anchor = 18;
-                backCloud.visible = true;
+                backCloud.visible = false;
                 _ = AddChild(backCloud);
                 Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
                 timeline2.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
