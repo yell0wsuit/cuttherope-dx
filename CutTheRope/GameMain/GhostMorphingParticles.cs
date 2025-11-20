@@ -29,7 +29,7 @@ namespace CutTheRope.GameMain
                 angle = RND_RANGE(0, 360);
                 angleVar = 15f;
                 rotateSpeedVar = 30f;
-                life = 0.4f;
+                life = 0.6f;
                 lifeVar = 0.15f;
                 duration = 1.5f;
                 speed = 60f;
