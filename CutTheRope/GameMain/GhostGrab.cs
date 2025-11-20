@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
             x = px;
             y = py;
             Image image = Image_createWithResIDQuad(180, 5);
-            image.x = x - 20f;
+            image.x = x - 60f;
             image.y = y + 2f;
             image.anchor = 18;
             // image.DoRestoreCutTransparency();
@@ -35,8 +35,8 @@ namespace CutTheRope.GameMain
             image.PlayTimeline(0);
 
             Image image2 = Image_createWithResIDQuad(180, 4);
-            image2.x = x + 18f;
-            image2.y = y + 8f;
+            image2.x = x + 58f;
+            image2.y = y + 18f;
             image2.anchor = 18;
             // image2.DoRestoreCutTransparency();
             _ = AddChild(image2);
@@ -56,8 +56,8 @@ namespace CutTheRope.GameMain
             image2.PlayTimeline(0);
 
             Image image3 = Image_createWithResIDQuad(180, 2);
-            image3.x = x - 5f;
-            image3.y = y + 15f;
+            image3.x = x - 15f;
+            image3.y = y + 45f;
             image3.anchor = 18;
             // image3.DoRestoreCutTransparency();
             _ = AddChild(image3);
