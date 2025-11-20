@@ -328,7 +328,7 @@ namespace CutTheRope.GameMain
         private const float GHOST_MORPHING_APPEAR_TIME = 0.36f;
         private const float GHOST_MORPHING_DISAPPEAR_TIME = 0.16f;
         private const int GHOST_MORPHING_BUBBLES_COUNT = 7;
-        private const float GHOST_TOUCH_RADIUS = 40f;
+        private const float GHOST_TOUCH_RADIUS = 80f;
 
         public int ghostState;
         public Bubble bubble;
