@@ -8,7 +8,7 @@
         <target x="285" y="374" />
         <candyL x="175" y="377" />
         <bouncer2 x="190" y="233" angle="0" size="2" />
-        <bouncer2 x="174" y="440" angle="0" size="2" />
+        <bouncer2 x="184" y="440" angle="0" size="2" />
         <ghost x="67" y="245" bouncer="false" bubble="true" grab="true" radius="90" angle="0" />
         <star x="162" y="274" timeout="-1" />
         <star x="237" y="182" timeout="-1" />

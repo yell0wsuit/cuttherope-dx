@@ -20,7 +20,7 @@
 <bouncer1 x="113" y="29" angle="180" size="1" />
 <bouncer1 x="187" y="29" angle="180" size="1" />
 <bouncer1 x="259" y="29" angle="180" size="1" />
-<bouncer1 x="106" y="80" angle="270" size="1" path="150,0" moveSpeed="30" />
+<bouncer1 x="96" y="80" angle="270" size="1" path="150,0" moveSpeed="30" />
 <bouncer1 x="37" y="29" angle="180" size="1" />
 <spike4 x="29" y="470" angle="0" size="4" toggled="false" />
 <spike4 x="207" y="470" angle="0" size="4" toggled="false" />
