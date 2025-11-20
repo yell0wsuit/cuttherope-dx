@@ -24,8 +24,9 @@ namespace CutTheRope.GameMain
 
         public void AddSupportingCloudsTimelines()
         {
+            // first right cloud
             backCloud = Image_createWithResIDQuad(180, 6);
-            backCloud.x = x + 75f;
+            backCloud.x = x + 85f;
             backCloud.y = y + 25f;
             backCloud.anchor = 18;
             _ = AddChild(backCloud);
@@ -45,7 +46,7 @@ namespace CutTheRope.GameMain
             backCloud.PlayTimeline(0);
 
             backCloud2 = Image_createWithResIDQuad(180, 5);
-            backCloud2.x = x + 55f;
+            backCloud2.x = x + 65f;
             backCloud2.y = y + 55f;
             backCloud2.anchor = 18;
             _ = AddChild(backCloud2);
@@ -64,9 +65,10 @@ namespace CutTheRope.GameMain
             backCloud2.AddTimelinewithID(timeline2, 0);
             backCloud2.PlayTimeline(0);
 
+            // first left small cloud
             backCloud3 = Image_createWithResIDQuad(180, 5);
-            backCloud3.x = x - 75f;
-            backCloud3.y = y + 20f;
+            backCloud3.x = x - 90f;
+            backCloud3.y = y + 15f;
             backCloud3.anchor = 18;
             _ = AddChild(backCloud3);
             Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
@@ -84,9 +86,10 @@ namespace CutTheRope.GameMain
             backCloud3.AddTimelinewithID(timeline3, 0);
             backCloud3.PlayTimeline(0);
 
+            // second left small cloud
             Image image = Image_createWithResIDQuad(180, 6);
-            image.x = x - 65f;
-            image.y = y + 50f;
+            image.x = x - 75f;
+            image.y = y + 45f;
             image.anchor = 18;
             //image.DoRestoreCutTransparency();
             _ = AddChild(image);
@@ -105,9 +108,10 @@ namespace CutTheRope.GameMain
             image.AddTimelinewithID(timeline4, 0);
             image.PlayTimeline(0);
 
+            // big cloud
             Image image2 = Image_createWithResIDQuad(180, 2);
-            image2.x = x - 10f;
-            image2.y = y + 65f;
+            image2.x = x - 20f;
+            image2.y = y + 75f;
             image2.anchor = 18;
             //image2.DoRestoreCutTransparency();
             _ = AddChild(image2);
