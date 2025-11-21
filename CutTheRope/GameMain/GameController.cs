@@ -143,7 +143,7 @@ namespace CutTheRope.GameMain
         {
             if (CTRPreferences.IsPackPerfect(pack))
             {
-                CTRRootController.PostAchievementName(name[pack]);
+                //CTRRootController.PostAchievementName(name[pack]);
             }
         }
 
