@@ -449,6 +449,8 @@ namespace CutTheRope.GameMain
 
         public const int SND_GAME_MUSIC3 = 148;
 
+        public const int SND_GAME_MUSIC4 = 150;
+
         public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
 
         public const int RESOURCES_COUNT = 150;
