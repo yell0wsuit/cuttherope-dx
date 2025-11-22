@@ -225,7 +225,11 @@ namespace CutTheRope.GameMain
                     { 152, "bgr_12_cover" },
                     { 153, "bgr_12_p1" },
                     { 154, "bgr_12_p2" },
-                    { 180, "obj_ghost" }
+                    { 180, "obj_ghost" },
+                    { 184, "obj_pipe" },
+                    { 185, "steam_start" },
+                    { 186, "steam_start2" },
+                    { 187, "steam_end" },
                 };
             _ = resNames_.TryGetValue(HandleLocalizedResource(resId), out string value);
             return value;
