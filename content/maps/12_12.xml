@@ -6,7 +6,7 @@
 <layer name="Objects">
 <candy x="102" y="382" />
 <sock x="50" y="375" group="0" angle="0" />
-<sock x="270" y="375" group="1" angle="180" />
+<sock x="270" y="365" group="1" angle="180" />
 <bouncer2 x="100" y="430" angle="0" size="2" />
 <bouncer2 x="220" y="430" angle="0" size="2" />
 <sock x="55" y="90" group="1" angle="0" />
