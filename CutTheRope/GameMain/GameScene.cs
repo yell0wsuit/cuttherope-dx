@@ -271,6 +271,8 @@ namespace CutTheRope.GameMain
 
         private DynamicArray<Pump> pumps;
 
+        private DynamicArray<SteamTube> tubes;
+
         private DynamicArray<Sock> socks;
 
         private DynamicArray<Bouncer> bouncers;
