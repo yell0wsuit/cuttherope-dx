@@ -141,7 +141,7 @@ namespace CutTheRope.GameMain
 
         public static void CheckForBoxPerfect(int pack)
         {
-            if (CTRPreferences.IsPackPerfect(pack))
+            if (CTRPreferences.IsPackPerfect(pack) && pack < name.Length)
             {
                 CTRRootController.PostAchievementName(name[pack]);
             }
@@ -162,7 +162,7 @@ namespace CutTheRope.GameMain
                     break;
                 }
             }
-            if (flag)
+            if (flag && pack < nameArray.Length)
             {
                 CTRRootController.PostAchievementName(nameArray[pack]);
             }
@@ -214,7 +214,14 @@ namespace CutTheRope.GameMain
             image.SetDrawQuad(gameScene.starsCollected > 0 ? 13 : 14);
             image2.SetDrawQuad(gameScene.starsCollected > 1 ? 13 : 14);
             image3.SetDrawQuad(gameScene.starsCollected > 2 ? 13 : 14);
-            ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(STR_MENU_LEVEL_CLEARED1 + gameScene.starsCollected));
+            string clearText = gameScene.starsCollected switch
+            {
+                1 => STR_MENU_LEVEL_CLEARED2,
+                2 => STR_MENU_LEVEL_CLEARED3,
+                3 => STR_MENU_LEVEL_CLEARED4,
+                _ => STR_MENU_LEVEL_CLEARED1
+            };
+            ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(clearText));
             boxOpenClose.time = gameScene.time;
             boxOpenClose.starBonus = gameScene.starBonus;
             boxOpenClose.timeBonus = gameScene.timeBonus;
@@ -670,7 +677,8 @@ namespace CutTheRope.GameMain
                     "1991641832",
                     "1335599628",
                     "99928734496",
-                    "com.zeptolab.ctr.djboxperfect"
+                    "com.zeptolab.ctr.djboxperfect",
+                    "com.zeptolab.ctr.spookyboxperfect"
                 ];
         internal static readonly string[] nameArray =
                 [
@@ -684,7 +692,8 @@ namespace CutTheRope.GameMain
                     "1991474812",
                     "1321820679",
                     "23523272771",
-                    "com.zeptolab.ctr.djboxcompleted"
+                    "com.zeptolab.ctr.djboxcompleted",
+                    "com.zeptolab.ctr.spookyboxcompleted"
                 ];
     }
 }
