@@ -51,7 +51,7 @@ namespace CutTheRope.GameMain
             back.scaleY *= 1.25f;
             for (int i = 0; i < 3; i++)
             {
-                hudStar[i] = Animation.Animation_createWithResID(79);
+                hudStar[i] = Animation.Animation_createWithResID(IMG_HUD_STAR);
                 hudStar[i].DoRestoreCutTransparency();
                 _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 10);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);

@@ -424,7 +424,7 @@ namespace CutTheRope.GameMain
             hasSpider = s;
             shouldActivate = false;
             spiderActive = false;
-            spider = Animation_createWithResID(64);
+            spider = Animation_createWithResID(IMG_OBJ_SPIDER);
             spider.DoRestoreCutTransparency();
             spider.anchor = 18;
             spider.x = x;

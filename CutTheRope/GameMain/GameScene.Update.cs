@@ -392,7 +392,7 @@ namespace CutTheRope.GameMain
                                 rope2.chosenOne = false;
                             }
                         }
-                        Animation animation = Animation.Animation_createWithResID(63);
+                        Animation animation = Animation.Animation_createWithResID(IMG_OBJ_CANDY_01);
                         animation.DoRestoreCutTransparency();
                         animation.x = candy.x;
                         animation.y = candy.y;
@@ -437,7 +437,7 @@ namespace CutTheRope.GameMain
                         candyBlink.PlayTimeline(1);
                         starsCollected++;
                         hudStar[starsCollected - 1].PlayTimeline(0);
-                        Animation animation2 = Animation.Animation_createWithResID(71);
+                        Animation animation2 = Animation.Animation_createWithResID(IMG_OBJ_STAR_DISAPPEAR);
                         animation2.DoRestoreCutTransparency();
                         animation2.x = star.x;
                         animation2.y = star.y;
@@ -738,7 +738,7 @@ namespace CutTheRope.GameMain
                         {
                             PopCandyBubble(false);
                         }
-                        Image image2 = Image.Image_createWithResID(63);
+                        Image image2 = Image.Image_createWithResID(IMG_OBJ_CANDY_01);
                         image2.DoRestoreCutTransparency();
                         CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
                         if (gravityButton != null && !gravityNormal)

@@ -31,7 +31,7 @@ namespace CutTheRope.GameMain
             OpenGL.GlTranslatef((double)(0f - num4), (double)((0f - SCREEN_HEIGHT) / 2f), 0.0);
             GLDrawer.DrawImageQuad(texture, 0, (double)(SCREEN_WIDTH / 2f), 0.5);
             OpenGL.GlPopMatrix();
-            CTRTexture2D texture2 = Application.GetTexture(5);
+            CTRTexture2D texture2 = Application.GetTexture(IMG_MENU_LOADING);
             if (!game)
             {
                 OpenGL.GlEnable(4);

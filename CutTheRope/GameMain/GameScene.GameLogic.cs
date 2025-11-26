@@ -185,7 +185,7 @@ namespace CutTheRope.GameMain
         public void PopBubbleAtXY(float bx, float by)
         {
             CTRSoundMgr.PlaySound(SND_BUBBLE_BREAK);
-            Animation animation = Animation.Animation_createWithResID(73);
+            Animation animation = Animation.Animation_createWithResID(IMG_OBJ_BUBBLE_POP);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;

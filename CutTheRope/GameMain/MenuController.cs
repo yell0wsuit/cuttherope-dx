@@ -23,7 +23,7 @@ namespace CutTheRope.GameMain
         {
             Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
             Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
-            FontGeneric font = Application.GetFont(3);
+            FontGeneric font = Application.GetFont(FNT_BIG_FONT);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
             Text text2 = new Text().InitWithFont(font);
@@ -42,7 +42,7 @@ namespace CutTheRope.GameMain
         {
             Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_SHORT, 1);
             Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_SHORT, 0);
-            FontGeneric font = Application.GetFont(3);
+            FontGeneric font = Application.GetFont(FNT_BIG_FONT);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
             Text text2 = new Text().InitWithFont(font);
@@ -63,7 +63,7 @@ namespace CutTheRope.GameMain
             Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
             Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
             Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
-            FontGeneric font = Application.GetFont(3);
+            FontGeneric font = Application.GetFont(FNT_BIG_FONT);
             Text text = new Text().InitWithFont(font);
             text.SetString(str1);
             Text text2 = new Text().InitWithFont(font);
@@ -230,7 +230,7 @@ namespace CutTheRope.GameMain
             string string2 = Application.GetString(STR_MENU_LANGUAGE);
             Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
             Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
-            FontGeneric font = Application.GetFont(3);
+            FontGeneric font = Application.GetFont(FNT_BIG_FONT);
             Text text = new Text().InitWithFont(font);
             text.SetString(string2);
             Text text2 = new Text().InitWithFont(font);
@@ -349,7 +349,7 @@ namespace CutTheRope.GameMain
                 baseElement2.height = baseElement.height;
                 baseElement2.x -= Canvas.xOffsetScaled;
                 _ = baseElement.AddChild(baseElement2);
-                CTRTexture2D texture = Application.GetTexture(54);
+                CTRTexture2D texture = Application.GetTexture(IMG_MENU_EXTRA_BUTTONS);
                 Button button = CreateButton2WithImageQuad1Quad2IDDelegate(54, 3, 3, 16, this);
                 button.anchor = 9;
                 button.parentAnchor = 36;
@@ -446,7 +446,7 @@ namespace CutTheRope.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetAlignment(2);
             text.SetStringandWidth(Application.GetString(STR_MENU_RESET_TEXT), Global.ScreenSizeManager.CurrentSize.Width * 0.95);
             text.anchor = text.parentAnchor = 18;
@@ -513,7 +513,7 @@ namespace CutTheRope.GameMain
             _ = vBox.AddChild(baseElement2);
             Image c = Image.Image_createWithResIDQuad(IMG_MENU_LOGO, 1);
             _ = vBox.AddChild(c);
-            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            Text text2 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text2.SetAlignment(2);
             text2.SetStringandWidth(text, (int)num);
             aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
@@ -522,7 +522,7 @@ namespace CutTheRope.GameMain
             Image c2 = Image.Image_createWithResIDQuad(IMG_MENU_LOGO, 2);
             _ = vBox.AddChild(c2);
             string @string = Application.GetString(STR_MENU_ABOUT_SPECIAL_THANKS);
-            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            Text text3 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text3.SetAlignment(2);
             text3.SetStringandWidth(@string, num);
             _ = vBox.AddChild(text3);
@@ -538,7 +538,7 @@ namespace CutTheRope.GameMain
         public static HBox CreateTextWithStar(string t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetString(t);
             text.scaleX = text.scaleY = 0.7f;
             text.rotationCenterX = -(float)text.width / 2;
@@ -742,7 +742,7 @@ namespace CutTheRope.GameMain
             packContainer.x = (SCREEN_WIDTH / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
-            CTRTexture2D texture = Application.GetTexture(52);
+            CTRTexture2D texture = Application.GetTexture(IMG_MENU_PACK_SELECTION);
             BaseElement baseElement2 = new()
             {
                 width = (int)texture.preCutSize.x,
@@ -824,7 +824,7 @@ namespace CutTheRope.GameMain
             _ = popup.AddChild(image);
             int num = 20;
             image.scaleX = 1.3f;
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetAlignment(2);
             text.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT1));
             text.anchor = 18;
@@ -838,7 +838,7 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(text2, 49, 2);
             _ = popup.AddChild(text2);
             text2.y -= num;
-            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            Text text3 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text3.SetAlignment(2);
             text3.SetStringandWidth(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT3), 600f);
             text3.anchor = 18;
@@ -866,14 +866,14 @@ namespace CutTheRope.GameMain
             Image image = Image.Image_createWithResIDQuad(IMG_MENU_POPUP, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetAlignment(2);
             text.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT), 600.0);
             text.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text, 49, 2);
             text.y -= 170f;
             _ = image.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            Text text2 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text2.SetAlignment(2);
             text2.SetStringandWidth(Application.GetString(STR_MENU_GAME_FINISHED_TEXT2), 700.0);
             text2.anchor = 18;
@@ -895,7 +895,7 @@ namespace CutTheRope.GameMain
             Image image = Image.Image_createWithResIDQuad(IMG_MENU_POPUP, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetAlignment(2);
             text.SetStringandWidth(str, 680.0);
             text.anchor = 18;
@@ -982,7 +982,7 @@ namespace CutTheRope.GameMain
                 touchBaseElement.bid = 1000 + l;
                 image = Image.Image_createWithResIDQuad(IMG_MENU_LEVEL_SELECTION, 0);
                 image.DoRestoreCutTransparency();
-                Text text = new Text().InitWithFont(Application.GetFont(3));
+                Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
                 string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
                 text.SetString(@string);
                 text.anchor = text.parentAnchor = 18;
@@ -1140,7 +1140,7 @@ namespace CutTheRope.GameMain
             }
             ShowView(viewToShow);
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayMusic(145);
+            CTRSoundMgr.PlayMusic(SND_MENU_MUSIC);
         }
 
         public void ShowNextPack()
@@ -1178,7 +1178,7 @@ namespace CutTheRope.GameMain
             }
             if (url != null)
             {
-                CTRSoundMgr.PlayMusic(145);
+                CTRSoundMgr.PlayMusic(SND_MENU_MUSIC);
             }
             if (CTRPreferences.ShouldPlayLevelScroll())
             {
@@ -1315,7 +1315,7 @@ namespace CutTheRope.GameMain
                             CTRSoundMgr.StopMusic();
                             return;
                         }
-                        CTRSoundMgr.PlayMusic(145);
+                        CTRSoundMgr.PlayMusic(SND_MENU_MUSIC);
                         return;
                     }
                 case 7:

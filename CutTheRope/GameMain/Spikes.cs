@@ -110,7 +110,7 @@ namespace CutTheRope.GameMain
             electroOn = true;
             PlayTimeline(1);
             electroTimer = onTime;
-            sndElectric = CTRSoundMgr.PlaySoundLooped(28);
+            sndElectric = CTRSoundMgr.PlaySoundLooped(SND_ELECTRIC);
         }
 
         public void RotateSpikes()

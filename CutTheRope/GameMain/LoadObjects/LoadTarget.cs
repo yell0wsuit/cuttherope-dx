@@ -108,7 +108,7 @@ namespace CutTheRope.GameMain
             target.SetPauseAtIndexforAnimation(8, 7);
 
             // Setup blink animation
-            blink = Animation.Animation_createWithResID(80);
+            blink = Animation.Animation_createWithResID(IMG_CHAR_ANIMATIONS);
             blink.parentAnchor = 9;
             blink.visible = false;
             blink.AddAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);

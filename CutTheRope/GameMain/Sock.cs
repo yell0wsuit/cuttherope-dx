@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
 
         public void CreateAnimations()
         {
-            light = Animation_createWithResID(85);
+            light = Animation_createWithResID(IMG_OBJ_SOCKS);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;

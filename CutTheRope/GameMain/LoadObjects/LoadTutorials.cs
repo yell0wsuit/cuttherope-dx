@@ -22,7 +22,7 @@ namespace CutTheRope.GameMain
             if (!ShouldSkipTutorialElement(xmlNode))
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-                TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(4));
+                TutorialText tutorialText = (TutorialText)new TutorialText().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
                 tutorialText.color = RGBAColor.MakeRGBA(1.0, 1.0, 1.0, 0.9);
                 tutorialText.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                 tutorialText.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;

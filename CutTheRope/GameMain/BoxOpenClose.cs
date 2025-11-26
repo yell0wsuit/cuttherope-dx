@@ -189,7 +189,7 @@ namespace CutTheRope.GameMain
             image3.SetName("star3");
             Image.SetElementPositionWithQuadOffset(image3, 67, 2);
             _ = result.AddChild(image3);
-            Text text = new Text().InitWithFont(Application.GetFont(3));
+            Text text = new Text().InitWithFont(Application.GetFont(FNT_BIG_FONT));
             text.SetString(Application.GetString(STR_MENU_LEVEL_CLEARED1));
             Image.SetElementPositionWithQuadOffset(text, 67, 3);
             text.anchor = 18;
@@ -222,17 +222,17 @@ namespace CutTheRope.GameMain
             button3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(button3, 67, 9);
             _ = result.AddChild(button3);
-            Text text2 = new Text().InitWithFont(Application.GetFont(4));
+            Text text2 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text2.SetName("dataTitle");
             text2.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text2, 67, 5);
             _ = result.AddChild(text2);
-            Text text3 = new Text().InitWithFont(Application.GetFont(4));
+            Text text3 = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
             text3.SetName("dataValue");
             text3.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text3, 67, 6);
             _ = result.AddChild(text3);
-            Text text4 = new Text().InitWithFont(Application.GetFont(68));
+            Text text4 = new Text().InitWithFont(Application.GetFont(FNT_FONT_NUMBERS_BIG));
             text4.SetName("scoreValue");
             text4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(text4, 67, 8);
@@ -247,7 +247,7 @@ namespace CutTheRope.GameMain
 
         public static BaseElement CreateConfettiParticleNear(Vector p)
         {
-            Confetti confetti = Confetti.Confetti_createWithResID(65);
+            Confetti confetti = Confetti.Confetti_createWithResID(IMG_CONFETTI_PARTICLES);
             confetti.DoRestoreCutTransparency();
             int num = RND_RANGE(0, 2);
             int num2 = 18;
