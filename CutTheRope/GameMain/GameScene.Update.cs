@@ -149,10 +149,10 @@ namespace CutTheRope.GameMain
                                 bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee);
-                                CTRSoundMgr.PlaySound(24);
+                                CTRSoundMgr.PlaySound(SND_ROPE_GET);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr.PlaySound(44);
+                                    CTRSoundMgr.PlaySound(SND_BUZZ);
                                 }
                             }
                             if (!noCandyR && grab.rope == null && VectDistance(Vect(grab.x, grab.y), starR.pos) <= grab.radius + 42f)
@@ -161,10 +161,10 @@ namespace CutTheRope.GameMain
                                 bungee2.bungeeAnchor.pin = bungee2.bungeeAnchor.pos;
                                 grab.hideRadius = true;
                                 grab.SetRope(bungee2);
-                                CTRSoundMgr.PlaySound(24);
+                                CTRSoundMgr.PlaySound(SND_ROPE_GET);
                                 if (grab.mover != null)
                                 {
-                                    CTRSoundMgr.PlaySound(44);
+                                    CTRSoundMgr.PlaySound(SND_BUZZ);
                                 }
                             }
                         }
@@ -174,10 +174,10 @@ namespace CutTheRope.GameMain
                             bungee3.bungeeAnchor.pin = bungee3.bungeeAnchor.pos;
                             grab.hideRadius = true;
                             grab.SetRope(bungee3);
-                            CTRSoundMgr.PlaySound(24);
+                            CTRSoundMgr.PlaySound(SND_ROPE_GET);
                             if (grab.mover != null)
                             {
-                                CTRSoundMgr.PlaySound(44);
+                                CTRSoundMgr.PlaySound(SND_BUZZ);
                             }
                         }
                     }
@@ -287,7 +287,7 @@ namespace CutTheRope.GameMain
                 {
                     if (Mover.MoveVariableToTarget(ref partsDist, 0.0, 200.0, (double)delta))
                     {
-                        CTRSoundMgr.PlaySound(40);
+                        CTRSoundMgr.PlaySound(SND_CANDY_LINK);
                         twoParts = 2;
                         noCandy = false;
                         noCandyL = true;
@@ -447,7 +447,7 @@ namespace CutTheRope.GameMain
                         animation2.PlayTimeline(0);
                         _ = aniPool.AddChild(animation2);
                         stars.RemoveObject(star);
-                        CTRSoundMgr.PlaySound(25 + starsCollected - 1);
+                        CTRSoundMgr.PlaySound(SND_STAR_1 + starsCollected - 1);
                         if (target.GetCurrentTimelineIndex() == 0)
                         {
                             target.PlayAnimationtimeline(101, 3);
@@ -489,7 +489,7 @@ namespace CutTheRope.GameMain
                                 candyGhostBubbleAnimationL.visible = false;
                             }
                         }
-                        CTRSoundMgr.PlaySound(13);
+                        CTRSoundMgr.PlaySound(SND_BUBBLE);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
                         break;
@@ -519,7 +519,7 @@ namespace CutTheRope.GameMain
                             }
                         }
                         candyBubbleR = bubble3;
-                        CTRSoundMgr.PlaySound(13);
+                        CTRSoundMgr.PlaySound(SND_BUBBLE);
                         bubble3.popped = true;
                         bubble3.RemoveChildWithID(0);
                         break;
@@ -556,7 +556,7 @@ namespace CutTheRope.GameMain
                             candyGhostBubbleAnimation.visible = false;
                         }
                     }
-                    CTRSoundMgr.PlaySound(13);
+                    CTRSoundMgr.PlaySound(SND_BUBBLE);
                     bubble3.popped = true;
                     bubble3.RemoveChildWithID(0);
                     break;
@@ -676,7 +676,7 @@ namespace CutTheRope.GameMain
                             targetSock = sock4;
                             sock3.light.PlayTimeline(0);
                             sock3.light.visible = true;
-                            CTRSoundMgr.PlaySound(45);
+                            CTRSoundMgr.PlaySound(SND_TELEPORT);
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), null, 0.1);
                             break;
                         }
@@ -770,7 +770,7 @@ namespace CutTheRope.GameMain
                         }
                         candyBreak.StartSystem(5);
                         _ = aniPool.AddChild(candyBreak);
-                        CTRSoundMgr.PlaySound(14);
+                        CTRSoundMgr.PlaySound(SND_CANDY_BREAK);
                         ReleaseAllRopes(flag5);
                         if (restartState != 0 && (twoParts == 2 || !noCandyL || !noCandyR))
                         {
@@ -899,7 +899,7 @@ namespace CutTheRope.GameMain
                     {
                         mouthOpen = true;
                         target.PlayTimeline(7);
-                        CTRSoundMgr.PlaySound(17);
+                        CTRSoundMgr.PlaySound(SND_MONSTER_OPEN);
                         mouthCloseTimer = 1f;
                     }
                 }
@@ -912,7 +912,7 @@ namespace CutTheRope.GameMain
                         {
                             mouthOpen = false;
                             target.PlayTimeline(8);
-                            CTRSoundMgr.PlaySound(16);
+                            CTRSoundMgr.PlaySound(SND_MONSTER_CLOSE);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {

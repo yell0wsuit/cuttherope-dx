@@ -49,16 +49,16 @@ namespace CutTheRope.GameMain
                 DoRestoreCutTransparency();
                 int num = (t - 1) * 2;
                 int q = 1 + ((t - 1) * 2);
-                Image image = Image_createWithResIDQuad(97, num);
-                Image image2 = Image_createWithResIDQuad(97, q);
+                Image image = Image_createWithResIDQuad(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
+                Image image2 = Image_createWithResIDQuad(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, q);
                 image.DoRestoreCutTransparency();
                 image2.DoRestoreCutTransparency();
                 rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, 0);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
-                Vector quadOffset = GetQuadOffset(97, num);
-                Vector quadSize = GetQuadSize(97, num);
+                Vector quadOffset = GetQuadOffset(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
+                Vector quadSize = GetQuadSize(IMG_OBJ_ROTATABLE_SPIKES_BUTTON, num);
                 Vector vector = VectSub(Vect(image.texture.preCutSize.x, image.texture.preCutSize.y), VectAdd(quadSize, quadOffset));
                 rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.x + (quadSize.x / 2f), 0f - vector.x + (quadSize.x / 2f), 0f - quadOffset.y + (quadSize.y / 2f), 0f - vector.y + (quadSize.y / 2f));
             }
@@ -185,10 +185,10 @@ namespace CutTheRope.GameMain
                 delegateRotateAllSpikesWithID(toggled);
                 if (spikesNormal)
                 {
-                    CTRSoundMgr.PlaySound(42);
+                    CTRSoundMgr.PlaySound(SND_SPIKE_ROTATE_IN);
                     return;
                 }
-                CTRSoundMgr.PlaySound(43);
+                CTRSoundMgr.PlaySound(SND_SPIKE_ROTATE_OUT);
             }
         }
 

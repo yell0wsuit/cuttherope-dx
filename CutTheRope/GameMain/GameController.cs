@@ -56,7 +56,7 @@ namespace CutTheRope.GameMain
             Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
             button2.x = -(float)Canvas.xOffsetScaled;
             _ = gameView.AddChildwithID(button2, 2);
-            Image image = Image.Image_createWithResIDQuad(66, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_PAUSE, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = -(float)image.height / 2;
@@ -203,7 +203,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController.SetHacked();
             }
-            CTRSoundMgr.PlaySound(37);
+            CTRSoundMgr.PlaySound(SND_WIN);
             View view = GetView(0);
             view.GetChild(4).touchable = true;
             GameScene gameScene = (GameScene)view.GetChild(0);
@@ -298,7 +298,7 @@ namespace CutTheRope.GameMain
         public void OnButtonPressed(int n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            CTRSoundMgr.PlaySound(9);
+            CTRSoundMgr.PlaySound(SND_TAP);
             View view = GetView(0);
             switch (n)
             {

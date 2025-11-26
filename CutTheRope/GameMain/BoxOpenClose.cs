@@ -174,17 +174,17 @@ namespace CutTheRope.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             result.AddTimelinewithID(timeline, 1);
-            Image image = Image.Image_createWithResIDQuad(67, 14);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_RESULT, 14);
             image.anchor = 18;
             image.SetName("star1");
             Image.SetElementPositionWithQuadOffset(image, 67, 0);
             _ = result.AddChild(image);
-            Image image2 = Image.Image_createWithResIDQuad(67, 14);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_RESULT, 14);
             image2.anchor = 18;
             image2.SetName("star2");
             Image.SetElementPositionWithQuadOffset(image2, 67, 1);
             _ = result.AddChild(image2);
-            Image image3 = Image.Image_createWithResIDQuad(67, 14);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_RESULT, 14);
             image3.anchor = 18;
             image3.SetName("star3");
             Image.SetElementPositionWithQuadOffset(image3, 67, 2);
@@ -195,11 +195,11 @@ namespace CutTheRope.GameMain
             text.anchor = 18;
             text.SetName("passText");
             _ = result.AddChild(text);
-            Image image4 = Image.Image_createWithResIDQuad(67, 15);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_RESULT, 15);
             image4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(image4, 67, 4);
             _ = result.AddChild(image4);
-            stamp = Image.Image_createWithResIDQuad(70, 0);
+            stamp = Image.Image_createWithResIDQuad(IMG_MENU_RESULT_EN, 0);
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(3.0, 3.0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.0));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1.0, 1.0, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5));
@@ -363,7 +363,7 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             int[] coverResources = PackConfig.GetCoverResources(cTRRootController.GetPack());
             int num9 = coverResources.Length > 0 ? coverResources[0] : 126 + cTRRootController.GetPack();
-            Image image = Image.Image_createWithResIDQuad(67, 16);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_RESULT, 16);
             image.rotationCenterX = ((float)-(float)image.width / 2f) + 1f;
             image.rotationCenterY = ((float)-(float)image.height / 2f) + 1f;
             image.scaleX = image.scaleY = 4f;
@@ -426,8 +426,8 @@ namespace CutTheRope.GameMain
             }
             image3.AddTimelinewithID(timeline, 0);
             image3.PlayTimeline(0);
-            Image image4 = Image.Image_createWithResIDQuad(5, 0);
-            Image image5 = Image.Image_createWithResIDQuad(5, 1);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_LOADING, 0);
+            Image image5 = Image.Image_createWithResIDQuad(IMG_MENU_LOADING, 1);
             float num3 = 80f;
             float num4 = 50f;
             float num5 = 10f;

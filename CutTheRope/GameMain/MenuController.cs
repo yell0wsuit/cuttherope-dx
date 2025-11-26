@@ -21,8 +21,8 @@ namespace CutTheRope.GameMain
     {
         public static Button CreateButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
             FontGeneric font = Application.GetFont(3);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
@@ -40,8 +40,8 @@ namespace CutTheRope.GameMain
 
         public static Button CreateShortButtonWithTextIDDelegate(string str, int bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(61, 1);
-            Image image2 = Image.Image_createWithResIDQuad(61, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_SHORT, 1);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_SHORT, 0);
             FontGeneric font = Application.GetFont(3);
             Text text = new Text().InitWithFont(font);
             text.SetString(str);
@@ -59,10 +59,10 @@ namespace CutTheRope.GameMain
 
         public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, int bid, IButtonDelegation d)
         {
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
-            Image image3 = Image.Image_createWithResIDQuad(2, 0);
-            Image image4 = Image.Image_createWithResIDQuad(2, 1);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
             FontGeneric font = Application.GetFont(3);
             Text text = new Text().InitWithFont(font);
             text.SetString(str1);
@@ -138,7 +138,7 @@ namespace CutTheRope.GameMain
                 width = (int)SCREEN_WIDTH,
                 height = (int)SCREEN_HEIGHT
             };
-            Image image = Image.Image_createWithResIDQuad(48, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BGR, 0);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
@@ -146,13 +146,13 @@ namespace CutTheRope.GameMain
             _ = baseElement.AddChild(image);
             if (l)
             {
-                Image image2 = Image.Image_createWithResIDQuad(48, 1);
+                Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BGR, 1);
                 image2.anchor = image2.parentAnchor = 34;
                 image2.scaleX = image2.scaleY = 1.25f;
                 image2.passTransformationsToChilds = false;
                 image2.rotationCenterY = image2.height / 2;
                 _ = image.AddChild(image2);
-                Image image3 = Image.Image_createWithResIDQuad(50, 0);
+                Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_LOGO, 0);
                 image3.anchor = 10;
                 image3.parentAnchor = 10;
                 image3.y = 55f;
@@ -160,7 +160,7 @@ namespace CutTheRope.GameMain
             }
             if (s)
             {
-                Image image4 = Image.Image_createWithResIDQuad(60, 0);
+                Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_BGR_SHADOW, 0);
                 image4.anchor = image4.parentAnchor = 18;
                 image4.scaleX = image4.scaleY = 2f;
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -182,8 +182,8 @@ namespace CutTheRope.GameMain
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, Vector offset)
         {
             int num = p ? 1 : 0;
-            Image image = Image.Image_createWithResIDQuad(8, num);
-            Image image2 = Image.Image_createWithResIDQuad(8, q);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_OPTIONS, num);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_OPTIONS, q);
             Image.SetElementPositionWithRelativeQuadOffset(image2, 8, num, q);
             image2.parentAnchor = image2.anchor = 9;
             image2.x += offset.x;
@@ -192,7 +192,7 @@ namespace CutTheRope.GameMain
             if (b)
             {
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
-                Image image3 = Image.Image_createWithResIDQuad(8, 4);
+                Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_OPTIONS, 4);
                 image3.parentAnchor = image3.anchor = 9;
                 Image.SetElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
                 _ = image.AddChild(image3);
@@ -228,8 +228,8 @@ namespace CutTheRope.GameMain
                 q = 6;
             }
             string string2 = Application.GetString(STR_MENU_LANGUAGE);
-            Image image = Image.Image_createWithResIDQuad(2, 0);
-            Image image2 = Image.Image_createWithResIDQuad(2, 1);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 0);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_DEFAULT, 1);
             FontGeneric font = Application.GetFont(3);
             Text text = new Text().InitWithFont(font);
             text.SetString(string2);
@@ -239,8 +239,8 @@ namespace CutTheRope.GameMain
             text2.anchor = text2.parentAnchor = 18;
             _ = image.AddChild(text);
             _ = image2.AddChild(text2);
-            Image image3 = Image.Image_createWithResIDQuad(54, q);
-            Image image4 = Image.Image_createWithResIDQuad(54, q);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_EXTRA_BUTTONS, q);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_EXTRA_BUTTONS, q);
             image4.parentAnchor = image3.parentAnchor = 20;
             image4.anchor = image3.anchor = 20;
             _ = text.AddChild(image3);
@@ -278,7 +278,7 @@ namespace CutTheRope.GameMain
 
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
-            Image image = Image.Image_createWithResIDQuad(8, q);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_OPTIONS, q);
             Text text = Text.CreateWithFontandString(4, str);
             text.parentAnchor = 9;
             text.anchor = 18;
@@ -287,7 +287,7 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithRelativeQuadOffset(text, 8, q, tq);
             if (bId != -1)
             {
-                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(8, -1, 8, bId, delegateValue);
+                ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(IMG_MENU_OPTIONS, -1, IMG_MENU_OPTIONS, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
                 Image.SetElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
@@ -297,7 +297,7 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                Image image2 = Image.Image_createWithResIDQuad(8, 7);
+                Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_OPTIONS, 7);
                 image2.parentAnchor = 9;
                 Image.SetElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
                 _ = image.AddChild(image2);
@@ -307,8 +307,8 @@ namespace CutTheRope.GameMain
 
         public static Image CreateBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
-            Image image3 = Image.Image_createWithResIDQuad(59, pressed ? 1 : 0);
-            Image image2 = Image.Image_createWithResIDQuad(59, quad);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_ACHIV_CUP, pressed ? 1 : 0);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_BUTTON_ACHIV_CUP, quad);
             _ = image3.AddChild(image2);
             image2.parentAnchor = 9;
             Image.SetElementPositionWithRelativeQuadOffset(image2, 59, 0, quad);
@@ -367,7 +367,7 @@ namespace CutTheRope.GameMain
                 {
                     _ = baseElement2.AddChild(button2);
                 }
-                Image image = Image.Image_createWithResIDQuad(149, 0);
+                Image image = Image.Image_createWithResIDQuad(IMG_MENU_EXTRA_BUTTONS_EN, 0);
                 image.anchor = 9;
                 image.parentAnchor = 36;
                 Image.SetElementPositionWithQuadOffset(image, 149, 0);
@@ -391,7 +391,7 @@ namespace CutTheRope.GameMain
             _ = hBox.AddChild(baseElement2);
             _ = hBox.AddChild(baseElement3);
             _ = menuView.AddChild(hBox);
-            Image image = Image.Image_createWithResIDQuad(60, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_BGR_SHADOW, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -511,7 +511,7 @@ namespace CutTheRope.GameMain
                 height = 100
             };
             _ = vBox.AddChild(baseElement2);
-            Image c = Image.Image_createWithResIDQuad(50, 1);
+            Image c = Image.Image_createWithResIDQuad(IMG_MENU_LOGO, 1);
             _ = vBox.AddChild(c);
             Text text2 = new Text().InitWithFont(Application.GetFont(4));
             text2.SetAlignment(2);
@@ -519,7 +519,7 @@ namespace CutTheRope.GameMain
             aboutContainer = new ScrollableContainer().InitWithWidthHeightContainer(num, h, vBox);
             aboutContainer.anchor = aboutContainer.parentAnchor = 18;
             _ = vBox.AddChild(text2);
-            Image c2 = Image.Image_createWithResIDQuad(50, 2);
+            Image c2 = Image.Image_createWithResIDQuad(IMG_MENU_LOGO, 2);
             _ = vBox.AddChild(c2);
             string @string = Application.GetString(STR_MENU_ABOUT_SPECIAL_THANKS);
             Text text3 = new Text().InitWithFont(Application.GetFont(4));
@@ -544,7 +544,7 @@ namespace CutTheRope.GameMain
             text.rotationCenterX = -(float)text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
-            Image c = Image.Image_createWithResIDQuad(52, 3);
+            Image c = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 3);
             _ = hbox.AddChild(c);
             return hbox;
         }
@@ -625,7 +625,7 @@ namespace CutTheRope.GameMain
             {
                 _ = baseElement.AddChild(image);
                 int num = CTRPreferences.PackUnlockStars(n);
-                Image image2 = Image.Image_createWithResIDQuad(52, 2);
+                Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 2);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -657,7 +657,7 @@ namespace CutTheRope.GameMain
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
                     _ = baseElement.AddChild(monsterSlot);
-                    Image image3 = Image.Image_createWithResIDQuad(52, q3);
+                    Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, q3);
                     image3.DoRestoreCutTransparency();
                     image3.anchor = 17;
                     monsterSlot.s = (image.width * (n - 1)) + (-20f * n) + packContainer.x + 50f;
@@ -670,7 +670,7 @@ namespace CutTheRope.GameMain
                 _ = baseElement.AddChild(image);
                 if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
                 {
-                    Image image4 = Image.Image_createWithResIDQuad(52, 2);
+                    Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 2);
                     image4.SetName("lockHideMe");
                     image4.DoRestoreCutTransparency();
                     image4.anchor = image4.parentAnchor = 9;
@@ -762,24 +762,24 @@ namespace CutTheRope.GameMain
                 num3 += touchBaseElement.width + -20f;
             }
             hBox2.width += 1000;
-            Image image = Image.Image_createWithResIDQuad(52, 11);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 11);
             image.anchor = 17;
             image.y += SCREEN_HEIGHT / 2f;
             image.x = packContainer.x - 2f;
             _ = baseElement.AddChild(image);
-            Image image2 = Image.Image_createWithResIDQuad(52, 11);
+            Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 11);
             image2.anchor = 20;
             image2.y += SCREEN_HEIGHT / 2f;
             image2.x = packContainer.x + packContainer.width + 2f;
             _ = baseElement.AddChild(image2);
             image2.scaleX = image2.scaleY = -1f;
             _ = baseElement.AddChild(packContainer);
-            Image image3 = Image.Image_createWithResIDQuad(52, 12);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 12);
             image3.anchor = 20;
             image3.y += SCREEN_HEIGHT / 2f;
             image3.x = packContainer.x + 3f;
             _ = baseElement.AddChild(image3);
-            Image image4 = Image.Image_createWithResIDQuad(52, 12);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_PACK_SELECTION, 12);
             image4.anchor = 17;
             image4.y += SCREEN_HEIGHT / 2f;
             image4.x = packContainer.x + packContainer.width - 3f;
@@ -819,7 +819,7 @@ namespace CutTheRope.GameMain
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_POPUP, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
             int num = 20;
@@ -863,7 +863,7 @@ namespace CutTheRope.GameMain
         {
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_POPUP, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
             Text text = new Text().InitWithFont(Application.GetFont(3));
@@ -892,7 +892,7 @@ namespace CutTheRope.GameMain
         {
             Popup popup = new();
             popup.SetName("popup");
-            Image image = Image.Image_createWithResIDQuad(49, 0);
+            Image image = Image.Image_createWithResIDQuad(IMG_MENU_POPUP, 0);
             image.DoRestoreCutTransparency();
             _ = popup.AddChild(image);
             Text text = new Text().InitWithFont(Application.GetFont(3));
@@ -974,13 +974,13 @@ namespace CutTheRope.GameMain
             if (flag)
             {
                 touchBaseElement.bid = -1;
-                image = Image.Image_createWithResIDQuad(51, 1);
+                image = Image.Image_createWithResIDQuad(IMG_MENU_LEVEL_SELECTION, 1);
                 image.DoRestoreCutTransparency();
             }
             else
             {
                 touchBaseElement.bid = 1000 + l;
-                image = Image.Image_createWithResIDQuad(51, 0);
+                image = Image.Image_createWithResIDQuad(IMG_MENU_LEVEL_SELECTION, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(3));
                 string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
@@ -988,7 +988,7 @@ namespace CutTheRope.GameMain
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
                 _ = image.AddChild(text);
-                Image image2 = Image.Image_createWithResIDQuad(51, 2 + starsForPackLevel);
+                Image image2 = Image.Image_createWithResIDQuad(IMG_MENU_LEVEL_SELECTION, 2 + starsForPackLevel);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
                 _ = image.AddChild(image2);
@@ -1020,15 +1020,15 @@ namespace CutTheRope.GameMain
             image.SetName("levelsBack");
             _ = image.AddChild(image2);
             _ = menuView.AddChild(image);
-            Image image3 = Image.Image_createWithResIDQuad(5, 0);
-            Image image4 = Image.Image_createWithResIDQuad(5, 1);
+            Image image3 = Image.Image_createWithResIDQuad(IMG_MENU_LOADING, 0);
+            Image image4 = Image.Image_createWithResIDQuad(IMG_MENU_LOADING, 1);
             image3.x = Image.GetQuadOffset(5, 0).x;
             image3.y = 80f;
             image4.x = Image.GetQuadOffset(5, 1).x;
             image4.y = 80f;
             _ = menuView.AddChild(image3);
             _ = menuView.AddChild(image4);
-            Image image5 = Image.Image_createWithResIDQuad(60, 0);
+            Image image5 = Image.Image_createWithResIDQuad(IMG_MENU_BGR_SHADOW, 0);
             image5.SetName("shadow");
             image5.anchor = image5.parentAnchor = 18;
             image5.scaleX = image5.scaleY = 2f;
@@ -1243,7 +1243,7 @@ namespace CutTheRope.GameMain
         {
             if (n is not (-1))
             {
-                CTRSoundMgr.PlaySound(9);
+                CTRSoundMgr.PlaySound(SND_TAP);
             }
             if (n >= 1000)
             {

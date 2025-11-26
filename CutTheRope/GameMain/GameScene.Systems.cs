@@ -54,7 +54,7 @@ namespace CutTheRope.GameMain
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
                 s.ApplyImpulseDelta(impulse, delta);
                 b.PlayTimeline(0);
-                CTRSoundMgr.PlaySound(41);
+                CTRSoundMgr.PlaySound(SND_BOUNCER);
             }
         }
 
@@ -64,7 +64,7 @@ namespace CutTheRope.GameMain
         public void OperatePump(Pump p)
         {
             p.PlayTimeline(0);
-            CTRSoundMgr.PlaySound(RND_RANGE(29, 32));
+            CTRSoundMgr.PlaySound(RND_RANGE(SND_PUMP_1, SND_PUMP_4));
             Image grid = Image.Image_createWithResID(83);
             PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES((float)p.angle) - 90f, grid);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
@@ -127,7 +127,7 @@ namespace CutTheRope.GameMain
                             {
                                 SpiderBusted(grab);
                             }
-                            CTRSoundMgr.PlaySound(20 + rope.relaxed);
+                            CTRSoundMgr.PlaySound(SND_ROPE_BLEAK_1 + rope.relaxed);
                             rope.SetCut(j);
                             if (im)
                             {
@@ -157,9 +157,9 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
-            CTRSoundMgr.PlaySound(34);
+            CTRSoundMgr.PlaySound(SND_SPIDER_FALL);
             g.hasSpider = false;
-            Image image = Image.Image_createWithResIDQuad(64, 11);
+            Image image = Image.Image_createWithResIDQuad(IMG_OBJ_SPIDER, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityButton != null && !gravityNormal)
@@ -190,7 +190,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         public void SpiderWon(Grab sg)
         {
-            CTRSoundMgr.PlaySound(35);
+            CTRSoundMgr.PlaySound(SND_SPIDER_WIN);
             int num = bungees.Count;
             for (int i = 0; i < num; i++)
             {
@@ -212,7 +212,7 @@ namespace CutTheRope.GameMain
             sg.hasSpider = false;
             // spiderTookCandy = true;
             noCandy = true;
-            Image image = Image.Image_createWithResIDQuad(64, 12);
+            Image image = Image.Image_createWithResIDQuad(IMG_OBJ_SPIDER, 12);
             image.DoRestoreCutTransparency();
             candy.anchor = candy.parentAnchor = 18;
             candy.x = 0f;

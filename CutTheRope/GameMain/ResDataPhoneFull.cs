@@ -401,6 +401,8 @@ namespace CutTheRope.GameMain
 
         public const int IMG_BGR_12_P2 = 154;
 
+        public const int IMG_OBJ_GHOST = 180;
+
         public const int IMG_BGR_COVER_01 = 126;
 
         public const int IMG_BGR_COVER_02 = 127;
@@ -452,6 +454,8 @@ namespace CutTheRope.GameMain
         public const int SND_GAME_MUSIC4 = 150;
 
         public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
+
+        public const int SND_GHOST_PUFF = 151;
 
         public const int RESOURCES_COUNT = 150;
 

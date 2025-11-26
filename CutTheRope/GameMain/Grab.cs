@@ -53,7 +53,7 @@ namespace CutTheRope.GameMain
             {
                 return;
             }
-            CTRSoundMgr.PlaySound(36);
+            CTRSoundMgr.PlaySound(SND_WHEEL);
             float num = GetRotateAngleForStartEndCenter(lastWheelTouch, v, Vect(x, y));
             if ((double)num > 180.0)
             {
@@ -150,7 +150,7 @@ namespace CutTheRope.GameMain
             {
                 shouldActivate = false;
                 spiderActive = true;
-                CTRSoundMgr.PlaySound(33);
+                CTRSoundMgr.PlaySound(SND_SPIDER_ACTIVATE);
                 spider.PlayTimeline(0);
             }
             if (!hasSpider || !spiderActive)
@@ -313,10 +313,10 @@ namespace CutTheRope.GameMain
             }
             else
             {
-                back = Image_createWithResIDQuad(74, 0);
+                back = Image_createWithResIDQuad(IMG_OBJ_HOOK_AUTO, 0);
                 back.DoRestoreCutTransparency();
                 back.anchor = back.parentAnchor = 18;
-                front = Image_createWithResIDQuad(74, 1);
+                front = Image_createWithResIDQuad(IMG_OBJ_HOOK_AUTO, 1);
                 front.anchor = front.parentAnchor = 18;
                 _ = AddChild(back);
                 _ = AddChild(front);
@@ -335,16 +335,16 @@ namespace CutTheRope.GameMain
             }
             if (wheel)
             {
-                wheelImage = Image_createWithResIDQuad(81, 0);
+                wheelImage = Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 0);
                 wheelImage.anchor = wheelImage.parentAnchor = 18;
                 _ = AddChild(wheelImage);
                 wheelImage.visible = false;
-                wheelImage2 = Image_createWithResIDQuad(81, 1);
+                wheelImage2 = Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 1);
                 wheelImage2.passTransformationsToChilds = false;
-                wheelHighlight = Image_createWithResIDQuad(81, 2);
+                wheelHighlight = Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 2);
                 wheelHighlight.anchor = wheelHighlight.parentAnchor = 18;
                 _ = wheelImage2.AddChild(wheelHighlight);
-                wheelImage3 = Image_createWithResIDQuad(81, 3);
+                wheelImage3 = Image_createWithResIDQuad(IMG_OBJ_HOOK_REGULATED, 3);
                 wheelImage3.anchor = wheelImage3.parentAnchor = wheelImage2.anchor = wheelImage2.parentAnchor = 18;
                 _ = wheelImage2.AddChild(wheelImage3);
                 _ = AddChild(wheelImage2);
@@ -365,11 +365,11 @@ namespace CutTheRope.GameMain
                 moveBackground.width = (int)(l + 142f);
                 moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2.0) + 74f;
                 moveBackground.x = -74f;
-                grabMoverHighlight = Image_createWithResIDQuad(82, 3);
+                grabMoverHighlight = Image_createWithResIDQuad(IMG_OBJ_HOOK_MOVABLE, 3);
                 grabMoverHighlight.visible = false;
                 grabMoverHighlight.anchor = grabMoverHighlight.parentAnchor = 18;
                 _ = AddChild(grabMoverHighlight);
-                grabMover = Image_createWithResIDQuad(82, 4);
+                grabMover = Image_createWithResIDQuad(IMG_OBJ_HOOK_MOVABLE, 4);
                 grabMover.visible = false;
                 grabMover.anchor = grabMover.parentAnchor = 18;
                 _ = AddChild(grabMover);
@@ -399,18 +399,18 @@ namespace CutTheRope.GameMain
 
         public void SetBee()
         {
-            bee = Image_createWithResIDQuad(98, 1);
+            bee = Image_createWithResIDQuad(IMG_OBJ_BEE_HD, 1);
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
             bee.parentAnchor = 18;
-            Animation animation = Animation_createWithResID(98);
+            Animation animation = Animation_createWithResID(IMG_OBJ_BEE_HD);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.03, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
             animation.PlayTimeline(0);
             animation.JumpTo(RND_RANGE(0, 2));
             _ = bee.AddChild(animation);
-            Vector quadOffset = GetQuadOffset(98, 0);
+            Vector quadOffset = GetQuadOffset(IMG_OBJ_BEE_HD, 0);
             bee.x = 0f - quadOffset.x;
             bee.y = 0f - quadOffset.y;
             bee.rotationCenterX = quadOffset.x - (bee.width / 2);
