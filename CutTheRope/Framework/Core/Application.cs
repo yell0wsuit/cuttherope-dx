@@ -114,10 +114,28 @@ namespace CutTheRope.Framework.Core
             return resource as FontGeneric;
         }
 
+        /// <summary>
+        /// Gets a font by its resource name (auto-assigns ID if needed).
+        /// </summary>
+        internal static FontGeneric GetFont(string fontResourceName)
+        {
+            int fontResID = GetResourceId(fontResourceName);
+            return GetFont(fontResID);
+        }
+
         internal static CTRTexture2D GetTexture(int textureResID)
         {
             object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
             return resource as CTRTexture2D;
+        }
+
+        /// <summary>
+        /// Gets a texture by its resource name (auto-assigns ID if needed).
+        /// </summary>
+        internal static CTRTexture2D GetTexture(string textureResourceName)
+        {
+            int textureResID = GetResourceId(textureResourceName);
+            return GetTexture(textureResID);
         }
 
         internal static string GetString(string xmlElementName)

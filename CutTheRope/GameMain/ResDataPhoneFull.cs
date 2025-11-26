@@ -1744,5 +1744,236 @@ namespace CutTheRope.GameMain
         private static readonly Lock resourcesLock_ = new();
 
         private static Dictionary<string, string> allResources_;
+
+        // String-based resource ID system
+        private static readonly Lock resourceIdLock_ = new();
+        private static Dictionary<string, int> stringToIntMap_;
+        private static Dictionary<int, string> intToStringMap_;
+        private static int nextAutoId_ = 200;  // Start at 200 to avoid all existing IDs (highest is 180)
+
+        /// <summary>
+        /// Gets the integer ID for a resource name. If the resource name doesn't have an ID yet,
+        /// one will be automatically assigned.
+        /// </summary>
+        public static int GetResourceId(string resourceName)
+        {
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                return -1;
+            }
+
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                if (stringToIntMap_.TryGetValue(resourceName, out int existingId))
+                {
+                    return existingId;
+                }
+
+                // Auto-assign a new ID for this resource
+                int newId = nextAutoId_++;
+                stringToIntMap_[resourceName] = newId;
+                intToStringMap_[newId] = resourceName;
+                return newId;
+            }
+        }
+
+        /// <summary>
+        /// Gets the resource name for an integer ID. Returns null if not found.
+        /// </summary>
+        public static string GetResourceName(int resourceId)
+        {
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                _ = intToStringMap_.TryGetValue(resourceId, out string name);
+                return name;
+            }
+        }
+
+        private static void EnsureResourceIdMapsLoaded()
+        {
+            if (stringToIntMap_ != null)
+            {
+                return;
+            }
+
+            lock (resourceIdLock_)
+            {
+                if (stringToIntMap_ != null)
+                {
+                    return;
+                }
+
+                stringToIntMap_ = new Dictionary<string, int>();
+                intToStringMap_ = new Dictionary<int, string>();
+
+                // Register all existing int-based resource IDs
+                RegisterResourceId("zeptolab_no_link", IMG_DEFAULT);
+                RegisterResourceId("loaderbar_full", IMG_LOADERBAR_FULL);
+                RegisterResourceId("menu_button_default", IMG_MENU_BUTTON_DEFAULT);
+                RegisterResourceId("big_font", FNT_BIG_FONT);
+                RegisterResourceId("small_font", FNT_SMALL_FONT);
+                RegisterResourceId("menu_loading", IMG_MENU_LOADING);
+                RegisterResourceId("menu_notification", IMG_MENU_NOTIFICATION);
+                RegisterResourceId("menu_achievement", IMG_MENU_ACHIEVEMENT);
+                RegisterResourceId("menu_options", IMG_MENU_OPTIONS);
+                RegisterResourceId("tap", SND_TAP);
+                RegisterResourceId("menu_strings", STR_MENU);
+                RegisterResourceId("button", SND_BUTTON);
+                RegisterResourceId("bubble_break", SND_BUBBLE_BREAK);
+                RegisterResourceId("bubble", SND_BUBBLE);
+                RegisterResourceId("candy_break", SND_CANDY_BREAK);
+                RegisterResourceId("monster_chewing", SND_MONSTER_CHEWING);
+                RegisterResourceId("monster_close", SND_MONSTER_CLOSE);
+                RegisterResourceId("monster_open", SND_MONSTER_OPEN);
+                RegisterResourceId("monster_sad", SND_MONSTER_SAD);
+                RegisterResourceId("ring", SND_RING);
+                RegisterResourceId("rope_bleak_1", SND_ROPE_BLEAK_1);
+                RegisterResourceId("rope_bleak_2", SND_ROPE_BLEAK_2);
+                RegisterResourceId("rope_bleak_3", SND_ROPE_BLEAK_3);
+                RegisterResourceId("rope_bleak_4", SND_ROPE_BLEAK_4);
+                RegisterResourceId("rope_get", SND_ROPE_GET);
+                RegisterResourceId("star_1", SND_STAR_1);
+                RegisterResourceId("star_2", SND_STAR_2);
+                RegisterResourceId("star_3", SND_STAR_3);
+                RegisterResourceId("electric", SND_ELECTRIC);
+                RegisterResourceId("pump_1", SND_PUMP_1);
+                RegisterResourceId("pump_2", SND_PUMP_2);
+                RegisterResourceId("pump_3", SND_PUMP_3);
+                RegisterResourceId("pump_4", SND_PUMP_4);
+                RegisterResourceId("spider_activate", SND_SPIDER_ACTIVATE);
+                RegisterResourceId("spider_fall", SND_SPIDER_FALL);
+                RegisterResourceId("spider_win", SND_SPIDER_WIN);
+                RegisterResourceId("wheel", SND_WHEEL);
+                RegisterResourceId("win", SND_WIN);
+                RegisterResourceId("gravity_off", SND_GRAVITY_OFF);
+                RegisterResourceId("gravity_on", SND_GRAVITY_ON);
+                RegisterResourceId("candy_link", SND_CANDY_LINK);
+                RegisterResourceId("bouncer", SND_BOUNCER);
+                RegisterResourceId("spike_rotate_in", SND_SPIKE_ROTATE_IN);
+                RegisterResourceId("spike_rotate_out", SND_SPIKE_ROTATE_OUT);
+                RegisterResourceId("buzz", SND_BUZZ);
+                RegisterResourceId("teleport", SND_TELEPORT);
+                RegisterResourceId("scratch_in", SND_SCRATCH_IN);
+                RegisterResourceId("scratch_out", SND_SCRATCH_OUT);
+                RegisterResourceId("menu_bgr", IMG_MENU_BGR);
+                RegisterResourceId("menu_popup", IMG_MENU_POPUP);
+                RegisterResourceId("menu_logo", IMG_MENU_LOGO);
+                RegisterResourceId("menu_level_selection", IMG_MENU_LEVEL_SELECTION);
+                RegisterResourceId("menu_pack_selection", IMG_MENU_PACK_SELECTION);
+                RegisterResourceId("menu_pack_selection2", IMG_MENU_PACK_SELECTION2);
+                RegisterResourceId("menu_extra_buttons", IMG_MENU_EXTRA_BUTTONS);
+                RegisterResourceId("menu_scrollbar", IMG_MENU_SCROLLBAR);
+                RegisterResourceId("menu_leaderboard", IMG_MENU_LEADERBOARD);
+                RegisterResourceId("menu_processing_hd", IMG_MENU_PROCESSING);
+                RegisterResourceId("menu_scrollbar_changename", IMG_MENU_SCROLLBAR_CHANGENAME);
+                RegisterResourceId("menu_button_achiv_cup", IMG_MENU_BUTTON_ACHIV_CUP);
+                RegisterResourceId("menu_bgr_shadow", IMG_MENU_BGR_SHADOW);
+                RegisterResourceId("menu_button_short", IMG_MENU_BUTTON_SHORT);
+                RegisterResourceId("hud_buttons", IMG_HUD_BUTTONS);
+                RegisterResourceId("obj_candy_01", IMG_OBJ_CANDY_01);
+                RegisterResourceId("obj_spider", IMG_OBJ_SPIDER);
+                RegisterResourceId("confetti_particles", IMG_CONFETTI_PARTICLES);
+                RegisterResourceId("menu_pause", IMG_MENU_PAUSE);
+                RegisterResourceId("menu_result", IMG_MENU_RESULT);
+                RegisterResourceId("font_numbers_big", FNT_FONT_NUMBERS_BIG);
+                RegisterResourceId("hud_buttons_en", IMG_HUD_BUTTONS_EN);
+                RegisterResourceId("menu_result_en", IMG_MENU_RESULT_EN);
+                RegisterResourceId("obj_star_disappear", IMG_OBJ_STAR_DISAPPEAR);
+                RegisterResourceId("obj_bubble_flight", IMG_OBJ_BUBBLE_FLIGHT);
+                RegisterResourceId("obj_bubble_pop", IMG_OBJ_BUBBLE_POP);
+                RegisterResourceId("obj_hook_auto", IMG_OBJ_HOOK_AUTO);
+                RegisterResourceId("obj_bubble_attached", IMG_OBJ_BUBBLE_ATTACHED);
+                RegisterResourceId("obj_hook_01", IMG_OBJ_HOOK_01);
+                RegisterResourceId("obj_hook_02", IMG_OBJ_HOOK_02);
+                RegisterResourceId("obj_star_idle", IMG_OBJ_STAR_IDLE);
+                RegisterResourceId("hud_star", IMG_HUD_STAR);
+                RegisterResourceId("char_animations", IMG_CHAR_ANIMATIONS);
+                RegisterResourceId("obj_hook_regulated", IMG_OBJ_HOOK_REGULATED);
+                RegisterResourceId("obj_hook_movable", IMG_OBJ_HOOK_MOVABLE);
+                RegisterResourceId("obj_pump", IMG_OBJ_PUMP);
+                RegisterResourceId("tutorial_signs", IMG_TUTORIAL_SIGNS);
+                RegisterResourceId("obj_hat", IMG_OBJ_SOCKS);
+                RegisterResourceId("obj_bouncer_01", IMG_OBJ_BOUNCER_01);
+                RegisterResourceId("obj_bouncer_02", IMG_OBJ_BOUNCER_02);
+                RegisterResourceId("obj_spikes_01", IMG_OBJ_SPIKES_01);
+                RegisterResourceId("obj_spikes_02", IMG_OBJ_SPIKES_02);
+                RegisterResourceId("obj_spikes_03", IMG_OBJ_SPIKES_03);
+                RegisterResourceId("obj_spikes_04", IMG_OBJ_SPIKES_04);
+                RegisterResourceId("obj_electrodes", IMG_OBJ_ELECTRODES);
+                RegisterResourceId("obj_rotatable_spikes_01", IMG_OBJ_ROTATABLE_SPIKES_01);
+                RegisterResourceId("obj_rotatable_spikes_02", IMG_OBJ_ROTATABLE_SPIKES_02);
+                RegisterResourceId("obj_rotatable_spikes_03", IMG_OBJ_ROTATABLE_SPIKES_03);
+                RegisterResourceId("obj_rotatable_spikes_04", IMG_OBJ_ROTATABLE_SPIKES_04);
+                RegisterResourceId("obj_rotatable_spikes_button", IMG_OBJ_ROTATABLE_SPIKES_BUTTON);
+                RegisterResourceId("obj_bee_hd", IMG_OBJ_BEE_HD);
+                RegisterResourceId("obj_pollen_hd", IMG_OBJ_POLLEN_HD);
+                RegisterResourceId("char_supports", IMG_CHAR_SUPPORTS);
+                RegisterResourceId("char_animations2", IMG_CHAR_ANIMATIONS2);
+                RegisterResourceId("char_animations3", IMG_CHAR_ANIMATIONS3);
+                RegisterResourceId("obj_vinil", IMG_OBJ_VINIL);
+                RegisterResourceId("bgr_01_p1", IMG_BGR_01_P1);
+                RegisterResourceId("bgr_01_p2", IMG_BGR_01_P2);
+                RegisterResourceId("bgr_02_p1", IMG_BGR_02_P1);
+                RegisterResourceId("bgr_02_p2", IMG_BGR_02_P2);
+                RegisterResourceId("bgr_03_p1", IMG_BGR_03_P1);
+                RegisterResourceId("bgr_03_p2", IMG_BGR_03_P2);
+                RegisterResourceId("bgr_04_p1", IMG_BGR_04_P1);
+                RegisterResourceId("bgr_04_p2", IMG_BGR_04_P2);
+                RegisterResourceId("bgr_05_p1", IMG_BGR_05_P1);
+                RegisterResourceId("bgr_05_p2", IMG_BGR_05_P2);
+                RegisterResourceId("bgr_06_p1", IMG_BGR_06_P1);
+                RegisterResourceId("bgr_06_p2", IMG_BGR_06_P2);
+                RegisterResourceId("bgr_07_p1", IMG_BGR_07_P1);
+                RegisterResourceId("bgr_07_p2", IMG_BGR_07_P2);
+                RegisterResourceId("bgr_08_p1", IMG_BGR_08_P1);
+                RegisterResourceId("bgr_08_p2", IMG_BGR_08_P2);
+                RegisterResourceId("bgr_09_p1", IMG_BGR_09_P1);
+                RegisterResourceId("bgr_09_p2", IMG_BGR_09_P2);
+                RegisterResourceId("bgr_10_p1", IMG_BGR_10_P1);
+                RegisterResourceId("bgr_10_p2", IMG_BGR_10_P2);
+                RegisterResourceId("bgr_11_p1", IMG_BGR_11_P1);
+                RegisterResourceId("bgr_11_p2", IMG_BGR_11_P2);
+                RegisterResourceId("bgr_01_cover", IMG_BGR_COVER_01);
+                RegisterResourceId("bgr_02_cover", IMG_BGR_COVER_02);
+                RegisterResourceId("bgr_03_cover", IMG_BGR_COVER_03);
+                RegisterResourceId("bgr_04_cover", IMG_BGR_COVER_04);
+                RegisterResourceId("bgr_05_cover", IMG_BGR_COVER_05);
+                RegisterResourceId("bgr_06_cover", IMG_BGR_COVER_06);
+                RegisterResourceId("bgr_07_cover", IMG_BGR_COVER_07);
+                RegisterResourceId("bgr_08_cover", IMG_BGR_COVER_08);
+                RegisterResourceId("bgr_09_cover", IMG_BGR_COVER_09);
+                RegisterResourceId("bgr_10_cover", IMG_BGR_COVER_10);
+                RegisterResourceId("bgr_11_cover", IMG_BGR_COVER_11);
+                RegisterResourceId("menu_extra_buttons_fr", IMG_MENU_EXTRA_BUTTONS_FR);
+                RegisterResourceId("menu_extra_buttons_gr", IMG_MENU_EXTRA_BUTTONS_GR);
+                RegisterResourceId("menu_extra_buttons_ru", IMG_MENU_EXTRA_BUTTONS_RU);
+                RegisterResourceId("hud_buttons_ru", IMG_HUD_BUTTONS_RU);
+                RegisterResourceId("hud_buttons_gr", IMG_HUD_BUTTONS_GR);
+                RegisterResourceId("menu_result_ru", IMG_MENU_RESULT_RU);
+                RegisterResourceId("menu_result_fr", IMG_MENU_RESULT_FR);
+                RegisterResourceId("menu_result_gr", IMG_MENU_RESULT_GR);
+                RegisterResourceId("menu_music", SND_MENU_MUSIC);
+                RegisterResourceId("game_music", SND_GAME_MUSIC);
+                RegisterResourceId("game_music2", SND_GAME_MUSIC2);
+                RegisterResourceId("game_music3", SND_GAME_MUSIC3);
+                RegisterResourceId("game_music4", SND_GAME_MUSIC4);
+                RegisterResourceId("menu_extra_buttons_en", IMG_MENU_EXTRA_BUTTONS_EN);
+                RegisterResourceId("ghost_puff", SND_GHOST_PUFF);
+                RegisterResourceId("bgr_12_cover", IMG_BGR_COVER_12);
+                RegisterResourceId("bgr_12_p1", IMG_BGR_12_P1);
+                RegisterResourceId("bgr_12_p2", IMG_BGR_12_P2);
+                RegisterResourceId("obj_ghost", IMG_OBJ_GHOST);
+            }
+        }
+
+        private static void RegisterResourceId(string name, int id)
+        {
+            stringToIntMap_[name] = id;
+            intToStringMap_[id] = name;
+        }
     }
 }

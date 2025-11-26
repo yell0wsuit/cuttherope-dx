@@ -52,6 +52,15 @@ namespace CutTheRope.Framework.Media
             return soundEffect;
         }
 
+        /// <summary>
+        /// Gets a sound by its resource name (auto-assigns ID if needed).
+        /// </summary>
+        public SoundEffect GetSound(string soundResourceName)
+        {
+            int soundResID = GetResourceId(soundResourceName);
+            return GetSound(soundResID);
+        }
+
         private void ClearStopped()
         {
             List<SoundEffectInstance> list = [];
@@ -70,6 +79,15 @@ namespace CutTheRope.Framework.Media
         {
             ClearStopped();
             activeSounds.Add(Play(sid, false));
+        }
+
+        /// <summary>
+        /// Plays a sound by its resource name (auto-assigns ID if needed).
+        /// </summary>
+        public virtual void PlaySound(string soundResourceName)
+        {
+            int soundResID = GetResourceId(soundResourceName);
+            PlaySound(soundResID);
         }
 
         public virtual SoundEffectInstance PlaySoundLooped(int sid)
