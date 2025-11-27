@@ -459,6 +459,16 @@ namespace CutTheRope.GameMain
 
         public const int RESOURCES_COUNT = 150;
 
+        public const string SND_STEAM_START = "steam_start";
+
+        public const string SND_STEAM_START_2 = "steam_start2";
+
+        public const string SND_STEAM_END = "steam_end";
+
+        public const string IMG_BGR_13_P1 = "bgr_13_p1";
+
+        public const string OBJ_PIPE = "obj_pipe";
+
         public const int SOUND_FIRST = 9;
 
         public const int SOUND_LAST = 47;

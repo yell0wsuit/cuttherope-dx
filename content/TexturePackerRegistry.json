@@ -28,7 +28,7 @@
             "centerOffsets": false
         },
         {
-            "resourceId": 184,
+            "resourceId": "obj_pipe",
             "atlasPath": "obj_pipe.json",
             "useAntialias": true,
             "centerOffsets": false

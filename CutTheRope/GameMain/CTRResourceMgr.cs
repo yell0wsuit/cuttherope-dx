@@ -127,7 +127,10 @@ namespace CutTheRope.GameMain
                         continue;
                     }
 
-                    int resourceId = idElement.GetInt32();
+                    // Support both string and int resource IDs
+                    int resourceId = idElement.ValueKind == JsonValueKind.String
+                        ? GetResourceId(idElement.GetString())
+                        : idElement.GetInt32();
                     string atlasPath = atlasPathElement.GetString();
 
                     TextureAtlasConfig config = new()
