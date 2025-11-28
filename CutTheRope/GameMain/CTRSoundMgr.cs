@@ -55,6 +55,20 @@ namespace CutTheRope.GameMain
             return Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
         }
 
+        /// <summary>
+        /// Plays a random sound from the provided list of sound resource names.
+        /// </summary>
+        public static void PlayRandomSound(params string[] soundNames)
+        {
+            if (soundNames == null || soundNames.Length == 0)
+            {
+                return;
+            }
+
+            string soundName = soundNames[RND_RANGE(0, soundNames.Length - 1)];
+            PlaySound(soundName);
+        }
+
         public static void PlayRandomMusic(params int[] musicIds)
         {
             if (musicIds == null || musicIds.Length == 0)
