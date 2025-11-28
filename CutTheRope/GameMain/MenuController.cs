@@ -1239,7 +1239,7 @@ namespace CutTheRope.GameMain
             CreateOptions();
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(ButtonId n)
         {
             if (n is not (-1))
             {

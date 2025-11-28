@@ -106,7 +106,7 @@ namespace CutTheRope.GameMain
             selectedMap = map;
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(ButtonId n)
         {
             if (n == 0)
             {

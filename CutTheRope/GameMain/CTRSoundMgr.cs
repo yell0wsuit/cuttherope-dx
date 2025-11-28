@@ -15,6 +15,18 @@ namespace CutTheRope.GameMain
             }
         }
 
+        /// <summary>
+        /// Plays a sound effect identified by its resource name.
+        /// </summary>
+        /// <param name="soundResourceName">Sound resource name.</param>
+        public static void PlaySound(string soundResourceName)
+        {
+            if (Preferences.GetBooleanForKey("SOUND_ON"))
+            {
+                Application.SharedSoundMgr().PlaySound(soundResourceName);
+            }
+        }
+
         public static void EnableLoopedSounds(bool bEnable)
         {
             s_EnableLoopedSounds = bEnable;
@@ -27,6 +39,20 @@ namespace CutTheRope.GameMain
         public static new SoundEffectInstance PlaySoundLooped(int s)
         {
             return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
+        }
+
+        /// <summary>
+        /// Plays a looped sound effect identified by its resource name.
+        /// </summary>
+        /// <param name="soundResourceName">Sound resource name.</param>
+        public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
+        {
+            if (!s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON"))
+            {
+                return null;
+            }
+
+            return Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
         }
 
         public static void PlayRandomMusic(params int[] musicIds)

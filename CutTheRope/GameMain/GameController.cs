@@ -295,7 +295,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void OnButtonPressed(int n)
+        public void OnButtonPressed(ButtonId n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             CTRSoundMgr.PlaySound(SND_TAP);

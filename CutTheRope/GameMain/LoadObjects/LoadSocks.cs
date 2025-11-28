@@ -17,7 +17,7 @@ namespace CutTheRope.GameMain
         private void LoadSock(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Sock sock = Sock.Sock_createWithResID(IMG_OBJ_SOCKS);
+            Sock sock = Sock.Sock_createWithResID(Resources.Img.ObjSocks);
             sock.CreateAnimations();
             sock.scaleX = sock.scaleY = 0.7f;
             sock.DoRestoreCutTransparency();
