@@ -12,11 +12,22 @@ namespace CutTheRope.GameMain
             return CharAnimations_create(Application.GetTexture(r));
         }
 
+        public static CharAnimations CharAnimations_createWithResID(string resourceName)
+        {
+            return CharAnimations_create(Application.GetTexture(resourceName));
+        }
+
         private static CharAnimations CharAnimations_create(CTRTexture2D t)
         {
             CharAnimations charAnimations = new();
             _ = charAnimations.InitWithTexture(t);
             return charAnimations;
+        }
+
+        public void AddImage(string resourceName)
+        {
+            int resId = ResourceNameTranslator.ToResourceId(resourceName);
+            AddImage(resId);
         }
 
         public void AddImage(int resId)

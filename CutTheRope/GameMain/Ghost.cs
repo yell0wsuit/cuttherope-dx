@@ -47,7 +47,7 @@ namespace CutTheRope.GameMain
 
             float random = RND_0_1;
 
-            ghostImageFace = Image.Image_createWithResIDQuad(IMG_OBJ_GHOST, 1);
+            ghostImageFace = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 1);
             ghostImageFace.x = position.x;
             ghostImageFace.y = position.y;
             ghostImageFace.anchor = 18;
@@ -60,7 +60,7 @@ namespace CutTheRope.GameMain
             ghostImageFace.AddTimelinewithID(faceFloat, 13);
             ghostImageFace.PlayTimeline(13);
 
-            ghostImageBody = Image.Image_createWithResIDQuad(IMG_OBJ_GHOST, 0);
+            ghostImageBody = Image.Image_createWithResIDQuad(Resources.Img.ObjGhost, 0);
             ghostImageBody.x = position.x;
             ghostImageBody.y = position.y;
             ghostImageBody.anchor = 18;
@@ -208,7 +208,7 @@ namespace CutTheRope.GameMain
                         ghostBubble.y = y;
                         ghostBubble.anchor = 18;
                         ghostBubble.popped = false;
-                        Image image = Image.Image_createWithResIDQuad(IMG_OBJ_BUBBLE_ATTACHED, 0);
+                        Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBubbleAttached, 0);
                         image.DoRestoreCutTransparency();
                         image.parentAnchor = image.anchor = 18;
                         _ = ghostBubble.AddChild(image);

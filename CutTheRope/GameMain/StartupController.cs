@@ -10,11 +10,11 @@ namespace CutTheRope.GameMain
             : base(parent)
         {
             View view = new();
-            Image image = Image.Image_createWithResID(0);
+            Image image = Image.Image_createWithResID(Resources.Img.ZeptolabNoLink);
             image.parentAnchor = image.anchor = 18;
             image.scaleX = image.scaleY = 1.25f;
             _ = view.AddChild(image);
-            bar = TiledImage.TiledImage_createWithResID(1);
+            bar = TiledImage.TiledImage_createWithResID(Resources.Img.LoaderbarFull);
             bar.parentAnchor = bar.anchor = 9;
             bar.SetTile(-1);
             bar.x = 738f;
@@ -36,11 +36,11 @@ namespace CutTheRope.GameMain
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.resourcesDelegate = this;
             ctrresourceMgr.InitLoading();
-            ctrresourceMgr.LoadPack(PACK_COMMON);
-            ctrresourceMgr.LoadPack(PACK_COMMON_IMAGES);
-            ctrresourceMgr.LoadPack(PACK_MENU);
-            ctrresourceMgr.LoadPack(PACK_LOCALIZATION_MENU);
-            ctrresourceMgr.LoadPack(PACK_MUSIC);
+            ctrresourceMgr.LoadPack(PackCommon);
+            ctrresourceMgr.LoadPack(PackCommonImages);
+            ctrresourceMgr.LoadPack(PackMenu);
+            ctrresourceMgr.LoadPack(PackLocalizationMenu);
+            ctrresourceMgr.LoadPack(PackMusic);
             ctrresourceMgr.StartLoading();
         }
 
@@ -64,5 +64,15 @@ namespace CutTheRope.GameMain
         private readonly float barTotalWidth;
 
         private readonly TiledImage bar;
+
+        private static readonly string[] PackCommon = ResourceNameTranslator.TranslateLegacyPack(PACK_COMMON);
+
+        private static readonly string[] PackCommonImages = ResourceNameTranslator.TranslateLegacyPack(PACK_COMMON_IMAGES);
+
+        private static readonly string[] PackMenu = ResourceNameTranslator.TranslateLegacyPack(PACK_MENU);
+
+        private static readonly string[] PackLocalizationMenu = ResourceNameTranslator.TranslateLegacyPack(PACK_LOCALIZATION_MENU);
+
+        private static readonly string[] PackMusic = ResourceNameTranslator.TranslateLegacyPack(PACK_MUSIC);
     }
 }

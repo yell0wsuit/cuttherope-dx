@@ -16,6 +16,11 @@ namespace CutTheRope.GameMain
             return CharAnimation_create(Application.GetTexture(r));
         }
 
+        public static CharAnimation CharAnimation_createWithResID(string resourceName)
+        {
+            return CharAnimation_create(Application.GetTexture(resourceName));
+        }
+
         public override bool HandleAction(ActionData a)
         {
             if (a.actionName == "ACTION_PLAY_TIMELINE")

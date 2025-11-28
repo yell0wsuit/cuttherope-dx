@@ -18,23 +18,23 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static int HandleLocalizedResource(int r)
         {
-            if (r != IMG_HUD_BUTTONS_EN)
+            if (r != HudButtonsEnId)
             {
-                if (r != IMG_MENU_RESULT_EN)
+                if (r != MenuResultEnId)
                 {
-                    if (r == IMG_MENU_EXTRA_BUTTONS_EN)
+                    if (r == MenuExtraButtonsEnId)
                     {
                         if (LANGUAGE == Language.LANGRU)
                         {
-                            return IMG_MENU_EXTRA_BUTTONS_RU;
+                            return MenuExtraButtonsRuId;
                         }
                         if (LANGUAGE == Language.LANGDE)
                         {
-                            return IMG_MENU_EXTRA_BUTTONS_GR;
+                            return MenuExtraButtonsGrId;
                         }
                         if (LANGUAGE == Language.LANGFR)
                         {
-                            return IMG_MENU_EXTRA_BUTTONS_FR;
+                            return MenuExtraButtonsFrId;
                         }
                     }
                 }
@@ -42,15 +42,15 @@ namespace CutTheRope.GameMain
                 {
                     if (LANGUAGE == Language.LANGRU)
                     {
-                        return IMG_MENU_RESULT_RU;
+                        return MenuResultRuId;
                     }
                     if (LANGUAGE == Language.LANGDE)
                     {
-                        return IMG_MENU_RESULT_GR;
+                        return MenuResultGrId;
                     }
                     if (LANGUAGE == Language.LANGFR)
                     {
-                        return IMG_MENU_RESULT_FR;
+                        return MenuResultFrId;
                     }
                 }
             }
@@ -58,15 +58,15 @@ namespace CutTheRope.GameMain
             {
                 if (LANGUAGE == Language.LANGRU)
                 {
-                    return IMG_HUD_BUTTONS_RU;
+                    return HudButtonsRuId;
                 }
                 if (LANGUAGE == Language.LANGDE)
                 {
-                    return IMG_HUD_BUTTONS_GR;
+                    return HudButtonsGrId;
                 }
                 if (LANGUAGE == Language.LANGFR)
                 {
-                    return IMG_HUD_BUTTONS_EN;
+                    return HudButtonsEnId;
                 }
             }
             return r;
@@ -185,5 +185,27 @@ namespace CutTheRope.GameMain
 
             return result.Count > 0 ? [.. result] : null;
         }
+
+        private static readonly int HudButtonsEnId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsEn);
+
+        private static readonly int HudButtonsRuId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsRu);
+
+        private static readonly int HudButtonsGrId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsGr);
+
+        private static readonly int MenuResultEnId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultEn);
+
+        private static readonly int MenuResultRuId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultRu);
+
+        private static readonly int MenuResultFrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultFr);
+
+        private static readonly int MenuResultGrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultGr);
+
+        private static readonly int MenuExtraButtonsEnId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsEn);
+
+        private static readonly int MenuExtraButtonsRuId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsRu);
+
+        private static readonly int MenuExtraButtonsGrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsGr);
+
+        private static readonly int MenuExtraButtonsFrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsFr);
     }
 }

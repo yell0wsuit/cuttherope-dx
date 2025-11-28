@@ -15,6 +15,13 @@ namespace CutTheRope.Framework.Visual
             return text;
         }
 
+        public static Text CreateWithFontandString(string fontResourceName, string str)
+        {
+            Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));
+            text.SetString(str);
+            return text;
+        }
+
         public virtual Text InitWithFont(FontGeneric i)
         {
             font = i;

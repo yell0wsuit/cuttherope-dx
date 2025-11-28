@@ -298,7 +298,7 @@ namespace CutTheRope.GameMain
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
-            Text text = Text.CreateWithFontandString(4, str);
+            Text text = Text.CreateWithFontandString(Resources.Fnt.SmallFont, str);
             text.parentAnchor = 9;
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;

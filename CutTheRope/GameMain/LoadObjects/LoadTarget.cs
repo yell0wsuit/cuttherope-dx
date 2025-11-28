@@ -20,12 +20,18 @@ namespace CutTheRope.GameMain
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
-            int supportResID = PackConfig.GetSupportResources(pack);
-            support = Image.Image_createWithResIDQuad(supportResID, pack);
+            string supportResourceName = PackConfig.GetSupportResourceName(pack);
+            if (string.IsNullOrEmpty(supportResourceName))
+            {
+                int supportResId = PackConfig.GetSupportResources(pack);
+                supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResId);
+            }
+
+            support = Image.Image_createWithResIDQuad(supportResourceName, pack);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            target = CharAnimations.CharAnimations_createWithResID(80);
+            target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
             string nSString3 = xmlNode.AttributeAsNSString("x");
@@ -33,8 +39,8 @@ namespace CutTheRope.GameMain
             string nSString4 = xmlNode.AttributeAsNSString("y");
             target.y = support.y = (nSString4.IntValue() * scale) + offsetY + mapOffsetY;
 
-            target.AddImage(101);
-            target.AddImage(102);
+            target.AddImage(Resources.Img.CharAnimations2);
+            target.AddImage(Resources.Img.CharAnimations3);
             target.bb = MakeRectangle(264.0, 350.0, 108.0, 2.0);
 
             // Setup main animation
@@ -108,7 +114,7 @@ namespace CutTheRope.GameMain
             target.SetPauseAtIndexforAnimation(8, 7);
 
             // Setup blink animation
-            blink = Animation.Animation_createWithResID(IMG_CHAR_ANIMATIONS);
+            blink = Animation.Animation_createWithResID(Resources.Img.CharAnimations);
             blink.parentAnchor = 9;
             blink.visible = false;
             blink.AddAnimationWithIDDelayLoopCountSequence(0, 0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);

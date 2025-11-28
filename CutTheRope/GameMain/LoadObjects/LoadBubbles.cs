@@ -25,7 +25,7 @@ namespace CutTheRope.GameMain
             bubble.initial_rotatedCircle = null;
             bubble.anchor = 18;
             bubble.popped = false;
-            Image image = Image.Image_createWithResIDQuad(IMG_OBJ_BUBBLE_ATTACHED, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBubbleAttached, 0);
             image.DoRestoreCutTransparency();
             image.parentAnchor = image.anchor = 18;
             _ = bubble.AddChild(image);
