@@ -1807,8 +1807,8 @@ namespace CutTheRope.GameMain
                     return;
                 }
 
-                stringToIntMap_ = new Dictionary<string, int>();
-                intToStringMap_ = new Dictionary<int, string>();
+                stringToIntMap_ = [];
+                intToStringMap_ = [];
 
                 // Register all existing int-based resource IDs
                 RegisterResourceId("zeptolab_no_link", IMG_DEFAULT);

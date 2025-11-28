@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using CutTheRope.Framework.Core;
@@ -50,12 +49,9 @@ namespace CutTheRope.GameMain
         /// <param name="soundResourceName">Sound resource name.</param>
         public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
-            if (!s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON"))
-            {
-                return null;
-            }
-
-            return Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
+            return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
+                ? null
+                : Application.SharedSoundMgr().PlaySoundLooped(GetResourceId(soundResourceName));
         }
 
         /// <summary>
@@ -96,10 +92,9 @@ namespace CutTheRope.GameMain
                 return;
             }
 
-            int[] musicIds = musicNames
+            int[] musicIds = [.. musicNames
                 .Where(name => !string.IsNullOrWhiteSpace(name))
-                .Select(ResourceNameTranslator.ToResourceId)
-                .ToArray();
+                .Select(ResourceNameTranslator.ToResourceId)];
 
             PlayRandomMusic(musicIds);
         }

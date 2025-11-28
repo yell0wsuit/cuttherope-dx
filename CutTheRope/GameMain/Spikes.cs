@@ -240,17 +240,11 @@ namespace CutTheRope.GameMain
                 return null;
             }
 
-            if (rotatable)
-            {
-                return index < RotatableSpikeTextures.Length ? RotatableSpikeTextures[index] : null;
-            }
-
-            if (width == ElectrodesWidthIndex)
-            {
-                return SpikeTextures.Length > 4 ? SpikeTextures[4] : null;
-            }
-
-            return index < SpikeTextures.Length ? SpikeTextures[index] : null;
+            return rotatable
+                ? index < RotatableSpikeTextures.Length ? RotatableSpikeTextures[index] : null
+                : width == ElectrodesWidthIndex
+                ? SpikeTextures.Length > 4 ? SpikeTextures[4] : null
+                : index < SpikeTextures.Length ? SpikeTextures[index] : null;
         }
 
         private enum SPIKES_ANIM

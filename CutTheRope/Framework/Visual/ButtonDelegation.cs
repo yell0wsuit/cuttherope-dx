@@ -9,13 +9,19 @@ namespace CutTheRope.Framework.Visual
         /// Implicitly creates a <see cref="ButtonId"/> from a raw numeric value.
         /// </summary>
         /// <param name="value">Button identifier previously represented as an <see cref="int"/>.</param>
-        public static implicit operator ButtonId(int value) => new(value);
+        public static implicit operator ButtonId(int value)
+        {
+            return new(value);
+        }
 
         /// <summary>
         /// Implicitly converts a <see cref="ButtonId"/> into its numeric representation.
         /// </summary>
         /// <param name="id">The button identifier to unwrap.</param>
-        public static implicit operator int(ButtonId id) => id.Value;
+        public static implicit operator int(ButtonId id)
+        {
+            return id.Value;
+        }
     }
 
     public interface IButtonDelegation
