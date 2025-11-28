@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Media;
 
@@ -67,6 +70,38 @@ namespace CutTheRope.GameMain
 
             string soundName = soundNames[RND_RANGE(0, soundNames.Length - 1)];
             PlaySound(soundName);
+        }
+
+        /// <summary>
+        /// Plays background music identified by its resource name.
+        /// </summary>
+        /// <param name="musicResourceName">Music resource name.</param>
+        public static void PlayMusic(string musicResourceName)
+        {
+            if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
+            {
+                int musicId = ResourceNameTranslator.ToResourceId(musicResourceName);
+                Application.SharedSoundMgr().PlayMusic(musicId);
+            }
+        }
+
+        /// <summary>
+        /// Plays a random music track from the supplied resource names.
+        /// </summary>
+        /// <param name="musicNames">Candidate music resource names.</param>
+        public static void PlayRandomMusic(params string[] musicNames)
+        {
+            if (musicNames == null)
+            {
+                return;
+            }
+
+            int[] musicIds = musicNames
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(ResourceNameTranslator.ToResourceId)
+                .ToArray();
+
+            PlayRandomMusic(musicIds);
         }
 
         public static void PlayRandomMusic(params int[] musicIds)

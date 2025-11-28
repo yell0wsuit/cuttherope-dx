@@ -33,7 +33,7 @@ namespace CutTheRope.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             CTRSoundMgr.StopMusic();
-            CTRSoundMgr.PlayRandomMusic(146, 147, 148, 150);
+            CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
             InitGameView();
             ShowView(0);
         }
@@ -50,13 +50,13 @@ namespace CutTheRope.GameMain
                 gameSceneDelegate = this
             };
             _ = gameView.AddChildwithID(gameScene, 0);
-            Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(69, 0, 1, 6, this);
+            Button button = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudButtonsEn, 0, 1, 6, this);
             button.x = -(float)Canvas.xOffsetScaled;
             _ = gameView.AddChildwithID(button, 1);
-            Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(62, 0, 1, 1, this);
+            Button button2 = MenuController.CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.HudButtons, 0, 1, 1, this);
             button2.x = -(float)Canvas.xOffsetScaled;
             _ = gameView.AddChildwithID(button2, 2);
-            Image image = Image.Image_createWithResIDQuad(IMG_MENU_PAUSE, 0);
+            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = -(float)image.height / 2;
@@ -79,7 +79,7 @@ namespace CutTheRope.GameMain
             Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(STR_MENU_MAIN_MENU), 4, this);
             _ = vBox.AddChild(c4);
             vBox.anchor = vBox.parentAnchor = 10;
-            Vector offset = VectSub(Image.GetQuadCenter(8, 0), Image.GetQuadOffset(8, 12));
+            Vector offset = VectSub(Image.GetQuadCenter(Resources.Img.MenuOptions, 0), Image.GetQuadOffset(Resources.Img.MenuOptions, 12));
             ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, 10, vectZero);
             ToggleButton toggleButton2 = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, 11, offset);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
@@ -203,7 +203,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController.SetHacked();
             }
-            CTRSoundMgr.PlaySound(SND_WIN);
+            CTRSoundMgr.PlaySound(Resources.Snd.Win);
             View view = GetView(0);
             view.GetChild(4).touchable = true;
             GameScene gameScene = (GameScene)view.GetChild(0);
@@ -298,7 +298,7 @@ namespace CutTheRope.GameMain
         public void OnButtonPressed(ButtonId n)
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            CTRSoundMgr.PlaySound(SND_TAP);
+            CTRSoundMgr.PlaySound(Resources.Snd.Tap);
             View view = GetView(0);
             switch (n)
             {
@@ -381,7 +381,7 @@ namespace CutTheRope.GameMain
                             return;
                         }
                         CTRRootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        CTRSoundMgr.PlayRandomMusic(146, 147, 148, 150);
+                        CTRSoundMgr.PlayRandomMusic(Resources.Snd.GameMusic, Resources.Snd.GameMusic2, Resources.Snd.GameMusic3, Resources.Snd.GameMusic4);
                         return;
                     }
                 case 11:

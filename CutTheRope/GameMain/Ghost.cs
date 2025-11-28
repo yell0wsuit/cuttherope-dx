@@ -265,7 +265,7 @@ namespace CutTheRope.GameMain
             }
 
             morphingBubbles.StartSystem(GHOST_MORPHING_BUBBLES_COUNT);
-            CTRSoundMgr.PlaySound(SND_GHOST_PUFF);
+            CTRSoundMgr.PlaySound(Resources.Snd.GhostPuff);
         }
 
         public void ResetToNextState()

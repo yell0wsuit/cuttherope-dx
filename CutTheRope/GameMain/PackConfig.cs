@@ -96,6 +96,23 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].CoverResourceNames : EmptyResourceNames;
         }
 
+        /// <summary>
+        /// Returns the first available cover resource name for a pack or the legacy translated fallback.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        public static string GetCoverResourceNameOrDefault(int pack)
+        {
+            string coverResourceName = GetCoverResourceNames(pack).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
+
+            if (string.IsNullOrEmpty(coverResourceName))
+            {
+                int legacyCoverId = 126 + pack;
+                coverResourceName = ResourceNameTranslator.TranslateLegacyId(legacyCoverId);
+            }
+
+            return coverResourceName;
+        }
+
         public static int GetSupportResources(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].SupportResources : 100;
