@@ -72,7 +72,7 @@ namespace CutTheRope.GameMain
         {
             dd.CancelAllDispatches();
             target.PlayTimeline(6);
-            CTRSoundMgr.PlaySound(SND_MONSTER_CHEWING);
+            CTRSoundMgr.PlaySound(Resources.Snd.MonsterChewing);
             if (candyBubble != null)
             {
                 PopCandyBubble(false);
@@ -101,7 +101,7 @@ namespace CutTheRope.GameMain
         {
             dd.CancelAllDispatches();
             target.PlayAnimationtimeline(102, 5);
-            CTRSoundMgr.PlaySound(SND_MONSTER_SAD);
+            CTRSoundMgr.PlaySound(Resources.Snd.MonsterSad);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1.0);
             gameSceneDelegate.GameLost();
         }
@@ -184,8 +184,8 @@ namespace CutTheRope.GameMain
 
         public void PopBubbleAtXY(float bx, float by)
         {
-            CTRSoundMgr.PlaySound(SND_BUBBLE_BREAK);
-            Animation animation = Animation.Animation_createWithResID(IMG_OBJ_BUBBLE_POP);
+            CTRSoundMgr.PlaySound(Resources.Snd.BubbleBreak);
+            Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubblePop);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;
@@ -214,13 +214,13 @@ namespace CutTheRope.GameMain
             {
                 MaterialPoint.globalGravity.y = -784f;
                 gravityNormal = false;
-                CTRSoundMgr.PlaySound(SND_GRAVITY_ON);
+                CTRSoundMgr.PlaySound(Resources.Snd.GravityOn);
             }
             else
             {
                 MaterialPoint.globalGravity.y = 784f;
                 gravityNormal = true;
-                CTRSoundMgr.PlaySound(SND_GRAVITY_OFF);
+                CTRSoundMgr.PlaySound(Resources.Snd.GravityOff);
             }
             if (earthAnims == null)
             {
