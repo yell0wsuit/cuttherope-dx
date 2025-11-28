@@ -8,8 +8,14 @@ using CutTheRope.Framework.Core;
 
 namespace CutTheRope.GameMain
 {
+    /// <summary>
+    /// Resource manager wrapper that preserves legacy numeric identifiers while enabling string-based lookups.
+    /// </summary>
     internal sealed class CTRResourceMgr : ResourceMgr
     {
+        /// <summary>
+        /// Adjusts a legacy resource identifier for the active language when localized variants exist.
+        /// </summary>
         public static int HandleLocalizedResource(int r)
         {
             if (r != IMG_HUD_BUTTONS_EN)
@@ -66,6 +72,9 @@ namespace CutTheRope.GameMain
             return r;
         }
 
+        /// <summary>
+        /// Resolves a localized XNA resource name for a given legacy identifier.
+        /// </summary>
         public static string XNA_ResName(int resId)
         {
             // Use the new string-based resource ID system
@@ -77,9 +86,8 @@ namespace CutTheRope.GameMain
         /// </summary>
         public static object LoadResource(string resourceName, ResourceType resType)
         {
-            int resourceId = GetResourceId(resourceName);
             CTRResourceMgr mgr = new();
-            return mgr.LoadResource(resourceId, resType);
+            return mgr.LoadResource(resourceName, resType);
         }
 
         public override object LoadResource(int resID, ResourceType resType)
@@ -134,6 +142,7 @@ namespace CutTheRope.GameMain
                     {
                         Format = TextureAtlasFormat.TexturePackerJson,
                         AtlasPath = atlasPath,
+                        ResourceName = ResourceNameTranslator.TranslateLegacyId(resourceId),
                         UseAntialias = GetBoolProperty(textureElement, "useAntialias", true),
                         FrameOrder = GetStringArrayProperty(textureElement, "frameOrder"),
                         CenterOffsets = GetBoolProperty(textureElement, "centerOffsets", false)

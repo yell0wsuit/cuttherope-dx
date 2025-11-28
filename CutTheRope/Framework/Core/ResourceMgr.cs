@@ -21,10 +21,31 @@ namespace CutTheRope.Framework.Core
             return s_Resources.TryGetValue(resID, out _);
         }
 
+        /// <summary>
+        /// Checks whether a cached resource exists using its string identifier.
+        /// </summary>
+        public bool HasResource(string resourceName)
+        {
+            int resID = ResolveResourceId(resourceName);
+            return resID >= 0 && HasResource(resID);
+        }
+
         public virtual void AddResourceToLoadQueue(int resID)
         {
             loadQueue.Add(resID);
             loadCount++;
+        }
+
+        /// <summary>
+        /// Adds a resource to the load queue by resolving its string identifier to the legacy numeric ID.
+        /// </summary>
+        public void AddResourceToLoadQueue(string resourceName)
+        {
+            int resID = ResolveResourceId(resourceName);
+            if (resID >= 0)
+            {
+                AddResourceToLoadQueue(resID);
+            }
         }
 
         public void ClearCachedResources()
@@ -77,6 +98,15 @@ namespace CutTheRope.Framework.Core
                 s_Resources.Add(resID, value);
             }
             return value;
+        }
+
+        /// <summary>
+        /// Loads a resource using its string identifier while preserving caching semantics.
+        /// </summary>
+        public virtual object LoadResource(string resourceName, ResourceType resType)
+        {
+            int resID = ResolveResourceId(resourceName);
+            return resID < 0 ? null : LoadResource(resID, resType);
         }
 
         public virtual FrameworkTypes LoadSoundInfo(string path)
@@ -464,10 +494,40 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        public virtual void LoadPack(string[] pack)
+        {
+            if (pack == null)
+            {
+                return;
+            }
+
+            int i = 0;
+            while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
+            {
+                AddResourceToLoadQueue(pack[i]);
+                i++;
+            }
+        }
+
         public virtual void FreePack(int[] pack)
         {
             int i = 0;
             while (pack[i] != -1)
+            {
+                FreeResource(pack[i]);
+                i++;
+            }
+        }
+
+        public virtual void FreePack(string[] pack)
+        {
+            if (pack == null)
+            {
+                return;
+            }
+
+            int i = 0;
+            while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
             {
                 FreeResource(pack[i]);
                 i++;
@@ -579,6 +639,26 @@ namespace CutTheRope.Framework.Core
                 }
                 _ = s_Resources.Remove(resId);
             }
+        }
+
+        /// <summary>
+        /// Frees a cached resource by its string identifier if it has been loaded.
+        /// </summary>
+        public void FreeResource(string resourceName)
+        {
+            int resId = ResolveResourceId(resourceName);
+            if (resId >= 0)
+            {
+                FreeResource(resId);
+            }
+        }
+
+        /// <summary>
+        /// Resolves the legacy numeric identifier for a string-based resource name.
+        /// </summary>
+        protected static int ResolveResourceId(string resourceName)
+        {
+            return ResourceNameTranslator.ToResourceId(resourceName);
         }
 
         public IResourceMgrDelegate resourcesDelegate;

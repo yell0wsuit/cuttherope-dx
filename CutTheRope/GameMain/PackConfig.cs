@@ -8,22 +8,51 @@ using CutTheRope.Helpers;
 
 namespace CutTheRope.GameMain
 {
-    internal sealed class PackDefinition(int unlockStars, int[] packResources, int supportResources, int[] coverResources, int levelCount)
+    /// <summary>
+    /// Immutable pack description combining legacy numeric IDs with translated string names.
+    /// </summary>
+    internal sealed class PackDefinition(
+        int unlockStars,
+        int[] packResources,
+        int supportResources,
+        int[] coverResources,
+        int levelCount,
+        string[] packResourceNames,
+        string supportResourceName,
+        string[] coverResourceNames)
     {
+        /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
 
+        /// <summary>Legacy numeric resource identifiers for pack assets.</summary>
         public int[] PackResources { get; } = packResources;
 
+        /// <summary>String resource names for pack assets.</summary>
+        public string[] PackResourceNames { get; } = packResourceNames;
+
+        /// <summary>Legacy numeric support resource identifier.</summary>
         public int SupportResources { get; } = supportResources;
 
+        /// <summary>String resource name for the support asset.</summary>
+        public string SupportResourceName { get; } = supportResourceName;
+
+        /// <summary>Legacy numeric identifiers for cover assets.</summary>
         public int[] CoverResources { get; } = coverResources;
 
+        /// <summary>String resource names for cover assets.</summary>
+        public string[] CoverResourceNames { get; } = coverResourceNames;
+
+        /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
     }
 
+    /// <summary>
+    /// Loads pack metadata from <c>packs.xml</c> and exposes legacy IDs alongside string resource names.
+    /// </summary>
     internal static class PackConfig
     {
         private static readonly int[] EmptyResources = [-1];
+        private static readonly string[] EmptyResourceNames = [null];
 
         private static readonly List<PackDefinition> packs;
 
@@ -52,14 +81,29 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].PackResources : EmptyResources;
         }
 
+        public static string[] GetPackResourceNames(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].PackResourceNames : EmptyResourceNames;
+        }
+
         public static int[] GetCoverResources(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].CoverResources : EmptyResources;
         }
 
+        public static string[] GetCoverResourceNames(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].CoverResourceNames : EmptyResourceNames;
+        }
+
         public static int GetSupportResources(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].SupportResources : 100;
+        }
+
+        public static string GetSupportResourceName(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].SupportResourceName : null;
         }
 
         public static int GetUnlockStars(int pack)
@@ -85,7 +129,19 @@ namespace CutTheRope.GameMain
                 int[] coverResources = ParseResources(packElement, "coverResources");
                 int levelCount = ParseLevelCount(packElement);
 
-                results.Add(new PackDefinition(unlockStars, packResources, supportResources, coverResources, levelCount));
+                string[] packResourceNames = ResourceNameTranslator.TranslateLegacyPack(packResources);
+                string supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResources) ?? string.Empty;
+                string[] coverResourceNames = ResourceNameTranslator.TranslateLegacyPack(coverResources);
+
+                results.Add(new PackDefinition(
+                    unlockStars,
+                    packResources,
+                    supportResources,
+                    coverResources,
+                    levelCount,
+                    packResourceNames,
+                    supportResourceName,
+                    coverResourceNames));
             }
 
             return results;
