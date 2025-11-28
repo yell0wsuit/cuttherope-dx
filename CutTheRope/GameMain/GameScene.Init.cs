@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
             Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 56);
             Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
             Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 57);
-            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, 0);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }

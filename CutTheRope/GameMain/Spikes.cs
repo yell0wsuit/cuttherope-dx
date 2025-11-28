@@ -26,7 +26,7 @@ namespace CutTheRope.GameMain
                 Image image2 = Image_createWithResIDQuad(Resources.Img.ObjRotatableSpikesButton, q);
                 image.DoRestoreCutTransparency();
                 image2.DoRestoreCutTransparency();
-                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, ButtonIdZero);
+                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, SpikesButtonId.Rotate);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
@@ -151,9 +151,9 @@ namespace CutTheRope.GameMain
             updateRotationFlag = false;
         }
 
-        public void OnButtonPressed(ButtonId n)
+        public void OnButtonPressed(SpikesButtonId n)
         {
-            if (n == 0)
+            if (n == SpikesButtonId.Rotate)
             {
                 delegateRotateAllSpikesWithID(toggled);
                 if (spikesNormal)
@@ -163,6 +163,11 @@ namespace CutTheRope.GameMain
                 }
                 CTRSoundMgr.PlaySound(Resources.Snd.SpikeRotateOut);
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(SpikesButtonId.FromButtonId(buttonId));
         }
 
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
@@ -224,7 +229,6 @@ namespace CutTheRope.GameMain
             Resources.Img.ObjRotatableSpikes04
         ];
 
-        private static readonly ButtonId ButtonIdZero = new(0);
 
         private const int ElectrodesWidthIndex = 5;
 
@@ -235,12 +239,9 @@ namespace CutTheRope.GameMain
         private static string GetSpikeTexture(int width, bool rotatable)
         {
             int index = width - 1;
-            if (index < 0)
-            {
-                return null;
-            }
-
-            return rotatable
+            return index < 0
+                ? null
+                : rotatable
                 ? index < RotatableSpikeTextures.Length ? RotatableSpikeTextures[index] : null
                 : width == ElectrodesWidthIndex
                 ? SpikeTextures.Length > 4 ? SpikeTextures[4] : null

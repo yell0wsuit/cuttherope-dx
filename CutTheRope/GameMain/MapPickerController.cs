@@ -49,7 +49,7 @@ namespace CutTheRope.GameMain
             Text text2 = new Text().InitWithFont(font);
             text2.SetString("START");
             text2.scaleX = text2.scaleY = 1.2f;
-            Button button = new Button().InitWithUpElementDownElementandID(text, text2, 0);
+            Button button = new Button().InitWithUpElementDownElementandID(text, text2, MapPickerControllerButtonId.Start);
             button.anchor = button.parentAnchor = 34;
             button.delegateButtonDelegate = this;
             _ = view.AddChild(button);
@@ -106,12 +106,17 @@ namespace CutTheRope.GameMain
             selectedMap = map;
         }
 
-        public void OnButtonPressed(ButtonId n)
+        public void OnButtonPressed(MapPickerControllerButtonId n)
         {
-            if (n == 0)
+            if (n == MapPickerControllerButtonId.Start)
             {
                 LoadList();
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(MapPickerControllerButtonId.FromButtonId(buttonId));
         }
 
         private string selectedMap;

@@ -208,7 +208,7 @@ namespace CutTheRope.GameMain
             }
         }
 
-        public void OnButtonPressed(ButtonId n)
+        public void OnButtonPressed(GameSceneButtonId n)
         {
             if (MaterialPoint.globalGravity.y == 784.0)
             {
@@ -238,6 +238,11 @@ namespace CutTheRope.GameMain
                     earthAnim.PlayTimeline(1);
                 }
             }
+        }
+
+        void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
+        {
+            OnButtonPressed(GameSceneButtonId.FromButtonId(buttonId));
         }
 
         public void RotateAllSpikesWithID(int sid)
