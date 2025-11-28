@@ -84,7 +84,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a resource by its string name. Auto-assigns an ID if needed.
         /// </summary>
-        public static object LoadResource(string resourceName, ResourceType resType)
+        public static object LoadResourceByName(string resourceName, ResourceType resType)
         {
             CTRResourceMgr mgr = new();
             return mgr.LoadResource(resourceName, resType);

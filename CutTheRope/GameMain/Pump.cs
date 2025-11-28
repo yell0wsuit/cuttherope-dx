@@ -16,6 +16,11 @@ namespace CutTheRope.GameMain
             return Pump_create(Application.GetTexture(r));
         }
 
+        public static Pump Pump_createWithResID(string resourceName)
+        {
+            return Pump_create(Application.GetTexture(resourceName));
+        }
+
         /// <summary>
         /// Creates a pump using a texture resource name.
         /// </summary>

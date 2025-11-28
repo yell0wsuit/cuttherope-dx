@@ -17,6 +17,11 @@ namespace CutTheRope.GameMain
             return Star_create(Application.GetTexture(r));
         }
 
+        public static Star Star_createWithResID(string resourceName)
+        {
+            return Star_create(Application.GetTexture(resourceName));
+        }
+
         public static Star Star_createWithResIDQuad(int r, int q)
         {
             Star star = Star_create(Application.GetTexture(r));
