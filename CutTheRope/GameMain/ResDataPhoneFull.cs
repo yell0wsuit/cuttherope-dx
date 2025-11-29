@@ -130,27 +130,6 @@ namespace CutTheRope.GameMain
             return null;
         }
 
-        public static bool IsSound(int id)
-        {
-            return id switch
-            {
-                9 or 11 or 12 or 13 or 14 or 15 or 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23 or 24 or 25 or 26 or 27 or 28 or 29 or 30 or 31 or 32 or 33 or 34 or 35 or 36 or 37 or 38 or 39 or 40 or 41 or 42 or 43 or 44 or 45 or 46 or 47 => true,
-                10 => false,
-                _ => id is >= 145 and <= 148,
-            };
-        }
-
-        public static bool IsFont(int id)
-        {
-            return id is 3 or 4 or 68;
-        }
-
-        public const int RESOURCES_COUNT = 150;
-
-        public const int SOUND_FIRST = 9;
-
-        public const int SOUND_LAST = 47;
-
         internal const int IMG_MENU_BUTTON_DEFAULT_default_idle = 0;
 
         internal const int IMG_MENU_BUTTON_DEFAULT_default_pressed = 1;
@@ -1433,11 +1412,11 @@ namespace CutTheRope.GameMain
 
         private static Dictionary<string, string> allResources_;
 
-        // String-based resource ID system
+        // String-based resource ID system with auto-assignment
         private static readonly Lock resourceIdLock_ = new();
         private static Dictionary<string, int> stringToIntMap_;
         private static Dictionary<int, string> intToStringMap_;
-        private static int nextAutoId_ = 200;  // Start at 200 to avoid all existing IDs (highest is 180)
+        private static int nextAutoId_ = 0;  // Auto-assign sequential IDs
 
         /// <summary>
         /// Gets the integer ID for a resource name. If the resource name doesn't have an ID yet,
@@ -1515,173 +1494,10 @@ namespace CutTheRope.GameMain
                     return;
                 }
 
+                // Initialize empty maps - IDs will be auto-assigned on first use
                 stringToIntMap_ = [];
                 intToStringMap_ = [];
-
-                // Register all existing int-based resource IDs
-                RegisterResourceId(Resources.Img.ZeptolabNoLink, 0);
-                RegisterResourceId(Resources.Img.LoaderbarFull, 1);
-                RegisterResourceId(Resources.Img.MenuButtonDefault, 2);
-                RegisterResourceId(Resources.Fnt.BigFont, 3);
-                RegisterResourceId(Resources.Fnt.SmallFont, 4);
-                RegisterResourceId(Resources.Img.MenuLoading, 5);
-                RegisterResourceId(Resources.Img.MenuNotification, 6);
-                RegisterResourceId(Resources.Img.MenuAchievement, 7);
-                RegisterResourceId(Resources.Img.MenuOptions, 8);
-                RegisterResourceId(Resources.Snd.Tap, 9);
-                RegisterResourceId(Resources.Str.MenuStrings, 10);
-                RegisterResourceId(Resources.Snd.Button, 11);
-                RegisterResourceId(Resources.Snd.BubbleBreak, 12);
-                RegisterResourceId(Resources.Snd.Bubble, 13);
-                RegisterResourceId(Resources.Snd.CandyBreak, 14);
-                RegisterResourceId(Resources.Snd.MonsterChewing, 15);
-                RegisterResourceId(Resources.Snd.MonsterClose, 16);
-                RegisterResourceId(Resources.Snd.MonsterOpen, 17);
-                RegisterResourceId(Resources.Snd.MonsterSad, 18);
-                RegisterResourceId(Resources.Snd.Ring, 19);
-                RegisterResourceId(Resources.Snd.RopeBleak1, 20);
-                RegisterResourceId(Resources.Snd.RopeBleak2, 21);
-                RegisterResourceId(Resources.Snd.RopeBleak3, 22);
-                RegisterResourceId(Resources.Snd.RopeBleak4, 23);
-                RegisterResourceId(Resources.Snd.RopeGet, 24);
-                RegisterResourceId(Resources.Snd.Star1, 25);
-                RegisterResourceId(Resources.Snd.Star2, 26);
-                RegisterResourceId(Resources.Snd.Star3, 27);
-                RegisterResourceId(Resources.Snd.Electric, 28);
-                RegisterResourceId(Resources.Snd.Pump1, 29);
-                RegisterResourceId(Resources.Snd.Pump2, 30);
-                RegisterResourceId(Resources.Snd.Pump3, 31);
-                RegisterResourceId(Resources.Snd.Pump4, 32);
-                RegisterResourceId(Resources.Snd.SpiderActivate, 33);
-                RegisterResourceId(Resources.Snd.SpiderFall, 34);
-                RegisterResourceId(Resources.Snd.SpiderWin, 35);
-                RegisterResourceId(Resources.Snd.Wheel, 36);
-                RegisterResourceId(Resources.Snd.Win, 37);
-                RegisterResourceId(Resources.Snd.GravityOff, 38);
-                RegisterResourceId(Resources.Snd.GravityOn, 39);
-                RegisterResourceId(Resources.Snd.CandyLink, 40);
-                RegisterResourceId(Resources.Snd.Bouncer, 41);
-                RegisterResourceId(Resources.Snd.SpikeRotateIn, 42);
-                RegisterResourceId(Resources.Snd.SpikeRotateOut, 43);
-                RegisterResourceId(Resources.Snd.Buzz, 44);
-                RegisterResourceId(Resources.Snd.Teleport, 45);
-                RegisterResourceId(Resources.Snd.ScratchIn, 46);
-                RegisterResourceId(Resources.Snd.ScratchOut, 47);
-                RegisterResourceId(Resources.Img.MenuBgr, 48);
-                RegisterResourceId(Resources.Img.MenuPopup, 49);
-                RegisterResourceId(Resources.Img.MenuLogo, 50);
-                RegisterResourceId(Resources.Img.MenuLevelSelection, 51);
-                RegisterResourceId(Resources.Img.MenuPackSelection, 52);
-                RegisterResourceId(Resources.Img.MenuPackSelection2, 53);
-                RegisterResourceId(Resources.Img.MenuExtraButtons, 54);
-                RegisterResourceId(Resources.Img.MenuScrollbar, 55);
-                RegisterResourceId(Resources.Img.MenuLeaderboard, 56);
-                RegisterResourceId(Resources.Img.MenuProcessingHd, 57);
-                RegisterResourceId(Resources.Img.MenuScrollbarChangename, 58);
-                RegisterResourceId(Resources.Img.MenuButtonAchivCup, 59);
-                RegisterResourceId(Resources.Img.MenuBgrShadow, 60);
-                RegisterResourceId(Resources.Img.MenuButtonShort, 61);
-                RegisterResourceId(Resources.Img.HudButtons, 62);
-                RegisterResourceId(Resources.Img.ObjCandy01, 63);
-                RegisterResourceId(Resources.Img.ObjSpider, 64);
-                RegisterResourceId(Resources.Img.ConfettiParticles, 65);
-                RegisterResourceId(Resources.Img.MenuPause, 66);
-                RegisterResourceId(Resources.Img.MenuResult, 67);
-                RegisterResourceId(Resources.Fnt.FontNumbersBig, 68);
-                RegisterResourceId(Resources.Img.HudButtonsEn, 69);
-                RegisterResourceId(Resources.Img.MenuResultEn, 70);
-                RegisterResourceId(Resources.Img.ObjStarDisappear, 71);
-                RegisterResourceId(Resources.Img.ObjBubbleFlight, 72);
-                RegisterResourceId(Resources.Img.ObjBubblePop, 73);
-                RegisterResourceId(Resources.Img.ObjHookAuto, 74);
-                RegisterResourceId(Resources.Img.ObjBubbleAttached, 75);
-                RegisterResourceId(Resources.Img.ObjHook01, 76);
-                RegisterResourceId(Resources.Img.ObjHook02, 77);
-                RegisterResourceId(Resources.Img.ObjStarIdle, 78);
-                RegisterResourceId(Resources.Img.HudStar, 79);
-                RegisterResourceId(Resources.Img.CharAnimations, 80);
-                RegisterResourceId(Resources.Img.ObjHookRegulated, 81);
-                RegisterResourceId(Resources.Img.ObjHookMovable, 82);
-                RegisterResourceId(Resources.Img.ObjPump, 83);
-                RegisterResourceId(Resources.Img.TutorialSigns, 84);
-                RegisterResourceId(Resources.Img.ObjHat, 85);
-                RegisterResourceId(Resources.Img.ObjBouncer01, 86);
-                RegisterResourceId(Resources.Img.ObjBouncer02, 87);
-                RegisterResourceId(Resources.Img.ObjSpikes01, 88);
-                RegisterResourceId(Resources.Img.ObjSpikes02, 89);
-                RegisterResourceId(Resources.Img.ObjSpikes03, 90);
-                RegisterResourceId(Resources.Img.ObjSpikes04, 91);
-                RegisterResourceId(Resources.Img.ObjElectrodes, 92);
-                RegisterResourceId(Resources.Img.ObjRotatableSpikes01, 93);
-                RegisterResourceId(Resources.Img.ObjRotatableSpikes02, 94);
-                RegisterResourceId(Resources.Img.ObjRotatableSpikes03, 95);
-                RegisterResourceId(Resources.Img.ObjRotatableSpikes04, 96);
-                RegisterResourceId(Resources.Img.ObjRotatableSpikesButton, 97);
-                RegisterResourceId(Resources.Img.ObjBeeHd, 98);
-                RegisterResourceId(Resources.Img.ObjPollenHd, 99);
-                RegisterResourceId(Resources.Img.CharSupports, 100);
-                RegisterResourceId(Resources.Img.CharAnimations2, 101);
-                RegisterResourceId(Resources.Img.CharAnimations3, 102);
-                RegisterResourceId(Resources.Img.ObjVinil, 103);
-                RegisterResourceId(Resources.Img.Bgr01P1, 104);
-                RegisterResourceId(Resources.Img.Bgr01P2, 105);
-                RegisterResourceId(Resources.Img.Bgr02P1, 106);
-                RegisterResourceId(Resources.Img.Bgr02P2, 107);
-                RegisterResourceId(Resources.Img.Bgr03P1, 108);
-                RegisterResourceId(Resources.Img.Bgr03P2, 109);
-                RegisterResourceId(Resources.Img.Bgr04P1, 110);
-                RegisterResourceId(Resources.Img.Bgr04P2, 111);
-                RegisterResourceId(Resources.Img.Bgr05P1, 112);
-                RegisterResourceId(Resources.Img.Bgr05P2, 113);
-                RegisterResourceId(Resources.Img.Bgr06P1, 114);
-                RegisterResourceId(Resources.Img.Bgr06P2, 115);
-                RegisterResourceId(Resources.Img.Bgr07P1, 116);
-                RegisterResourceId(Resources.Img.Bgr07P2, 117);
-                RegisterResourceId(Resources.Img.Bgr08P1, 118);
-                RegisterResourceId(Resources.Img.Bgr08P2, 119);
-                RegisterResourceId(Resources.Img.Bgr09P1, 120);
-                RegisterResourceId(Resources.Img.Bgr09P2, 121);
-                RegisterResourceId(Resources.Img.Bgr10P1, 122);
-                RegisterResourceId(Resources.Img.Bgr10P2, 123);
-                RegisterResourceId(Resources.Img.Bgr11P1, 124);
-                RegisterResourceId(Resources.Img.Bgr11P2, 125);
-                RegisterResourceId(Resources.Img.Bgr01Cover, 126);
-                RegisterResourceId(Resources.Img.Bgr02Cover, 127);
-                RegisterResourceId(Resources.Img.Bgr03Cover, 128);
-                RegisterResourceId(Resources.Img.Bgr04Cover, 129);
-                RegisterResourceId(Resources.Img.Bgr05Cover, 130);
-                RegisterResourceId(Resources.Img.Bgr06Cover, 131);
-                RegisterResourceId(Resources.Img.Bgr07Cover, 132);
-                RegisterResourceId(Resources.Img.Bgr08Cover, 133);
-                RegisterResourceId(Resources.Img.Bgr09Cover, 134);
-                RegisterResourceId(Resources.Img.Bgr10Cover, 135);
-                RegisterResourceId(Resources.Img.Bgr11Cover, 136);
-                RegisterResourceId(Resources.Img.MenuExtraButtonsFr, 137);
-                RegisterResourceId(Resources.Img.MenuExtraButtonsGr, 138);
-                RegisterResourceId(Resources.Img.MenuExtraButtonsRu, 139);
-                RegisterResourceId(Resources.Img.HudButtonsRu, 140);
-                RegisterResourceId(Resources.Img.HudButtonsGr, 141);
-                RegisterResourceId(Resources.Img.MenuResultRu, 142);
-                RegisterResourceId(Resources.Img.MenuResultFr, 143);
-                RegisterResourceId(Resources.Img.MenuResultGr, 144);
-                RegisterResourceId(Resources.Snd.MenuMusic, 145);
-                RegisterResourceId(Resources.Snd.GameMusic, 146);
-                RegisterResourceId(Resources.Snd.GameMusic2, 147);
-                RegisterResourceId(Resources.Snd.GameMusic3, 148);
-                RegisterResourceId(Resources.Snd.GameMusic4, 150);
-                RegisterResourceId(Resources.Img.MenuExtraButtonsEn, 149);
-                RegisterResourceId(Resources.Snd.GhostPuff, 151);
-                RegisterResourceId(Resources.Img.Bgr12Cover, 152);
-                RegisterResourceId(Resources.Img.Bgr12P1, 153);
-                RegisterResourceId(Resources.Img.Bgr12P2, 154);
-                RegisterResourceId(Resources.Img.ObjGhost, 180);
             }
-        }
-
-        private static void RegisterResourceId(string name, int id)
-        {
-            stringToIntMap_[name] = id;
-            intToStringMap_[id] = name;
         }
     }
 }

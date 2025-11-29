@@ -195,7 +195,7 @@ namespace CutTheRope.GameMain
 
         private static void ValidateResourceName(string resourceName, string context)
         {
-            if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
+            if (!Resources.IsValidResourceName(resourceName))
             {
                 throw new InvalidDataException($"packs.xml contains unknown resource name '{resourceName}' in '{context}'.");
             }

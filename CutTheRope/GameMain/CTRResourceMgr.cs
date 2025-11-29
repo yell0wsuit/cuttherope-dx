@@ -89,15 +89,15 @@ namespace CutTheRope.GameMain
             return mgr.LoadResource(resourceName, resType);
         }
 
-        protected override TextureAtlasConfig GetTextureAtlasConfig(int resId)
+        protected override TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
-            Dictionary<int, TextureAtlasConfig> configs = LoadTexturePackerRegistry();
-            return configs.TryGetValue(resId, out TextureAtlasConfig config) ? config : null;
+            Dictionary<string, TextureAtlasConfig> configs = LoadTexturePackerRegistry();
+            return configs.TryGetValue(resourceName, out TextureAtlasConfig config) ? config : null;
         }
 
-        private static Dictionary<int, TextureAtlasConfig> LoadTexturePackerRegistry()
+        private static Dictionary<string, TextureAtlasConfig> LoadTexturePackerRegistry()
         {
-            Dictionary<int, TextureAtlasConfig> result = [];
+            Dictionary<string, TextureAtlasConfig> result = [];
 
             try
             {
@@ -118,27 +118,18 @@ namespace CutTheRope.GameMain
 
                 foreach (JsonElement textureElement in texturesElement.EnumerateArray())
                 {
-                    if (!textureElement.TryGetProperty("resourceId", out JsonElement idElement) ||
+                    if (!textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement) ||
                         !textureElement.TryGetProperty("atlasPath", out JsonElement atlasPathElement))
                     {
                         continue;
                     }
 
-                    int resourceId = idElement.GetInt32();
+                    string resourceName = resourceNameElement.GetString();
                     string atlasPath = atlasPathElement.GetString();
-
-                    string resourceName = textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement)
-                        ? resourceNameElement.GetString()
-                        : null;
 
                     if (string.IsNullOrEmpty(resourceName))
                     {
-                        throw new InvalidDataException($"TexturePackerRegistry entry for resourceId {resourceId} is missing a resourceName.");
-                    }
-
-                    if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
-                    {
-                        throw new InvalidDataException($"TexturePackerRegistry contains unknown resource name '{resourceName}' for resourceId {resourceId}.");
+                        throw new InvalidDataException($"TexturePackerRegistry entry is missing a resourceName.");
                     }
 
                     TextureAtlasConfig config = new()
@@ -151,7 +142,7 @@ namespace CutTheRope.GameMain
                         CenterOffsets = GetBoolProperty(textureElement, "centerOffsets", false)
                     };
 
-                    result[resourceId] = config;
+                    result[resourceName] = config;
                 }
             }
             catch (Exception ex)

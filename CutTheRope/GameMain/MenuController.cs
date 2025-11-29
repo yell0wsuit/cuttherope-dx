@@ -595,11 +595,11 @@ namespace CutTheRope.GameMain
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
-            int r = 52;
+            string resourceName = Resources.Img.MenuPackSelection;
             int q = 4 + n;
             if (n > 6)
             {
-                r = 53;
+                resourceName = Resources.Img.MenuPackSelection2;
                 q = n - 6;
             }
             string nsstring;
@@ -637,7 +637,7 @@ namespace CutTheRope.GameMain
             {
                 touchBaseElement.bid = new MenuButtonId(MenuButtonId.PackSelectBase + n);
             }
-            Image image = Image.Image_createWithResIDQuad(r, q);
+            Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
             if (flag)

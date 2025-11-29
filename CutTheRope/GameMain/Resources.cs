@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace CutTheRope.GameMain
 {
     /// <summary>
@@ -5,6 +7,118 @@ namespace CutTheRope.GameMain
     /// </summary>
     internal static class Resources
     {
+        private static HashSet<string> soundNames_;
+        private static HashSet<string> fontNames_;
+        private static HashSet<string> imageNames_;
+
+        /// <summary>
+        /// Checks if a resource name is valid (exists in Resources.cs).
+        /// </summary>
+        public static bool IsValidResourceName(string resourceName)
+        {
+            if (imageNames_ == null)
+            {
+                InitializeImageNames();
+            }
+            if (soundNames_ == null)
+            {
+                InitializeSoundNames();
+            }
+            if (fontNames_ == null)
+            {
+                InitializeFontNames();
+            }
+            return imageNames_.Contains(resourceName) ||
+                   soundNames_.Contains(resourceName) ||
+                   fontNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// Checks if a resource name is a sound.
+        /// </summary>
+        public static bool IsSound(string resourceName)
+        {
+            if (soundNames_ == null)
+            {
+                InitializeSoundNames();
+            }
+            return soundNames_.Contains(resourceName);
+        }
+
+        /// <summary>
+        /// Checks if a resource name is a font.
+        /// </summary>
+        public static bool IsFont(string resourceName)
+        {
+            if (fontNames_ == null)
+            {
+                InitializeFontNames();
+            }
+            return fontNames_.Contains(resourceName);
+        }
+
+        private static void InitializeImageNames()
+        {
+            imageNames_ =
+            [
+                Img.ZeptolabNoLink, Img.LoaderbarFull, Img.MenuButtonDefault,
+                Img.MenuLoading, Img.MenuNotification, Img.MenuAchievement,
+                Img.MenuOptions, Img.MenuBgr, Img.MenuPopup, Img.MenuLogo,
+                Img.MenuLevelSelection, Img.MenuPackSelection, Img.MenuPackSelection2,
+                Img.MenuExtraButtons, Img.MenuScrollbar, Img.MenuLeaderboard,
+                Img.MenuProcessingHd, Img.MenuScrollbarChangename, Img.MenuButtonAchivCup,
+                Img.MenuBgrShadow, Img.MenuButtonShort, Img.HudButtons, Img.ObjCandy01,
+                Img.ObjSpider, Img.ConfettiParticles, Img.MenuPause, Img.MenuResult,
+                Img.HudButtonsEn, Img.MenuResultEn, Img.ObjStarDisappear,
+                Img.ObjBubbleFlight, Img.ObjBubblePop, Img.ObjHookAuto,
+                Img.ObjBubbleAttached, Img.ObjHook01, Img.ObjHook02, Img.ObjStarIdle,
+                Img.HudStar, Img.CharAnimations, Img.ObjHookRegulated, Img.ObjHookMovable,
+                Img.ObjPump, Img.TutorialSigns, Img.ObjHat, Img.ObjBouncer01,
+                Img.ObjBouncer02, Img.ObjSpikes01, Img.ObjSpikes02, Img.ObjSpikes03,
+                Img.ObjSpikes04, Img.ObjElectrodes, Img.ObjRotatableSpikes01,
+                Img.ObjRotatableSpikes02, Img.ObjRotatableSpikes03, Img.ObjRotatableSpikes04,
+                Img.ObjRotatableSpikesButton, Img.ObjBeeHd, Img.ObjPollenHd,
+                Img.CharSupports, Img.CharAnimations2, Img.CharAnimations3, Img.ObjVinil,
+                Img.Bgr01P1, Img.Bgr01P2, Img.Bgr02P1, Img.Bgr02P2,
+                Img.Bgr03P1, Img.Bgr03P2, Img.Bgr04P1, Img.Bgr04P2,
+                Img.Bgr05P1, Img.Bgr05P2, Img.Bgr06P1, Img.Bgr06P2,
+                Img.Bgr07P1, Img.Bgr07P2, Img.Bgr08P1, Img.Bgr08P2,
+                Img.Bgr09P1, Img.Bgr09P2, Img.Bgr10P1, Img.Bgr10P2,
+                Img.Bgr11P1, Img.Bgr11P2, Img.Bgr01Cover, Img.Bgr02Cover,
+                Img.Bgr03Cover, Img.Bgr04Cover, Img.Bgr05Cover, Img.Bgr06Cover,
+                Img.Bgr07Cover, Img.Bgr08Cover, Img.Bgr09Cover, Img.Bgr10Cover,
+                Img.Bgr11Cover, Img.MenuExtraButtonsFr, Img.MenuExtraButtonsGr,
+                Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
+                Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
+                Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
+                Img.ObjGhost
+            ];
+        }
+
+        private static void InitializeSoundNames()
+        {
+            soundNames_ =
+            [
+                Snd.Tap, Snd.Button, Snd.BubbleBreak, Snd.Bubble, Snd.CandyBreak,
+                Snd.MonsterChewing, Snd.MonsterClose, Snd.MonsterOpen, Snd.MonsterSad,
+                Snd.Ring, Snd.RopeBleak1, Snd.RopeBleak2, Snd.RopeBleak3, Snd.RopeBleak4,
+                Snd.RopeGet, Snd.Star1, Snd.Star2, Snd.Star3, Snd.Electric,
+                Snd.Pump1, Snd.Pump2, Snd.Pump3, Snd.Pump4, Snd.SpiderActivate,
+                Snd.SpiderFall, Snd.SpiderWin, Snd.Wheel, Snd.Win, Snd.GravityOff,
+                Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
+                Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
+                Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
+                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff
+            ];
+        }
+
+        private static void InitializeFontNames()
+        {
+            fontNames_ =
+            [
+                Fnt.BigFont, Fnt.SmallFont, Fnt.FontNumbersBig
+            ];
+        }
         /// <summary>
         /// Image and atlas resource names.
         /// </summary>

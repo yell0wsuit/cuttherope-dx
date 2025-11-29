@@ -123,8 +123,27 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         internal static CTRTexture2D GetTexture(string textureResourceName)
         {
+            if (string.IsNullOrEmpty(textureResourceName))
+            {
+                throw new ArgumentException("Texture resource name cannot be null or empty.", nameof(textureResourceName));
+            }
+
             object resource = SharedResourceMgr().LoadResource(textureResourceName, ResourceMgr.ResourceType.IMAGE);
-            return resource as CTRTexture2D;
+
+            if (resource is CTRTexture2D texture)
+            {
+                return texture;
+            }
+
+            string localizedName = CTRResourceMgr.HandleLocalizedResource(textureResourceName);
+            string resolvedName = string.Equals(textureResourceName, localizedName, StringComparison.Ordinal)
+                ? textureResourceName
+                : string.IsNullOrEmpty(localizedName)
+                    ? textureResourceName
+                    : $"{textureResourceName} (localized: {localizedName})";
+
+            throw new InvalidOperationException(
+                $"Texture '{resolvedName}' could not be loaded. Ensure the resource name is correct and the asset is registered in TexturePackerRegistry.json.");
         }
 
         internal static string GetString(string xmlElementName)

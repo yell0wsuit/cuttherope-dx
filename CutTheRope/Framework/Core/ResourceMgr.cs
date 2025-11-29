@@ -90,7 +90,7 @@ namespace CutTheRope.Framework.Core
             switch (resType)
             {
                 case ResourceType.IMAGE:
-                    value = LoadTextureImageInfo(resId, path, null, flag, scaleX, scaleY);
+                    value = LoadTextureImageInfo(resId, resourceName, path, null, flag, scaleX, scaleY);
                     break;
                 case ResourceType.FONT:
                     value = LoadVariableFontInfo(path, resId, flag);
@@ -198,9 +198,9 @@ namespace CutTheRope.Framework.Core
             return font;
         }
 
-        public virtual CTRTexture2D LoadTextureImageInfo(int resId, string path, XElement i, bool isWvga, float scaleX, float scaleY)
+        public virtual CTRTexture2D LoadTextureImageInfo(int resId, string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
-            TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resId);
+            TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
             bool preferTexturePacker = atlasConfig?.Format == TextureAtlasFormat.TexturePackerJson;
 
             XElement xmlInfo = i;
@@ -270,7 +270,7 @@ namespace CutTheRope.Framework.Core
             return texture2D;
         }
 
-        protected virtual TextureAtlasConfig GetTextureAtlasConfig(int resId)
+        protected virtual TextureAtlasConfig GetTextureAtlasConfig(string resourceName)
         {
             return null;
         }
@@ -624,21 +624,17 @@ namespace CutTheRope.Framework.Core
                 return;
             }
 
-            if (150 < localizedResId)
-            {
-                return;
-            }
-            if (10 == localizedResId)
+            if (localizedName == Resources.Str.MenuStrings)
             {
                 xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
                 return;
             }
-            if (IsSound(localizedResId))
+            if (Resources.IsSound(localizedName))
             {
                 _ = Application.SharedSoundMgr().GetSound(localizedResId);
                 return;
             }
-            if (IsFont(localizedResId))
+            if (Resources.IsFont(localizedName))
             {
                 _ = Application.GetFont(localizedName);
                 return;
@@ -654,21 +650,17 @@ namespace CutTheRope.Framework.Core
 
         public virtual void FreeResource(int resId)
         {
-            if (!TryResolveResource(resId, out int localizedResId, out _))
+            if (!TryResolveResource(resId, out int localizedResId, out string localizedName))
             {
                 return;
             }
 
-            if (150 < localizedResId)
-            {
-                return;
-            }
-            if (10 == localizedResId)
+            if (localizedName == Resources.Str.MenuStrings)
             {
                 xmlStrings = null;
                 return;
             }
-            if (IsSound(localizedResId))
+            if (Resources.IsSound(localizedName))
             {
                 Application.SharedSoundMgr().FreeSound(localizedResId);
                 return;
