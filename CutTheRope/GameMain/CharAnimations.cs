@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -7,6 +9,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CharAnimations : GameObject
     {
+        [Obsolete("Use CharAnimations_createWithResID(string) instead")]
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
             return CharAnimations_create(Application.GetTexture(r));
@@ -26,20 +29,22 @@ namespace CutTheRope.GameMain
 
         public void AddImage(string resourceName)
         {
-            int resId = ResourceNameTranslator.ToResourceId(resourceName);
-            AddImage(resId);
-        }
-
-        public void AddImage(int resId)
-        {
             animations ??= new DynamicArray<Animation>();
-            CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resId);
+            CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.DoRestoreCutTransparency();
+            int resId = ResourceNameTranslator.ToResourceId(resourceName);
             int i = resId - 101;
             animations.SetObjectAt(charAnimation, i);
             _ = AddChild(charAnimation);
             charAnimation.SetEnabled(false);
+        }
+
+        [Obsolete("Use AddImage(string) instead")]
+        public void AddImage(int resId)
+        {
+            string resourceName = ResourceNameTranslator.TranslateLegacyId(resId);
+            AddImage(resourceName);
         }
 
         protected override void Dispose(bool disposing)

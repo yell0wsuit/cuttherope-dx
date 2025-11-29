@@ -155,11 +155,13 @@ namespace CutTheRope.Framework.Visual
             return Image_create(Application.GetTexture(resourceName));
         }
 
+        [Obsolete("Use Image_createWithResID(string) instead")]
         public static Image Image_createWithResID(int r)
         {
             return Image_create(Application.GetTexture(r));
         }
 
+        [Obsolete("Use Image_createWithResIDQuad(string, int) instead")]
         public static Image Image_createWithResIDQuad(int r, int q)
         {
             Image image = Image_create(Application.GetTexture(r));

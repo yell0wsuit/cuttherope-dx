@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
@@ -11,6 +12,7 @@ namespace CutTheRope.Framework.Visual
             return (Animation)new Animation().InitWithTexture(t);
         }
 
+        [Obsolete("Use Animation_createWithResID(string) instead")]
         public static Animation Animation_createWithResID(int r)
         {
             return Animation_create(Application.GetTexture(r));
