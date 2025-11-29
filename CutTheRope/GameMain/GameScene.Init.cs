@@ -19,6 +19,7 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        [System.Obsolete]
         public GameScene()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();

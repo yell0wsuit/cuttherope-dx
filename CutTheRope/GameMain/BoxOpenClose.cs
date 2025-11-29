@@ -660,6 +660,7 @@ namespace CutTheRope.GameMain
 
         private sealed class Confetti : Animation
         {
+            [Obsolete]
             public static Confetti Confetti_createWithResID(int r)
             {
                 return Confetti_create(Application.GetTexture(r));

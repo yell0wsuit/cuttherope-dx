@@ -101,6 +101,7 @@ namespace CutTheRope.GameMain
             PlayRandomMusic(musicIds);
         }
 
+        [Obsolete]
         public static void PlayRandomMusic(params int[] musicIds)
         {
             if (musicIds == null || musicIds.Length == 0)

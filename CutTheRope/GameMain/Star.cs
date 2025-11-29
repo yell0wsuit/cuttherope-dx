@@ -12,6 +12,7 @@ namespace CutTheRope.GameMain
             return (Star)new Star().InitWithTexture(t);
         }
 
+        [System.Obsolete]
         public static Star Star_createWithResID(int r)
         {
             return Star_create(Application.GetTexture(r));
@@ -22,6 +23,7 @@ namespace CutTheRope.GameMain
             return Star_create(Application.GetTexture(resourceName));
         }
 
+        [System.Obsolete]
         public static Star Star_createWithResIDQuad(int r, int q)
         {
             Star star = Star_create(Application.GetTexture(r));

@@ -44,6 +44,7 @@ namespace CutTheRope.GameMain
             return pack;
         }
 
+        [Obsolete]
         public CTRRootController(ViewController parent)
             : base(parent)
         {

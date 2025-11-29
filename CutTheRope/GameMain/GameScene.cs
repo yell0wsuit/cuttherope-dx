@@ -441,6 +441,7 @@ namespace CutTheRope.GameMain
                 return gameObjectSpecial;
             }
 
+            [System.Obsolete]
             public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(int r, int q)
             {
                 GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(r));

@@ -523,6 +523,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         public virtual void FreePack(string[] pack)
         {
             if (pack == null)
@@ -586,6 +587,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         private static void Rmgr_internalUpdate(FrameworkTypes obj)
         {
             ((ResourceMgr)obj).Update();

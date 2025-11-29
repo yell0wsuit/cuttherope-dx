@@ -77,6 +77,7 @@ namespace CutTheRope.Framework.Media
             activeSounds = list;
         }
 
+        [Obsolete]
         public virtual void PlaySound(int sid)
         {
             ClearStopped();
@@ -92,6 +93,7 @@ namespace CutTheRope.Framework.Media
             PlaySound(soundResID);
         }
 
+        [Obsolete]
         public virtual SoundEffectInstance PlaySoundLooped(int sid)
         {
             ClearStopped();

@@ -119,6 +119,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a font by its resource name (auto-assigns ID if needed).
         /// </summary>
+        [Obsolete]
         internal static FontGeneric GetFont(string fontResourceName)
         {
             int fontResID = GetResourceId(fontResourceName);
@@ -135,6 +136,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a texture by its resource name (auto-assigns ID if needed).
         /// </summary>
+        [Obsolete]
         internal static CTRTexture2D GetTexture(string textureResourceName)
         {
             int textureResID = GetResourceId(textureResourceName);

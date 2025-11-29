@@ -11,6 +11,7 @@ namespace CutTheRope.GameMain
             return (Bubble)new Bubble().InitWithTexture(t);
         }
 
+        [System.Obsolete]
         public static Bubble Bubble_createWithResID(int r)
         {
             return Bubble_create(Application.GetTexture(r));

@@ -8,6 +8,7 @@ namespace CutTheRope.Framework.Visual
 {
     internal class Text : BaseElement
     {
+        [System.Obsolete]
         public static Text CreateWithFontandString(int i, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(i));

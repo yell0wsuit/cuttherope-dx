@@ -298,6 +298,7 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        [Obsolete]
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
@@ -1115,6 +1116,7 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 6);
         }
 
+        [Obsolete]
         public MenuController(ViewController parent)
             : base(parent)
         {
@@ -1152,6 +1154,7 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
+        [Obsolete]
         public override void Activate()
         {
             showNextPackStatus = false;
@@ -1193,6 +1196,7 @@ namespace CutTheRope.GameMain
             Deactivate();
         }
 
+        [Obsolete]
         public void MoviePlaybackFinished(string url)
         {
             if (replayingIntroMovie)
@@ -1265,6 +1269,7 @@ namespace CutTheRope.GameMain
             CreateOptions();
         }
 
+        [Obsolete]
         public void OnButtonPressed(MenuButtonId n)
         {
             if (n.Value != -1)
@@ -1595,6 +1600,7 @@ namespace CutTheRope.GameMain
         {
         }
 
+        [Obsolete]
         public override void FullscreenToggled(bool isFullscreen)
         {
             DeleteView(5);
@@ -1754,6 +1760,7 @@ namespace CutTheRope.GameMain
                 return (MonsterSlot)new MonsterSlot().InitWithTexture(t);
             }
 
+            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
                 return MonsterSlot_create(Application.GetTexture(r));
@@ -1764,6 +1771,7 @@ namespace CutTheRope.GameMain
                 return MonsterSlot_create(Application.GetTexture(resourceName));
             }
 
+            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
                 MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));
