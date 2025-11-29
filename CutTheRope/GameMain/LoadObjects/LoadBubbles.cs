@@ -13,6 +13,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a bubble object from XML node data
         /// </summary>
+        [System.Obsolete]
         private void LoadBubble(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int q2 = RND_RANGE(1, 3);

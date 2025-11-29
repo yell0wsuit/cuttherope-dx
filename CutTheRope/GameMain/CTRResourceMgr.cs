@@ -73,22 +73,6 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Adjusts a legacy resource identifier for the active language when localized variants exist.
-        /// </summary>
-        [Obsolete("Use HandleLocalizedResource(string) instead")]
-        public static int HandleLocalizedResource(int r)
-        {
-            string resourceName = ResourceNameTranslator.TranslateLegacyId(r);
-            if (resourceName == null)
-            {
-                return r;
-            }
-
-            string localizedName = HandleLocalizedResource(resourceName);
-            return ResourceNameTranslator.ToResourceId(localizedName);
-        }
-
-        /// <summary>
         /// Resolves a localized XNA resource name for a string resource name.
         /// </summary>
         public static string XNA_ResName(string resourceName)
@@ -97,35 +81,12 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
-        /// Resolves a localized XNA resource name for a given legacy identifier.
-        /// </summary>
-        [Obsolete("Use XNA_ResName(string) instead")]
-        public static string XNA_ResName(int resId)
-        {
-            // Use the new string-based resource ID system
-            return GetResourceName(HandleLocalizedResource(resId));
-        }
-
-        /// <summary>
         /// Loads a resource by its string name. Auto-assigns an ID if needed.
         /// </summary>
-        [Obsolete]
         public static object LoadResourceByName(string resourceName, ResourceType resType)
         {
             CTRResourceMgr mgr = new();
             return mgr.LoadResource(resourceName, resType);
-        }
-
-        [Obsolete]
-        public override object LoadResource(int resID, ResourceType resType)
-        {
-            return base.LoadResource(HandleLocalizedResource(resID), resType);
-        }
-
-        [Obsolete]
-        public override void FreeResource(int resID)
-        {
-            base.FreeResource(HandleLocalizedResource(resID));
         }
 
         protected override TextureAtlasConfig GetTextureAtlasConfig(int resId)

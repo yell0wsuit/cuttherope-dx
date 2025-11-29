@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -23,7 +22,6 @@ namespace CutTheRope.Framework.Core
             return resourceMgr;
         }
 
-        [Obsolete]
         public static RootController SharedRootController()
         {
             root ??= new CTRRootController(null);
@@ -77,7 +75,6 @@ namespace CutTheRope.Framework.Core
             return new CTRPreferences();
         }
 
-        [Obsolete]
         public virtual RootController CreateRootController()
         {
             return new CTRRootController(null);
@@ -111,7 +108,6 @@ namespace CutTheRope.Framework.Core
             return new MovieMgr();
         }
 
-        [Obsolete]
         internal static FontGeneric GetFont(int fontResID)
         {
             object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
@@ -121,14 +117,12 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a font by its resource name (auto-assigns ID if needed).
         /// </summary>
-        [Obsolete]
         internal static FontGeneric GetFont(string fontResourceName)
         {
             int fontResID = GetResourceId(fontResourceName);
             return GetFont(fontResID);
         }
 
-        [Obsolete]
         internal static CTRTexture2D GetTexture(int textureResID)
         {
             object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
@@ -138,7 +132,6 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Gets a texture by its resource name (auto-assigns ID if needed).
         /// </summary>
-        [Obsolete]
         internal static CTRTexture2D GetTexture(string textureResourceName)
         {
             int textureResID = GetResourceId(textureResourceName);

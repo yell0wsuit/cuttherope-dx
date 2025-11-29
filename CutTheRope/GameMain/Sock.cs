@@ -16,7 +16,6 @@ namespace CutTheRope.GameMain
             return Sock_create(Application.GetTexture(r));
         }
 
-        [System.Obsolete]
         public static Sock Sock_createWithResID(string resourceName)
         {
             return Sock_create(Application.GetTexture(resourceName));
@@ -27,7 +26,6 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index.</param>
-        [System.Obsolete]
         public static Sock Sock_createWithResIDQuad(string resourceName, int q)
         {
             Sock sock = Sock_create(Application.GetTexture(resourceName));

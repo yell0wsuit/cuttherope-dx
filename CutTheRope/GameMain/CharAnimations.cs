@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -9,13 +7,11 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CharAnimations : GameObject
     {
-        [Obsolete("Use CharAnimations_createWithResID(string) instead")]
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
             return CharAnimations_create(Application.GetTexture(r));
         }
 
-        [Obsolete]
         public static CharAnimations CharAnimations_createWithResID(string resourceName)
         {
             return CharAnimations_create(Application.GetTexture(resourceName));
@@ -41,7 +37,7 @@ namespace CutTheRope.GameMain
             charAnimation.SetEnabled(false);
         }
 
-        [Obsolete("Use AddImage(string) instead")]
+        [System.Obsolete]
         public void AddImage(int resId)
         {
             string resourceName = ResourceNameTranslator.TranslateLegacyId(resId);

@@ -121,6 +121,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        [System.Obsolete]
         private void EnsureCandyGhostBubbleAnimations()
         {
             if (!isCandyInGhostBubbleAnimationLoaded && candy != null)

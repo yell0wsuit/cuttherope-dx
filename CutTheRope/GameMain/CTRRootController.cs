@@ -44,7 +44,6 @@ namespace CutTheRope.GameMain
             return pack;
         }
 
-        [Obsolete]
         public CTRRootController(ViewController parent)
             : base(parent)
         {
@@ -69,7 +68,6 @@ namespace CutTheRope.GameMain
             GLCanvas.AfterRender();
         }
 
-        [Obsolete]
         public void DeleteMenu()
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -99,7 +97,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        [Obsolete]
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);

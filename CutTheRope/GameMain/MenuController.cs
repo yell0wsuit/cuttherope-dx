@@ -19,7 +19,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class MenuController : ViewController, IButtonDelegation, IMovieMgrDelegate, IScrollableContainerProtocol, ITimelineDelegate
     {
-        [Obsolete]
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
@@ -39,7 +38,6 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonShort, 1);
@@ -59,7 +57,6 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, ButtonId bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonDefault, 0);
@@ -96,7 +93,6 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public static Button CreateButtonWithImageIDDelegate(string resourceName, ButtonId bid, IButtonDelegation d)
         {
             CTRTexture2D texture = Application.GetTexture(resourceName);
@@ -122,7 +118,6 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, int bid, IButtonDelegation d)
         {
             Image image = Image.Image_createWithResIDQuad(resourceName, q1);
@@ -216,7 +211,6 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        [Obsolete]
         public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
         {
             string @string = Application.SharedAppSettings().GetString(8);
@@ -259,13 +253,11 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
             return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
         }
 
-        [Obsolete]
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             int res = ResourceNameTranslator.ToResourceId(resourceName);
@@ -285,7 +277,6 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        [Obsolete]
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             BaseElement baseElement = CreateElementWithResIdquad(res, quad);
@@ -354,7 +345,6 @@ namespace CutTheRope.GameMain
             return button;
         }
 
-        [Obsolete]
         public void CreateMainMenu()
         {
             MenuView menuView = new();
@@ -409,7 +399,6 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 0);
         }
 
-        [Obsolete]
         public void CreateOptions()
         {
             MenuView menuView = new();
@@ -473,7 +462,6 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 1);
         }
 
-        [Obsolete]
         public void CreateReset()
         {
             MenuView menuView = new();
@@ -513,7 +501,6 @@ namespace CutTheRope.GameMain
             AddViewwithID(movieView, 7);
         }
 
-        [Obsolete]
         public void CreateAbout()
         {
             MenuView menuView = new();
@@ -568,7 +555,6 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 3);
         }
 
-        [Obsolete]
         public static HBox CreateTextWithStar(string t)
         {
             HBox hbox = new HBox().InitWithOffsetAlignHeight(0.0, 16, (double)RTD(50.0));
@@ -595,7 +581,6 @@ namespace CutTheRope.GameMain
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
-        [Obsolete]
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = new()
@@ -747,7 +732,6 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
-        [Obsolete]
         public void CreatePackSelect()
         {
             MenuView menuView = new();
@@ -850,7 +834,6 @@ namespace CutTheRope.GameMain
         {
         }
 
-        [Obsolete]
         public void ShowCantUnlockPopup()
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -896,7 +879,6 @@ namespace CutTheRope.GameMain
             _ = ActiveView().AddChild(popup);
         }
 
-        [Obsolete]
         public void ShowGameFinishedPopup()
         {
             Popup popup = new();
@@ -926,7 +908,6 @@ namespace CutTheRope.GameMain
             _ = ActiveView().AddChild(popup);
         }
 
-        [Obsolete]
         public void ShowYesNoPopup(string str, MenuButtonId buttonYesId, MenuButtonId buttonNoId)
         {
             Popup popup = new();
@@ -1000,7 +981,6 @@ namespace CutTheRope.GameMain
             CTRPreferences.SetLastPack(i);
         }
 
-        [Obsolete]
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
             bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
@@ -1039,7 +1019,6 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
-        [Obsolete]
         public void CreateLevelSelect()
         {
             float num = 0.3f;
@@ -1168,7 +1147,6 @@ namespace CutTheRope.GameMain
             base.Dispose(disposing);
         }
 
-        [Obsolete]
         public override void Activate()
         {
             showNextPackStatus = false;
@@ -1210,7 +1188,6 @@ namespace CutTheRope.GameMain
             Deactivate();
         }
 
-        [Obsolete]
         public void MoviePlaybackFinished(string url)
         {
             if (replayingIntroMovie)
@@ -1241,7 +1218,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        [Obsolete]
         public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
@@ -1282,7 +1258,6 @@ namespace CutTheRope.GameMain
             CreateOptions();
         }
 
-        [Obsolete]
         public void OnButtonPressed(MenuButtonId n)
         {
             if (n.Value != -1)
@@ -1530,7 +1505,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        [Obsolete]
         void IButtonDelegation.OnButtonPressed(ButtonId buttonId)
         {
             OnButtonPressed(MenuButtonId.FromButtonId(buttonId));
@@ -1549,7 +1523,6 @@ namespace CutTheRope.GameMain
             return moveToPack;
         }
 
-        [Obsolete]
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -1615,7 +1588,6 @@ namespace CutTheRope.GameMain
         {
         }
 
-        [Obsolete]
         public override void FullscreenToggled(bool isFullscreen)
         {
             DeleteView(5);
@@ -1655,7 +1627,6 @@ namespace CutTheRope.GameMain
             RecreateOptions();
         }
 
-        [Obsolete]
         public override bool BackButtonPressed()
         {
             int num = activeViewID;
@@ -1776,19 +1747,16 @@ namespace CutTheRope.GameMain
                 return (MonsterSlot)new MonsterSlot().InitWithTexture(t);
             }
 
-            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
                 return MonsterSlot_create(Application.GetTexture(r));
             }
 
-            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResID(string resourceName)
             {
                 return MonsterSlot_create(Application.GetTexture(resourceName));
             }
 
-            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
                 MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));
@@ -1796,7 +1764,6 @@ namespace CutTheRope.GameMain
                 return monsterSlot;
             }
 
-            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResIDQuad(string resourceName, int q)
             {
                 MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(resourceName));
@@ -1804,7 +1771,6 @@ namespace CutTheRope.GameMain
                 return monsterSlot;
             }
 
-            [Obsolete]
             public override void Draw()
             {
                 PreDraw();

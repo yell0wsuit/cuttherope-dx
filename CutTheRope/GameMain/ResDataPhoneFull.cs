@@ -130,7 +130,6 @@ namespace CutTheRope.GameMain
             return null;
         }
 
-        [Obsolete("Use string-based resource loading instead")]
         public static bool IsSound(int id)
         {
             return id switch
@@ -141,7 +140,6 @@ namespace CutTheRope.GameMain
             };
         }
 
-        [Obsolete("Use string-based resource loading instead")]
         public static bool IsFont(int id)
         {
             return id is 3 or 4 or 68;

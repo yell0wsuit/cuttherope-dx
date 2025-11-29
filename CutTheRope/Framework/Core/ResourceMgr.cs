@@ -18,7 +18,7 @@ namespace CutTheRope.Framework.Core
 
         public virtual bool HasResource(int resID)
         {
-            return s_Resources.TryGetValue(resID, out _);
+            return TryResolveResource(resID, out int localizedResId, out _) && s_Resources.TryGetValue(localizedResId, out _);
         }
 
         /// <summary>
@@ -26,14 +26,16 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public bool HasResource(string resourceName)
         {
-            int resID = ResolveResourceId(resourceName);
-            return resID >= 0 && HasResource(resID);
+            return TryResolveResource(resourceName, out int resID, out _) && HasResource(resID);
         }
 
         public virtual void AddResourceToLoadQueue(int resID)
         {
-            loadQueue.Add(resID);
-            loadCount++;
+            if (TryResolveResource(resID, out int localizedResId, out _))
+            {
+                loadQueue.Add(localizedResId);
+                loadCount++;
+            }
         }
 
         /// <summary>
@@ -41,8 +43,7 @@ namespace CutTheRope.Framework.Core
         /// </summary>
         public void AddResourceToLoadQueue(string resourceName)
         {
-            int resID = ResolveResourceId(resourceName);
-            if (resID >= 0)
+            if (TryResolveResource(resourceName, out int resID, out _))
             {
                 AddResourceToLoadQueue(resID);
             }
@@ -53,37 +54,54 @@ namespace CutTheRope.Framework.Core
             s_Resources.Clear();
         }
 
-        [Obsolete]
         public virtual object LoadResource(int resID, ResourceType resType)
         {
-            if (s_Resources.TryGetValue(resID, out object value))
+            return !TryResolveResource(resID, out int localizedResId, out string resourceName)
+                ? null
+                : LoadResourceInternal(localizedResId, resourceName, resType);
+        }
+
+        /// <summary>
+        /// Loads a resource using its string identifier while preserving caching semantics.
+        /// </summary>
+        public virtual object LoadResource(string resourceName, ResourceType resType)
+        {
+            return !TryResolveResource(resourceName, out int resId, out string localizedName)
+                ? null
+                : LoadResourceInternal(resId, localizedName, resType);
+        }
+
+        private object LoadResourceInternal(int resId, string resourceName, ResourceType resType)
+        {
+            if (s_Resources.TryGetValue(resId, out object value))
             {
                 return value;
             }
-            string path = resType != ResourceType.STRINGS ? CTRResourceMgr.XNA_ResName(resID) : "";
+
+            string path = resType != ResourceType.STRINGS ? CTRResourceMgr.XNA_ResName(resourceName) : "";
             bool flag = false;
-            float scaleX = GetNormalScaleX(resID);
-            float scaleY = GetNormalScaleY(resID);
+            float scaleX = GetNormalScaleX(resId);
+            float scaleY = GetNormalScaleY(resId);
             if (flag)
             {
-                scaleX = GetWvgaScaleX(resID);
-                scaleY = GetWvgaScaleY(resID);
+                scaleX = GetWvgaScaleX(resId);
+                scaleY = GetWvgaScaleY(resId);
             }
             switch (resType)
             {
                 case ResourceType.IMAGE:
-                    value = LoadTextureImageInfo(resID, path, null, flag, scaleX, scaleY);
+                    value = LoadTextureImageInfo(resId, path, null, flag, scaleX, scaleY);
                     break;
                 case ResourceType.FONT:
-                    value = LoadVariableFontInfo(path, resID, flag);
-                    _ = s_Resources.Remove(resID);
+                    value = LoadVariableFontInfo(path, resId, flag);
+                    _ = s_Resources.Remove(resId);
                     break;
                 case ResourceType.SOUND:
                     value = LoadSoundInfo(path);
                     break;
                 case ResourceType.STRINGS:
                     {
-                        string strValue = LoadStringsInfo(resID);
+                        string strValue = LoadStringsInfo(resId);
                         value = strValue.Replace('\u00a0', ' ');
                     }
                     break;
@@ -96,19 +114,31 @@ namespace CutTheRope.Framework.Core
             }
             if (value != null)
             {
-                s_Resources.Add(resID, value);
+                s_Resources.Add(resId, value);
             }
             return value;
         }
 
-        /// <summary>
-        /// Loads a resource using its string identifier while preserving caching semantics.
-        /// </summary>
-        [Obsolete]
-        public virtual object LoadResource(string resourceName, ResourceType resType)
+        private static bool TryResolveResource(int resId, out int localizedResId, out string localizedName)
         {
-            int resID = ResolveResourceId(resourceName);
-            return resID < 0 ? null : LoadResource(resID, resType);
+            localizedName = ResourceNameTranslator.TranslateLegacyId(resId);
+            if (string.IsNullOrEmpty(localizedName))
+            {
+                localizedResId = -1;
+                return false;
+            }
+
+            return TryResolveResource(localizedName, out localizedResId, out localizedName);
+        }
+
+        private static bool TryResolveResource(string resourceName, out int resId, out string localizedName)
+        {
+            localizedName = string.IsNullOrEmpty(resourceName)
+                ? resourceName
+                : CTRResourceMgr.HandleLocalizedResource(resourceName);
+
+            resId = ResolveResourceId(localizedName);
+            return resId >= 0;
         }
 
         public virtual FrameworkTypes LoadSoundInfo(string path)
@@ -150,7 +180,6 @@ namespace CutTheRope.Framework.Core
             return string.Empty;
         }
 
-        [Obsolete]
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
             XElement xmlnode = XElementExtensions.LoadContentXml(path);
@@ -512,7 +541,6 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         public virtual void FreePack(int[] pack)
         {
             int i = 0;
@@ -523,7 +551,6 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         public virtual void FreePack(string[] pack)
         {
             if (pack == null)
@@ -539,7 +566,6 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         public virtual void LoadImmediately()
         {
             while (loadQueue.Count != 0)
@@ -551,7 +577,6 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         public virtual void StartLoading()
         {
             if (resourcesDelegate != null)
@@ -567,7 +592,6 @@ namespace CutTheRope.Framework.Core
             return !bUseFake ? loadCount : 100;
         }
 
-        [Obsolete]
         public void Update()
         {
             if (loadQueue.Count > 0)
@@ -588,13 +612,11 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         private static void Rmgr_internalUpdate(FrameworkTypes obj)
         {
             ((ResourceMgr)obj).Update();
         }
 
-        [Obsolete]
         private void LoadResource(int resId)
         {
             if (150 < resId)
@@ -625,41 +647,43 @@ namespace CutTheRope.Framework.Core
             }
         }
 
-        [Obsolete]
         public virtual void FreeResource(int resId)
         {
-            if (150 < resId)
+            if (!TryResolveResource(resId, out int localizedResId, out _))
             {
                 return;
             }
-            if (10 == resId)
+
+            if (150 < localizedResId)
+            {
+                return;
+            }
+            if (10 == localizedResId)
             {
                 xmlStrings = null;
                 return;
             }
-            if (IsSound(resId))
+            if (IsSound(localizedResId))
             {
-                Application.SharedSoundMgr().FreeSound(resId);
+                Application.SharedSoundMgr().FreeSound(localizedResId);
                 return;
             }
-            if (s_Resources.TryGetValue(resId, out object value))
+            if (s_Resources.TryGetValue(localizedResId, out object value))
             {
                 if (value is IDisposable disposable)
                 {
                     disposable.Dispose();
                 }
-                _ = s_Resources.Remove(resId);
+                _ = s_Resources.Remove(localizedResId);
             }
         }
 
         /// <summary>
         /// Frees a cached resource by its string identifier if it has been loaded.
         /// </summary>
-        [Obsolete]
         public void FreeResource(string resourceName)
         {
-            int resId = ResolveResourceId(resourceName);
-            if (resId >= 0)
+            if (TryResolveResource(resourceName, out int resId, out _))
             {
                 FreeResource(resId);
             }

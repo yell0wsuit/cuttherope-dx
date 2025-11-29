@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
@@ -12,7 +11,6 @@ namespace CutTheRope.Framework.Visual
             return (Animation)new Animation().InitWithTexture(t);
         }
 
-        [Obsolete("Use Animation_createWithResID(string) instead")]
         public static Animation Animation_createWithResID(int r)
         {
             return Animation_create(Application.GetTexture(r));
@@ -21,13 +19,11 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Creates an animation using a texture resource name.
         /// </summary>
-        [Obsolete]
         public static Animation Animation_createWithResID(string resourceName)
         {
             return Animation_create(Application.GetTexture(resourceName));
         }
 
-        [Obsolete]
         public static Animation Animation_createWithResIDQuad(int r, int q)
         {
             Animation animation = Animation_createWithResID(r);

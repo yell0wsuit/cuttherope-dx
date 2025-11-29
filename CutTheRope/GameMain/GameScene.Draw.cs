@@ -14,7 +14,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
-        [System.Obsolete]
         public override void Draw()
         {
             OpenGL.GlClear(0);

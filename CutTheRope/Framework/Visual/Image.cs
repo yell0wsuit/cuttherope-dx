@@ -11,7 +11,6 @@ namespace CutTheRope.Framework.Visual
         // (get) Token: 0x060001E5 RID: 485 RVA: 0x00009A46 File Offset: 0x00007C46
         public string ResName => texture != null ? texture._resName : "ERROR: texture == null";
 
-        [Obsolete]
         public static Vector GetQuadSize(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureID);
@@ -23,14 +22,12 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        [Obsolete]
         public static Vector GetQuadSize(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
             return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
-        [Obsolete]
         public static Vector GetQuadOffset(int textureID, int quad)
         {
             return Application.GetTexture(textureID).quadOffsets[quad];
@@ -41,13 +38,11 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        [Obsolete]
         public static Vector GetQuadOffset(string textureResourceName, int quad)
         {
             return Application.GetTexture(textureResourceName).quadOffsets[quad];
         }
 
-        [Obsolete]
         public static Vector GetQuadCenter(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureID);
@@ -59,14 +54,12 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="textureResourceName">Texture resource name.</param>
         /// <param name="quad">Index of the quad.</param>
-        [Obsolete]
         public static Vector GetQuadCenter(string textureResourceName, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
             return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
-        [Obsolete]
         public static Vector GetRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureID, quadToCountFrom);
@@ -85,7 +78,6 @@ namespace CutTheRope.Framework.Visual
             return VectSub(GetQuadOffset(textureResourceName, quad), quadOffset);
         }
 
-        [Obsolete]
         public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
             Vector quadCenter = GetQuadCenter(textureID, quad);
@@ -108,7 +100,6 @@ namespace CutTheRope.Framework.Visual
             e.anchor = 18;
         }
 
-        [Obsolete]
         public static void SetElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureID, quad);
@@ -159,19 +150,16 @@ namespace CutTheRope.Framework.Visual
         /// Creates an image from the specified texture resource name.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
-        [Obsolete]
         public static Image Image_createWithResID(string resourceName)
         {
             return Image_create(Application.GetTexture(resourceName));
         }
 
-        [Obsolete("Use Image_createWithResID(string) instead")]
         public static Image Image_createWithResID(int r)
         {
             return Image_create(Application.GetTexture(r));
         }
 
-        [Obsolete("Use Image_createWithResIDQuad(string, int) instead")]
         public static Image Image_createWithResIDQuad(int r, int q)
         {
             Image image = Image_create(Application.GetTexture(r));
@@ -184,7 +172,6 @@ namespace CutTheRope.Framework.Visual
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
-        [Obsolete]
         public static Image Image_createWithResIDQuad(string resourceName, int q)
         {
             Image image = Image_create(Application.GetTexture(resourceName));

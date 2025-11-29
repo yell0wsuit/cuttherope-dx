@@ -10,7 +10,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class MapPickerController : ViewController, IButtonDelegation
     {
-        [System.Obsolete]
         public MapPickerController(ViewController parent)
             : base(parent)
         {
@@ -34,7 +33,6 @@ namespace CutTheRope.GameMain
             SetNormalMode();
         }
 
-        [System.Obsolete]
         public void CreatePickerView()
         {
             View view = new();

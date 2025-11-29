@@ -13,7 +13,6 @@ namespace CutTheRope.Framework.Helpers
 {
     internal class GameObject : Animation
     {
-        [Obsolete]
         public static GameObject GameObject_createWithResID(int r)
         {
             return GameObject_create(Application.GetTexture(r));
@@ -26,7 +25,6 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
-        [Obsolete]
         public static GameObject GameObject_createWithResIDQuad(int r, int q)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(r));
@@ -34,7 +32,6 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
-        [Obsolete]
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int q)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
@@ -96,7 +93,6 @@ namespace CutTheRope.Framework.Helpers
             base.Dispose(disposing);
         }
 
-        [Obsolete]
         public virtual GameObject InitWithTextureIDxOffyOffXML(int t, int tx, int ty, XElement xml)
         {
             if (base.InitWithTexture(Application.GetTexture(t)) != null)

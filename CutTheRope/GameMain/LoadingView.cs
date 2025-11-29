@@ -8,7 +8,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class LoadingView : View
     {
-        [System.Obsolete]
         public override void Draw()
         {
             Global.MouseCursor.Enable(false);

@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
 
@@ -7,13 +5,11 @@ namespace CutTheRope.Commons
 {
     internal sealed class HLiftScrollbar : Image
     {
-        [Obsolete]
         public static HLiftScrollbar CreateWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             return new HLiftScrollbar().InitWithResIDBackQuadLiftQuadLiftQuadPressed(resID, bq, lq, lqp);
         }
 
-        [Obsolete]
         public HLiftScrollbar InitWithResIDBackQuadLiftQuadLiftQuadPressed(int resID, int bq, int lq, int lqp)
         {
             if (InitWithTexture(Application.GetTexture(resID)) != null)

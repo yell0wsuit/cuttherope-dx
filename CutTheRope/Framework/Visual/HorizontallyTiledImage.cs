@@ -63,7 +63,6 @@ namespace CutTheRope.Framework.Visual
             return (HorizontallyTiledImage)new HorizontallyTiledImage().InitWithTexture(t);
         }
 
-        [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
         {
             return HorizontallyTiledImage_create(Application.GetTexture(r));
@@ -73,13 +72,11 @@ namespace CutTheRope.Framework.Visual
         /// Creates a tiled image from the specified texture resource name.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
-        [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(string resourceName)
         {
             return HorizontallyTiledImage_create(Application.GetTexture(resourceName));
         }
 
-        [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
         {
             HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.GetTexture(r));

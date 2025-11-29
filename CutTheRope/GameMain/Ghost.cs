@@ -123,7 +123,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        [System.Obsolete]
         public void ResetToState(int newState)
         {
             if ((newState & possibleStatesMask) == 0)
