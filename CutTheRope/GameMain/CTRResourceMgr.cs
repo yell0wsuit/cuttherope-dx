@@ -14,67 +14,92 @@ namespace CutTheRope.GameMain
     internal sealed class CTRResourceMgr : ResourceMgr
     {
         /// <summary>
-        /// Adjusts a legacy resource identifier for the active language when localized variants exist.
+        /// Adjusts a resource name for the active language when localized variants exist.
         /// </summary>
-        public static int HandleLocalizedResource(int r)
+        public static string HandleLocalizedResource(string resourceName)
         {
-            if (r != HudButtonsEnId)
+            if (string.IsNullOrEmpty(resourceName))
             {
-                if (r != MenuResultEnId)
-                {
-                    if (r == MenuExtraButtonsEnId)
-                    {
-                        if (LANGUAGE == Language.LANGRU)
-                        {
-                            return MenuExtraButtonsRuId;
-                        }
-                        if (LANGUAGE == Language.LANGDE)
-                        {
-                            return MenuExtraButtonsGrId;
-                        }
-                        if (LANGUAGE == Language.LANGFR)
-                        {
-                            return MenuExtraButtonsFrId;
-                        }
-                    }
-                }
-                else
-                {
-                    if (LANGUAGE == Language.LANGRU)
-                    {
-                        return MenuResultRuId;
-                    }
-                    if (LANGUAGE == Language.LANGDE)
-                    {
-                        return MenuResultGrId;
-                    }
-                    if (LANGUAGE == Language.LANGFR)
-                    {
-                        return MenuResultFrId;
-                    }
-                }
+                return resourceName;
             }
-            else
+
+            if (resourceName == Resources.Img.HudButtonsEn)
             {
                 if (LANGUAGE == Language.LANGRU)
                 {
-                    return HudButtonsRuId;
+                    return Resources.Img.HudButtonsRu;
                 }
                 if (LANGUAGE == Language.LANGDE)
                 {
-                    return HudButtonsGrId;
+                    return Resources.Img.HudButtonsGr;
                 }
                 if (LANGUAGE == Language.LANGFR)
                 {
-                    return HudButtonsEnId;
+                    return Resources.Img.HudButtonsEn;
                 }
             }
-            return r;
+            else if (resourceName == Resources.Img.MenuResultEn)
+            {
+                if (LANGUAGE == Language.LANGRU)
+                {
+                    return Resources.Img.MenuResultRu;
+                }
+                if (LANGUAGE == Language.LANGDE)
+                {
+                    return Resources.Img.MenuResultGr;
+                }
+                if (LANGUAGE == Language.LANGFR)
+                {
+                    return Resources.Img.MenuResultFr;
+                }
+            }
+            else if (resourceName == Resources.Img.MenuExtraButtonsEn)
+            {
+                if (LANGUAGE == Language.LANGRU)
+                {
+                    return Resources.Img.MenuExtraButtonsRu;
+                }
+                if (LANGUAGE == Language.LANGDE)
+                {
+                    return Resources.Img.MenuExtraButtonsGr;
+                }
+                if (LANGUAGE == Language.LANGFR)
+                {
+                    return Resources.Img.MenuExtraButtonsFr;
+                }
+            }
+
+            return resourceName;
+        }
+
+        /// <summary>
+        /// Adjusts a legacy resource identifier for the active language when localized variants exist.
+        /// </summary>
+        [Obsolete("Use HandleLocalizedResource(string) instead")]
+        public static int HandleLocalizedResource(int r)
+        {
+            string resourceName = ResourceNameTranslator.TranslateLegacyId(r);
+            if (resourceName == null)
+            {
+                return r;
+            }
+
+            string localizedName = HandleLocalizedResource(resourceName);
+            return ResourceNameTranslator.ToResourceId(localizedName);
+        }
+
+        /// <summary>
+        /// Resolves a localized XNA resource name for a string resource name.
+        /// </summary>
+        public static string XNA_ResName(string resourceName)
+        {
+            return HandleLocalizedResource(resourceName);
         }
 
         /// <summary>
         /// Resolves a localized XNA resource name for a given legacy identifier.
         /// </summary>
+        [Obsolete("Use XNA_ResName(string) instead")]
         public static string XNA_ResName(int resId)
         {
             // Use the new string-based resource ID system
@@ -186,26 +211,5 @@ namespace CutTheRope.GameMain
             return result.Count > 0 ? [.. result] : null;
         }
 
-        private static readonly int HudButtonsEnId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsEn);
-
-        private static readonly int HudButtonsRuId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsRu);
-
-        private static readonly int HudButtonsGrId = ResourceNameTranslator.ToResourceId(Resources.Img.HudButtonsGr);
-
-        private static readonly int MenuResultEnId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultEn);
-
-        private static readonly int MenuResultRuId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultRu);
-
-        private static readonly int MenuResultFrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultFr);
-
-        private static readonly int MenuResultGrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuResultGr);
-
-        private static readonly int MenuExtraButtonsEnId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsEn);
-
-        private static readonly int MenuExtraButtonsRuId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsRu);
-
-        private static readonly int MenuExtraButtonsGrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsGr);
-
-        private static readonly int MenuExtraButtonsFrId = ResourceNameTranslator.ToResourceId(Resources.Img.MenuExtraButtonsFr);
     }
 }
