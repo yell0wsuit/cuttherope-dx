@@ -119,16 +119,6 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets a font by its legacy numeric ID
-        /// </summary>
-        [Obsolete]
-        internal static FontGeneric GetFont(int fontResID)
-        {
-            object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
-            return resource as FontGeneric;
-        }
-
-        /// <summary>
         /// Gets a texture by its resource name.
         /// </summary>
         internal static CTRTexture2D GetTexture(string textureResourceName)

@@ -640,7 +640,7 @@ namespace CutTheRope.Framework.Core
             }
             if (IsFont(localizedResId))
             {
-                _ = Application.GetFont(localizedResId);
+                _ = Application.GetFont(localizedName);
                 return;
             }
             try
