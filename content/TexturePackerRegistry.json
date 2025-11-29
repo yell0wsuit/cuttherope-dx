@@ -26,6 +26,12 @@
                 "bubbles_0004"
             ],
             "centerOffsets": false
+        },
+        {
+            "resourceName": "obj_pipe",
+            "atlasPath": "obj_pipe.json",
+            "useAntialias": true,
+            "centerOffsets": false
         }
     ]
 }

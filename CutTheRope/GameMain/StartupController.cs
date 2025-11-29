@@ -107,6 +107,9 @@ namespace CutTheRope.GameMain
             Resources.Snd.ScratchIn,
             Resources.Snd.ScratchOut,
             Resources.Snd.GhostPuff,
+            Resources.Snd.SteamStart,
+            Resources.Snd.SteamStart2,
+            Resources.Snd.SteamEnd,
             null,
         ];
 

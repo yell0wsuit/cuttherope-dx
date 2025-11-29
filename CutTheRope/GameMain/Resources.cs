@@ -94,7 +94,7 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost
+                Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe
             ];
         }
 
@@ -114,7 +114,8 @@ namespace CutTheRope.GameMain
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff
+                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.SteamStart,
+                Snd.SteamStart2, Snd.SteamEnd
             ];
         }
 
@@ -241,6 +242,9 @@ namespace CutTheRope.GameMain
             public const string Bgr12P1 = "bgr_12_p1";
             public const string Bgr12P2 = "bgr_12_p2";
             public const string ObjGhost = "obj_ghost";
+            public const string Bgr13Cover = "bgr_13_cover";
+            public const string Bgr13P1 = "bgr_13_p1";
+            public const string ObjPipe = "obj_pipe";
         }
 
         /// <summary>
@@ -302,6 +306,9 @@ namespace CutTheRope.GameMain
             public const string GameMusic3 = "game_music3";
             public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
+            public const string SteamStart = "steam_start";
+            public const string SteamStart2 = "steam_start2";
+            public const string SteamEnd = "steam_end";
         }
 
         /// <summary>

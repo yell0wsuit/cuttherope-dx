@@ -55,7 +55,7 @@ namespace CutTheRope.GameMain
 
         public static MenuButtonId PackSelectBase => new(23);
 
-        public static MenuButtonId BackFromPackSelect => new(35);
+        public static MenuButtonId BackFromPackSelect => new(50);
 
         public static MenuButtonId BackFromOptions => new(36);
 
