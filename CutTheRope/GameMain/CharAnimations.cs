@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Helpers;
@@ -30,7 +32,12 @@ namespace CutTheRope.GameMain
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.DoRestoreCutTransparency();
-            int resId = ResourceNameTranslator.ToResourceId(resourceName);
+
+            if (!ResourceNameTranslator.TryGetResourceId(resourceName, out int resId) || resId < 101)
+            {
+                throw new ArgumentOutOfRangeException(nameof(resourceName), resourceName, "Character animation resource is unknown or has an invalid legacy id.");
+            }
+
             int i = resId - 101;
             animations.SetObjectAt(charAnimation, i);
             _ = AddChild(charAnimation);
