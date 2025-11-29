@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 
 using CutTheRope.Framework;
 using CutTheRope.Framework.Core;
@@ -29,17 +29,15 @@ namespace CutTheRope.GameMain
         public void AddImage(string resourceName)
         {
             animations ??= new DynamicArray<Animation>();
+            animationNameToIndex ??= [];
+
             CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
             charAnimation.parentAnchor = charAnimation.anchor = 9;
             charAnimation.DoRestoreCutTransparency();
 
-            if (!ResourceNameTranslator.TryGetResourceId(resourceName, out int resId) || resId < 101)
-            {
-                throw new ArgumentOutOfRangeException(nameof(resourceName), resourceName, "Character animation resource is unknown or has an invalid legacy id.");
-            }
-
-            int i = resId - 101;
-            animations.SetObjectAt(charAnimation, i);
+            int index = nextAnimationIndex++;
+            animations.SetObjectAt(charAnimation, index);
+            animationNameToIndex[resourceName] = index;
             _ = AddChild(charAnimation);
             charAnimation.SetEnabled(false);
         }
@@ -63,6 +61,8 @@ namespace CutTheRope.GameMain
                     animations.RemoveAllObjects();
                     animations = null;
                 }
+                animationNameToIndex?.Clear();
+                animationNameToIndex = null;
             }
             base.Dispose(disposing);
         }
@@ -123,5 +123,7 @@ namespace CutTheRope.GameMain
         }
 
         private DynamicArray<Animation> animations;
+        private Dictionary<string, int> animationNameToIndex;
+        private int nextAnimationIndex;
     }
 }
