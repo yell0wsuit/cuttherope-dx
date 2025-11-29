@@ -16,6 +16,13 @@ namespace CutTheRope.GameMain
             return Create(Application.GetTexture(resId));
         }
 
+        public static GhostBubble CreateWithResIDQuad(string resourceName, int quad)
+        {
+            GhostBubble bubble = Create(Application.GetTexture(resourceName));
+            bubble?.SetDrawQuad(quad);
+            return bubble;
+        }
+
         [System.Obsolete]
         public static GhostBubble CreateWithResIDQuad(int resId, int quad)
         {
