@@ -184,7 +184,7 @@ namespace CutTheRope.GameMain
             int num = p ? 1 : 0;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, num);
             Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
-            Image.SetElementPositionWithRelativeQuadOffset(image2, 8, num, q);
+            Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, num, q);
             image2.parentAnchor = image2.anchor = 9;
             image2.x += offset.x;
             image2.y += offset.y;
@@ -194,7 +194,7 @@ namespace CutTheRope.GameMain
                 image2.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
                 Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 4);
                 image3.parentAnchor = image3.anchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image3, 8, num, 4);
+                Image.SetElementPositionWithRelativeQuadOffset(image3, Resources.Img.MenuOptions, num, 4);
                 _ = image.AddChild(image3);
             }
             return image;
@@ -303,13 +303,13 @@ namespace CutTheRope.GameMain
             text.anchor = 18;
             text.scaleX = text.scaleY = 0.75f;
             _ = image.AddChild(text);
-            Image.SetElementPositionWithRelativeQuadOffset(text, 8, q, tq);
+            Image.SetElementPositionWithRelativeQuadOffset(text, Resources.Img.MenuOptions, q, tq);
             if (bId != -1)
             {
                 ToggleButton toggleButton = CreateToggleButtonWithResquadquad2buttonIDdelegate(Resources.Img.MenuOptions, -1, 8, bId, delegateValue);
                 toggleButton.SetName("button");
                 toggleButton.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, 8, q, 8);
+                Image.SetElementPositionWithRelativeQuadOffset(toggleButton, Resources.Img.MenuOptions, q, 8);
                 _ = image.AddChild(toggleButton);
                 int num = (image.width / 2) - (toggleButton.width / 2);
                 toggleButton.SetTouchIncreaseLeftRightTopBottom(num, num, image.height * 0.85, 0.0);
@@ -318,7 +318,7 @@ namespace CutTheRope.GameMain
             {
                 Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 7);
                 image2.parentAnchor = 9;
-                Image.SetElementPositionWithRelativeQuadOffset(image2, 8, q, 7);
+                Image.SetElementPositionWithRelativeQuadOffset(image2, Resources.Img.MenuOptions, q, 7);
                 _ = image.AddChild(image2);
             }
             return image;
