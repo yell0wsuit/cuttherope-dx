@@ -595,12 +595,18 @@ namespace CutTheRope.GameMain
             {
                 CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
-            string resourceName = Resources.Img.MenuPackSelection;
-            int q = 4 + n;
-            if (n > 6)
+            string resourceName = PackConfig.GetBoxImageResourceName(n);
+            int q = PackConfig.GetBoxImageQuad(n);
+            if (string.IsNullOrEmpty(resourceName))
             {
-                resourceName = Resources.Img.MenuPackSelection2;
-                q = n - 6;
+                // Fallback to old behavior if boxImage not specified
+                resourceName = Resources.Img.MenuPackSelection;
+                q = 4 + n;
+                if (n > 6)
+                {
+                    resourceName = Resources.Img.MenuPackSelection2;
+                    q = n - 6;
+                }
             }
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
