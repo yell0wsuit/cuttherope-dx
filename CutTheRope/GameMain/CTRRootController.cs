@@ -51,7 +51,7 @@ namespace CutTheRope.GameMain
             loadedMap = null;
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.InitLoading();
-            ctrresourceMgr.LoadPack([Resources.Pack.Startup]);
+            ctrresourceMgr.LoadPack(PackStartup);
             ctrresourceMgr.LoadImmediately();
             StartupController startupController = new(this);
             AddChildwithID(startupController, 0);
@@ -72,7 +72,7 @@ namespace CutTheRope.GameMain
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
-            resourceMgr.FreePack([Resources.Pack.Menu]);
+            resourceMgr.FreePack(PackMenu);
             GC.Collect();
         }
 
@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
                         MenuController menuController2 = new(this);
                         AddChildwithID(menuController2, 1);
                         DeleteChild(0);
-                        resourceMgr.FreePack([Resources.Pack.Startup]);
+                        resourceMgr.FreePack(PackStartup);
                         menuController2.viewToShow = 0;
                         if (Preferences.GetBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
                         {
@@ -135,8 +135,8 @@ namespace CutTheRope.GameMain
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                         string[] packResourceNames = PackConfig.GetPackResourceNames(pack);
                         resourceMgr.InitLoading();
-                        resourceMgr.LoadPack([Resources.Pack.Game]);
-                        resourceMgr.LoadPack([Resources.Pack.GameNormal]);
+                        resourceMgr.LoadPack(PackGame);
+                        resourceMgr.LoadPack(PackGameNormal);
                         resourceMgr.LoadPack(packResourceNames);
                         resourceMgr.StartLoading();
                         ((LoadingController)GetChild(2)).nextController = 0;
@@ -198,8 +198,8 @@ namespace CutTheRope.GameMain
                         if (exitCode <= 2)
                         {
                             DeleteChild(3);
-                            resourceMgr.FreePack([Resources.Pack.Game]);
-                            resourceMgr.FreePack([Resources.Pack.GameNormal]);
+                            resourceMgr.FreePack(PackGame);
+                            resourceMgr.FreePack(PackGameNormal);
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
@@ -207,7 +207,7 @@ namespace CutTheRope.GameMain
                             }
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                             resourceMgr.InitLoading();
-                            resourceMgr.LoadPack([Resources.Pack.Menu]);
+                            resourceMgr.LoadPack(PackMenu);
                             resourceMgr.StartLoading();
                             LoadingController loadingController = (LoadingController)GetChild(2);
                             loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
@@ -350,5 +350,81 @@ namespace CutTheRope.GameMain
         private bool showGreeting;
 
         private bool hacked;
+
+        private static readonly string[] PackStartup = [
+            Resources.Img.ZeptolabNoLink,
+            Resources.Img.LoaderbarFull,
+            null
+        ];
+
+        private static readonly string[] PackMenu =
+        [
+            Resources.Img.MenuBgr,
+            Resources.Img.MenuPopup,
+            Resources.Img.MenuLogo,
+            Resources.Img.MenuLevelSelection,
+            Resources.Img.MenuPackSelection,
+            Resources.Img.MenuPackSelection2,
+            Resources.Img.MenuExtraButtons,
+            Resources.Img.MenuScrollbar,
+            Resources.Img.MenuLeaderboard,
+            Resources.Img.MenuProcessingHd,
+            Resources.Img.MenuScrollbarChangename,
+            Resources.Img.MenuButtonAchivCup,
+            Resources.Img.MenuBgrShadow,
+            null
+        ];
+
+        private static readonly string[] PackGame = [
+            Resources.Img.MenuButtonShort,
+            Resources.Img.HudButtons,
+            Resources.Img.ObjCandy01,
+            Resources.Img.ObjSpider,
+            Resources.Img.ConfettiParticles,
+            Resources.Img.MenuPause,
+            Resources.Img.MenuResult,
+            Resources.Fnt.FontNumbersBig,
+            Resources.Img.HudButtonsEn,
+            Resources.Img.MenuResultEn,
+            null
+        ];
+
+        private static readonly string[] PackGameNormal = [
+            Resources.Img.ObjStarDisappear,
+            Resources.Img.ObjBubbleFlight,
+            Resources.Img.ObjBubblePop,
+            Resources.Img.ObjHookAuto,
+            Resources.Img.ObjBubbleAttached,
+            Resources.Img.ObjHook01,
+            Resources.Img.ObjHook02,
+            Resources.Img.ObjStarIdle,
+            Resources.Img.HudStar,
+            Resources.Img.CharAnimations,
+            Resources.Img.ObjHookRegulated,
+            Resources.Img.ObjHookMovable,
+            Resources.Img.ObjPump,
+            Resources.Img.TutorialSigns,
+            Resources.Img.ObjHat,
+            Resources.Img.ObjBouncer01,
+            Resources.Img.ObjBouncer02,
+            Resources.Img.ObjSpikes01,
+            Resources.Img.ObjSpikes02,
+            Resources.Img.ObjSpikes03,
+            Resources.Img.ObjSpikes04,
+            Resources.Img.ObjElectrodes,
+            Resources.Img.ObjRotatableSpikes01,
+            Resources.Img.ObjRotatableSpikes02,
+            Resources.Img.ObjRotatableSpikes03,
+            Resources.Img.ObjRotatableSpikes04,
+            Resources.Img.ObjRotatableSpikesButton,
+            Resources.Img.ObjBeeHd,
+            Resources.Img.ObjPollenHd,
+            Resources.Img.CharSupports,
+            Resources.Img.CharAnimations2,
+            Resources.Img.CharAnimations3,
+            Resources.Img.ObjVinil,
+            Resources.Img.ObjGhost,
+            null
+        ];
     }
 }
