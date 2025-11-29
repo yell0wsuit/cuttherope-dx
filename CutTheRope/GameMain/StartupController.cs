@@ -106,6 +106,7 @@ namespace CutTheRope.GameMain
             Resources.Snd.Teleport,
             Resources.Snd.ScratchIn,
             Resources.Snd.ScratchOut,
+            Resources.Snd.GhostPuff,
             null,
         ];
 
