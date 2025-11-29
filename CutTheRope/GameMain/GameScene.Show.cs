@@ -12,7 +12,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed partial class GameScene
     {
-        [System.Obsolete]
         public override void Show()
         {
             // Initialize game state and load level data
