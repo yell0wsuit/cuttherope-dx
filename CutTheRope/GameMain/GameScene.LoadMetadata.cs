@@ -38,7 +38,7 @@ namespace CutTheRope.GameMain
                         mapWidth *= scale;
                         mapHeight *= scale;
 
-                        if (cTRRootController.GetPack() == 7)
+                        if (PackConfig.GetEarthBg(cTRRootController.GetPack()))
                         {
                             earthAnims = new DynamicArray<Image>();
                             if (mapWidth > SCREEN_WIDTH)

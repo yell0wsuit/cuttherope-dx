@@ -17,7 +17,8 @@ namespace CutTheRope.GameMain
         int levelCount,
         string[] packResourceNames,
         string supportResourceName,
-        string[] coverResourceNames)
+        string[] coverResourceNames,
+        bool earthBg)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -33,6 +34,9 @@ namespace CutTheRope.GameMain
 
         /// <summary>Total number of levels in the pack.</summary>
         public int LevelCount { get; } = levelCount;
+
+        /// <summary>Whether this pack uses earth background animations.</summary>
+        public bool EarthBg { get; } = earthBg;
     }
 
     /// <summary>
@@ -97,6 +101,11 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count ? packs[pack].UnlockStars : 0;
         }
 
+        public static bool GetEarthBg(int pack)
+        {
+            return pack >= 0 && pack < packs.Count && packs[pack].EarthBg;
+        }
+
         private static List<PackDefinition> LoadFromXml()
         {
             XElement root = XElementExtensions.LoadContentXml("packs.xml");
@@ -124,12 +133,15 @@ namespace CutTheRope.GameMain
                 RequireResourceNames(coverResourceNames, "coverResourceNames");
                 ValidateResourceNames(coverResourceNames, "coverResourceNames");
 
+                bool earthBg = ParseBoolAttribute(packElement, "earthBg");
+
                 results.Add(new PackDefinition(
                     unlockStars,
                     levelCount,
                     packResourceNames,
                     supportResourceName,
-                    coverResourceNames));
+                    coverResourceNames,
+                    earthBg));
             }
 
             return results;
@@ -139,6 +151,12 @@ namespace CutTheRope.GameMain
         {
             string value = element.AttributeAsNSString(attributeName);
             return string.IsNullOrWhiteSpace(value) ? defaultValue : int.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        private static bool ParseBoolAttribute(XElement element, string attributeName, bool defaultValue = false)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
         }
 
         private static int ParseLevelCount(XElement element)

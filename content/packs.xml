@@ -7,7 +7,7 @@
   <pack index="4" unlockStars="240" resourceNames="bgr_05_p1,bgr_05_p2" coverResourceNames="bgr_05_cover" levelCount="25" />
   <pack index="5" unlockStars="300" resourceNames="bgr_06_p1,bgr_06_p2" coverResourceNames="bgr_06_cover" levelCount="25" />
   <pack index="6" unlockStars="350" resourceNames="bgr_07_p1,bgr_07_p2" coverResourceNames="bgr_07_cover" levelCount="25" />
-  <pack index="7" unlockStars="400" resourceNames="bgr_08_p1,bgr_08_p2" coverResourceNames="bgr_08_cover" levelCount="25" />
+  <pack index="7" unlockStars="400" resourceNames="bgr_08_p1,bgr_08_p2" coverResourceNames="bgr_08_cover" levelCount="25" earthBg="true" />
   <pack index="8" unlockStars="450" resourceNames="bgr_09_p1,bgr_09_p2" coverResourceNames="bgr_09_cover" levelCount="25" />
   <pack index="9" unlockStars="500" resourceNames="bgr_10_p1,bgr_10_p2" coverResourceNames="bgr_10_cover" levelCount="25" />
   <pack index="10" unlockStars="550" resourceNames="bgr_11_p1,bgr_11_p2" coverResourceNames="bgr_11_cover" levelCount="25" />
