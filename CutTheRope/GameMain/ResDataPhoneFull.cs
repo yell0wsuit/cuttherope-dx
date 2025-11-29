@@ -130,6 +130,7 @@ namespace CutTheRope.GameMain
             return null;
         }
 
+        [Obsolete("Use string-based resource loading instead")]
         public static bool IsSound(int id)
         {
             return id switch
@@ -140,322 +141,11 @@ namespace CutTheRope.GameMain
             };
         }
 
+        [Obsolete("Use string-based resource loading instead")]
         public static bool IsFont(int id)
         {
             return id is 3 or 4 or 68;
         }
-
-        public const int IMG_DEFAULT = 0;
-
-        public const int IMG_LOADERBAR_FULL = 1;
-
-        public const int IMG_MENU_BUTTON_DEFAULT = 2;
-
-        public const int FNT_BIG_FONT = 3;
-
-        public const int FNT_SMALL_FONT = 4;
-
-        public const int IMG_MENU_LOADING = 5;
-
-        public const int IMG_MENU_NOTIFICATION = 6;
-
-        public const int IMG_MENU_ACHIEVEMENT = 7;
-
-        public const int IMG_MENU_OPTIONS = 8;
-
-        public const int SND_TAP = 9;
-
-        public const int STR_MENU = 10;
-
-        public const int SND_BUTTON = 11;
-
-        public const int SND_BUBBLE_BREAK = 12;
-
-        public const int SND_BUBBLE = 13;
-
-        public const int SND_CANDY_BREAK = 14;
-
-        public const int SND_MONSTER_CHEWING = 15;
-
-        public const int SND_MONSTER_CLOSE = 16;
-
-        public const int SND_MONSTER_OPEN = 17;
-
-        public const int SND_MONSTER_SAD = 18;
-
-        public const int SND_RING = 19;
-
-        public const int SND_ROPE_BLEAK_1 = 20;
-
-        public const int SND_ROPE_BLEAK_2 = 21;
-
-        public const int SND_ROPE_BLEAK_3 = 22;
-
-        public const int SND_ROPE_BLEAK_4 = 23;
-
-        public const int SND_ROPE_GET = 24;
-
-        public const int SND_STAR_1 = 25;
-
-        public const int SND_STAR_2 = 26;
-
-        public const int SND_STAR_3 = 27;
-
-        public const int SND_ELECTRIC = 28;
-
-        public const int SND_PUMP_1 = 29;
-
-        public const int SND_PUMP_2 = 30;
-
-        public const int SND_PUMP_3 = 31;
-
-        public const int SND_PUMP_4 = 32;
-
-        public const int SND_SPIDER_ACTIVATE = 33;
-
-        public const int SND_SPIDER_FALL = 34;
-
-        public const int SND_SPIDER_WIN = 35;
-
-        public const int SND_WHEEL = 36;
-
-        public const int SND_WIN = 37;
-
-        public const int SND_GRAVITY_OFF = 38;
-
-        public const int SND_GRAVITY_ON = 39;
-
-        public const int SND_CANDY_LINK = 40;
-
-        public const int SND_BOUNCER = 41;
-
-        public const int SND_SPIKE_ROTATE_IN = 42;
-
-        public const int SND_SPIKE_ROTATE_OUT = 43;
-
-        public const int SND_BUZZ = 44;
-
-        public const int SND_TELEPORT = 45;
-
-        public const int SND_SCRATCH_IN = 46;
-
-        public const int SND_SCRATCH_OUT = 47;
-
-        public const int IMG_MENU_BGR = 48;
-
-        public const int IMG_MENU_POPUP = 49;
-
-        public const int IMG_MENU_LOGO = 50;
-
-        public const int IMG_MENU_LEVEL_SELECTION = 51;
-
-        public const int IMG_MENU_PACK_SELECTION = 52;
-
-        public const int IMG_MENU_PACK_SELECTION2 = 53;
-
-        public const int IMG_MENU_EXTRA_BUTTONS = 54;
-
-        public const int IMG_MENU_SCROLLBAR = 55;
-
-        public const int IMG_MENU_LEADERBOARD = 56;
-
-        public const int IMG_MENU_PROCESSING = 57;
-
-        public const int IMG_MENU_SCROLLBAR_CHANGENAME = 58;
-
-        public const int IMG_MENU_BUTTON_ACHIV_CUP = 59;
-
-        public const int IMG_MENU_BGR_SHADOW = 60;
-
-        public const int IMG_MENU_BUTTON_SHORT = 61;
-
-        public const int IMG_HUD_BUTTONS = 62;
-
-        public const int IMG_OBJ_CANDY_01 = 63;
-
-        public const int IMG_OBJ_SPIDER = 64;
-
-        public const int IMG_CONFETTI_PARTICLES = 65;
-
-        public const int IMG_MENU_PAUSE = 66;
-
-        public const int IMG_MENU_RESULT = 67;
-
-        public const int FNT_FONT_NUMBERS_BIG = 68;
-
-        public const int IMG_HUD_BUTTONS_EN = 69;
-
-        public const int IMG_MENU_RESULT_EN = 70;
-
-        public const int IMG_OBJ_STAR_DISAPPEAR = 71;
-
-        public const int IMG_OBJ_BUBBLE_FLIGHT = 72;
-
-        public const int IMG_OBJ_BUBBLE_POP = 73;
-
-        public const int IMG_OBJ_HOOK_AUTO = 74;
-
-        public const int IMG_OBJ_BUBBLE_ATTACHED = 75;
-
-        public const int IMG_OBJ_HOOK_01 = 76;
-
-        public const int IMG_OBJ_HOOK_02 = 77;
-
-        public const int IMG_OBJ_STAR_IDLE = 78;
-
-        public const int IMG_HUD_STAR = 79;
-
-        public const int IMG_CHAR_ANIMATIONS = 80;
-
-        public const int IMG_OBJ_HOOK_REGULATED = 81;
-
-        public const int IMG_OBJ_HOOK_MOVABLE = 82;
-
-        public const int IMG_OBJ_PUMP = 83;
-
-        public const int IMG_TUTORIAL_SIGNS = 84;
-
-        public const int IMG_OBJ_SOCKS = 85;
-
-        public const int IMG_OBJ_BOUNCER_01 = 86;
-
-        public const int IMG_OBJ_BOUNCER_02 = 87;
-
-        public const int IMG_OBJ_SPIKES_01 = 88;
-
-        public const int IMG_OBJ_SPIKES_02 = 89;
-
-        public const int IMG_OBJ_SPIKES_03 = 90;
-
-        public const int IMG_OBJ_SPIKES_04 = 91;
-
-        public const int IMG_OBJ_ELECTRODES = 92;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_01 = 93;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_02 = 94;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_03 = 95;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_04 = 96;
-
-        public const int IMG_OBJ_ROTATABLE_SPIKES_BUTTON = 97;
-
-        public const int IMG_OBJ_BEE_HD = 98;
-
-        public const int IMG_OBJ_POLLEN_HD = 99;
-
-        public const int IMG_CHAR_SUPPORTS = 100;
-
-        public const int IMG_CHAR_ANIMATIONS2 = 101;
-
-        public const int IMG_CHAR_ANIMATIONS3 = 102;
-
-        public const int IMG_OBJ_VINIL = 103;
-
-        public const int IMG_BGR_01_P1 = 104;
-
-        public const int IMG_BGR_01_P2 = 105;
-
-        public const int IMG_BGR_02_P1 = 106;
-
-        public const int IMG_BGR_02_P2 = 107;
-
-        public const int IMG_BGR_03_P1 = 108;
-
-        public const int IMG_BGR_03_P2 = 109;
-
-        public const int IMG_BGR_04_P1 = 110;
-
-        public const int IMG_BGR_04_P2 = 111;
-
-        public const int IMG_BGR_05_P1 = 112;
-
-        public const int IMG_BGR_05_P2 = 113;
-
-        public const int IMG_BGR_06_P1 = 114;
-
-        public const int IMG_BGR_06_P2 = 115;
-
-        public const int IMG_BGR_07_P1 = 116;
-
-        public const int IMG_BGR_07_P2 = 117;
-
-        public const int IMG_BGR_08_P1 = 118;
-
-        public const int IMG_BGR_08_P2 = 119;
-
-        public const int IMG_BGR_09_P1 = 120;
-
-        public const int IMG_BGR_09_P2 = 121;
-
-        public const int IMG_BGR_10_P1 = 122;
-
-        public const int IMG_BGR_10_P2 = 123;
-
-        public const int IMG_BGR_11_P1 = 124;
-
-        public const int IMG_BGR_11_P2 = 125;
-
-        public const int IMG_BGR_12_P1 = 153;
-
-        public const int IMG_BGR_12_P2 = 154;
-
-        public const int IMG_OBJ_GHOST = 180;
-
-        public const int IMG_BGR_COVER_01 = 126;
-
-        public const int IMG_BGR_COVER_02 = 127;
-
-        public const int IMG_BGR_COVER_03 = 128;
-
-        public const int IMG_BGR_COVER_04 = 129;
-
-        public const int IMG_BGR_COVER_05 = 130;
-
-        public const int IMG_BGR_COVER_06 = 131;
-
-        public const int IMG_BGR_COVER_07 = 132;
-
-        public const int IMG_BGR_COVER_08 = 133;
-
-        public const int IMG_BGR_COVER_09 = 134;
-
-        public const int IMG_BGR_COVER_10 = 135;
-
-        public const int IMG_BGR_COVER_11 = 136;
-
-        public const int IMG_BGR_COVER_12 = 152;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_FR = 137;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_GR = 138;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_RU = 139;
-
-        public const int IMG_HUD_BUTTONS_RU = 140;
-
-        public const int IMG_HUD_BUTTONS_GR = 141;
-
-        public const int IMG_MENU_RESULT_RU = 142;
-
-        public const int IMG_MENU_RESULT_FR = 143;
-
-        public const int IMG_MENU_RESULT_GR = 144;
-
-        public const int SND_MENU_MUSIC = 145;
-
-        public const int SND_GAME_MUSIC = 146;
-
-        public const int SND_GAME_MUSIC2 = 147;
-
-        public const int SND_GAME_MUSIC3 = 148;
-
-        public const int SND_GAME_MUSIC4 = 150;
-
-        public const int IMG_MENU_EXTRA_BUTTONS_EN = 149;
-
-        public const int SND_GHOST_PUFF = 151;
 
         public const int RESOURCES_COUNT = 150;
 
@@ -1811,162 +1501,162 @@ namespace CutTheRope.GameMain
                 intToStringMap_ = [];
 
                 // Register all existing int-based resource IDs
-                RegisterResourceId("zeptolab_no_link", IMG_DEFAULT);
-                RegisterResourceId("loaderbar_full", IMG_LOADERBAR_FULL);
-                RegisterResourceId("menu_button_default", IMG_MENU_BUTTON_DEFAULT);
-                RegisterResourceId("big_font", FNT_BIG_FONT);
-                RegisterResourceId("small_font", FNT_SMALL_FONT);
-                RegisterResourceId("menu_loading", IMG_MENU_LOADING);
-                RegisterResourceId("menu_notification", IMG_MENU_NOTIFICATION);
-                RegisterResourceId("menu_achievement", IMG_MENU_ACHIEVEMENT);
-                RegisterResourceId("menu_options", IMG_MENU_OPTIONS);
-                RegisterResourceId("tap", SND_TAP);
-                RegisterResourceId("menu_strings", STR_MENU);
-                RegisterResourceId("button", SND_BUTTON);
-                RegisterResourceId("bubble_break", SND_BUBBLE_BREAK);
-                RegisterResourceId("bubble", SND_BUBBLE);
-                RegisterResourceId("candy_break", SND_CANDY_BREAK);
-                RegisterResourceId("monster_chewing", SND_MONSTER_CHEWING);
-                RegisterResourceId("monster_close", SND_MONSTER_CLOSE);
-                RegisterResourceId("monster_open", SND_MONSTER_OPEN);
-                RegisterResourceId("monster_sad", SND_MONSTER_SAD);
-                RegisterResourceId("ring", SND_RING);
-                RegisterResourceId("rope_bleak_1", SND_ROPE_BLEAK_1);
-                RegisterResourceId("rope_bleak_2", SND_ROPE_BLEAK_2);
-                RegisterResourceId("rope_bleak_3", SND_ROPE_BLEAK_3);
-                RegisterResourceId("rope_bleak_4", SND_ROPE_BLEAK_4);
-                RegisterResourceId("rope_get", SND_ROPE_GET);
-                RegisterResourceId("star_1", SND_STAR_1);
-                RegisterResourceId("star_2", SND_STAR_2);
-                RegisterResourceId("star_3", SND_STAR_3);
-                RegisterResourceId("electric", SND_ELECTRIC);
-                RegisterResourceId("pump_1", SND_PUMP_1);
-                RegisterResourceId("pump_2", SND_PUMP_2);
-                RegisterResourceId("pump_3", SND_PUMP_3);
-                RegisterResourceId("pump_4", SND_PUMP_4);
-                RegisterResourceId("spider_activate", SND_SPIDER_ACTIVATE);
-                RegisterResourceId("spider_fall", SND_SPIDER_FALL);
-                RegisterResourceId("spider_win", SND_SPIDER_WIN);
-                RegisterResourceId("wheel", SND_WHEEL);
-                RegisterResourceId("win", SND_WIN);
-                RegisterResourceId("gravity_off", SND_GRAVITY_OFF);
-                RegisterResourceId("gravity_on", SND_GRAVITY_ON);
-                RegisterResourceId("candy_link", SND_CANDY_LINK);
-                RegisterResourceId("bouncer", SND_BOUNCER);
-                RegisterResourceId("spike_rotate_in", SND_SPIKE_ROTATE_IN);
-                RegisterResourceId("spike_rotate_out", SND_SPIKE_ROTATE_OUT);
-                RegisterResourceId("buzz", SND_BUZZ);
-                RegisterResourceId("teleport", SND_TELEPORT);
-                RegisterResourceId("scratch_in", SND_SCRATCH_IN);
-                RegisterResourceId("scratch_out", SND_SCRATCH_OUT);
-                RegisterResourceId("menu_bgr", IMG_MENU_BGR);
-                RegisterResourceId("menu_popup", IMG_MENU_POPUP);
-                RegisterResourceId("menu_logo", IMG_MENU_LOGO);
-                RegisterResourceId("menu_level_selection", IMG_MENU_LEVEL_SELECTION);
-                RegisterResourceId("menu_pack_selection", IMG_MENU_PACK_SELECTION);
-                RegisterResourceId("menu_pack_selection2", IMG_MENU_PACK_SELECTION2);
-                RegisterResourceId("menu_extra_buttons", IMG_MENU_EXTRA_BUTTONS);
-                RegisterResourceId("menu_scrollbar", IMG_MENU_SCROLLBAR);
-                RegisterResourceId("menu_leaderboard", IMG_MENU_LEADERBOARD);
-                RegisterResourceId("menu_processing_hd", IMG_MENU_PROCESSING);
-                RegisterResourceId("menu_scrollbar_changename", IMG_MENU_SCROLLBAR_CHANGENAME);
-                RegisterResourceId("menu_button_achiv_cup", IMG_MENU_BUTTON_ACHIV_CUP);
-                RegisterResourceId("menu_bgr_shadow", IMG_MENU_BGR_SHADOW);
-                RegisterResourceId("menu_button_short", IMG_MENU_BUTTON_SHORT);
-                RegisterResourceId("hud_buttons", IMG_HUD_BUTTONS);
-                RegisterResourceId("obj_candy_01", IMG_OBJ_CANDY_01);
-                RegisterResourceId("obj_spider", IMG_OBJ_SPIDER);
-                RegisterResourceId("confetti_particles", IMG_CONFETTI_PARTICLES);
-                RegisterResourceId("menu_pause", IMG_MENU_PAUSE);
-                RegisterResourceId("menu_result", IMG_MENU_RESULT);
-                RegisterResourceId("font_numbers_big", FNT_FONT_NUMBERS_BIG);
-                RegisterResourceId("hud_buttons_en", IMG_HUD_BUTTONS_EN);
-                RegisterResourceId("menu_result_en", IMG_MENU_RESULT_EN);
-                RegisterResourceId("obj_star_disappear", IMG_OBJ_STAR_DISAPPEAR);
-                RegisterResourceId("obj_bubble_flight", IMG_OBJ_BUBBLE_FLIGHT);
-                RegisterResourceId("obj_bubble_pop", IMG_OBJ_BUBBLE_POP);
-                RegisterResourceId("obj_hook_auto", IMG_OBJ_HOOK_AUTO);
-                RegisterResourceId("obj_bubble_attached", IMG_OBJ_BUBBLE_ATTACHED);
-                RegisterResourceId("obj_hook_01", IMG_OBJ_HOOK_01);
-                RegisterResourceId("obj_hook_02", IMG_OBJ_HOOK_02);
-                RegisterResourceId("obj_star_idle", IMG_OBJ_STAR_IDLE);
-                RegisterResourceId("hud_star", IMG_HUD_STAR);
-                RegisterResourceId("char_animations", IMG_CHAR_ANIMATIONS);
-                RegisterResourceId("obj_hook_regulated", IMG_OBJ_HOOK_REGULATED);
-                RegisterResourceId("obj_hook_movable", IMG_OBJ_HOOK_MOVABLE);
-                RegisterResourceId("obj_pump", IMG_OBJ_PUMP);
-                RegisterResourceId("tutorial_signs", IMG_TUTORIAL_SIGNS);
-                RegisterResourceId("obj_hat", IMG_OBJ_SOCKS);
-                RegisterResourceId("obj_bouncer_01", IMG_OBJ_BOUNCER_01);
-                RegisterResourceId("obj_bouncer_02", IMG_OBJ_BOUNCER_02);
-                RegisterResourceId("obj_spikes_01", IMG_OBJ_SPIKES_01);
-                RegisterResourceId("obj_spikes_02", IMG_OBJ_SPIKES_02);
-                RegisterResourceId("obj_spikes_03", IMG_OBJ_SPIKES_03);
-                RegisterResourceId("obj_spikes_04", IMG_OBJ_SPIKES_04);
-                RegisterResourceId("obj_electrodes", IMG_OBJ_ELECTRODES);
-                RegisterResourceId("obj_rotatable_spikes_01", IMG_OBJ_ROTATABLE_SPIKES_01);
-                RegisterResourceId("obj_rotatable_spikes_02", IMG_OBJ_ROTATABLE_SPIKES_02);
-                RegisterResourceId("obj_rotatable_spikes_03", IMG_OBJ_ROTATABLE_SPIKES_03);
-                RegisterResourceId("obj_rotatable_spikes_04", IMG_OBJ_ROTATABLE_SPIKES_04);
-                RegisterResourceId("obj_rotatable_spikes_button", IMG_OBJ_ROTATABLE_SPIKES_BUTTON);
-                RegisterResourceId("obj_bee_hd", IMG_OBJ_BEE_HD);
-                RegisterResourceId("obj_pollen_hd", IMG_OBJ_POLLEN_HD);
-                RegisterResourceId("char_supports", IMG_CHAR_SUPPORTS);
-                RegisterResourceId("char_animations2", IMG_CHAR_ANIMATIONS2);
-                RegisterResourceId("char_animations3", IMG_CHAR_ANIMATIONS3);
-                RegisterResourceId("obj_vinil", IMG_OBJ_VINIL);
-                RegisterResourceId("bgr_01_p1", IMG_BGR_01_P1);
-                RegisterResourceId("bgr_01_p2", IMG_BGR_01_P2);
-                RegisterResourceId("bgr_02_p1", IMG_BGR_02_P1);
-                RegisterResourceId("bgr_02_p2", IMG_BGR_02_P2);
-                RegisterResourceId("bgr_03_p1", IMG_BGR_03_P1);
-                RegisterResourceId("bgr_03_p2", IMG_BGR_03_P2);
-                RegisterResourceId("bgr_04_p1", IMG_BGR_04_P1);
-                RegisterResourceId("bgr_04_p2", IMG_BGR_04_P2);
-                RegisterResourceId("bgr_05_p1", IMG_BGR_05_P1);
-                RegisterResourceId("bgr_05_p2", IMG_BGR_05_P2);
-                RegisterResourceId("bgr_06_p1", IMG_BGR_06_P1);
-                RegisterResourceId("bgr_06_p2", IMG_BGR_06_P2);
-                RegisterResourceId("bgr_07_p1", IMG_BGR_07_P1);
-                RegisterResourceId("bgr_07_p2", IMG_BGR_07_P2);
-                RegisterResourceId("bgr_08_p1", IMG_BGR_08_P1);
-                RegisterResourceId("bgr_08_p2", IMG_BGR_08_P2);
-                RegisterResourceId("bgr_09_p1", IMG_BGR_09_P1);
-                RegisterResourceId("bgr_09_p2", IMG_BGR_09_P2);
-                RegisterResourceId("bgr_10_p1", IMG_BGR_10_P1);
-                RegisterResourceId("bgr_10_p2", IMG_BGR_10_P2);
-                RegisterResourceId("bgr_11_p1", IMG_BGR_11_P1);
-                RegisterResourceId("bgr_11_p2", IMG_BGR_11_P2);
-                RegisterResourceId("bgr_01_cover", IMG_BGR_COVER_01);
-                RegisterResourceId("bgr_02_cover", IMG_BGR_COVER_02);
-                RegisterResourceId("bgr_03_cover", IMG_BGR_COVER_03);
-                RegisterResourceId("bgr_04_cover", IMG_BGR_COVER_04);
-                RegisterResourceId("bgr_05_cover", IMG_BGR_COVER_05);
-                RegisterResourceId("bgr_06_cover", IMG_BGR_COVER_06);
-                RegisterResourceId("bgr_07_cover", IMG_BGR_COVER_07);
-                RegisterResourceId("bgr_08_cover", IMG_BGR_COVER_08);
-                RegisterResourceId("bgr_09_cover", IMG_BGR_COVER_09);
-                RegisterResourceId("bgr_10_cover", IMG_BGR_COVER_10);
-                RegisterResourceId("bgr_11_cover", IMG_BGR_COVER_11);
-                RegisterResourceId("menu_extra_buttons_fr", IMG_MENU_EXTRA_BUTTONS_FR);
-                RegisterResourceId("menu_extra_buttons_gr", IMG_MENU_EXTRA_BUTTONS_GR);
-                RegisterResourceId("menu_extra_buttons_ru", IMG_MENU_EXTRA_BUTTONS_RU);
-                RegisterResourceId("hud_buttons_ru", IMG_HUD_BUTTONS_RU);
-                RegisterResourceId("hud_buttons_gr", IMG_HUD_BUTTONS_GR);
-                RegisterResourceId("menu_result_ru", IMG_MENU_RESULT_RU);
-                RegisterResourceId("menu_result_fr", IMG_MENU_RESULT_FR);
-                RegisterResourceId("menu_result_gr", IMG_MENU_RESULT_GR);
-                RegisterResourceId("menu_music", SND_MENU_MUSIC);
-                RegisterResourceId("game_music", SND_GAME_MUSIC);
-                RegisterResourceId("game_music2", SND_GAME_MUSIC2);
-                RegisterResourceId("game_music3", SND_GAME_MUSIC3);
-                RegisterResourceId("game_music4", SND_GAME_MUSIC4);
-                RegisterResourceId("menu_extra_buttons_en", IMG_MENU_EXTRA_BUTTONS_EN);
-                RegisterResourceId("ghost_puff", SND_GHOST_PUFF);
-                RegisterResourceId("bgr_12_cover", IMG_BGR_COVER_12);
-                RegisterResourceId("bgr_12_p1", IMG_BGR_12_P1);
-                RegisterResourceId("bgr_12_p2", IMG_BGR_12_P2);
-                RegisterResourceId("obj_ghost", IMG_OBJ_GHOST);
+                RegisterResourceId("zeptolab_no_link", 0);
+                RegisterResourceId("loaderbar_full", 1);
+                RegisterResourceId("menu_button_default", 2);
+                RegisterResourceId("big_font", 3);
+                RegisterResourceId("small_font", 4);
+                RegisterResourceId("menu_loading", 5);
+                RegisterResourceId("menu_notification", 6);
+                RegisterResourceId("menu_achievement", 7);
+                RegisterResourceId("menu_options", 8);
+                RegisterResourceId("tap", 9);
+                RegisterResourceId("menu_strings", 10);
+                RegisterResourceId("button", 11);
+                RegisterResourceId("bubble_break", 12);
+                RegisterResourceId("bubble", 13);
+                RegisterResourceId("candy_break", 14);
+                RegisterResourceId("monster_chewing", 15);
+                RegisterResourceId("monster_close", 16);
+                RegisterResourceId("monster_open", 17);
+                RegisterResourceId("monster_sad", 18);
+                RegisterResourceId("ring", 19);
+                RegisterResourceId("rope_bleak_1", 20);
+                RegisterResourceId("rope_bleak_2", 21);
+                RegisterResourceId("rope_bleak_3", 22);
+                RegisterResourceId("rope_bleak_4", 23);
+                RegisterResourceId("rope_get", 24);
+                RegisterResourceId("star_1", 25);
+                RegisterResourceId("star_2", 26);
+                RegisterResourceId("star_3", 27);
+                RegisterResourceId("electric", 28);
+                RegisterResourceId("pump_1", 29);
+                RegisterResourceId("pump_2", 30);
+                RegisterResourceId("pump_3", 31);
+                RegisterResourceId("pump_4", 32);
+                RegisterResourceId("spider_activate", 33);
+                RegisterResourceId("spider_fall", 34);
+                RegisterResourceId("spider_win", 35);
+                RegisterResourceId("wheel", 36);
+                RegisterResourceId("win", 37);
+                RegisterResourceId("gravity_off", 38);
+                RegisterResourceId("gravity_on", 39);
+                RegisterResourceId("candy_link", 40);
+                RegisterResourceId("bouncer", 41);
+                RegisterResourceId("spike_rotate_in", 42);
+                RegisterResourceId("spike_rotate_out", 43);
+                RegisterResourceId("buzz", 44);
+                RegisterResourceId("teleport", 45);
+                RegisterResourceId("scratch_in", 46);
+                RegisterResourceId("scratch_out", 47);
+                RegisterResourceId("menu_bgr", 48);
+                RegisterResourceId("menu_popup", 49);
+                RegisterResourceId("menu_logo", 50);
+                RegisterResourceId("menu_level_selection", 51);
+                RegisterResourceId("menu_pack_selection", 52);
+                RegisterResourceId("menu_pack_selection2", 53);
+                RegisterResourceId("menu_extra_buttons", 54);
+                RegisterResourceId("menu_scrollbar", 55);
+                RegisterResourceId("menu_leaderboard", 56);
+                RegisterResourceId("menu_processing_hd", 57);
+                RegisterResourceId("menu_scrollbar_changename", 58);
+                RegisterResourceId("menu_button_achiv_cup", 59);
+                RegisterResourceId("menu_bgr_shadow", 60);
+                RegisterResourceId("menu_button_short", 61);
+                RegisterResourceId("hud_buttons", 62);
+                RegisterResourceId("obj_candy_01", 63);
+                RegisterResourceId("obj_spider", 64);
+                RegisterResourceId("confetti_particles", 65);
+                RegisterResourceId("menu_pause", 66);
+                RegisterResourceId("menu_result", 67);
+                RegisterResourceId("font_numbers_big", 68);
+                RegisterResourceId("hud_buttons_en", 69);
+                RegisterResourceId("menu_result_en", 70);
+                RegisterResourceId("obj_star_disappear", 71);
+                RegisterResourceId("obj_bubble_flight", 72);
+                RegisterResourceId("obj_bubble_pop", 73);
+                RegisterResourceId("obj_hook_auto", 74);
+                RegisterResourceId("obj_bubble_attached", 75);
+                RegisterResourceId("obj_hook_01", 76);
+                RegisterResourceId("obj_hook_02", 77);
+                RegisterResourceId("obj_star_idle", 78);
+                RegisterResourceId("hud_star", 79);
+                RegisterResourceId("char_animations", 80);
+                RegisterResourceId("obj_hook_regulated", 81);
+                RegisterResourceId("obj_hook_movable", 82);
+                RegisterResourceId("obj_pump", 83);
+                RegisterResourceId("tutorial_signs", 84);
+                RegisterResourceId("obj_hat", 85);
+                RegisterResourceId("obj_bouncer_01", 86);
+                RegisterResourceId("obj_bouncer_02", 87);
+                RegisterResourceId("obj_spikes_01", 88);
+                RegisterResourceId("obj_spikes_02", 89);
+                RegisterResourceId("obj_spikes_03", 90);
+                RegisterResourceId("obj_spikes_04", 91);
+                RegisterResourceId("obj_electrodes", 92);
+                RegisterResourceId("obj_rotatable_spikes_01", 93);
+                RegisterResourceId("obj_rotatable_spikes_02", 94);
+                RegisterResourceId("obj_rotatable_spikes_03", 95);
+                RegisterResourceId("obj_rotatable_spikes_04", 96);
+                RegisterResourceId("obj_rotatable_spikes_button", 97);
+                RegisterResourceId("obj_bee_hd", 98);
+                RegisterResourceId("obj_pollen_hd", 99);
+                RegisterResourceId("char_supports", 100);
+                RegisterResourceId("char_animations2", 101);
+                RegisterResourceId("char_animations3", 102);
+                RegisterResourceId("obj_vinil", 103);
+                RegisterResourceId("bgr_01_p1", 104);
+                RegisterResourceId("bgr_01_p2", 105);
+                RegisterResourceId("bgr_02_p1", 106);
+                RegisterResourceId("bgr_02_p2", 107);
+                RegisterResourceId("bgr_03_p1", 108);
+                RegisterResourceId("bgr_03_p2", 109);
+                RegisterResourceId("bgr_04_p1", 110);
+                RegisterResourceId("bgr_04_p2", 111);
+                RegisterResourceId("bgr_05_p1", 112);
+                RegisterResourceId("bgr_05_p2", 113);
+                RegisterResourceId("bgr_06_p1", 114);
+                RegisterResourceId("bgr_06_p2", 115);
+                RegisterResourceId("bgr_07_p1", 116);
+                RegisterResourceId("bgr_07_p2", 117);
+                RegisterResourceId("bgr_08_p1", 118);
+                RegisterResourceId("bgr_08_p2", 119);
+                RegisterResourceId("bgr_09_p1", 120);
+                RegisterResourceId("bgr_09_p2", 121);
+                RegisterResourceId("bgr_10_p1", 122);
+                RegisterResourceId("bgr_10_p2", 123);
+                RegisterResourceId("bgr_11_p1", 124);
+                RegisterResourceId("bgr_11_p2", 125);
+                RegisterResourceId("bgr_01_cover", 126);
+                RegisterResourceId("bgr_02_cover", 127);
+                RegisterResourceId("bgr_03_cover", 128);
+                RegisterResourceId("bgr_04_cover", 129);
+                RegisterResourceId("bgr_05_cover", 130);
+                RegisterResourceId("bgr_06_cover", 131);
+                RegisterResourceId("bgr_07_cover", 132);
+                RegisterResourceId("bgr_08_cover", 133);
+                RegisterResourceId("bgr_09_cover", 134);
+                RegisterResourceId("bgr_10_cover", 135);
+                RegisterResourceId("bgr_11_cover", 136);
+                RegisterResourceId("menu_extra_buttons_fr", 137);
+                RegisterResourceId("menu_extra_buttons_gr", 138);
+                RegisterResourceId("menu_extra_buttons_ru", 139);
+                RegisterResourceId("hud_buttons_ru", 140);
+                RegisterResourceId("hud_buttons_gr", 141);
+                RegisterResourceId("menu_result_ru", 142);
+                RegisterResourceId("menu_result_fr", 143);
+                RegisterResourceId("menu_result_gr", 144);
+                RegisterResourceId("menu_music", 145);
+                RegisterResourceId("game_music", 146);
+                RegisterResourceId("game_music2", 147);
+                RegisterResourceId("game_music3", 148);
+                RegisterResourceId("game_music4", 150);
+                RegisterResourceId("menu_extra_buttons_en", 149);
+                RegisterResourceId("ghost_puff", 151);
+                RegisterResourceId("bgr_12_cover", 152);
+                RegisterResourceId("bgr_12_p1", 153);
+                RegisterResourceId("bgr_12_p2", 154);
+                RegisterResourceId("obj_ghost", 180);
             }
         }
 
