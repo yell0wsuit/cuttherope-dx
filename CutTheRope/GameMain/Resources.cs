@@ -241,6 +241,9 @@ namespace CutTheRope.GameMain
             public const string Bgr12P1 = "bgr_12_p1";
             public const string Bgr12P2 = "bgr_12_p2";
             public const string ObjGhost = "obj_ghost";
+            public const string Bgr13Cover = "bgr_13_cover";
+            public const string Bgr13P1 = "bgr_13_p1";
+            public const string ObjPipe = "obj_pipe";
         }
 
         /// <summary>
@@ -302,6 +305,9 @@ namespace CutTheRope.GameMain
             public const string GameMusic3 = "game_music3";
             public const string GameMusic4 = "game_music4";
             public const string GhostPuff = "ghost_puff";
+            public const string SteamStart = "steam_start";
+            public const string SteamStart2 = "steam_start2";
+            public const string SteamEnd = "stem_end";
         }
 
         /// <summary>

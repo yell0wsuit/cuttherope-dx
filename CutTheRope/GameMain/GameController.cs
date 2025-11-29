@@ -683,7 +683,8 @@ namespace CutTheRope.GameMain
                     "1335599628",
                     "99928734496",
                     "com.zeptolab.ctr.djboxperfect",
-                    "com.zeptolab.ctr.spookyboxperfect"
+                    "com.zeptolab.ctr.spookyboxperfect",
+                    "com.zeptolab.ctr.steamboxperfect"
                 ];
         internal static readonly string[] nameArray =
                 [
@@ -698,7 +699,8 @@ namespace CutTheRope.GameMain
                     "1321820679",
                     "23523272771",
                     "com.zeptolab.ctr.djboxcompleted",
-                    "com.zeptolab.ctr.spookyboxcompleted"
+                    "com.zeptolab.ctr.spookyboxcompleted",
+                    "com.zeptolab.ctr.steamboxcompleted"
                 ];
     }
 }

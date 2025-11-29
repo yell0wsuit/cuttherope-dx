@@ -12,4 +12,5 @@
   <pack index="9" unlockStars="500" resourceNames="bgr_10_p1,bgr_10_p2" coverResourceNames="bgr_10_cover" levelCount="25" />
   <pack index="10" unlockStars="550" resourceNames="bgr_11_p1,bgr_11_p2" coverResourceNames="bgr_11_cover" levelCount="25" />
   <pack index="11" unlockStars="600" resourceNames="bgr_12_p1,bgr_12_p2" coverResourceNames="bgr_12_cover" levelCount="25" />
+  <pack index="12" unlockStars="650" resourceNames="bgr_13_p1,bgr_13_p1" coverResourceNames="bgr_13_cover" levelCount="25" />
 </packs>
