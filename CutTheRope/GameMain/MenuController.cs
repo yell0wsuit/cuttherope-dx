@@ -1714,7 +1714,7 @@ namespace CutTheRope.GameMain
 
         private Popup ep;
 
-        private static readonly string[] PackLocalizationMenu = ResourceNameTranslator.TranslateLegacyPack(PACK_LOCALIZATION_MENU);
+        private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];
 
         public sealed class TouchBaseElement : BaseElement
         {
