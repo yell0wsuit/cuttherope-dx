@@ -652,7 +652,7 @@ namespace CutTheRope.GameMain
                 hBox.anchor = hBox.parentAnchor = 18;
                 hBox.y = 110f;
                 _ = image2.AddChild(hBox);
-                Text text = new Text().InitWithFont(Application.GetFont(4));
+                Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 string newString = Application.GetString(STR_MENU_UNLOCK_HINT).ToString().Replace("%d", num.ToString(CultureInfo.InvariantCulture));
                 text.SetAlignment(2);
                 text.anchor = 10;
@@ -702,7 +702,7 @@ namespace CutTheRope.GameMain
                     _ = image4.AddTimeline(timeline);
                 }
             }
-            Text text2 = new Text().InitWithFont(Application.GetFont(3));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.anchor = text2.parentAnchor = 10;
             text2.scaleX = text2.scaleY = 0.75f;
             if (LANGUAGE is Language.LANGDE or Language.LANGEN)
@@ -850,7 +850,7 @@ namespace CutTheRope.GameMain
             Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuPopup, 1);
             text.y -= num;
             _ = popup.AddChild(text);
-            Text text2 = new Text().InitWithFont(Application.GetFont(3));
+            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text2.SetAlignment(2);
             text2.SetString(Application.GetString(STR_MENU_CANT_UNLOCK_TEXT2));
             text2.anchor = 18;
