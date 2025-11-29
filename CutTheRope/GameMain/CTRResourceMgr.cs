@@ -165,11 +165,23 @@ namespace CutTheRope.GameMain
                     int resourceId = idElement.GetInt32();
                     string atlasPath = atlasPathElement.GetString();
 
+                    // Prefer resourceName from JSON, fall back to legacy translation
+                    string resourceName = null;
+                    if (textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement))
+                    {
+                        resourceName = resourceNameElement.GetString();
+                    }
+
+                    if (string.IsNullOrEmpty(resourceName))
+                    {
+                        resourceName = ResourceNameTranslator.TranslateLegacyId(resourceId);
+                    }
+
                     TextureAtlasConfig config = new()
                     {
                         Format = TextureAtlasFormat.TexturePackerJson,
                         AtlasPath = atlasPath,
-                        ResourceName = ResourceNameTranslator.TranslateLegacyId(resourceId),
+                        ResourceName = resourceName,
                         UseAntialias = GetBoolProperty(textureElement, "useAntialias", true),
                         FrameOrder = GetStringArrayProperty(textureElement, "frameOrder"),
                         CenterOffsets = GetBoolProperty(textureElement, "centerOffsets", false)

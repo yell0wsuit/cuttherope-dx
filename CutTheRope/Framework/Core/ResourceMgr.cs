@@ -104,6 +104,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Loads a resource using its string identifier while preserving caching semantics.
         /// </summary>
+        [Obsolete]
         public virtual object LoadResource(string resourceName, ResourceType resType)
         {
             int resID = ResolveResourceId(resourceName);
@@ -149,6 +150,7 @@ namespace CutTheRope.Framework.Core
             return string.Empty;
         }
 
+        [Obsolete]
         public virtual FontGeneric LoadVariableFontInfo(string path, int resID, bool isWvga)
         {
             XElement xmlnode = XElementExtensions.LoadContentXml(path);
@@ -510,6 +512,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         public virtual void FreePack(int[] pack)
         {
             int i = 0;
@@ -535,6 +538,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         public virtual void LoadImmediately()
         {
             while (loadQueue.Count != 0)
@@ -561,6 +565,7 @@ namespace CutTheRope.Framework.Core
             return !bUseFake ? loadCount : 100;
         }
 
+        [Obsolete]
         public void Update()
         {
             if (loadQueue.Count > 0)
@@ -586,6 +591,7 @@ namespace CutTheRope.Framework.Core
             ((ResourceMgr)obj).Update();
         }
 
+        [Obsolete]
         private void LoadResource(int resId)
         {
             if (150 < resId)
@@ -616,6 +622,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         public virtual void FreeResource(int resId)
         {
             if (150 < resId)
@@ -645,6 +652,7 @@ namespace CutTheRope.Framework.Core
         /// <summary>
         /// Frees a cached resource by its string identifier if it has been loaded.
         /// </summary>
+        [Obsolete]
         public void FreeResource(string resourceName)
         {
             int resId = ResolveResourceId(resourceName);

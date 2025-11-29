@@ -56,6 +56,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Gets a sound by its resource name (auto-assigns ID if needed).
         /// </summary>
+        [Obsolete]
         public SoundEffect GetSound(string soundResourceName)
         {
             int soundResID = GetResourceId(soundResourceName);
@@ -174,6 +175,7 @@ namespace CutTheRope.Framework.Media
             }
         }
 
+        [Obsolete]
         private SoundEffectInstance Play(int sid, bool l)
         {
             SoundEffectInstance soundEffectInstance = null;

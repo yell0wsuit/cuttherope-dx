@@ -146,9 +146,24 @@ namespace CutTheRope.GameMain
                 int[] coverResources = ParseResources(packElement, "coverResources");
                 int levelCount = ParseLevelCount(packElement);
 
-                string[] packResourceNames = ResourceNameTranslator.TranslateLegacyPack(packResources);
-                string supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResources) ?? string.Empty;
-                string[] coverResourceNames = ResourceNameTranslator.TranslateLegacyPack(coverResources);
+                // Prefer string resource names from XML, fall back to legacy translation
+                string[] packResourceNames = ParseResourceNames(packElement, "resourceNames");
+                if (packResourceNames.Length == 0 || packResourceNames[0] == null)
+                {
+                    packResourceNames = ResourceNameTranslator.TranslateLegacyPack(packResources);
+                }
+
+                string supportResourceName = ParseResourceName(packElement, "supportResourceName");
+                if (string.IsNullOrEmpty(supportResourceName))
+                {
+                    supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResources) ?? string.Empty;
+                }
+
+                string[] coverResourceNames = ParseResourceNames(packElement, "coverResourceNames");
+                if (coverResourceNames.Length == 0 || coverResourceNames[0] == null)
+                {
+                    coverResourceNames = ResourceNameTranslator.TranslateLegacyPack(coverResources);
+                }
 
                 results.Add(new PackDefinition(
                     unlockStars,
@@ -193,6 +208,25 @@ namespace CutTheRope.GameMain
 
             string elementValue = element.Element("levelCount")?.Value;
             return string.IsNullOrWhiteSpace(elementValue) ? 0 : int.Parse(elementValue, CultureInfo.InvariantCulture);
+        }
+
+        private static string ParseResourceName(XElement element, string attributeName)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
+
+        private static string[] ParseResourceNames(XElement element, string attributeName)
+        {
+            string value = element.AttributeAsNSString(attributeName);
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return EmptyResourceNames;
+            }
+
+            List<string> names = [.. value.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim())];
+            names.Add(null);
+            return [.. names];
         }
     }
 }

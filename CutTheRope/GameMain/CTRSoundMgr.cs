@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using CutTheRope.Framework.Core;
@@ -72,6 +73,7 @@ namespace CutTheRope.GameMain
         /// Plays background music identified by its resource name.
         /// </summary>
         /// <param name="musicResourceName">Music resource name.</param>
+        [Obsolete]
         public static void PlayMusic(string musicResourceName)
         {
             if (Preferences.GetBooleanForKey("MUSIC_ON") && !string.IsNullOrWhiteSpace(musicResourceName))
@@ -116,6 +118,7 @@ namespace CutTheRope.GameMain
             PlayMusic(num);
         }
 
+        [Obsolete]
         public static new void PlayMusic(int f)
         {
             if (Preferences.GetBooleanForKey("MUSIC_ON"))

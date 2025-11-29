@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -108,6 +109,7 @@ namespace CutTheRope.Framework.Core
             return new MovieMgr();
         }
 
+        [Obsolete]
         internal static FontGeneric GetFont(int fontResID)
         {
             object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
@@ -123,6 +125,7 @@ namespace CutTheRope.Framework.Core
             return GetFont(fontResID);
         }
 
+        [Obsolete]
         internal static CTRTexture2D GetTexture(int textureResID)
         {
             object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);

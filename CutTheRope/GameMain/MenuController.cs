@@ -253,11 +253,13 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        [Obsolete]
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
             return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
         }
 
+        [Obsolete]
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(string resourceName, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             int res = ResourceNameTranslator.ToResourceId(resourceName);
@@ -277,6 +279,7 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
+        [Obsolete]
         public static ToggleButton CreateToggleButtonWithResquadquad2buttonIDdelegate(int res, int quad, int quad2, int bId, IButtonDelegation delegateValue)
         {
             BaseElement baseElement = CreateElementWithResIdquad(res, quad);
@@ -580,6 +583,7 @@ namespace CutTheRope.GameMain
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
+        [Obsolete]
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = new()
@@ -731,6 +735,7 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
+        [Obsolete]
         public void CreatePackSelect()
         {
             MenuView menuView = new();
@@ -1018,6 +1023,7 @@ namespace CutTheRope.GameMain
             return touchBaseElement;
         }
 
+        [Obsolete]
         public void CreateLevelSelect()
         {
             float num = 0.3f;
@@ -1217,6 +1223,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        [Obsolete]
         public void PreLevelSelect()
         {
             CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
