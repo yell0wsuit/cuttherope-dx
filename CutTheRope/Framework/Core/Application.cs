@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -108,6 +109,19 @@ namespace CutTheRope.Framework.Core
             return new MovieMgr();
         }
 
+        /// <summary>
+        /// Gets a font by its resource name.
+        /// </summary>
+        internal static FontGeneric GetFont(string fontResourceName)
+        {
+            object resource = SharedResourceMgr().LoadResource(fontResourceName, ResourceMgr.ResourceType.FONT);
+            return resource as FontGeneric;
+        }
+
+        /// <summary>
+        /// Gets a font by its legacy numeric ID
+        /// </summary>
+        [Obsolete]
         internal static FontGeneric GetFont(int fontResID)
         {
             object resource = SharedResourceMgr().LoadResource(fontResID, ResourceMgr.ResourceType.FONT);
@@ -115,27 +129,22 @@ namespace CutTheRope.Framework.Core
         }
 
         /// <summary>
-        /// Gets a font by its resource name (auto-assigns ID if needed).
+        /// Gets a texture by its resource name.
         /// </summary>
-        internal static FontGeneric GetFont(string fontResourceName)
+        internal static CTRTexture2D GetTexture(string textureResourceName)
         {
-            int fontResID = GetResourceId(fontResourceName);
-            return GetFont(fontResID);
-        }
-
-        internal static CTRTexture2D GetTexture(int textureResID)
-        {
-            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            object resource = SharedResourceMgr().LoadResource(textureResourceName, ResourceMgr.ResourceType.IMAGE);
             return resource as CTRTexture2D;
         }
 
         /// <summary>
-        /// Gets a texture by its resource name (auto-assigns ID if needed).
+        /// Gets a texture by its legacy numeric ID
         /// </summary>
-        internal static CTRTexture2D GetTexture(string textureResourceName)
+        [Obsolete]
+        internal static CTRTexture2D GetTexture(int textureResID)
         {
-            int textureResID = GetResourceId(textureResourceName);
-            return GetTexture(textureResID);
+            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
+            return resource as CTRTexture2D;
         }
 
         internal static string GetString(string xmlElementName)
