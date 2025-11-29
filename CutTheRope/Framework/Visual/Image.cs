@@ -11,6 +11,7 @@ namespace CutTheRope.Framework.Visual
         // (get) Token: 0x060001E5 RID: 485 RVA: 0x00009A46 File Offset: 0x00007C46
         public string ResName => texture != null ? texture._resName : "ERROR: texture == null";
 
+        [Obsolete]
         public static Vector GetQuadSize(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureID);
@@ -28,6 +29,7 @@ namespace CutTheRope.Framework.Visual
             return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
+        [Obsolete]
         public static Vector GetQuadOffset(int textureID, int quad)
         {
             return Application.GetTexture(textureID).quadOffsets[quad];
@@ -43,6 +45,7 @@ namespace CutTheRope.Framework.Visual
             return Application.GetTexture(textureResourceName).quadOffsets[quad];
         }
 
+        [Obsolete]
         public static Vector GetQuadCenter(int textureID, int quad)
         {
             CTRTexture2D texture2D = Application.GetTexture(textureID);
@@ -155,11 +158,13 @@ namespace CutTheRope.Framework.Visual
             return Image_create(Application.GetTexture(resourceName));
         }
 
+        [Obsolete]
         public static Image Image_createWithResID(int r)
         {
             return Image_create(Application.GetTexture(r));
         }
 
+        [Obsolete]
         public static Image Image_createWithResIDQuad(int r, int q)
         {
             Image image = Image_create(Application.GetTexture(r));

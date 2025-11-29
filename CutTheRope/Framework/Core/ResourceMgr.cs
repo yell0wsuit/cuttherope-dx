@@ -617,6 +617,7 @@ namespace CutTheRope.Framework.Core
             ((ResourceMgr)obj).Update();
         }
 
+        [Obsolete]
         private void LoadResource(int resId)
         {
             if (!TryResolveResource(resId, out int localizedResId, out string localizedName))

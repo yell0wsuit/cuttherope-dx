@@ -1745,6 +1745,7 @@ namespace CutTheRope.GameMain
                 return (MonsterSlot)new MonsterSlot().InitWithTexture(t);
             }
 
+            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
                 return MonsterSlot_create(Application.GetTexture(r));
@@ -1755,6 +1756,7 @@ namespace CutTheRope.GameMain
                 return MonsterSlot_create(Application.GetTexture(resourceName));
             }
 
+            [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
                 MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));

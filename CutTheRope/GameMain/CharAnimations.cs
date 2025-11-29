@@ -7,6 +7,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CharAnimations : GameObject
     {
+        [System.Obsolete]
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
             return CharAnimations_create(Application.GetTexture(r));

@@ -5,8 +5,8 @@ using System.Xml.Linq;
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
 using CutTheRope.Framework.Visual;
-using CutTheRope.Helpers;
 using CutTheRope.GameMain;
+using CutTheRope.Helpers;
 
 using Microsoft.Xna.Framework;
 
