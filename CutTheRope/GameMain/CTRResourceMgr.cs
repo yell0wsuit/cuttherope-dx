@@ -115,11 +115,13 @@ namespace CutTheRope.GameMain
             return mgr.LoadResource(resourceName, resType);
         }
 
+        [Obsolete]
         public override object LoadResource(int resID, ResourceType resType)
         {
             return base.LoadResource(HandleLocalizedResource(resID), resType);
         }
 
+        [Obsolete]
         public override void FreeResource(int resID)
         {
             base.FreeResource(HandleLocalizedResource(resID));

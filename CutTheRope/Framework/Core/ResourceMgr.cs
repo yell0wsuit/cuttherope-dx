@@ -53,6 +53,7 @@ namespace CutTheRope.Framework.Core
             s_Resources.Clear();
         }
 
+        [Obsolete]
         public virtual object LoadResource(int resID, ResourceType resType)
         {
             if (s_Resources.TryGetValue(resID, out object value))

@@ -28,6 +28,7 @@ namespace CutTheRope.Framework.Media
             _ = LoadedSounds.Remove(resId);
         }
 
+        [Obsolete]
         public SoundEffect GetSound(int resId)
         {
             if (resId is >= 145 and <= 148)
@@ -98,6 +99,7 @@ namespace CutTheRope.Framework.Media
             return soundEffectInstance;
         }
 
+        [Obsolete]
         public virtual void PlayMusic(int resId)
         {
             StopMusic();
