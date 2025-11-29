@@ -10,7 +10,7 @@ namespace CutTheRope.GameMain
         [System.Obsolete]
         public static CharAnimations CharAnimations_createWithResID(int r)
         {
-            return CharAnimations_create(Application.GetTexture(r));
+            return CharAnimations_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         public static CharAnimations CharAnimations_createWithResID(string resourceName)

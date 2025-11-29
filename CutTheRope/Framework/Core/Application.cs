@@ -137,16 +137,6 @@ namespace CutTheRope.Framework.Core
             return resource as CTRTexture2D;
         }
 
-        /// <summary>
-        /// Gets a texture by its legacy numeric ID
-        /// </summary>
-        [Obsolete]
-        internal static CTRTexture2D GetTexture(int textureResID)
-        {
-            object resource = SharedResourceMgr().LoadResource(textureResID, ResourceMgr.ResourceType.IMAGE);
-            return resource as CTRTexture2D;
-        }
-
         internal static string GetString(string xmlElementName)
         {
             string xmlContent = GetXml(xmlElementName);

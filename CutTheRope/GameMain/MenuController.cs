@@ -253,6 +253,7 @@ namespace CutTheRope.GameMain
             return button;
         }
 
+        [Obsolete]
         public static BaseElement CreateElementWithResIdquad(int resId, int quad)
         {
             return resId != -1 && quad != -1 ? Image.Image_createWithResIDQuad(resId, quad) : new BaseElement();
@@ -580,6 +581,7 @@ namespace CutTheRope.GameMain
             return boxWidth * 3f > num - 200f ? boxWidth / 2f : 0f;
         }
 
+        [Obsolete]
         public BaseElement CreatePackElementforContainer(int n, ScrollableContainer c)
         {
             TouchBaseElement touchBaseElement = new()
@@ -1748,7 +1750,7 @@ namespace CutTheRope.GameMain
             [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResID(int r)
             {
-                return MonsterSlot_create(Application.GetTexture(r));
+                return MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
             }
 
             public static MonsterSlot MonsterSlot_createWithResID(string resourceName)
@@ -1759,7 +1761,7 @@ namespace CutTheRope.GameMain
             [Obsolete]
             public static MonsterSlot MonsterSlot_createWithResIDQuad(int r, int q)
             {
-                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(r));
+                MonsterSlot monsterSlot = MonsterSlot_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
                 monsterSlot.SetDrawQuad(q);
                 return monsterSlot;
             }

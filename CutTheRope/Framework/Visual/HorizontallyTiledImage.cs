@@ -1,6 +1,7 @@
 using System;
 
 using CutTheRope.Framework.Core;
+using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -66,7 +67,7 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(int r)
         {
-            return HorizontallyTiledImage_create(Application.GetTexture(r));
+            return HorizontallyTiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResIDQuad(int r, int q)
         {
-            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.GetTexture(r));
+            HorizontallyTiledImage horizontallyTiledImage = HorizontallyTiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
             horizontallyTiledImage.SetDrawQuad(q);
             return horizontallyTiledImage;
         }

@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using CutTheRope.Desktop;
 using CutTheRope.Framework.Core;
+using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -14,7 +15,7 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static Vector GetQuadSize(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
             return Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h);
         }
 
@@ -32,7 +33,7 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static Vector GetQuadOffset(int textureID, int quad)
         {
-            return Application.GetTexture(textureID).quadOffsets[quad];
+            return Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID)).quadOffsets[quad];
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static Vector GetQuadCenter(int textureID, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureID);
+            CTRTexture2D texture2D = Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(textureID));
             return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
@@ -63,6 +64,7 @@ namespace CutTheRope.Framework.Visual
             return VectAdd(texture2D.quadOffsets[quad], Vect(Ceil(texture2D.quadRects[quad].w / 2.0), Ceil(texture2D.quadRects[quad].h / 2.0)));
         }
 
+        [Obsolete]
         public static Vector GetRelativeQuadOffset(int textureID, int quadToCountFrom, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureID, quadToCountFrom);
@@ -81,6 +83,7 @@ namespace CutTheRope.Framework.Visual
             return VectSub(GetQuadOffset(textureResourceName, quad), quadOffset);
         }
 
+        [Obsolete]
         public static void SetElementPositionWithQuadCenter(BaseElement e, int textureID, int quad)
         {
             Vector quadCenter = GetQuadCenter(textureID, quad);
@@ -103,6 +106,7 @@ namespace CutTheRope.Framework.Visual
             e.anchor = 18;
         }
 
+        [Obsolete]
         public static void SetElementPositionWithQuadOffset(BaseElement e, int textureID, int quad)
         {
             Vector quadOffset = GetQuadOffset(textureID, quad);
@@ -161,13 +165,13 @@ namespace CutTheRope.Framework.Visual
         [Obsolete]
         public static Image Image_createWithResID(int r)
         {
-            return Image_create(Application.GetTexture(r));
+            return Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         [Obsolete]
         public static Image Image_createWithResIDQuad(int r, int q)
         {
-            Image image = Image_create(Application.GetTexture(r));
+            Image image = Image_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
             image.SetDrawQuad(q);
             return image;
         }
