@@ -208,10 +208,6 @@ namespace CutTheRope.Framework.Visual
 
         public virtual void SetDrawQuad(int n)
         {
-            if (n < 0 || n >= texture.quadsCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(n), n, $"Quad index {n} is out of range for texture '{texture._resName}' which has {texture.quadsCount} quads (valid range: 0-{texture.quadsCount - 1})");
-            }
             quadToDraw = n;
             if (!restoreCutTransparency)
             {
@@ -246,10 +242,6 @@ namespace CutTheRope.Framework.Visual
 
         public virtual void DrawQuad(int n)
         {
-            if (n < 0 || n >= texture.quadsCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(n), n, $"Quad index {n} is out of range for texture '{texture._resName}' which has {texture.quadsCount} quads (valid range: 0-{texture.quadsCount - 1})");
-            }
             float w = texture.quadRects[n].w;
             float h = texture.quadRects[n].h;
             float num = drawX;
