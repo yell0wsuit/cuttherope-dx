@@ -311,45 +311,5 @@ namespace CutTheRope.GameMain
         {
             public const string MenuStrings = "menu_strings";
         }
-
-        /// <summary>
-        /// Pack identifiers used by the resource manager.
-        /// </summary>
-        internal static class Pack
-        {
-            public const string Startup = "pack_startup";
-            public const string CommonImages = "pack_common_images";
-            public const string Common = "pack_common";
-            public const string Menu = "pack_menu";
-            public const string Game = "pack_game";
-            public const string GameNormal = "pack_game_normal";
-            public const string Game01 = "pack_game_01";
-            public const string Game02 = "pack_game_02";
-            public const string Game03 = "pack_game_03";
-            public const string Game04 = "pack_game_04";
-            public const string Game05 = "pack_game_05";
-            public const string Game06 = "pack_game_06";
-            public const string Game07 = "pack_game_07";
-            public const string Game08 = "pack_game_08";
-            public const string Game09 = "pack_game_09";
-            public const string Game10 = "pack_game_10";
-            public const string Game11 = "pack_game_11";
-            public const string Game12 = "pack_game_12";
-            public const string GameCover01 = "pack_game_cover_01";
-            public const string GameCover02 = "pack_game_cover_02";
-            public const string GameCover03 = "pack_game_cover_03";
-            public const string GameCover04 = "pack_game_cover_04";
-            public const string GameCover05 = "pack_game_cover_05";
-            public const string GameCover06 = "pack_game_cover_06";
-            public const string GameCover07 = "pack_game_cover_07";
-            public const string GameCover08 = "pack_game_cover_08";
-            public const string GameCover09 = "pack_game_cover_09";
-            public const string GameCover10 = "pack_game_cover_10";
-            public const string GameCover11 = "pack_game_cover_11";
-            public const string GameCover12 = "pack_game_cover_12";
-            public const string Localization = "pack_localization";
-            public const string LocalizationMenu = "pack_localization_menu";
-            public const string Music = "pack_music";
-        }
     }
 }
