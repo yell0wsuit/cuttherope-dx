@@ -24,7 +24,7 @@ namespace CutTheRope.GameMain
                 height = (int)SCREEN_HEIGHT
             };
             _ = view.AddChild(rectangleElement);
-            FontGeneric font = Application.GetFont(FNT_SMALL_FONT);
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
             Text text = new Text().InitWithFont(font);
             text.SetString("Loading...");
             text.anchor = text.parentAnchor = 18;
@@ -43,7 +43,7 @@ namespace CutTheRope.GameMain
                 height = (int)SCREEN_HEIGHT
             };
             _ = view.AddChild(rectangleElement);
-            FontGeneric font = Application.GetFont(FNT_SMALL_FONT);
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
             Text text = new Text().InitWithFont(font);
             text.SetString("START");
             Text text2 = new Text().InitWithFont(font);

@@ -61,7 +61,7 @@ namespace CutTheRope.GameMain
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = -(float)image.height / 2;
             image.passTransformationsToChilds = false;
-            mapNameLabel = new Text().InitWithFont(Application.GetFont(FNT_SMALL_FONT));
+            mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             mapNameLabel.SetName("mapNameLabel");
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             _ = CTRPreferences.GetScoreForPackLevel(cTRRootController.GetPack(), cTRRootController.GetLevel());
