@@ -51,7 +51,7 @@ namespace CutTheRope.GameMain
             loadedMap = null;
             CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
             ctrresourceMgr.InitLoading();
-            ctrresourceMgr.LoadPack(PACK_STARTUP);
+            ctrresourceMgr.LoadPack([Resources.Pack.Startup]);
             ctrresourceMgr.LoadImmediately();
             StartupController startupController = new(this);
             AddChildwithID(startupController, 0);
@@ -72,7 +72,7 @@ namespace CutTheRope.GameMain
         {
             CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
-            resourceMgr.FreePack(PACK_MENU);
+            resourceMgr.FreePack([Resources.Pack.Menu]);
             GC.Collect();
         }
 
@@ -111,7 +111,7 @@ namespace CutTheRope.GameMain
                         MenuController menuController2 = new(this);
                         AddChildwithID(menuController2, 1);
                         DeleteChild(0);
-                        resourceMgr.FreePack(PACK_STARTUP);
+                        resourceMgr.FreePack([Resources.Pack.Startup]);
                         menuController2.viewToShow = 0;
                         if (Preferences.GetBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
                         {
@@ -133,11 +133,11 @@ namespace CutTheRope.GameMain
                     {
                         DeleteMenu();
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
-                        int[] array = PackConfig.GetPackResources(pack);
+                        string[] packResourceNames = PackConfig.GetPackResourceNames(pack);
                         resourceMgr.InitLoading();
-                        resourceMgr.LoadPack(PACK_GAME);
-                        resourceMgr.LoadPack(PACK_GAME_NORMAL);
-                        resourceMgr.LoadPack(array);
+                        resourceMgr.LoadPack([Resources.Pack.Game]);
+                        resourceMgr.LoadPack([Resources.Pack.GameNormal]);
+                        resourceMgr.LoadPack(packResourceNames);
                         resourceMgr.StartLoading();
                         ((LoadingController)GetChild(2)).nextController = 0;
                         ActivateChild(2);
@@ -163,7 +163,7 @@ namespace CutTheRope.GameMain
                         int packCount = CTRPreferences.GetPacksCount();
                         for (int i = 0; i < packCount; i++)
                         {
-                            resourceMgr.FreePack(PackConfig.GetCoverResources(i));
+                            resourceMgr.FreePack(PackConfig.GetCoverResourceNames(i));
                         }
                         if (IS_WVGA)
                         {
@@ -198,16 +198,16 @@ namespace CutTheRope.GameMain
                         if (exitCode <= 2)
                         {
                             DeleteChild(3);
-                            resourceMgr.FreePack(PACK_GAME);
-                            resourceMgr.FreePack(PACK_GAME_NORMAL);
+                            resourceMgr.FreePack([Resources.Pack.Game]);
+                            resourceMgr.FreePack([Resources.Pack.GameNormal]);
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
-                                resourceMgr.FreePack(PackConfig.GetPackResources(i));
+                                resourceMgr.FreePack(PackConfig.GetPackResourceNames(i));
                             }
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                             resourceMgr.InitLoading();
-                            resourceMgr.LoadPack(PACK_MENU);
+                            resourceMgr.LoadPack([Resources.Pack.Menu]);
                             resourceMgr.StartLoading();
                             LoadingController loadingController = (LoadingController)GetChild(2);
                             loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
