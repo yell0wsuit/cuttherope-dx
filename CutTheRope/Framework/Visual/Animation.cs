@@ -21,6 +21,7 @@ namespace CutTheRope.Framework.Visual
         /// <summary>
         /// Creates an animation using a texture resource name.
         /// </summary>
+        [Obsolete]
         public static Animation Animation_createWithResID(string resourceName)
         {
             return Animation_create(Application.GetTexture(resourceName));

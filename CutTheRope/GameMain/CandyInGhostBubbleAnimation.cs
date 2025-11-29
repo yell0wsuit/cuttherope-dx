@@ -11,6 +11,7 @@ namespace CutTheRope.GameMain
             return CIGBAnimation_create(Application.GetTexture(resId));
         }
 
+        [System.Obsolete]
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(string resourceName)
         {
             return CIGBAnimation_create(Application.GetTexture(resourceName));
@@ -21,6 +22,7 @@ namespace CutTheRope.GameMain
             return (CandyInGhostBubbleAnimation)new CandyInGhostBubbleAnimation().InitWithTexture(texture);
         }
 
+        [System.Obsolete]
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResIDQuad(int resId, int quad)
         {
             CandyInGhostBubbleAnimation animation = CIGBAnimation_createWithResID(resId);

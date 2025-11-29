@@ -22,6 +22,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
+        [System.Obsolete]
         public static Bubble Bubble_createWithResIDQuad(string resourceName, int q)
         {
             Bubble bubble = Bubble_create(Application.GetTexture(resourceName));

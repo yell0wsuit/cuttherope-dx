@@ -21,6 +21,7 @@ namespace CutTheRope.Framework.Visual
             return (TiledImage)new TiledImage().InitWithTexture(t);
         }
 
+        [System.Obsolete]
         public static TiledImage TiledImage_createWithResID(string resourceName)
         {
             return TiledImage_create(Application.GetTexture(resourceName));

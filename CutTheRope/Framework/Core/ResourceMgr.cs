@@ -551,6 +551,7 @@ namespace CutTheRope.Framework.Core
             }
         }
 
+        [Obsolete]
         public virtual void StartLoading()
         {
             if (resourcesDelegate != null)

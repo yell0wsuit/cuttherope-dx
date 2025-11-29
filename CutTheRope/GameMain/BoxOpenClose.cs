@@ -159,6 +159,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        [Obsolete]
         public BoxOpenClose InitWithButtonDelegate(IButtonDelegation b)
         {
             result = new BaseElement();
@@ -666,6 +667,7 @@ namespace CutTheRope.GameMain
                 return Confetti_create(Application.GetTexture(r));
             }
 
+            [Obsolete]
             public static Confetti Confetti_createWithResID(string resourceName)
             {
                 return Confetti_create(Application.GetTexture(resourceName));

@@ -38,6 +38,7 @@ namespace CutTheRope.GameMain
             ShowView(0);
         }
 
+        [System.Obsolete]
         public void CreateGameView()
         {
             for (int i = 0; i < 5; i++)

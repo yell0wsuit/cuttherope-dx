@@ -10,6 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
     {
+        [Obsolete]
         public Spikes InitWithPosXYWidthAndAngleToggled(float px, float py, int w, double an, int t)
         {
             string textureResourceName = GetSpikeTexture(w, t != -1);

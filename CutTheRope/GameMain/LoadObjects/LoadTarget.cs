@@ -21,11 +21,6 @@ namespace CutTheRope.GameMain
         {
             int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
             string supportResourceName = PackConfig.GetSupportResourceName(pack);
-            if (string.IsNullOrEmpty(supportResourceName))
-            {
-                int supportResId = PackConfig.GetSupportResources(pack);
-                supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResId);
-            }
 
             support = Image.Image_createWithResIDQuad(supportResourceName, pack);
             support.DoRestoreCutTransparency();

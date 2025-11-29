@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
             return Pump_create(Application.GetTexture(r));
         }
 
+        [System.Obsolete]
         public static Pump Pump_createWithResID(string resourceName)
         {
             return Pump_create(Application.GetTexture(resourceName));
@@ -27,6 +28,7 @@ namespace CutTheRope.GameMain
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
+        [System.Obsolete]
         public static Pump Pump_createWithResID(string resourceName, int q)
         {
             Pump pump = Pump_create(Application.GetTexture(resourceName));

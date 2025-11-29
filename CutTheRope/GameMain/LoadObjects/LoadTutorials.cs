@@ -17,6 +17,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a tutorial text element from XML node data
         /// </summary>
+        [Obsolete]
         private void LoadTutorialText(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))
@@ -56,6 +57,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a tutorial image element from XML node data
         /// </summary>
+        [Obsolete]
         private void LoadTutorialImage(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             if (!ShouldSkipTutorialElement(xmlNode))

@@ -7,6 +7,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class LoadingController : ViewController, IResourceMgrDelegate
     {
+        [Obsolete]
         public LoadingController(ViewController parent)
             : base(parent)
         {

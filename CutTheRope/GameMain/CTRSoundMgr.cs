@@ -10,6 +10,7 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CTRSoundMgr : SoundMgr
     {
+        [Obsolete]
         public static new void PlaySound(int s)
         {
             if (Preferences.GetBooleanForKey("SOUND_ON"))
@@ -39,6 +40,7 @@ namespace CutTheRope.GameMain
             }
         }
 
+        [Obsolete]
         public static new SoundEffectInstance PlaySoundLooped(int s)
         {
             return s_EnableLoopedSounds && Preferences.GetBooleanForKey("SOUND_ON") ? Application.SharedSoundMgr().PlaySoundLooped(s) : null;
@@ -48,6 +50,7 @@ namespace CutTheRope.GameMain
         /// Plays a looped sound effect identified by its resource name.
         /// </summary>
         /// <param name="soundResourceName">Sound resource name.</param>
+        [Obsolete]
         public static SoundEffectInstance PlaySoundLooped(string soundResourceName)
         {
             return !s_EnableLoopedSounds || !Preferences.GetBooleanForKey("SOUND_ON")
@@ -87,6 +90,7 @@ namespace CutTheRope.GameMain
         /// Plays a random music track from the supplied resource names.
         /// </summary>
         /// <param name="musicNames">Candidate music resource names.</param>
+        [Obsolete]
         public static void PlayRandomMusic(params string[] musicNames)
         {
             if (musicNames == null)

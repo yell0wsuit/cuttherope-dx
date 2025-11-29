@@ -5,6 +5,7 @@ namespace CutTheRope.GameMain
 {
     internal class Bouncer : CTRGameObject
     {
+        [System.Obsolete]
         public virtual Bouncer InitWithPosXYWidthAndAngle(float px, float py, int w, double an)
         {
             string textureResourceName = w switch

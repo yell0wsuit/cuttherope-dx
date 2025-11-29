@@ -23,6 +23,7 @@ namespace CutTheRope.Framework.Core
             return resourceMgr;
         }
 
+        [Obsolete]
         public static RootController SharedRootController()
         {
             root ??= new CTRRootController(null);
@@ -76,6 +77,7 @@ namespace CutTheRope.Framework.Core
             return new CTRPreferences();
         }
 
+        [Obsolete]
         public virtual RootController CreateRootController()
         {
             return new CTRRootController(null);

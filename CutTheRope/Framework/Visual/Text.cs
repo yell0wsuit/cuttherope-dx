@@ -16,6 +16,7 @@ namespace CutTheRope.Framework.Visual
             return text;
         }
 
+        [System.Obsolete]
         public static Text CreateWithFontandString(string fontResourceName, string str)
         {
             Text text = new Text().InitWithFont(Application.GetFont(fontResourceName));

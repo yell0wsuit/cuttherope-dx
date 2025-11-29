@@ -87,6 +87,7 @@ namespace CutTheRope.Framework.Media
         /// <summary>
         /// Plays a sound by its resource name (auto-assigns ID if needed).
         /// </summary>
+        [Obsolete]
         public virtual void PlaySound(string soundResourceName)
         {
             int soundResID = GetResourceId(soundResourceName);

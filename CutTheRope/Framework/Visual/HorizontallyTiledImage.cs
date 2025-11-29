@@ -73,6 +73,7 @@ namespace CutTheRope.Framework.Visual
         /// Creates a tiled image from the specified texture resource name.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
+        [Obsolete]
         public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(string resourceName)
         {
             return HorizontallyTiledImage_create(Application.GetTexture(resourceName));

@@ -34,6 +34,7 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
+        [Obsolete]
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int q)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));

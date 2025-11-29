@@ -166,25 +166,18 @@ namespace CutTheRope.GameMain
                     int resourceId = idElement.GetInt32();
                     string atlasPath = atlasPathElement.GetString();
 
-                    // Prefer resourceName from JSON, fall back to legacy translation
-                    string resourceName = null;
-                    if (textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement))
-                    {
-                        resourceName = resourceNameElement.GetString();
-                    }
+                    string resourceName = textureElement.TryGetProperty("resourceName", out JsonElement resourceNameElement)
+                        ? resourceNameElement.GetString()
+                        : null;
 
                     if (string.IsNullOrEmpty(resourceName))
                     {
-                        resourceName = ResourceNameTranslator.TranslateLegacyId(resourceId);
+                        throw new InvalidDataException($"TexturePackerRegistry entry for resourceId {resourceId} is missing a resourceName.");
                     }
-                    else if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
+
+                    if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
                     {
                         throw new InvalidDataException($"TexturePackerRegistry contains unknown resource name '{resourceName}' for resourceId {resourceId}.");
-                    }
-
-                    if (string.IsNullOrEmpty(resourceName))
-                    {
-                        throw new InvalidDataException($"TexturePackerRegistry contains unknown legacy resourceId {resourceId} with no resource name fallback.");
                     }
 
                     TextureAtlasConfig config = new()
