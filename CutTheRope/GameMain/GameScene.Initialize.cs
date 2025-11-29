@@ -130,7 +130,7 @@ namespace CutTheRope.GameMain
                 _ = candy.AddChild(candyGhostBubbleAnimation);
                 candyGhostBubbleAnimation.visible = false;
                 candyGhostBubbleAnimation.AddSupportingCloudsTimelines();
-                candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 candyGhostBubbleAnimation.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLoaded = true;
             }
@@ -141,7 +141,7 @@ namespace CutTheRope.GameMain
                 _ = candyL.AddChild(candyGhostBubbleAnimationL);
                 candyGhostBubbleAnimationL.visible = false;
                 candyGhostBubbleAnimationL.AddSupportingCloudsTimelines();
-                candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimationL.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 candyGhostBubbleAnimationL.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationLeftLoaded = true;
             }
@@ -152,7 +152,7 @@ namespace CutTheRope.GameMain
                 _ = candyR.AddChild(candyGhostBubbleAnimationR);
                 candyGhostBubbleAnimationR.visible = false;
                 candyGhostBubbleAnimationR.AddSupportingCloudsTimelines();
-                candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
+                _ = candyGhostBubbleAnimationR.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 0, 12);
                 candyGhostBubbleAnimationR.PlayTimeline(0);
                 isCandyInGhostBubbleAnimationRightLoaded = true;
             }
