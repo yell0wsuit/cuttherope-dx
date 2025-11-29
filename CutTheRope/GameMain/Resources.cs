@@ -57,6 +57,9 @@ namespace CutTheRope.GameMain
             return fontNames_.Contains(resourceName);
         }
 
+        /// <summary>
+        /// List all of texture resources.
+        /// </summary>
         private static void InitializeImageNames()
         {
             imageNames_ =
@@ -95,6 +98,9 @@ namespace CutTheRope.GameMain
             ];
         }
 
+        /// <summary>
+        /// List all of audio resources.
+        /// </summary>
         private static void InitializeSoundNames()
         {
             soundNames_ =
@@ -112,6 +118,9 @@ namespace CutTheRope.GameMain
             ];
         }
 
+        /// <summary>
+        /// List all of font resources.
+        /// </summary>
         private static void InitializeFontNames()
         {
             fontNames_ =
