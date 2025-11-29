@@ -1416,7 +1416,7 @@ namespace CutTheRope.GameMain
         private static readonly Lock resourceIdLock_ = new();
         private static Dictionary<string, int> stringToIntMap_;
         private static Dictionary<int, string> intToStringMap_;
-        private static int nextAutoId_ = 0;  // Auto-assign sequential IDs
+        private static int nextAutoId_;  // Auto-assign sequential IDs
 
         /// <summary>
         /// Gets the integer ID for a resource name. If the resource name doesn't have an ID yet,
