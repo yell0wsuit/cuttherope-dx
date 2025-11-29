@@ -449,6 +449,13 @@ namespace CutTheRope.GameMain
                 return gameObjectSpecial;
             }
 
+            public static GameObjectSpecial GameObjectSpecial_createWithResIDQuad(string resourceName, int q)
+            {
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial_create(Application.GetTexture(resourceName));
+                gameObjectSpecial.SetDrawQuad(q);
+                return gameObjectSpecial;
+            }
+
             public int special;
         }
     }

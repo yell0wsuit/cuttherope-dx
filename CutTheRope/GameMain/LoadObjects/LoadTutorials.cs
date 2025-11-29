@@ -62,7 +62,7 @@ namespace CutTheRope.GameMain
             {
                 CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
                 int q = new string(xmlNode.Name.LocalName.AsSpan()[8..]).IntValue() - 1;
-                GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(84, q);
+                GameObjectSpecial gameObjectSpecial = GameObjectSpecial.GameObjectSpecial_createWithResIDQuad(Resources.Img.TutorialSigns, q);
                 gameObjectSpecial.color = RGBAColor.transparentRGBA;
                 gameObjectSpecial.x = (xmlNode.AttributeAsNSString("x").IntValue() * scale) + offsetX + mapOffsetX;
                 gameObjectSpecial.y = (xmlNode.AttributeAsNSString("y").IntValue() * scale) + offsetY + mapOffsetY;
