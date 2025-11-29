@@ -11,7 +11,6 @@ namespace CutTheRope.GameMain
             return (CharAnimation)new CharAnimation().InitWithTexture(t);
         }
 
-        [System.Obsolete]
         public static CharAnimation CharAnimation_createWithResID(int r)
         {
             return CharAnimation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));

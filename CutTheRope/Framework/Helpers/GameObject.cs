@@ -26,7 +26,6 @@ namespace CutTheRope.Framework.Helpers
             return gameObject;
         }
 
-        [Obsolete]
         public static GameObject GameObject_createWithResIDQuad(int r, int q)
         {
             GameObject gameObject = GameObject_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));

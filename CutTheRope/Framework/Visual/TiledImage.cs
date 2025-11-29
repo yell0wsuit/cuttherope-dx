@@ -27,7 +27,6 @@ namespace CutTheRope.Framework.Visual
             return TiledImage_create(Application.GetTexture(resourceName));
         }
 
-        [System.Obsolete]
         public static TiledImage TiledImage_createWithResID(int r)
         {
             return TiledImage_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));

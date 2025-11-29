@@ -11,7 +11,6 @@ namespace CutTheRope.GameMain
             return (Pump)new Pump().InitWithTexture(t);
         }
 
-        [System.Obsolete]
         public static Pump Pump_createWithResID(int r)
         {
             return Pump_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));

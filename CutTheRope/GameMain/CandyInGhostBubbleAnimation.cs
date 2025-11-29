@@ -5,7 +5,6 @@ namespace CutTheRope.GameMain
 {
     internal sealed class CandyInGhostBubbleAnimation : Animation
     {
-        [System.Obsolete]
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(int resId)
         {
             return CIGBAnimation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
@@ -21,7 +20,6 @@ namespace CutTheRope.GameMain
             return (CandyInGhostBubbleAnimation)new CandyInGhostBubbleAnimation().InitWithTexture(texture);
         }
 
-        [System.Obsolete]
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResIDQuad(int resId, int quad)
         {
             CandyInGhostBubbleAnimation animation = CIGBAnimation_createWithResID(resId);
