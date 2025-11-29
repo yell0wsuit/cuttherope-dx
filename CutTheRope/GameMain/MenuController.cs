@@ -611,6 +611,9 @@ namespace CutTheRope.GameMain
             string nsstring;
             if (n == CTRPreferences.GetPacksCount())
             {
+                // Force "Coming Soon" box to use the box_soon quad
+                resourceName = Resources.Img.MenuPackSelection2;
+                q = 6;
                 nsstring = Application.GetString(STR_MENU_BOX_SOON_LABEL);
             }
             else
