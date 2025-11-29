@@ -257,7 +257,6 @@ namespace CutTheRope.GameMain
             }
         }
 
-        [System.Obsolete]
         private void EnableGhostCycleForBubble(GameObject bubbleObj)
         {
             if (bubbleObj is not Bubble bubble || ghosts == null)
