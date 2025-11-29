@@ -18,9 +18,7 @@ namespace CutTheRope.GameMain
         string[] packResourceNames,
         string supportResourceName,
         string[] coverResourceNames,
-        bool earthBg,
-        string boxImageResourceName,
-        int boxImageQuad)
+        bool earthBg)
     {
         /// <summary>Number of stars required to unlock this pack.</summary>
         public int UnlockStars { get; } = unlockStars;
@@ -39,12 +37,6 @@ namespace CutTheRope.GameMain
 
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
-
-        /// <summary>Resource name for the box image in pack selection menu.</summary>
-        public string BoxImageResourceName { get; } = boxImageResourceName;
-
-        /// <summary>Quad index for the box image in pack selection menu.</summary>
-        public int BoxImageQuad { get; } = boxImageQuad;
     }
 
     /// <summary>
@@ -114,16 +106,6 @@ namespace CutTheRope.GameMain
             return pack >= 0 && pack < packs.Count && packs[pack].EarthBg;
         }
 
-        public static string GetBoxImageResourceName(int pack)
-        {
-            return pack >= 0 && pack < packs.Count ? packs[pack].BoxImageResourceName : null;
-        }
-
-        public static int GetBoxImageQuad(int pack)
-        {
-            return pack >= 0 && pack < packs.Count ? packs[pack].BoxImageQuad : 0;
-        }
-
         private static List<PackDefinition> LoadFromXml()
         {
             XElement root = XElementExtensions.LoadContentXml("packs.xml");
@@ -153,17 +135,13 @@ namespace CutTheRope.GameMain
 
                 bool earthBg = ParseBoolAttribute(packElement, "earthBg");
 
-                (string boxImageResourceName, int boxImageQuad) = ParseBoxImageAttribute(packElement, "boxImage");
-
                 results.Add(new PackDefinition(
                     unlockStars,
                     levelCount,
                     packResourceNames,
                     supportResourceName,
                     coverResourceNames,
-                    earthBg,
-                    boxImageResourceName,
-                    boxImageQuad));
+                    earthBg));
             }
 
             return results;
@@ -179,30 +157,6 @@ namespace CutTheRope.GameMain
         {
             string value = element.AttributeAsNSString(attributeName);
             return string.IsNullOrWhiteSpace(value) ? defaultValue : bool.Parse(value);
-        }
-
-        private static (string resourceName, int quad) ParseBoxImageAttribute(XElement element, string attributeName)
-        {
-            string value = element.AttributeAsNSString(attributeName);
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return (null, 0);
-            }
-
-            string[] parts = value.Split(':');
-            if (parts.Length != 2)
-            {
-                throw new InvalidDataException($"packs.xml boxImage attribute must be in format 'resourceName:quad', got '{value}'");
-            }
-
-            string resourceName = parts[0].Trim();
-            if (!int.TryParse(parts[1].Trim(), out int quad))
-            {
-                throw new InvalidDataException($"packs.xml boxImage quad must be a number, got '{parts[1]}'");
-            }
-
-            ValidateResourceName(resourceName, "boxImage");
-            return (resourceName, quad);
         }
 
         private static int ParseLevelCount(XElement element)
