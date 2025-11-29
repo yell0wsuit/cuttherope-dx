@@ -295,7 +295,6 @@ namespace CutTheRope.GameMain
             return toggleButton;
         }
 
-        [Obsolete]
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, int tq, string str, int bId, IButtonDelegation delegateValue)
         {
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
@@ -1109,7 +1108,6 @@ namespace CutTheRope.GameMain
             AddViewwithID(menuView, 6);
         }
 
-        [Obsolete]
         public MenuController(ViewController parent)
             : base(parent)
         {
