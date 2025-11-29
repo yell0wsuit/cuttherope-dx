@@ -633,10 +633,7 @@ namespace CutTheRope.GameMain
             string nSString = nsstring;
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && n != CTRPreferences.GetPacksCount();
-            if (n != CTRPreferences.GetPacksCount())
-            {
-                touchBaseElement.bid = new MenuButtonId(MenuButtonId.PackSelectBase + n);
-            }
+            touchBaseElement.bid = n != CTRPreferences.GetPacksCount() ? new MenuButtonId(MenuButtonId.PackSelectBase + n) : new MenuButtonId(-1);
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
             image.DoRestoreCutTransparency();
             image.anchor = image.parentAnchor = 9;
