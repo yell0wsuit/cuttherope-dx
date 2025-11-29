@@ -14,7 +14,7 @@ namespace CutTheRope.GameMain
         [System.Obsolete]
         public static Bubble Bubble_createWithResID(int r)
         {
-            return Bubble_create(Application.GetTexture(r));
+            return Bubble_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         /// <summary>

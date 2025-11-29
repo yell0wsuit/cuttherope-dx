@@ -8,7 +8,7 @@ namespace CutTheRope.GameMain
         [System.Obsolete]
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(int resId)
         {
-            return CIGBAnimation_create(Application.GetTexture(resId));
+            return CIGBAnimation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(resId)));
         }
 
         public static CandyInGhostBubbleAnimation CIGBAnimation_createWithResID(string resourceName)

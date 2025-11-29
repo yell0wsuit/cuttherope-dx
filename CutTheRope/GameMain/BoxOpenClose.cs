@@ -662,7 +662,7 @@ namespace CutTheRope.GameMain
         {
             public static Confetti Confetti_createWithResID(int r)
             {
-                return Confetti_create(Application.GetTexture(r));
+                return Confetti_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
             }
 
             public static Confetti Confetti_createWithResID(string resourceName)

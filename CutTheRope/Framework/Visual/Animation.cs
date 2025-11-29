@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRope.Framework.Core;
+using CutTheRope.GameMain;
 
 namespace CutTheRope.Framework.Visual
 {
@@ -14,7 +15,7 @@ namespace CutTheRope.Framework.Visual
 
         public static Animation Animation_createWithResID(int r)
         {
-            return Animation_create(Application.GetTexture(r));
+            return Animation_create(Application.GetTexture(ResourceNameTranslator.TranslateLegacyId(r)));
         }
 
         /// <summary>

@@ -619,28 +619,33 @@ namespace CutTheRope.Framework.Core
 
         private void LoadResource(int resId)
         {
-            if (150 < resId)
+            if (!TryResolveResource(resId, out int localizedResId, out string localizedName))
             {
                 return;
             }
-            if (10 == resId)
+
+            if (150 < localizedResId)
+            {
+                return;
+            }
+            if (10 == localizedResId)
             {
                 xmlStrings ??= XElementExtensions.LoadContentXml("menu_strings.xml");
                 return;
             }
-            if (IsSound(resId))
+            if (IsSound(localizedResId))
             {
-                _ = Application.SharedSoundMgr().GetSound(resId);
+                _ = Application.SharedSoundMgr().GetSound(localizedResId);
                 return;
             }
-            if (IsFont(resId))
+            if (IsFont(localizedResId))
             {
-                _ = Application.GetFont(resId);
+                _ = Application.GetFont(localizedResId);
                 return;
             }
             try
             {
-                _ = Application.GetTexture(resId);
+                _ = Application.GetTexture(localizedName);
             }
             catch (Exception)
             {
