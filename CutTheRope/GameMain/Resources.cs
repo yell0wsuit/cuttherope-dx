@@ -94,7 +94,7 @@ namespace CutTheRope.GameMain
                 Img.MenuExtraButtonsRu, Img.HudButtonsRu, Img.HudButtonsGr,
                 Img.MenuResultRu, Img.MenuResultFr, Img.MenuResultGr,
                 Img.MenuExtraButtonsEn, Img.Bgr12Cover, Img.Bgr12P1, Img.Bgr12P2,
-                Img.ObjGhost
+                Img.ObjGhost, Img.Bgr13Cover, Img.Bgr13P1, Img.ObjPipe
             ];
         }
 
@@ -114,7 +114,8 @@ namespace CutTheRope.GameMain
                 Snd.GravityOn, Snd.CandyLink, Snd.Bouncer, Snd.SpikeRotateIn,
                 Snd.SpikeRotateOut, Snd.Buzz, Snd.Teleport, Snd.ScratchIn,
                 Snd.ScratchOut, Snd.MenuMusic, Snd.GameMusic, Snd.GameMusic2,
-                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff
+                Snd.GameMusic3, Snd.GameMusic4, Snd.GhostPuff, Snd.SteamStart,
+                Snd.SteamStart2, Snd.SteamEnd
             ];
         }
 
