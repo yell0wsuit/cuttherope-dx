@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -152,17 +153,29 @@ namespace CutTheRope.GameMain
                 {
                     packResourceNames = ResourceNameTranslator.TranslateLegacyPack(packResources);
                 }
+                else
+                {
+                    ValidateResourceNames(packResourceNames, "resourceNames");
+                }
 
                 string supportResourceName = ParseResourceName(packElement, "supportResourceName");
                 if (string.IsNullOrEmpty(supportResourceName))
                 {
                     supportResourceName = ResourceNameTranslator.TranslateLegacyId(supportResources) ?? string.Empty;
                 }
+                else
+                {
+                    ValidateResourceName(supportResourceName, "supportResourceName");
+                }
 
                 string[] coverResourceNames = ParseResourceNames(packElement, "coverResourceNames");
                 if (coverResourceNames.Length == 0 || coverResourceNames[0] == null)
                 {
                     coverResourceNames = ResourceNameTranslator.TranslateLegacyPack(coverResources);
+                }
+                else
+                {
+                    ValidateResourceNames(coverResourceNames, "coverResourceNames");
                 }
 
                 results.Add(new PackDefinition(
@@ -227,6 +240,27 @@ namespace CutTheRope.GameMain
             List<string> names = [.. value.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(part => part.Trim())];
             names.Add(null);
             return [.. names];
+        }
+
+        private static void ValidateResourceNames(IEnumerable<string> resourceNames, string context)
+        {
+            foreach (string resourceName in resourceNames)
+            {
+                if (resourceName == null)
+                {
+                    continue; // Preserve sentinel semantics
+                }
+
+                ValidateResourceName(resourceName, context);
+            }
+        }
+
+        private static void ValidateResourceName(string resourceName, string context)
+        {
+            if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
+            {
+                throw new InvalidDataException($"packs.xml contains unknown resource name '{resourceName}' in '{context}'.");
+            }
         }
     }
 }

@@ -1470,6 +1470,26 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Attempts to get the integer ID for a resource name without auto-registering new entries.
+        /// </summary>
+        public static bool TryGetResourceId(string resourceName, out int resourceId)
+        {
+            resourceId = -1;
+
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                return false;
+            }
+
+            EnsureResourceIdMapsLoaded();
+
+            lock (resourceIdLock_)
+            {
+                return stringToIntMap_.TryGetValue(resourceName, out resourceId);
+            }
+        }
+
+        /// <summary>
         /// Gets the resource name for an integer ID. Returns null if not found.
         /// </summary>
         public static string GetResourceName(int resourceId)

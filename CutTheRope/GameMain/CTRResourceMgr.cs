@@ -109,6 +109,7 @@ namespace CutTheRope.GameMain
         /// <summary>
         /// Loads a resource by its string name. Auto-assigns an ID if needed.
         /// </summary>
+        [Obsolete]
         public static object LoadResourceByName(string resourceName, ResourceType resType)
         {
             CTRResourceMgr mgr = new();
@@ -175,6 +176,15 @@ namespace CutTheRope.GameMain
                     if (string.IsNullOrEmpty(resourceName))
                     {
                         resourceName = ResourceNameTranslator.TranslateLegacyId(resourceId);
+                    }
+                    else if (!ResourceNameTranslator.TryGetResourceId(resourceName, out _))
+                    {
+                        throw new InvalidDataException($"TexturePackerRegistry contains unknown resource name '{resourceName}' for resourceId {resourceId}.");
+                    }
+
+                    if (string.IsNullOrEmpty(resourceName))
+                    {
+                        throw new InvalidDataException($"TexturePackerRegistry contains unknown legacy resourceId {resourceId} with no resource name fallback.");
                     }
 
                     TextureAtlasConfig config = new()

@@ -16,6 +16,14 @@ namespace CutTheRope.GameMain
         }
 
         /// <summary>
+        /// Attempts to resolve a string resource name to its legacy numeric identifier without auto-registering.
+        /// </summary>
+        public static bool TryGetResourceId(string resourceName, out int resourceId)
+        {
+            return ResDataPhoneFull.TryGetResourceId(resourceName, out resourceId);
+        }
+
+        /// <summary>
         /// Attempts to get the string resource name for a legacy numeric identifier.
         /// </summary>
         public static bool TryGetResourceName(int resourceId, out string resourceName)
