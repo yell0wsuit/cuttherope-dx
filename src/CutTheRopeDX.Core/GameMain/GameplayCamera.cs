@@ -11,37 +11,21 @@ namespace CutTheRopeDX.GameMain
         /// Returns where along an axis's scrollable range the camera should sit, as a fraction.
         /// </summary>
         /// <remarks>
-        /// The fit only ever scales the camera window - the design box, or the level when it is
-        /// smaller - so a viewport shaped differently from that box exposes world beyond it. That
-        /// exposed slack is world the level no longer has to scroll to show. Once it covers the
-        /// whole scrollable range the picture has nowhere left to go, and following the tracked
-        /// point would only slide a view that already contains the level; the axis holds centered
-        /// instead. The test is per axis because a level can exceed the box on one and not the
-        /// other, and it is made against the slack the fit actually produces rather than against
-        /// the viewport's aspect, which says nothing about how far the level still has to travel.
+        /// The camera window is never scaled to contain the level, so what the window shows is all
+        /// the camera shows and the level's reach past it is the whole of the range. An axis the
+        /// level does not reach past has nowhere to go, and following the tracked point would only
+        /// slide a view that already contains the level; that axis holds centered instead. The test
+        /// is per axis because a level can exceed the window on one and not the other.
         /// </remarks>
         /// <param name="tracked">Where the tracking has driven the camera on this axis.</param>
         /// <param name="origin">World coordinate of the level's near edge on this axis.</param>
         /// <param name="scrollable">How far the camera window can travel across the level.</param>
-        /// <param name="slack">World the viewport exposes beyond the camera window.</param>
         /// <returns>The anchor, 0 to 1, where 0.5 is centered.</returns>
-        public static float Anchor(float tracked, float origin, float scrollable, float slack)
+        public static float Anchor(float tracked, float origin, float scrollable)
         {
-            return HasTravel(scrollable, slack)
+            return scrollable > 0f
                 ? CTRMathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f)
                 : 0.5f;
-        }
-
-        /// <summary>
-        /// Whether an axis has anywhere left to go: whether the level runs past what the viewport
-        /// already exposes on it.
-        /// </summary>
-        /// <param name="scrollable">How far the camera window can travel across the level.</param>
-        /// <param name="slack">World the viewport exposes beyond the camera window.</param>
-        /// <returns><see langword="true"/> when moving the camera would move the picture.</returns>
-        public static bool HasTravel(float scrollable, float slack)
-        {
-            return scrollable > slack;
         }
     }
 }

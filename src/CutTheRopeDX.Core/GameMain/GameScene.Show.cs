@@ -171,7 +171,7 @@ namespace CutTheRopeDX.GameMain
         public void StartCamera()
         {
             ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
-            if (CameraCanTravel(snapshot))
+            if (LevelExceedsAuthoredScreen())
             {
                 ignoreTouches = true;
                 fastenCamera = false;
@@ -184,10 +184,10 @@ namespace CutTheRopeDX.GameMain
                 // point. Both ends and the midpoint they are chosen by are the level's own: a
                 // level wider than the design box is centered on it, so its near end is a negative
                 // world X and neither end is at the origin.
-                CTRRectangle range = CameraTrackingRange();
+                CTRRectangle range = CameraTrackingRange(snapshot);
                 float cameraStartX;
                 float cameraStartY;
-                if (mapWidth > SCREEN_WIDTH)
+                if (range.w > 0f)
                 {
                     cameraStartX = constraintedPoint.pos.X > range.x + (mapWidth / 2f)
                         ? range.x
@@ -204,9 +204,7 @@ namespace CutTheRopeDX.GameMain
                     cameraStartX = range.x;
                     cameraStartY = range.y + range.h;
                 }
-                Vector boundedCamera = BoundedCameraPosition(
-                    constraintedPoint.pos.X - (SCREEN_WIDTH / 2f),
-                    constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f));
+                Vector boundedCamera = BoundedCameraPosition(constraintedPoint.pos, snapshot);
 
                 // Seat the tracked position at the authored start point and let the fit derive the
                 // rest from it, the way every later frame does.
@@ -216,15 +214,13 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            // Nothing to preview: this viewport already holds the level end to end, so a pan would
-            // sit the player in front of a picture that cannot move - and, since gameplay is held
-            // for the length of one, do it while the level they can already see waits. Seat the
-            // camera where the pan would have left it and hand them the level.
+            // Nothing to preview: this level is no larger than the screen it was composed against,
+            // so a pan would sit the player in front of a picture with nowhere to go - and, since
+            // gameplay is held for the length of one, do it while the level they can already see
+            // waits. Seat the camera where the pan would have left it and hand them the level.
             ignoreTouches = false;
             ConstraintedPoint restingFocus = CameraFocusPoint();
-            Vector resting = BoundedCameraPosition(
-                restingFocus.pos.X - (SCREEN_WIDTH / 2f),
-                restingFocus.pos.Y - (SCREEN_HEIGHT / 2f));
+            Vector resting = BoundedCameraPosition(restingFocus.pos, snapshot);
             camera.MoveToXYImmediate(resting.X, resting.Y, true);
             ApplyCameraFit(snapshot);
         }

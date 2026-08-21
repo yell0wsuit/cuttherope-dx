@@ -404,8 +404,62 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// The range the tracking may drive the camera through: the positions of the design-box
-        /// window's top-left corner that keep the window inside the level.
+        /// Width of the world the camera shows at once, in world units: the 320-unit screen every
+        /// level was composed against, at the map scale of three. Locking the width rather than
+        /// fitting the level to the window keeps the picture the size it was drawn at on every
+        /// window shape, and is what gives a level wider than one screen somewhere to scroll.
+        /// </summary>
+        private const float LockedViewWidth = 960f;
+
+        /// <summary>
+        /// Height of the screen levels were composed against, in world units: 480 authored units
+        /// at the map scale of three. Only the opening pan reads it, because whether a level pans
+        /// is a property of the level rather than of the window it happens to be played in.
+        /// </summary>
+        private const float AuthoredScreenHeight = 1440f;
+
+        /// <summary>
+        /// The region of world the camera shows at once, in world units.
+        /// </summary>
+        /// <remarks>
+        /// Only the width is fixed, so the height is whatever the window's shape makes of it.
+        /// Nothing here is scaled to contain the level: the window is the whole of what the camera
+        /// shows, which is what leaves a level larger than one screen somewhere to scroll.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to measure against.</param>
+        /// <returns>The window's extent, horizontally and vertically.</returns>
+        private static Vector CameraWindowExtent(ViewportLayoutSnapshot snapshot)
+        {
+            CTRRectangle viewport = snapshot.VisibleBounds;
+
+            // Before the first real viewport arrives there is no shape to read, so stand in the
+            // screen the levels were composed against rather than divide by nothing.
+            return viewport.w > 0f
+                ? Vect(LockedViewWidth, viewport.h * LockedViewWidth / viewport.w)
+                : Vect(LockedViewWidth, AuthoredScreenHeight);
+        }
+
+        /// <summary>
+        /// How far the camera window may travel across the level on each axis.
+        /// </summary>
+        /// <remarks>
+        /// Measured against the window rather than the design box. The window is everything the
+        /// camera shows, so the level's reach past it is exactly the travel available, and the
+        /// viewport's shape - already spent on the window's height - is not counted twice.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to measure against.</param>
+        /// <returns>Travel available horizontally and vertically.</returns>
+        private Vector CameraScrollable(ViewportLayoutSnapshot snapshot)
+        {
+            Vector window = CameraWindowExtent(snapshot);
+            return Vect(
+                MathF.Max(0f, cameraBounds.w - window.X),
+                MathF.Max(0f, cameraBounds.h - window.Y));
+        }
+
+        /// <summary>
+        /// The range the tracking may drive the camera through: the positions of the window's
+        /// top-left corner that keep the window inside the level.
         /// </summary>
         /// <remarks>
         /// Measured from <see cref="cameraBounds"/>'s own origin rather than from world zero. A
@@ -415,112 +469,110 @@ namespace CutTheRopeDX.GameMain
         /// midpoint. An axis the level does not exceed contributes no extent, leaving the one
         /// position that shows the whole level on that axis.
         /// </remarks>
+        /// <param name="snapshot">The viewport to measure against.</param>
         /// <returns>The origin of the range and its extent on each axis.</returns>
-        private CTRRectangle CameraTrackingRange()
+        private CTRRectangle CameraTrackingRange(ViewportLayoutSnapshot snapshot)
         {
-            return new CTRRectangle(
-                cameraBounds.x,
-                cameraBounds.y,
-                MathF.Max(0f, mapWidth - SCREEN_WIDTH),
-                MathF.Max(0f, mapHeight - SCREEN_HEIGHT));
-        }
-
-        /// <summary>Clamps a desired camera position into <see cref="CameraTrackingRange"/>.</summary>
-        /// <param name="x">Desired camera X, in world units.</param>
-        /// <param name="y">Desired camera Y, in world units.</param>
-        /// <returns>The clamped position.</returns>
-        private Vector BoundedCameraPosition(float x, float y)
-        {
-            CTRRectangle range = CameraTrackingRange();
-            return Vect(
-                FIT_TO_BOUNDARIES(x, range.x, range.x + range.w),
-                FIT_TO_BOUNDARIES(y, range.y, range.y + range.h));
+            Vector scrollable = CameraScrollable(snapshot);
+            return new CTRRectangle(cameraBounds.x, cameraBounds.y, scrollable.X, scrollable.Y);
         }
 
         /// <summary>
-        /// World the viewport exposes beyond the camera window on each axis.
+        /// Where the tracking should drive the camera to center the window on a focus point, kept
+        /// inside <see cref="CameraTrackingRange"/>.
         /// </summary>
         /// <remarks>
-        /// The fit scales <see cref="cameraWindow"/> - the design box, or the level when it is
-        /// smaller - and never the whole map, so a viewport shaped differently from that box
-        /// reveals world past it. That reveal is settled before any anchor is chosen, which is
-        /// what lets both the anchor and the decision to stage an opening pan be made against it.
+        /// The half-window the focus is centered on is the window's own, not the design box's.
+        /// Centering a locked window on half of a box it no longer matches would offset the camera
+        /// by the difference and track the focus point off to one side of the picture.
         /// </remarks>
+        /// <param name="focus">World point the camera is following.</param>
         /// <param name="snapshot">The viewport to measure against.</param>
-        /// <returns>Exposed world beyond the window, horizontally and vertically.</returns>
-        private Vector CameraSlack(ViewportLayoutSnapshot snapshot)
+        /// <returns>The clamped camera position.</returns>
+        private Vector BoundedCameraPosition(Vector focus, ViewportLayoutSnapshot snapshot)
         {
-            CTRRectangle viewport = snapshot.VisibleBounds;
-            float scale = MathF.Min(viewport.w / cameraWindow.w, viewport.h / cameraWindow.h);
-            return Vect((viewport.w / scale) - cameraWindow.w, (viewport.h / scale) - cameraWindow.h);
+            Vector window = CameraWindowExtent(snapshot);
+            CTRRectangle range = CameraTrackingRange(snapshot);
+            return Vect(
+                FIT_TO_BOUNDARIES(focus.X - (window.X / 2f), range.x, range.x + range.w),
+                FIT_TO_BOUNDARIES(focus.Y - (window.Y / 2f), range.y, range.y + range.h));
         }
 
         /// <summary>
-        /// How far the camera window may travel across the level on each axis, before the
-        /// viewport's own reveal is counted against it.
+        /// Whether the level is drawn larger than the screen it was composed against, and so opens
+        /// with a pan across itself.
         /// </summary>
         /// <remarks>
-        /// On an axis the level exceeds, <see cref="cameraWindow"/> is capped to the design size
-        /// rather than the full map, so it is the window - not the whole map - that fits the
-        /// viewport, and this is the range the anchor slides that window through: exactly where
-        /// the legacy bounded-pixel camera put it.
+        /// The opening pan belongs to levels drawn larger than that screen, not to every level a
+        /// wide monitor happens to crop, so the height is read against the authored screen rather
+        /// than against the window. Gating it on the window instead made an ordinary level open
+        /// with a fly-in that swallowed the first touches.
         /// </remarks>
-        /// <returns>Travel available horizontally and vertically.</returns>
-        private Vector CameraScrollable()
+        /// <returns><see langword="true"/> when the level exceeds the authored screen.</returns>
+        private bool LevelExceedsAuthoredScreen()
         {
-            return Vect(
-                MathF.Max(0f, cameraBounds.w - cameraWindow.w),
-                MathF.Max(0f, cameraBounds.h - cameraWindow.h));
+            return cameraBounds.w > 0f
+                && cameraBounds.h > 0f
+                && (cameraBounds.w > LockedViewWidth || cameraBounds.h > AuthoredScreenHeight);
         }
 
         /// <summary>
-        /// Whether moving the camera in this viewport would move the picture at all.
+        /// Places the region of the level the camera shows for the current viewport.
         /// </summary>
-        /// <param name="snapshot">The viewport to measure against.</param>
-        /// <returns><see langword="true"/> when the level runs past the viewport on either axis.</returns>
-        private bool CameraCanTravel(ViewportLayoutSnapshot snapshot)
-        {
-            if (cameraBounds.w <= 0f || cameraBounds.h <= 0f)
-            {
-                return false;
-            }
-
-            Vector slack = CameraSlack(snapshot);
-            Vector scrollable = CameraScrollable();
-            return GameplayCamera.HasTravel(scrollable.X, slack.X)
-                || GameplayCamera.HasTravel(scrollable.Y, slack.Y);
-        }
-
-        /// <summary>
-        /// Fits the camera to the level for the current viewport, holding it centered when the
-        /// whole level is already visible.
-        /// </summary>
-        /// <param name="snapshot">The viewport to fit against.</param>
+        /// <remarks>
+        /// The width of that region is fixed at <see cref="LockedViewWidth"/>, so the picture is
+        /// the size it was composed at whatever shape the window is, and a level wider than one
+        /// screen scrolls instead of shrinking. Fitting the level to the viewport instead is why a
+        /// level authored twice the usual width had no horizontal scroll range on any window.
+        /// </remarks>
+        /// <param name="snapshot">The viewport to place against.</param>
         private void ApplyCameraFit(ViewportLayoutSnapshot snapshot)
         {
-            if (cameraBounds.w <= 0f || cameraBounds.h <= 0f)
+            CTRRectangle viewport = snapshot.VisibleBounds;
+            if (cameraBounds.w <= 0f || cameraBounds.h <= 0f || viewport.w <= 0f)
             {
                 return;
             }
 
-            CTRRectangle viewport = snapshot.VisibleBounds;
-            Vector slack = CameraSlack(snapshot);
-            Vector scrollable = CameraScrollable();
+            Vector window = CameraWindowExtent(snapshot);
+            Vector scrollable = CameraScrollable(snapshot);
 
             // The anchor is read from where the tracking has driven the camera, which nothing here
-            // writes back to. A fit that took its anchor from its own previous result would
-            // subtract the viewport's slack afresh on every pass and walk the camera off the level.
-            float anchorX = GameplayCamera.Anchor(camera.pos.X, cameraBounds.x, scrollable.X, slack.X);
-            float anchorY = GameplayCamera.Anchor(camera.pos.Y, cameraBounds.y, scrollable.Y, slack.Y);
+            // writes back to. A placement that took its anchor from its own previous result would
+            // re-apply the centering offset afresh on every pass and walk the camera off the level.
+            float anchorX = GameplayCamera.Anchor(camera.pos.X, cameraBounds.x, scrollable.X);
+            float anchorY = GameplayCamera.Anchor(camera.pos.Y, cameraBounds.y, scrollable.Y);
 
-            CTRRectangle window = new(
-                cameraBounds.x + (scrollable.X * anchorX),
-                cameraBounds.y + (scrollable.Y * anchorY),
-                cameraWindow.w,
-                cameraWindow.h);
-
-            camera.ApplyFit(LayoutMath.FitCamera(window, viewport, anchorX, anchorY));
+            camera.ApplyFit(new CameraFit(
+                viewport.w / LockedViewWidth,
+                new CTRRectangle(
+                    ScrollOrigin(cameraBounds.x, cameraBounds.w, window.X, scrollable.X, anchorX),
+                    ScrollOrigin(cameraBounds.y, cameraBounds.h, window.Y, scrollable.Y, anchorY),
+                    window.X,
+                    window.Y)));
             RelayoutWaterCoverage(snapshot);
+        }
+
+        /// <summary>
+        /// Places the visible region's origin on one axis: at the anchor within the level's scroll
+        /// range where the level exceeds the window, and centered on the level where it does not.
+        /// </summary>
+        /// <param name="boundsOrigin">The level's origin on this axis.</param>
+        /// <param name="boundsExtent">The level's extent on this axis.</param>
+        /// <param name="windowExtent">The window's extent on this axis, in world units.</param>
+        /// <param name="scrollable">How far the level reaches past the window on this axis.</param>
+        /// <param name="anchor">Position within the scroll range, 0 to 1.</param>
+        /// <returns>World coordinate of the visible region's near edge on this axis.</returns>
+        private static float ScrollOrigin(
+            float boundsOrigin,
+            float boundsExtent,
+            float windowExtent,
+            float scrollable,
+            float anchor)
+        {
+            return scrollable > 0f
+                ? boundsOrigin + (scrollable * anchor)
+                : boundsOrigin - ((windowExtent - boundsExtent) / 2f);
         }
 
         /// <summary>Extends water through any world exposed beyond the authored level frame.</summary>
@@ -1264,16 +1316,10 @@ namespace CutTheRopeDX.GameMain
         private float mapOriginY;
 
         /// <summary>
-        /// The level's extent in world units. The camera fits this region into the viewport.
+        /// The level's extent in world units. The camera shows a viewport-sized region of this
+        /// and scrolls along whichever axis the level reaches past it.
         /// </summary>
         private CTRRectangle cameraBounds;
-
-        /// <summary>
-        /// The region the camera can show at once, in world units. Equal to the level extent on
-        /// an axis the level does not exceed, and to the design size on an axis it does, which is
-        /// the axis the camera scrolls along.
-        /// </summary>
-        private CTRRectangle cameraWindow;
 
         // private bool spiderTookCandy;
 
