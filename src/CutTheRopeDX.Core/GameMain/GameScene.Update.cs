@@ -1784,9 +1784,8 @@ namespace CutTheRopeDX.GameMain
         private void UpdateCameraTracking(float delta)
         {
             ConstrainedPoint focusPoint = CameraFocusPoint();
-            float targetCameraX = focusPoint.pos.X - (SCREEN_WIDTH / 2f);
-            float targetCameraY = focusPoint.pos.Y - (SCREEN_HEIGHT / 2f);
-            Vector boundedCamera = BoundedCameraPosition(targetCameraX, targetCameraY);
+            Vector boundedCamera = BoundedCameraPosition(
+                focusPoint.pos, ScreenPresentation.Instance.Snapshot);
             float boundedCameraX = boundedCamera.X;
             float boundedCameraY = boundedCamera.Y;
             camera.MoveToXYImmediate(boundedCameraX, boundedCameraY, false);

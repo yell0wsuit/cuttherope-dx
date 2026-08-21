@@ -84,15 +84,9 @@ namespace CutTheRopeDX.GameMain
                             mapWidth *= scale;
                             mapHeight *= scale;
 
-                            // The level sits centered in the space the camera can show. Deriving
-                            // the offset from the camera window rather than the design width is
-                            // what lets a wider window reveal more of the level instead of adding
-                            // bars beside it.
-                            cameraWindow = new Rectangle(
-                                0f,
-                                0f,
-                                MathF.Min(mapWidth, SCREEN_WIDTH),
-                                MathF.Min(mapHeight, SCREEN_HEIGHT));
+                            // The level sits centered in the design frame every level's placement
+                            // was authored against; the camera decides how much of that frame a
+                            // window of the current shape shows.
                             offsetX = (SCREEN_WIDTH - mapWidth) / 2f;
                             cameraBounds = new Rectangle(offsetX, 0f, mapWidth, mapHeight);
                             levelName = node.Attribute("levelName")?.Value ?? null;
