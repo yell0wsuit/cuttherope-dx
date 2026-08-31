@@ -26,7 +26,7 @@ namespace CutTheRopeDX.GameMain
                 _ = candies[0].Lifecycle.Attachments.CaptureInLantern();
             }
 
-            // Preload candy-like auxiliary bodies (light bulbs, axes) so grabs can resolve them
+            // Preload candy-like auxiliary bodies (light bulbs, axes, bombs) so grabs can resolve them
             // regardless of XML order.
             foreach (XElement xmlnode2 in list)
             {
@@ -40,6 +40,9 @@ namespace CutTheRopeDX.GameMain
                             break;
                         case "axe":
                             LoadAxe(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            break;
+                        case "bomb":
+                            LoadBomb(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         default:
                             break;
@@ -137,6 +140,7 @@ namespace CutTheRopeDX.GameMain
                         case "lightBulb":
                         case "lightbulb":
                         case "axe":
+                        case "bomb":
                             // Preloaded above.
                             break;
                         case "gap":
