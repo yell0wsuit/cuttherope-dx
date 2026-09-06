@@ -3,6 +3,9 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <MonoGameVersion>3.8.5.1</MonoGameVersion>
+    <SkiaSharpVersion>4.151.2</SkiaSharpVersion>
+    <SDL3Version>3.4.16</SDL3Version>
+    <SDL3MixerVersion>3.2.4.11</SDL3MixerVersion>
   </PropertyGroup>
 
   <!-- Game -->
@@ -15,8 +18,18 @@
     <PackageVersion Include="MonoGame.Runtime.Mac.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="MonoGame.Runtime.Linux.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="FFmpeg.AutoGen" Version="8.1.0" />
-    <PackageVersion Include="SkiaSharp" Version="4.151.2" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.151.2" />
+    <PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="$(SkiaSharpVersion)" />
+    <PackageVersion Include="SDL3-CS" Version="$(SDL3Version)" />
+    <PackageVersion Include="SDL3-CS.Windows" Version="$(SDL3Version)" />
+    <PackageVersion Include="SDL3-CS.Linux" Version="$(SDL3Version)" />
+    <PackageVersion Include="SDL3-CS.MacOS" Version="$(SDL3Version)" />
+    <PackageVersion Include="SDL3-CS.Windows.Mixer" Version="$(SDL3MixerVersion)" />
+    <PackageVersion Include="SDL3-CS.Linux.Mixer" Version="$(SDL3MixerVersion)" />
+    <PackageVersion Include="SDL3-CS.MacOS.Mixer" Version="$(SDL3MixerVersion)" />
   </ItemGroup>
 
   <!-- Content builder -->
