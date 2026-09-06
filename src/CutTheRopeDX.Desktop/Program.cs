@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX;
+using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.GameMain;
 
@@ -43,6 +44,13 @@ if (cli.IsHeadless)
     // wedged on the loading screen, which is exactly the failure this smoke test must catch.
     Console.WriteLine($"[headless] ran 600 frames, active controller = {HeadlessHost.ActiveControllerName()}");
     return CustomLevelSession.IsActive && !HeadlessHost.IsInGameplay() ? 1 : 0;
+}
+
+if (Array.Exists(args, arg => arg == "--sdl"))
+{
+    using SdlDesktopHost host = new();
+    host.Run(args);
+    return 0;
 }
 
 InstallAlsoftConfig();

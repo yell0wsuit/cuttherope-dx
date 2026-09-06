@@ -13,6 +13,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+    <InternalsVisibleTo Include="CutTheRope-DX" />
     <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Platform.Tests" />
   </ItemGroup>
 </Project>
