@@ -4,6 +4,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Rendering.Skia;
 
 using SkiaSharp;
 

@@ -6,6 +6,7 @@
   <Project Path="src/CutTheRopeDX.Launcher/CutTheRopeDX.Launcher.csproj" />
   <Project Path="src/CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj" />
   <Project Path="src/CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
+  <Project Path="src/CutTheRopeDX.Rendering.Skia.Tests/CutTheRopeDX.Rendering.Skia.Tests.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop.Platform/CutTheRopeDX.Desktop.Platform.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop.Platform.Tests/CutTheRopeDX.Desktop.Platform.Tests.csproj" />
 </Solution>

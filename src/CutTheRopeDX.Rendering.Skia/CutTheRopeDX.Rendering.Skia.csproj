@@ -5,5 +5,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" />
+    <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Browser" />
+    <InternalsVisibleTo Include="CutTheRope-DX" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Tests" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Rendering.Skia.Tests" />
   </ItemGroup>
 </Project>

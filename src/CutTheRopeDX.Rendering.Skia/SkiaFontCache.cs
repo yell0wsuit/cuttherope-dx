@@ -8,7 +8,7 @@ using CutTheRopeDX.GameMain;
 
 using SkiaSharp;
 
-namespace CutTheRopeDX.Browser
+namespace CutTheRopeDX.Rendering.Skia
 {
     /// <summary>Loads and caches the subset typefaces the game renders text with.</summary>
     internal static class SkiaFontCache

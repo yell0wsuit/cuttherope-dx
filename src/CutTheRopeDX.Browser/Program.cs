@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CutTheRopeDX.Browser;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Rendering.Skia;
 
 [assembly: SupportedOSPlatform("browser")]
 

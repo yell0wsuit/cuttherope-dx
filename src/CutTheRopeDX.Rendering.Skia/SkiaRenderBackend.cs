@@ -9,7 +9,7 @@ using CutTheRopeDX.Framework.Visual;
 
 using SkiaSharp;
 
-namespace CutTheRopeDX.Browser
+namespace CutTheRopeDX.Rendering.Skia
 {
     /// <summary>
     /// The GL-ES-1 style rendering surface, implemented over Skia's GPU canvas.
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Browser
     /// </para>
     /// </remarks>
     /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
-    internal sealed class SkiaRenderBackend(SkiaSurface surface) : IRenderBackend, IDisposable
+    internal sealed class SkiaRenderBackend(ISkiaSurface surface) : IRenderBackend, IDisposable
     {
         private const int GL_BLEND = 1;
         private const int GL_SCISSOR_TEST = 4;

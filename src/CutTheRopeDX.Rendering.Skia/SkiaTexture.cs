@@ -2,7 +2,7 @@ using CutTheRopeDX.Framework.Platform;
 
 using SkiaSharp;
 
-namespace CutTheRopeDX.Browser
+namespace CutTheRopeDX.Rendering.Skia
 {
     /// <summary>Platform texture backed by a GPU-resident Skia image.</summary>
     /// <param name="image">The Skia image; ownership transfers to this handle.</param>

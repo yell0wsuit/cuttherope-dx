@@ -9,7 +9,7 @@ using CutTheRopeDX.GameMain;
 
 using SkiaSharp;
 
-namespace CutTheRopeDX.Browser
+namespace CutTheRopeDX.Rendering.Skia
 {
     /// <summary>A self-drawing font rendered directly by Skia.</summary>
     internal sealed class SkiaFont : FontGeneric

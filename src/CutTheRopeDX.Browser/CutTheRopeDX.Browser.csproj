@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+    <ProjectReference Include="../CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
   </ItemGroup>
 
   <!--
