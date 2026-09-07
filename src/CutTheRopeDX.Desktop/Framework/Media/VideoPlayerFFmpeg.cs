@@ -6,12 +6,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using CutTheRopeDX.Desktop.Platform.Audio;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using FFmpeg.AutoGen;
 
-using Microsoft.Xna.Framework.Audio;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -19,10 +19,10 @@ namespace CutTheRopeDX.Framework.Media
     /// Video player implementation using FFmpeg for decoding and playback.
     /// </summary>
     /// <remarks>
-    /// This player uses FFmpeg libraries for video/audio decoding and converts frames
-    /// to RGBA format for MonoGame texture rendering. Decoding runs on a background
-    /// thread to keep the main game loop responsive. Audio is played through
-    /// <see cref="DynamicSoundEffectInstance"/> with resampling handled by libswresample.
+    /// This player uses FFmpeg libraries for video/audio decoding and converts frames to RGBA for
+    /// the renderer's frame texture. Decoding runs on a background thread to keep the main game
+    /// loop responsive. Audio is played through an <see cref="SdlPcmStream"/> with resampling
+    /// handled by libswresample.
     /// </remarks>
     internal sealed unsafe class VideoPlayerFFmpeg : IVideoPlayer
     {
@@ -30,7 +30,12 @@ namespace CutTheRopeDX.Framework.Media
         private const int TextureReadyTimeoutMs = 500;
 
         /// <summary>Maximum number of audio buffers to queue for playback.</summary>
-        private const int MaxQueuedAudioBuffers = 8;
+        /// <summary>
+        /// How far ahead of the device decoded audio is allowed to run. Bounding the queue by time
+        /// rather than by a count of decoded packets keeps the lead the same whatever packet size
+        /// the source happens to use.
+        /// </summary>
+        private static readonly TimeSpan MaxQueuedAudio = TimeSpan.FromMilliseconds(200);
 
         /// <summary>Bytes per audio sample (16-bit audio = 2 bytes).</summary>
         private const int BytesPerSample = 2;
@@ -664,8 +669,8 @@ namespace CutTheRopeDX.Framework.Media
                 return false;
             }
 
-            AudioChannels channels = audioChannels == 1 ? AudioChannels.Mono : AudioChannels.Stereo;
-            audioInstance = new DynamicSoundEffectInstance(audioSampleRate, channels);
+            // A machine with no audio device still plays the movie; the soundtrack is what is lost.
+            audioInstance = SdlPcmStream.TryOpen(audioSampleRate, audioChannels);
 
             return true;
         }
@@ -805,7 +810,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            while (audioInstance.PendingBufferCount < MaxQueuedAudioBuffers)
+            while (audioInstance.HasRoomFor(MaxQueuedAudio))
             {
                 byte[] buffer;
                 lock (audioLock)
@@ -818,7 +823,7 @@ namespace CutTheRopeDX.Framework.Media
                     buffer = pendingAudioQueue.Dequeue();
                 }
 
-                audioInstance.SubmitBuffer(buffer, 0, buffer.Length);
+                audioInstance.Submit(buffer);
                 audioBytesDrained += buffer.Length;
                 audioBuffersSubmitted++;
             }
@@ -848,7 +853,7 @@ namespace CutTheRopeDX.Framework.Media
 
             lock (audioLock)
             {
-                return pendingAudioQueue.Count == 0 && audioInstance.PendingBufferCount == 0;
+                return pendingAudioQueue.Count == 0 && audioInstance.IsDrained;
             }
         }
 
@@ -1095,7 +1100,7 @@ namespace CutTheRopeDX.Framework.Media
         private int audioSampleRate;
 
         /// <summary>MonoGame dynamic sound effect for audio playback.</summary>
-        private DynamicSoundEffectInstance audioInstance;
+        private SdlPcmStream audioInstance;
 
         /// <summary>Native buffer for resampled audio data.</summary>
         private byte* audioBuffer;
