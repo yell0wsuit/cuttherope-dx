@@ -5,6 +5,13 @@ on:
         branches: [main]
         paths:
             - "**/*.cs"
+            - "**/*.csproj"
+            - "**/*.props"
+            - "**/*.targets"
+            - "**/*.slnx"
+            - "global.json"
+            - "nuget.config"
+            - ".github/workflows/pr-quality.yml"
 
 permissions:
     contents: read

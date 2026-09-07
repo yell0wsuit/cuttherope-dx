@@ -61,23 +61,19 @@ jobs:
                   # publishing an assetless game would only hide it.
                   fail-on-cache-miss: true
 
-            # build_web_content.py converts with the NuGet-pinned ffmpeg and refuses the one on
-            # PATH, since distro builds routinely lack libvorbis and libwebp. Restoring the
-            # content builder is what puts that package in the NuGet cache.
-            - name: Provision the pinned ffmpeg
-              run: dotnet restore content/Builder/CutTheRopeDX.Content.csproj
-
             - name: Install web content tooling
               run: python3 -m pip install --upgrade pillow fonttools
 
-            # The cutscenes are the one step the pinned ffmpeg cannot do -- that build is
-            # audio-only -- and the runner image ships no ffmpeg at all, so without this the
-            # conversion warned and deployed a site with no cutscenes. Ubuntu's package is
-            # built with libvpx and libopus, which is all the video step asks for.
-            - name: Install ffmpeg for the cutscenes
+            # One ffmpeg now does both jobs: Opus for the sound effects and VP9/Opus for the
+            # cutscenes. The runner image ships none at all, and build_web_content.py checks
+            # the encoders before converting, so assert them here rather than discovering a
+            # gap partway through a deploy.
+            - name: Install ffmpeg
               run: |
                   sudo apt-get update
                   sudo apt-get install -y ffmpeg
+                  ffmpeg -hide_banner -encoders | grep -q libopus
+                  ffmpeg -hide_banner -encoders | grep -q libvpx-vp9
 
             # --require-video makes a missing or unusable ffmpeg fail the deploy rather than
             # warn: a published build silently losing its cutscenes is the bug this had.
