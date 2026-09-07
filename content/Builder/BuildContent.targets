@@ -2,19 +2,15 @@
   <PropertyGroup>
     <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
     <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
+    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/content</ContentBuildOutput>
 
     <!--
-      Content is built for one platform and read by every graphics backend, rather than once per
-      backend. Building it per backend would double a build of over a thousand assets, and the audio
-      re-encoding in it is the slowest part of the whole build, to produce two trees that differ in a
-      single byte: the platform identifier in each XNB header, which MonoGame does not enforce.
+      Whether this build produces the content tree. Normally it does; jobs that receive prebuilt
+      content set this false and still get it packaged, which is why the condition sits on the
+      tasks rather than on the target.
     -->
-    <ContentPlatform Condition="'$(ContentPlatform)' == ''">DesktopVK</ContentPlatform>
-
-    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(ContentPlatform)/content</ContentBuildOutput>
-    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(ContentPlatform)</ContentBuildTemp>
-    <CompressContent Condition="'$(CompressContent)' == ''">true</CompressContent>
-    <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
+    <BuildContent Condition="'$(BuildContent)' == ''">true</BuildContent>
+    <BuildContent Condition="'$(CI)' == 'true'">false</BuildContent>
 
     <!--
       Whether this build carries a copy of the content to its output. Normally it must: a build has to be
@@ -26,24 +22,18 @@
     <DeployContent Condition="'$(DeployContent)' == ''">true</DeployContent>
   </PropertyGroup>
 
-  <!--
-    The RunMGCB condition sits on the tasks rather than the target so that
-    AddBuiltContent's AfterTargets hook fires either way. CI jobs that receive
-    prebuilt content leave RunMGCB false and still get it packaged.
-  -->
   <Target Name="BuildGameContent"
           BeforeTargets="BeforeBuild">
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Restore"
-             Condition="'$(RunMGCB)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
+             Condition="'$(BuildContent)' == 'true'"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
-             Condition="'$(RunMGCB)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
-    <Exec Condition="'$(RunMGCB)' == 'true'"
+             Condition="'$(BuildContent)' == 'true'"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
+    <Exec Condition="'$(BuildContent)' == 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
-    <Exec Condition="'$(RunMGCB)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(ContentPlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
-          CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
+    <Exec Condition="'$(BuildContent)' == 'true'"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot;" />
   </Target>
 
   <Target Name="AddBuiltContent" AfterTargets="BuildGameContent"

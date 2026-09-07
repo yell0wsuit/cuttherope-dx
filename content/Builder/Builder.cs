@@ -1,68 +1,41 @@
 using System.Text.Json;
 
-using Microsoft.Xna.Framework.Content.Pipeline.Audio;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-
-using MonoGame.Framework.Content.Pipeline.Builder;
-
 namespace CutTheRopeDX.Content
 {
     /// <summary>
-    /// Declares the assets processed by the Cut the Rope DX content build.
+    /// Produces the content tree the game reads at runtime.
     /// </summary>
-    public sealed class GameContentBuilder : ContentBuilder
+    /// <remarks>
+    /// The build is a byte-preserving copy plus one generated manifest. Nothing is re-encoded and
+    /// nothing is packed into a container: every format here is one the game already opens
+    /// directly, so a conversion step could only lose fidelity, cost build time, and hide which
+    /// bytes actually shipped.
+    /// </remarks>
+    public static class GameContentBuilder
     {
-        /// <inheritdoc />
-        public override IContentCollection GetContentCollection()
+        /// <summary>Runs one content build.</summary>
+        /// <param name="sourceDirectory">Root of the content source tree.</param>
+        /// <param name="outputDirectory">Directory the build writes into.</param>
+        /// <returns>What was written, skipped and deleted.</returns>
+        public static ContentCopyResult Build(string sourceDirectory, string outputDirectory)
         {
-            ContentCollection content = new();
-            content.SetContentRoot(string.Empty);
-
-            // Build every asset the default importer/processor understands
-            // (textures, sounds, songs). Non-buildable file types are handled
-            // in later tasks via IncludeCopy / Exclude.
-            content.Include<WildcardRule>("**/*.png");
-
-            // Non-premultiplied cursors (the first assets the game loads).
-            content.Exclude<WildcardRule>("images/cursor.png");
-            content.Exclude<WildcardRule>("images/cursor_active.png");
-            content.Include(
-                "images/cursor.png",
-                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
-            content.Include(
-                "images/cursor_active.png",
-                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
-
-            content.Include<WildcardRule>(
-                "sounds/*.wav",
-                contentProcessor: new SongProcessor { Quality = ConversionQuality.Best });
-            content.Include<WildcardRule>(
-                "sounds/sfx/*.wav",
-                contentProcessor: new SoundEffectProcessor { Quality = ConversionQuality.Best });
-
-            // Copy (do not build) content the game reads as raw files.
-            content.IncludeCopy<WildcardRule>("maps/*.*");
-            content.IncludeCopy<WildcardRule>("locales/*.*");
-            content.IncludeCopy<WildcardRule>("fonts/*.*");
-            content.IncludeCopy<WildcardRule>("video_hd/*.*");
-            content.IncludeCopy<WildcardRule>("*.xml");
-            content.IncludeCopy<WildcardRule>("*.json");
-            content.IncludeCopy<WildcardRule>("*.cur");
-
-            // Exclude legacy pipeline artifacts and prebuilt outputs.
-            content.Exclude<WildcardRule>("bin/**/*");
-            content.Exclude<WildcardRule>("obj/**/*");
-            content.Exclude<WildcardRule>("Builder/**/*");
-            content.Exclude<WildcardRule>("sounds/*.xnb");
-
-            return content;
+            ContentCopyResult result = ContentCopy.Run(
+                sourceDirectory, outputDirectory, ContentCopy.DesktopRules);
+            EmitImageDimensionsManifest(
+                Path.Combine(sourceDirectory, "images"),
+                Path.Combine(outputDirectory, "images"));
+            return result;
         }
 
         /// <summary>
         /// Writes pixel dimensions for every source image so headless runs can size textures
-        /// without a GraphicsDevice. Source PNGs are not copied to the output and the built
-        /// XNBs are LZ4-compressed, so this manifest is the only runtime dimension source.
+        /// without a graphics device.
         /// </summary>
+        /// <remarks>
+        /// The PNGs themselves ship, so the sizes could be read back from them, but that means
+        /// opening every one of a few hundred files to reach the twenty-fourth byte. Reading them
+        /// once at build time and shipping the answer keeps a headless run's startup to one file.
+        /// </remarks>
         /// <param name="imagesSourceDir">Directory holding the source PNGs.</param>
         /// <param name="imagesOutputDir">Directory the manifest is written to.</param>
         public static void EmitImageDimensionsManifest(string imagesSourceDir, string imagesOutputDir)
