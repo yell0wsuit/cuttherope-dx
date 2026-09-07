@@ -41,6 +41,26 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.False(input.IsKeyDown(KeyCode.Escape));
         }
         [Fact]
+        public void LosingFocusCancelsAHeldPressInsteadOfClickingUnderIt()
+        {
+            List<TouchLocation> touches = [];
+            SdlInputRouter input = new() { Touch = touches.Add };
+            input.Pointer(1, TouchLocationState.Pressed, 40, 50);
+            touches.Clear();
+
+            input.ClearInput();
+
+            // Core's Button activates when a release lands inside it, so replaying the release
+            // where the pointer was held would press whatever it was held over.
+            TouchLocation release = Assert.Single(touches);
+            Assert.Equal(TouchLocationState.Released, release.State);
+            Assert.NotEqual(new Vector2(40, 50), release.Position);
+            Assert.True(
+                release.Position.X < -1000 && release.Position.Y < -1000,
+                $"cancelled press should release outside every view, was {release.Position}");
+        }
+
+        [Fact]
         public void TouchesAreScaledByTheLiveWindowSize()
         {
             List<TouchLocation> touches = [];

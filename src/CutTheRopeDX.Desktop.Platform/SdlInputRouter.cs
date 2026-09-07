@@ -393,11 +393,23 @@ namespace CutTheRopeDX.Desktop.Platform
             }
         }
 
+        /// <summary>
+        /// Where a cancelled press is reported as released. Core's buttons activate when a
+        /// release lands inside them, so a press abandoned because the window lost focus has to
+        /// end somewhere no element covers. This is the drag-away-then-release gesture, which
+        /// already means "not a click" everywhere in the game.
+        /// </summary>
+        private static readonly Vector2 CancelledPressPosition = new(-100000f, -100000f);
+
+        /// <summary>
+        /// Drops every held input, ending presses without activating whatever they were held
+        /// over. Releases still have to be delivered, or elements stay stuck in their down state.
+        /// </summary>
         public void ClearInput()
         {
             foreach (KeyValuePair<int, Vector2> pair in pointers)
             {
-                Touch(new TouchLocation(pair.Key, TouchLocationState.Released, pair.Value));
+                Touch(new TouchLocation(pair.Key, TouchLocationState.Released, CancelledPressPosition));
             }
 
             pointers.Clear(); fingers.Clear(); held.Clear(); pressed.Clear(); gamepadBack.Clear(); wheelRemainder = 0;
