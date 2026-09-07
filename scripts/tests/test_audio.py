@@ -15,12 +15,12 @@ def test_sfx_detected_by_directory():
     assert not audio.is_sfx(Path("sounds/menu_music.wav"))
 
 
-def test_music_command_is_stereo_192k_libvorbis():
+def test_music_command_is_stereo_192k_libopus():
     command = audio.ogg_command(
         Path("/ff"), Path("in.wav"), Path("out.ogg"), 192, mono=False
     )
     assert command[0] == "/ff"
-    assert "-c:a" in command and command[command.index("-c:a") + 1] == "libvorbis"
+    assert "-c:a" in command and command[command.index("-c:a") + 1] == "libopus"
     assert "-b:a" in command and command[command.index("-b:a") + 1] == "192k"
     assert "-ac" not in command
     assert "-q:a" not in command
@@ -31,7 +31,7 @@ def test_sfx_command_is_mono_96k():
         Path("/ff"), Path("in.wav"), Path("out.ogg"), 96, mono=True
     )
     assert command[command.index("-ac") + 1] == "1"
-    assert command[command.index("-ar") + 1] == "44100"
+    assert command[command.index("-ar") + 1] == "48000"
     assert command[command.index("-b:a") + 1] == "96k"
 
 

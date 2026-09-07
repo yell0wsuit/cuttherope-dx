@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Converts the desktop content tree into the browser payload.
 
-Five jobs: PNG to WebP, WAV to Ogg Vorbis, MP4 to WebM, font subsetting, and the
+Five jobs: PNG to WebP, WAV to Ogg Opus, MP4 to WebM, font subsetting, and the
 tier-0 metadata bundle. Every job is incremental, so a rerun after changing one asset
 reconverts only that asset.
 
@@ -43,7 +43,7 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-audio",
         action="store_true",
-        help="Skip WAV conversion; useful when the pinned ffmpeg is unavailable.",
+        help="Skip WAV conversion; useful when no ffmpeg with libopus is available.",
     )
     parser.add_argument(
         "--skip-video",

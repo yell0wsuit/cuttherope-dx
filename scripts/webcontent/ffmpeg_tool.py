@@ -2,9 +2,9 @@
 
 There is no ffmpeg in this repository's dependency graph, so one has to be found on the
 machine running the build. Whichever one is found, it is never used until `require_encoders`
-has confirmed it can produce the formats the pipeline asks for: an ffmpeg missing libvorbis
-or libvpx is common in the wild, and using one silently produces content that is broken in a
-way nothing downstream notices.
+has confirmed it can produce the formats the pipeline asks for: an ffmpeg missing an encoder
+the pipeline needs is common in the wild, and using one silently produces content that is
+broken in a way nothing downstream notices.
 
 Resolution order, most explicit first:
 
