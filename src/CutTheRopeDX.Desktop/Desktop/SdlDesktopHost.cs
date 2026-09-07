@@ -18,7 +18,10 @@ using SkiaSharp;
 
 namespace CutTheRopeDX.Desktop
 {
-    /// <summary>Opt-in SDL composition</summary>
+    /// <summary>
+    /// Opt-in SDL composition, selected by <c>--sdl</c>. Audio is silent and movies are skipped;
+    /// the legacy host remains the path with working media.
+    /// </summary>
     internal sealed class SdlDesktopHost : IHostApp, IDisposable
     {
         private bool exiting;
