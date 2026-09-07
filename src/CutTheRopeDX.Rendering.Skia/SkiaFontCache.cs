@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -17,36 +16,21 @@ namespace CutTheRopeDX.Rendering.Skia
         private static readonly Dictionary<string, SkiaFont> Fonts = [];
 
         /// <summary>
-        /// Content-relative path of a font file exactly as the configuration names it. Hosts that
-        /// ship the authored files use this, so a configuration naming an OpenType face resolves
-        /// to that face rather than to a TrueType sibling that was never produced.
+        /// Content-relative path of a font file. Every host ships each face under the name the
+        /// configuration gives it, extension included, so there is nothing per-host to decide.
+        /// Skia reads the sfnt version tag rather than the file name, and loads TrueType and
+        /// PostScript outlines alike.
         /// </summary>
         /// <param name="fontFile">Font file name from <see cref="FontConfiguration.FontFile"/>.</param>
-        public static string PathForConfiguredFile(string fontFile)
+        public static string PathFor(string fontFile)
         {
             return $"fonts/{fontFile}";
         }
 
-        /// <summary>
-        /// Content-relative path of the TrueType file the web content pipeline converts every
-        /// authored face into, whatever the configuration calls it.
-        /// </summary>
-        /// <param name="fontFile">Font file name from <see cref="FontConfiguration.FontFile"/>.</param>
-        public static string PathForConvertedFile(string fontFile)
-        {
-            return $"fonts/{Path.GetFileNameWithoutExtension(fontFile)}.ttf";
-        }
-
         /// <summary>Returns the font for a configuration, building it on first use.</summary>
         /// <param name="config">Resolved font configuration for the current language.</param>
-        /// <param name="pathFor">
-        /// Maps the configured font file name to its content-relative path. Required rather than
-        /// defaulted: the two hosts ship different files, and a default here silently gave the
-        /// browser's answer to the desktop.
-        /// </param>
-        public static FontGeneric Load(FontConfiguration config, Func<string, string> pathFor)
+        public static FontGeneric Load(FontConfiguration config)
         {
-            ArgumentNullException.ThrowIfNull(pathFor);
 
             string key = $"{config.FontFile}|{config.Size}|{config.LineSpacing}|{config.TopSpacing}";
             if (Fonts.TryGetValue(key, out SkiaFont cached))
@@ -60,7 +44,7 @@ namespace CutTheRopeDX.Rendering.Skia
                 _ = Fonts.Remove(key);
             }
 
-            SkiaFont font = new(GetTypeface(pathFor(config.FontFile)), config);
+            SkiaFont font = new(GetTypeface(PathFor(config.FontFile)), config);
             Fonts[key] = font;
             return font;
         }

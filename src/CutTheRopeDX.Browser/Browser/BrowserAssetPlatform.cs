@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Browser
         {
             FontConfiguration config = Resources.FontConfig.GetConfiguration(
                 resourceName, LanguageHelper.CurrentAsInt);
-            return SkiaFontCache.Load(config, SkiaFontCache.PathForConvertedFile);
+            return SkiaFontCache.Load(config);
         }
 
         /// <inheritdoc />

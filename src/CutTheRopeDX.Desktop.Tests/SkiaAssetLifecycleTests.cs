@@ -16,10 +16,10 @@ namespace CutTheRopeDX.Desktop.Tests
         [Theory]
         [InlineData(Language.LANGKO, "fonts/Cafe24DongdongRegular.otf")]
         [InlineData(Language.LANGEN, "fonts/gooddog_new-webfont.ttf")]
-        public void DesktopFontsAreRequestedByTheirConfiguredFileName(Language language, string expected)
+        public void FontsAreRequestedByTheirConfiguredFileName(Language language, string expected)
         {
-            // The desktop ships the authored faces, so a configuration naming an OpenType file
-            // has to resolve to that file. Asking for a TrueType sibling finds nothing.
+            // Every host ships each face under its configured name, so a configuration naming
+            // an OpenType file resolves to that file. Asking for a TrueType sibling finds nothing.
             Language previousLanguage = LanguageHelper.Current;
             IContentStore previousContent = PlatformServices.Content;
             CountingStore store = new(null);
@@ -35,26 +35,6 @@ namespace CutTheRopeDX.Desktop.Tests
             {
                 SkiaFontCache.Clear();
                 LanguageHelper.Current = previousLanguage;
-                PlatformServices.Content = previousContent;
-            }
-        }
-
-        [Fact]
-        public void BrowserFontsStillResolveToTheConvertedTrueTypeFile()
-        {
-            IContentStore previousContent = PlatformServices.Content;
-            CountingStore store = new(null);
-            try
-            {
-                PlatformServices.Content = store;
-                _ = Assert.Throws<FileNotFoundException>(() => SkiaFontCache.Load(
-                    Resources.FontConfig.GetConfiguration(Resources.Fnt.SmallFont, (int)Language.LANGKO),
-                    SkiaFontCache.PathForConvertedFile));
-                Assert.Equal("fonts/Cafe24DongdongRegular.ttf", store.LastPath);
-            }
-            finally
-            {
-                SkiaFontCache.Clear();
                 PlatformServices.Content = previousContent;
             }
         }
