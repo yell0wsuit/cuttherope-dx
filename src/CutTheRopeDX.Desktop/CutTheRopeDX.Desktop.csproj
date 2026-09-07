@@ -206,10 +206,12 @@
     <Exec Condition="Exists('$(AppSourcePath)')" Command="/bin/rm -rf &quot;$(AppPublishPath)&quot; &amp;&amp; /bin/mv &quot;$(AppSourcePath)&quot; &quot;$(AppPublishPath)&quot;" />
   </Target>
 
-  <!-- Source PNG assets coexist with legacy XNB during the opt-in migration.
-       Fonts and data already deploy unchanged through BuildContent.targets. -->
+  <!-- Source PNG and WAV assets coexist with legacy XNB during the opt-in migration.
+       Fonts and data already deploy unchanged through BuildContent.targets. Globs rather than
+       named files, because these are fetched assets that a clean checkout does not have yet. -->
   <ItemGroup>
     <_SdlSourceContent Include="../../content/images/**/*.png" />
+    <_SdlSourceContent Include="../../content/sounds/**/*.wav" />
     <None Include="@(_SdlSourceContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
       <Link>content/$([MSBuild]::MakeRelative('$(MSBuildProjectDirectory)/../../content', '%(FullPath)'))</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

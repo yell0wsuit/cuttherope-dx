@@ -4,6 +4,7 @@ using System.IO;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop.Platform;
+using CutTheRopeDX.Desktop.Platform.Audio;
 using CutTheRopeDX.Desktop.Platform.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -19,8 +20,8 @@ using SkiaSharp;
 namespace CutTheRopeDX.Desktop
 {
     /// <summary>
-    /// Opt-in SDL composition, selected by <c>--sdl</c>. Audio is silent and movies are skipped;
-    /// the legacy host remains the path with working media.
+    /// Opt-in SDL composition, selected by <c>--sdl</c>. Movies are skipped; the legacy host
+    /// remains the path with working video.
     /// </summary>
     internal sealed class SdlDesktopHost : IHostApp, IDisposable
     {
@@ -33,6 +34,7 @@ namespace CutTheRopeDX.Desktop
         private SdlInputRouter input;
         private SdlCursorService cursor;
         private SdlGamepadService gamepads;
+        private SdlAudioBackend audio;
         private readonly SdlHostLoop loop = new();
         private readonly Stopwatch clock = new();
         private TimeSpan nextSave = TimeSpan.FromSeconds(1);
@@ -83,15 +85,19 @@ namespace CutTheRopeDX.Desktop
             string platform = OperatingSystem.IsMacOS() ? "macos" : OperatingSystem.IsWindows() ? "windows" : "linux";
             selection = BackendSelector.Select(platform, forced, CreateDevice, ValidateDevice);
             SdlGraphicsDevice device = selection.Device;
-            _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview (audio/video pending)");
-            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio silent, movies skipped");
+            _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview (video pending)");
+            string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
+            PlatformServices.Content = new FileContentStore(root);
+
+            // A machine with no usable audio device still plays the game, so this reports failure
+            // rather than throwing: the graphics that already came up must not depend on it.
+            audio = SdlAudioBackend.TryOpen(root);
+            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio {(audio == null ? "unavailable" : "on")}, movies skipped");
             foreach (Exception failure in selection.Failures)
             {
                 Console.Error.WriteLine($"[sdl] rejected renderer: {failure.Message}");
             }
 
-            string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
-            PlatformServices.Content = new FileContentStore(root);
             Preferences.LoadPreferences();
             window = new(device.Window);
             window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
@@ -142,7 +148,7 @@ namespace CutTheRopeDX.Desktop
             assets = new(PlatformServices.Content, device.Context);
             _ = SDL.GetWindowSize(device.Window, out int width, out int height);
             _ = SDL.GetWindowSizeInPixels(device.Window, out int pixels, out int ignored);
-            CtrBootstrap.Initialize(assets, null, width, height, LanguageHelper.FromSystemCulture(), (float)pixels / width);
+            CtrBootstrap.Initialize(assets, audio, width, height, LanguageHelper.FromSystemCulture(), (float)pixels / width);
             window.RefreshSurface();
             clock.Start();
             loop.Reset(clock.Elapsed);
@@ -267,6 +273,7 @@ namespace CutTheRopeDX.Desktop
             PlatformServices.RichPresence?.Dispose();
             gamepads?.Dispose();
             cursor?.Dispose();
+            audio?.Dispose();
             render?.Dispose();
             assets?.Dispose();
             selection?.Dispose();
