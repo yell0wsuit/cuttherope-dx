@@ -137,6 +137,32 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             RenderingParityTests.Near(SKColors.Black, pixels.GetPixel(8, 16));
         }
 
+        /// <summary>
+        /// The batch paint keeps a reference to the shader it last drew through, and that shader
+        /// keeps the device's image. Every other handle to a lost device is dropped before the
+        /// device is destroyed, so a paint that kept holding one would be the image's last owner
+        /// and would free it through a context that no longer exists.
+        /// </summary>
+        [Fact]
+        public void DiscardingDeviceResourcesReleasesTheShaderTheBatchPaintDrawsThrough()
+        {
+            SkiaResourceRegistry registry = new();
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface, registry);
+            using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
+
+            surface.Canvas.Clear(SKColors.Black);
+            renderer.BindTexture(new CTRTexture2D { textureHandle_ = texture });
+            renderer.SetColor(new Color(255, 255, 255, 255));
+            renderer.DrawTriangleStrip(Quad(), 4);
+            renderer.EndFrame();
+            Assert.True(renderer.RetainsDeviceShader);
+
+            renderer.DiscardDeviceResources();
+
+            Assert.False(renderer.RetainsDeviceShader);
+        }
+
         [Fact]
         public void ARebindDrawsIntoTheReplacementSurface()
         {

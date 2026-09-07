@@ -310,6 +310,12 @@ namespace CutTheRopeDX.Rendering.Skia
         /// <summary>How many binds have been refused because their device generation is retired.</summary>
         internal int RejectedBinds { get; private set; }
 
+        /// <summary>
+        /// Whether the batch paint still holds the shader it last sampled a device's image
+        /// through, which is a reference <see cref="DiscardDeviceResources"/> has to drop.
+        /// </summary>
+        internal bool RetainsDeviceShader { get; private set; }
+
         /// <inheritdoc />
         public void SetScissor(float x, float y, float width, float height)
         {
@@ -556,6 +562,7 @@ namespace CutTheRopeDX.Rendering.Skia
 
             _batchPaint.BlendMode = _batchBlendMode;
             _batchPaint.Shader = _batchTexture?.Shader(_batchWeightsSourceByAlpha);
+            RetainsDeviceShader = _batchTexture is not null;
 
             using SKVertices vertices = SKVertices.CreateCopy(
                 SKVertexMode.Triangles,
@@ -605,6 +612,15 @@ namespace CutTheRopeDX.Rendering.Skia
             _texCoords.Clear();
             _colors.Clear();
             DropScissor();
+
+            // The paint holds a reference to the shader it last drew through, and that shader
+            // holds the device's image. Nothing else here still points at the lost device by the
+            // time it is destroyed, so a paint left holding one would be the image's last owner,
+            // and freeing it would reach for a context that had gone. Skia defers that release to
+            // whenever the shader is next replaced, which is why the crash landed in the first
+            // flush the replacement device drew rather than anywhere near the loss.
+            _batchPaint.Shader = null;
+            RetainsDeviceShader = false;
             _boundTexture = null;
             _boundTextureRejected = false;
             _batchTexture = null;
