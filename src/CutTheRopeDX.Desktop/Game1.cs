@@ -34,7 +34,7 @@ namespace CutTheRopeDX
             PlatformServices.Host = new DesktopHostApp();
             PlatformServices.FileWatchers = new DesktopFileWatcherFactory();
             PlatformServices.Window = Global.ScreenSizeManager;
-            PlatformServices.VideoPlayerFactory = CreateVideoPlayer;
+            PlatformServices.VideoPlayerFactory = DesktopVideoPlayerFactory.Create;
             Content.Dispose();
             Content = new DesktopContentManager(Services);
             Global.GraphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -229,53 +229,6 @@ namespace CutTheRopeDX
         private static Language GetSystemLanguage()
         {
             return LanguageHelper.FromSystemCulture();
-        }
-
-        /// <summary>
-        /// Selects and constructs the video player backend for this build (AVFoundation for macOS 26+,
-        /// FFmpeg for cross-platform, or a no-op stub otherwise). Registered as
-        /// <see cref="PlatformServices.VideoPlayerFactory"/> so <see cref="MovieMgr"/> (Core) never
-        /// needs to know which concrete backend exists in this build.
-        /// </summary>
-        /// <returns>The selected <see cref="IVideoPlayer"/> implementation.</returns>
-        private static IVideoPlayer CreateVideoPlayer()
-        {
-            bool hasAvFoundation =
-#if MACOS_AVFOUNDATION
-                true;
-#else
-                false;
-#endif
-
-            bool hasFfmpeg =
-#if FFMPEG_BACKEND
-                true;
-#else
-                false;
-#endif
-
-            VideoPlayerBackend backend = VideoPlayerBackendSelector.Select(
-                isMac: OperatingSystem.IsMacOS(),
-                isMac26OrLater: OperatingSystem.IsMacOSVersionAtLeast(26),
-                hasAvFoundation: hasAvFoundation,
-                hasFfmpeg: hasFfmpeg
-            );
-
-#pragma warning disable IDE0010, IDE0066
-            switch (backend)
-            {
-#if MACOS_AVFOUNDATION
-                case VideoPlayerBackend.AVFoundation:
-                    return new VideoPlayerAVFoundation();
-#endif
-#if FFMPEG_BACKEND
-                case VideoPlayerBackend.Ffmpeg:
-                    return new VideoPlayerFFmpeg();
-#endif
-                default:
-                    return new VideoPlayerMonoGame();
-            }
-#pragma warning restore IDE0010, IDE0066
         }
 
         /// <summary>
