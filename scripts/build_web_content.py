@@ -97,11 +97,12 @@ def main(argv: list[str] | None = None) -> int:
         _say("audio: skipped")
     else:
         try:
-            ffmpeg = ffmpeg_tool.find_pinned_ffmpeg()
+            ffmpeg = ffmpeg_tool.find_ffmpeg()
             ffmpeg_tool.require_encoders(ffmpeg, audio.REQUIRED_ENCODERS)
         except (
             ffmpeg_tool.FfmpegNotFoundError,
             ffmpeg_tool.MissingEncoderError,
+            ffmpeg_tool.ChecksumMismatchError,
         ) as error:
             print(f"error: {error}", file=sys.stderr)
             return 2
@@ -112,11 +113,12 @@ def main(argv: list[str] | None = None) -> int:
         _say("video: skipped")
     else:
         try:
-            system_ffmpeg = ffmpeg_tool.find_system_ffmpeg()
+            system_ffmpeg = ffmpeg_tool.find_ffmpeg()
             ffmpeg_tool.require_encoders(system_ffmpeg, video.REQUIRED_ENCODERS)
         except (
             ffmpeg_tool.FfmpegNotFoundError,
             ffmpeg_tool.MissingEncoderError,
+            ffmpeg_tool.ChecksumMismatchError,
         ) as error:
             # Unlike audio, this warns instead of failing: the browser player reports a
             # missing video as a finished playback, so the build stays usable and simply

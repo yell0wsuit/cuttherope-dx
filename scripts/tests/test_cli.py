@@ -101,7 +101,7 @@ def test_missing_video_encoder_warns_but_still_succeeds(tmp_path, monkeypatch, c
     _seed(content)
     monkeypatch.setattr(
         build_web_content.ffmpeg_tool,
-        "find_system_ffmpeg",
+        "find_ffmpeg",
         lambda: Path("/ff"),
     )
 
@@ -126,7 +126,7 @@ def test_require_video_fails_when_no_usable_ffmpeg(tmp_path, monkeypatch, capsys
     def missing() -> Path:
         raise build_web_content.ffmpeg_tool.FfmpegNotFoundError("no ffmpeg on PATH")
 
-    monkeypatch.setattr(build_web_content.ffmpeg_tool, "find_system_ffmpeg", missing)
+    monkeypatch.setattr(build_web_content.ffmpeg_tool, "find_ffmpeg", missing)
 
     code = build_web_content.main(
         [

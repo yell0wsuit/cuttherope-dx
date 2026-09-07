@@ -43,9 +43,10 @@ def test_settings_differ_between_music_and_sfx():
 
 def test_sfx_command_encodes_22050_hz_source(tmp_path):
     try:
-        ffmpeg = ffmpeg_tool.find_pinned_ffmpeg()
-    except ffmpeg_tool.FfmpegNotFoundError:
-        pytest.skip("MonoGame.Tool.FFmpeg not restored")
+        ffmpeg = ffmpeg_tool.find_ffmpeg()
+        ffmpeg_tool.require_encoders(ffmpeg, audio.REQUIRED_ENCODERS)
+    except (ffmpeg_tool.FfmpegNotFoundError, ffmpeg_tool.MissingEncoderError) as error:
+        pytest.skip(str(error))
 
     source = tmp_path / "low-rate.wav"
     with wave.open(str(source), "wb") as wav:
