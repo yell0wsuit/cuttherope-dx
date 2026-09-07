@@ -132,7 +132,10 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Context.Flush(submit: true, synchronous: true);
             if (Context.IsAbandoned)
             {
-                throw new InvalidOperationException("Skia context was abandoned.");
+                // Skia abandons a context when its driver reports the device gone, so this is the
+                // one place a real loss is certain to surface: every draw after it would be
+                // discarded silently, and the frame would present as if nothing had happened.
+                throw new GraphicsDeviceLostException("Skia abandoned the graphics context.");
             }
         }
 

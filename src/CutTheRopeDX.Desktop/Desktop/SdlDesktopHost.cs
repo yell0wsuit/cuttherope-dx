@@ -37,6 +37,8 @@ namespace CutTheRopeDX.Desktop
         private SdlCursorService cursor;
         private SdlGamepadService gamepads;
         private SdlAudioBackend audio;
+        private GraphicsRecoveryCoordinator recovery;
+        private readonly SkiaResourceRegistry registry = new();
         private readonly SdlHostLoop loop = new();
         private readonly Stopwatch clock = new();
         private TimeSpan nextSave = TimeSpan.FromSeconds(1);
@@ -44,8 +46,11 @@ namespace CutTheRopeDX.Desktop
         private int frameLimit;
         private string screenshot;
         private bool drewMovie;
-        private bool movieSkipArmed;
+        private bool moviePressArmed;
         private readonly Queue<(int Frame, float X, float Y, bool? Down)> taps = new();
+        private readonly Queue<int> scheduledLosses = new();
+
+        private const string WindowTitle = "Cut The Rope: DX - SDL preview";
 
         public bool CanExit => true;
         public string LevelEditorUrl => null;
@@ -94,16 +99,29 @@ namespace CutTheRopeDX.Desktop
             }
 
             // The press that started the cutscene is still down when its first frame is drawn, so
-            // skipping waits for the pointer to come up once. Without that, choosing Play both
+            // acting on it waits for the pointer to come up once. Without that, choosing Play both
             // opens the intro and dismisses it, and the movie is never seen.
             if (!input.PrimaryPressed)
             {
-                movieSkipArmed = true;
+                moviePressArmed = true;
             }
-            else if (movieSkipArmed)
+            else
             {
-                movies.Stop();
-                return;
+                switch (GraphicsRecovery.PressAction(moviePressArmed, movies.IsPaused()))
+                {
+                    case MoviePressAction.Resume:
+                        movies.Resume();
+                        // The pointer is still down, and the cutscene is now playing, so the very
+                        // next frame would read the same press as a skip. It has to come up again.
+                        moviePressArmed = false;
+                        break;
+                    case MoviePressAction.Skip:
+                        movies.Stop();
+                        return;
+                    case MoviePressAction.Ignore:
+                    default:
+                        break;
+                }
             }
 
             CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
@@ -125,6 +143,7 @@ namespace CutTheRopeDX.Desktop
             frameLimit = int.TryParse(Option(args, "--sdl-frames"), out int frames) ? Math.Max(0, frames) : 0;
             screenshot = Option(args, "--sdl-screenshot");
             ScheduleTaps(args);
+            ScheduleLosses(args);
             GraphicsBackendKind? forced = renderer switch
             {
                 "auto" => null,
@@ -141,9 +160,10 @@ namespace CutTheRopeDX.Desktop
 
             initialized = true;
             string platform = OperatingSystem.IsMacOS() ? "macos" : OperatingSystem.IsWindows() ? "windows" : "linux";
+            recovery = new(platform, forced);
             selection = BackendSelector.Select(platform, forced, CreateDevice, ValidateDevice);
             SdlGraphicsDevice device = selection.Device;
-            _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview");
+            _ = SDL.SetWindowTitle(device.Window, WindowTitle);
             string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
             PlatformServices.Content = new FileContentStore(root);
 
@@ -157,18 +177,12 @@ namespace CutTheRopeDX.Desktop
             }
 
             Preferences.LoadPreferences();
-            window = new(device.Window);
-            window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
             input = new()
             {
-                WindowId = SDL.GetWindowID(device.Window),
-                WindowSize = () => (window.WindowWidth, window.WindowHeight),
-                MapPosition = window.MapWindowToView,
                 Touch = touch => CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess([touch]),
                 MouseMoved = position => Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(position.X), CtrRenderer.TransformY(position.Y)),
                 Wheel = delta => Application.SharedRootController().HandleMouseWheel(delta),
                 Back = () => { Application.SharedMovieMgr().Stop(); _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed(); },
-                ToggleFullscreen = window.ToggleFullScreen,
                 FocusChanged = focused =>
                 {
                     if (focused)
@@ -186,8 +200,9 @@ namespace CutTheRopeDX.Desktop
                     loop.SetSuspended(!focused && frameLimit == 0, clock.Elapsed);
                 },
                 Quit = Exit,
-                Resized = () => { device.Resize(); window.RefreshSurface(); },
             };
+            AttachWindow(device);
+            window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
             // SDL reports gamepad buttons only for devices that have been opened, so the Back
             // handling in the router is inert until this runs.
             gamepads = new(
@@ -198,15 +213,14 @@ namespace CutTheRopeDX.Desktop
             cursor = new(input.ClearInput);
             cursor.Load(Path.Combine(root, "images/cursor.png"), Path.Combine(root, "images/cursor_active.png"));
             PlatformServices.Host = this;
-            PlatformServices.Window = window;
             PlatformServices.Cursor = cursor;
             PlatformServices.Updates = new DesktopUpdateService();
             PlatformServices.FileWatchers = new DesktopFileWatcherFactory();
             PlatformServices.RichPresence = new RPCHelpers();
             PlatformServices.VideoPlayerFactory = DesktopVideoPlayerFactory.Create;
-            render = new(device);
+            render = new(device, registry);
             PlatformServices.Render = render;
-            assets = new(PlatformServices.Content, device.Context);
+            assets = new(PlatformServices.Content, device.Context, registry);
             _ = SDL.GetWindowSize(device.Window, out int width, out int height);
             _ = SDL.GetWindowSizeInPixels(device.Window, out int pixels, out int ignored);
             CtrBootstrap.Initialize(assets, audio, width, height, LanguageHelper.FromSystemCulture(), (float)pixels / width);
@@ -248,6 +262,26 @@ namespace CutTheRopeDX.Desktop
 
         private void Draw()
         {
+            if (scheduledLosses.Count > 0 && scheduledLosses.Peek() <= frameCount)
+            {
+                _ = scheduledLosses.Dequeue();
+                RecoverDevice(new GraphicsDeviceLostException($"Loss injected at frame {frameCount}."));
+                return;
+            }
+
+            try
+            {
+                DrawFrame();
+            }
+            catch (GraphicsDeviceLostException lost)
+            {
+                RecoverDevice(lost);
+            }
+        }
+
+        /// <summary>Produces and presents one frame.</summary>
+        private void DrawFrame()
+        {
             SdlGraphicsDevice device = selection.Device;
             if (!device.AcquireFrame())
             {
@@ -268,7 +302,7 @@ namespace CutTheRopeDX.Desktop
             {
                 // Away from a movie the latch rests disarmed, so the next cutscene starts out
                 // immune to whatever press opened it.
-                movieSkipArmed = false;
+                moviePressArmed = false;
                 Renderer.CopyFromRenderTargetToScreen();
             }
 
@@ -287,6 +321,102 @@ namespace CutTheRopeDX.Desktop
             {
                 Exit();
             }
+        }
+
+        /// <summary>Points the window service and the window-bound input at a device's window.</summary>
+        /// <param name="device">The device whose window is now the game's.</param>
+        /// <remarks>
+        /// A replacement device brings a new window with it: each backend needs its own window
+        /// flags, so the old one cannot be handed over. Everything addressed to a window handle is
+        /// therefore rebuilt here rather than captured once at boot.
+        /// </remarks>
+        private void AttachWindow(SdlGraphicsDevice device)
+        {
+            window = new(device.Window);
+            PlatformServices.Window = window;
+            input.WindowId = SDL.GetWindowID(device.Window);
+            input.WindowSize = () => (window.WindowWidth, window.WindowHeight);
+            input.MapPosition = (x, y) => window.MapWindowToView(x, y);
+            input.ToggleFullscreen = () => window.ToggleFullScreen();
+            input.Resized = () => { selection.Device.Resize(); window.RefreshSurface(); };
+        }
+
+        /// <summary>
+        /// Replaces a lost graphics device and puts the game back on the screen, or ends the run
+        /// when nothing can draw any more.
+        /// </summary>
+        /// <param name="lost">What revealed the loss.</param>
+        /// <remarks>
+        /// Order is the whole of this. Everything the failing device owns is released while it is
+        /// still alive, because Skia frees its resources through the context that made them; then
+        /// the generation is retired, so any handle that escaped the sweep is refused rather than
+        /// sampled; only then is a replacement built and the assets that are still needed loaded
+        /// through it.
+        /// </remarks>
+        private void RecoverDevice(GraphicsDeviceLostException lost)
+        {
+            Console.Error.WriteLine($"[sdl] device lost: {lost.Message}");
+            GraphicsRecoveryPlan plan = GraphicsRecovery.Begin();
+
+            // A press that was down when the device went is not a press the player is still
+            // making by the time one comes back.
+            input.ClearInput();
+            render.DiscardDeviceResources();
+            assets.DiscardDeviceResources();
+            _ = registry.Invalidate();
+
+            int width = window.WindowWidth;
+            int height = window.WindowHeight;
+            bool fullscreen = window.IsFullScreen;
+            window.SavePreferences();
+
+            SdlGraphicsDevice device;
+            try
+            {
+                selection = recovery.Recover(selection, CreateDevice, ValidateDevice);
+                device = selection.Device;
+            }
+            catch (GraphicsRecoveryFailedException failure)
+            {
+                Abandon(failure);
+                return;
+            }
+
+            _ = SDL.SetWindowTitle(device.Window, WindowTitle);
+            AttachWindow(device);
+            window.Initialize(width, height, fullscreen);
+            render.Rebind(device);
+            assets.Rebind(device.Context);
+            GraphicsRecoveryReport report = GraphicsRecovery.Complete(plan);
+            Console.WriteLine(
+                $"[sdl] recovered on {selection.Kind} at frame {frameCount}: "
+                + $"{report.ReloadedAssets} assets reloaded, {report.DroppedCaptures} captures dropped");
+        }
+
+        /// <summary>Shuts the game down after no renderer could replace the lost device.</summary>
+        /// <param name="failure">The candidates that were tried and why each refused.</param>
+        /// <remarks>
+        /// Nothing here touches the graphics device. The message box is asked for with no parent
+        /// window, because the only window the game had belonged to the device that has gone, and
+        /// drawing recovery UI through dead resources is how a recoverable failure turns into a
+        /// crash on the way out.
+        /// </remarks>
+        private void Abandon(GraphicsRecoveryFailedException failure)
+        {
+            Console.Error.WriteLine($"[sdl] {failure.Message}");
+            audio?.Dispose();
+            audio = null;
+            window?.SavePreferences();
+            Preferences.RequestSave();
+            Preferences.Update();
+            window = null;
+            PlatformServices.Window = null;
+            _ = SDL.ShowSimpleMessageBox(
+                SDL.MessageBoxFlags.Error,
+                "Cut the Rope: DX",
+                $"{failure.Message}\n\nThe game has to close. Your progress has been saved.",
+                0);
+            Exit();
         }
 
         private static SdlGraphicsDevice CreateDevice(GraphicsBackendKind kind, CandidateLifetime lifetime)
@@ -363,6 +493,41 @@ namespace CutTheRopeDX.Desktop
             foreach ((int Frame, float X, float Y, bool? Down) entry in scheduled.OrderBy(static entry => entry.Frame))
             {
                 taps.Enqueue(entry);
+            }
+        }
+
+        /// <summary>
+        /// Reads the <c>--sdl-lose-device FRAME</c> options and schedules a device loss at each.
+        /// </summary>
+        /// <param name="args">The command line.</param>
+        /// <remarks>
+        /// Injection stands in for the losses a driver reset, a GPU switch or a display change
+        /// produce, and it exercises the same teardown and rebuild those take. It does not
+        /// reproduce them: real resets can also strip a capability or change the drawable format,
+        /// and only running on the hardware shows that.
+        /// </remarks>
+        private void ScheduleLosses(string[] args)
+        {
+            List<int> frames = [];
+            for (int index = 0; index + 1 < args.Length; index++)
+            {
+                if (args[index] != "--sdl-lose-device")
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(args[index + 1], out int frame) || frame < 0)
+                {
+                    throw new ArgumentException($"Could not read the loss frame '{args[index + 1]}'.");
+                }
+
+                frames.Add(frame);
+            }
+
+            frames.Sort();
+            foreach (int frame in frames)
+            {
+                scheduledLosses.Enqueue(frame);
             }
         }
 

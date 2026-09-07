@@ -13,7 +13,15 @@ using SkiaSharp;
 namespace CutTheRopeDX.Desktop
 {
     /// <summary>PNG assets owned by the SDL renderer and its context lifetime.</summary>
-    internal sealed class SkiaAssetPlatform(IContentStore content, GRContext context) : IAssetPlatform, IDisposable
+    /// <param name="content">Raw content byte access.</param>
+    /// <param name="context">The context that uploads the images, or null to keep them on the CPU.</param>
+    /// <param name="registry">
+    /// Records which device generation each upload belongs to, so recovery knows what to load
+    /// again. Null where the device is never replaced.
+    /// </param>
+    internal sealed class SkiaAssetPlatform(
+        IContentStore content, GRContext context, SkiaResourceRegistry registry = null)
+        : IAssetPlatform, IDisposable
     {
         private readonly Dictionary<string, SkiaTexture> textures = [];
         private bool disposed;
@@ -65,7 +73,8 @@ namespace CutTheRopeDX.Desktop
                 decoded.Dispose();
             }
 
-            SkiaTexture texture = new(image);
+            SkiaTexture texture = new(
+                image, registry?.TrackDurable(path) ?? SkiaResourceRegistry.DeviceIndependent);
             textures.Add(path, texture);
             return texture;
         }
@@ -84,6 +93,7 @@ namespace CutTheRopeDX.Desktop
         {
             if (textures.Remove(contentPath, out SkiaTexture texture))
             {
+                registry?.Forget(contentPath);
                 texture.Dispose();
             }
         }
@@ -95,6 +105,38 @@ namespace CutTheRopeDX.Desktop
         public void ClearFontCache()
         {
             SkiaFontCache.Clear();
+        }
+
+        /// <summary>
+        /// Releases every uploaded image while the context that owns them is still alive.
+        /// </summary>
+        /// <remarks>
+        /// Fonts are deliberately left alone. Typefaces, metrics and paints are all CPU-side, so
+        /// they outlive any device; only Skia's own glyph atlas is device-resident, and the
+        /// replacement context rebuilds that itself the first time text is drawn.
+        /// </remarks>
+        internal void DiscardDeviceResources()
+        {
+            foreach (SkiaTexture texture in textures.Values)
+            {
+                texture.Dispose();
+            }
+
+            textures.Clear();
+        }
+
+        /// <summary>Uploads subsequent images through a replacement device.</summary>
+        /// <param name="replacement">The new context, or null to keep images on the CPU.</param>
+        /// <remarks>
+        /// Nothing is loaded here. Which assets are actually needed is known to the textures that
+        /// reference them, not to this cache, so the reload is driven from there and only touches
+        /// what the running game still holds.
+        /// </remarks>
+        internal void Rebind(GRContext replacement)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            DiscardDeviceResources();
+            context = replacement;
         }
 
         public void Dispose()

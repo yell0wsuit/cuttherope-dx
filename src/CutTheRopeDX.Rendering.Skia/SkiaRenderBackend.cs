@@ -35,8 +35,14 @@ namespace CutTheRopeDX.Rendering.Skia
     /// <see cref="VertexColorEncoding.ForRendererTint"/>.
     /// </para>
     /// </remarks>
-    /// <param name="surface">The Skia surface wrapping the WebGL2 framebuffer.</param>
-    internal sealed class SkiaRenderBackend(ISkiaSurface surface) : IRenderBackend, IDisposable
+    /// <param name="surface">The Skia surface wrapping the host's framebuffer.</param>
+    /// <param name="registry">
+    /// Tracks which device generation uploaded resources belong to, so images left over from a
+    /// device that has gone are refused rather than sampled. Null where the device is never
+    /// replaced, which is every host but the desktop one.
+    /// </param>
+    internal sealed class SkiaRenderBackend(ISkiaSurface surface, SkiaResourceRegistry registry = null)
+        : IRenderBackend, IDisposable
     {
         private const int GL_BLEND = 1;
         private const int GL_SCISSOR_TEST = 4;
@@ -64,6 +70,7 @@ namespace CutTheRopeDX.Rendering.Skia
         private int _renderTargetWidth;
         private int _renderTargetHeight;
         private SkiaTexture _boundTexture;
+        private bool _boundTextureRejected;
         private SkiaTexture _batchTexture;
         private float _batchTextureWidth = 1f;
         private float _batchTextureHeight = 1f;
@@ -277,15 +284,31 @@ namespace CutTheRopeDX.Rendering.Skia
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// An image uploaded by a device that has since gone away is refused here rather than
+        /// drawn. Sampling it would read native memory the driver has already reclaimed, and the
+        /// draws that would have used it are dropped until recovery has loaded the asset again.
+        /// </remarks>
         public void BindTexture(CTRTexture2D t)
         {
             SkiaTexture texture = t?.textureHandle_ as SkiaTexture;
-            if (!ReferenceEquals(texture, _boundTexture))
+            bool rejected = texture != null && registry?.IsCurrent(texture.Generation) == false;
+            if (rejected)
+            {
+                RejectedBinds++;
+                texture = null;
+            }
+
+            if (!ReferenceEquals(texture, _boundTexture) || rejected != _boundTextureRejected)
             {
                 FlushQuads();
                 _boundTexture = texture;
+                _boundTextureRejected = rejected;
             }
         }
+
+        /// <summary>How many binds have been refused because their device generation is retired.</summary>
+        internal int RejectedBinds { get; private set; }
 
         /// <inheritdoc />
         public void SetScissor(float x, float y, float width, float height)
@@ -329,7 +352,10 @@ namespace CutTheRopeDX.Rendering.Skia
                 return;
             }
             BindTexture(null);
-            EnsureBatchCompatible();
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
             for (int i = 0; i + 2 < vertexCount; i++)
             {
                 AppendColorOnly(vertices[i]);
@@ -367,7 +393,10 @@ namespace CutTheRopeDX.Rendering.Skia
             {
                 return;
             }
-            EnsureBatchCompatible();
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
             for (int i = 0; i + 2 < vertexCount; i++)
             {
                 AppendTransformed(vertices[i]);
@@ -387,7 +416,10 @@ namespace CutTheRopeDX.Rendering.Skia
             {
                 return;
             }
-            EnsureBatchCompatible();
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
             for (int i = 0; i + 2 < vertexCount; i++)
             {
                 AppendRendererTint(vertices[i]);
@@ -405,7 +437,10 @@ namespace CutTheRopeDX.Rendering.Skia
             {
                 return;
             }
-            EnsureBatchCompatible();
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
             for (int i = 0; i < indexCount; i++)
             {
                 AppendRendererTint(
@@ -417,7 +452,10 @@ namespace CutTheRopeDX.Rendering.Skia
         public void DrawTriangleList(
             VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
         {
-            EnsureBatchCompatible();
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
             for (int i = 0; i < indexCount; i++)
             {
                 AppendTransformed(vertices[indices[i]]);
@@ -465,7 +503,8 @@ namespace CutTheRopeDX.Rendering.Skia
             _renderTarget = null;
             _renderTargetWidth = 0;
             _renderTargetHeight = 0;
-            return new SkiaTexture(snapshot);
+            return new SkiaTexture(
+                snapshot, registry?.TrackTransient() ?? SkiaResourceRegistry.DeviceIndependent);
         }
 
         /// <inheritdoc />
@@ -550,6 +589,47 @@ namespace CutTheRopeDX.Rendering.Skia
             surface.Flush();
         }
 
+        /// <summary>
+        /// Releases everything the current device owns and drops the work queued against it.
+        /// </summary>
+        /// <remarks>
+        /// This has to run while the device is still alive. Skia frees a surface through the
+        /// context that made it, so releasing the render target after the context has gone leaves
+        /// the release with nothing to talk to. Queued quads and an outstanding clip go with it:
+        /// both name a canvas that is about to stop existing, and replaying them onto the next
+        /// one would draw a fragment of the lost frame and leave the new canvas unbalanced.
+        /// </remarks>
+        internal void DiscardDeviceResources()
+        {
+            _positions.Clear();
+            _texCoords.Clear();
+            _colors.Clear();
+            DropScissor();
+            _boundTexture = null;
+            _boundTextureRejected = false;
+            _batchTexture = null;
+            _batchTextureWidth = 1f;
+            _batchTextureHeight = 1f;
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
+        }
+
+        /// <summary>Points the backend at a replacement device's surface.</summary>
+        /// <param name="replacement">The new surface to draw into.</param>
+        /// <remarks>
+        /// The render target is not rebuilt here. Core sets the viewport at the start of every
+        /// frame, and that is what sizes and creates it, so recreating one now would only be
+        /// replaced unused.
+        /// </remarks>
+        internal void Rebind(ISkiaSurface replacement)
+        {
+            ArgumentNullException.ThrowIfNull(replacement);
+            DiscardDeviceResources();
+            surface = replacement;
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -558,7 +638,15 @@ namespace CutTheRopeDX.Rendering.Skia
             _renderTarget = null;
         }
 
-        private void EnsureBatchCompatible()
+        /// <summary>
+        /// Makes the batch match the current texture and blend state, flushing it first when they
+        /// have changed.
+        /// </summary>
+        /// <returns>
+        /// <see langword="false"/> when the bound texture was refused, which is the caller's
+        /// signal to submit nothing at all.
+        /// </returns>
+        private bool EnsureBatchCompatible()
         {
             // Source weighting is tracked alongside the blend mode rather than derived from it:
             // SourceAlpha/InverseSourceAlpha and One/InverseSourceAlpha both draw as SrcOver and
@@ -575,6 +663,8 @@ namespace CutTheRopeDX.Rendering.Skia
                 _batchBlendMode = EffectiveBlendMode;
                 _batchWeightsSourceByAlpha = WeightsSourceByAlpha;
             }
+
+            return !_boundTextureRejected;
         }
 
         private void AppendRendererTint(in VertexPositionColorTexture vertex)

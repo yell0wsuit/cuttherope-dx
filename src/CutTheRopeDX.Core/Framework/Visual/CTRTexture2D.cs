@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -269,6 +271,23 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         public static void Suspend()
         {
+        }
+
+        /// <summary>
+        /// Every texture in the global list, oldest first.
+        /// </summary>
+        /// <remarks>
+        /// Recovery needs the list itself, not the bulk operations over it: it treats a texture
+        /// loaded from a file and a capture of a frame quite differently, and only the individual
+        /// entries say which is which.
+        /// </remarks>
+        /// <returns>The registered textures.</returns>
+        public static IEnumerable<CTRTexture2D> Registered()
+        {
+            for (CTRTexture2D texture = root; texture != null; texture = texture.next)
+            {
+                yield return texture;
+            }
         }
 
         /// <summary>

@@ -11,9 +11,15 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Func<GraphicsBackendKind, CandidateLifetime, T> create, Action<T> validate)
             where T : IDisposable
         {
-            ArgumentNullException.ThrowIfNull(create);
-            ArgumentNullException.ThrowIfNull(validate);
-            GraphicsBackendKind[] order = forced.HasValue ? [forced.Value] : platform switch
+            return Attempt(PreferenceOrder(platform, forced), create, validate);
+        }
+
+        /// <summary>The renderers to try on a platform, best first.</summary>
+        /// <param name="platform">Platform moniker.</param>
+        /// <param name="forced">An explicit override, which is the only candidate when present.</param>
+        public static GraphicsBackendKind[] PreferenceOrder(string platform, GraphicsBackendKind? forced)
+        {
+            return forced.HasValue ? [forced.Value] : platform switch
             {
                 "windows" =>
                 [
@@ -25,6 +31,19 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 "macos" => [GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL],
                 _ => throw new PlatformNotSupportedException(platform),
             };
+        }
+
+        /// <summary>Builds and validates candidates in the given order, keeping the first that works.</summary>
+        /// <param name="order">Renderers to try, best first.</param>
+        /// <param name="create">Builds one candidate, registering what it acquires as it goes.</param>
+        /// <param name="validate">Draws and presents a frame, throwing if the candidate cannot.</param>
+        internal static GraphicsSelection<T> Attempt<T>(IReadOnlyList<GraphicsBackendKind> order,
+            Func<GraphicsBackendKind, CandidateLifetime, T> create, Action<T> validate)
+            where T : IDisposable
+        {
+            ArgumentNullException.ThrowIfNull(order);
+            ArgumentNullException.ThrowIfNull(create);
+            ArgumentNullException.ThrowIfNull(validate);
             List<Exception> failures = [];
             foreach (GraphicsBackendKind kind in order)
             {

@@ -6,7 +6,11 @@ namespace CutTheRopeDX.Rendering.Skia
 {
     /// <summary>Platform texture backed by a GPU-resident Skia image.</summary>
     /// <param name="image">The Skia image; ownership transfers to this handle.</param>
-    internal sealed class SkiaTexture(SKImage image) : ITextureHandle
+    /// <param name="generation">
+    /// The device generation that uploaded the image, from <see cref="SkiaResourceRegistry"/>.
+    /// Left device-independent when nothing is tracking losses.
+    /// </param>
+    internal sealed class SkiaTexture(SKImage image, int generation = SkiaResourceRegistry.DeviceIndependent) : ITextureHandle
     {
         /// <summary>
         /// Rewrites a color to opaque grey carrying its own alpha, so multiplying a texture by it
@@ -39,6 +43,9 @@ namespace CutTheRopeDX.Rendering.Skia
 
         /// <summary>The underlying Skia image.</summary>
         public SKImage Image { get; } = image;
+
+        /// <summary>The device generation this image belongs to.</summary>
+        public int Generation { get; } = generation;
 
         /// <inheritdoc />
         public int Width => Image.Width;

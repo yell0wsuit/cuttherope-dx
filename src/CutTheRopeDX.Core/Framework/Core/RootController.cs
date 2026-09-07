@@ -258,6 +258,39 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Releases the captured transition frames.
+        /// </summary>
+        /// <returns>How many captures were released.</returns>
+        /// <remarks>
+        /// The captures belong to the graphics device that took them, so a replacement device
+        /// cannot inherit them and nothing can produce them again: the frames they held are gone.
+        /// Dropping them is safe because a transition can already begin before either capture
+        /// exists, and <see cref="DrawViewTransition"/> fades against a flat color when one is
+        /// missing. The transition still ends on its own clock.
+        /// </remarks>
+        internal int DropTransitionCaptures()
+        {
+            int dropped = 0;
+            if (prevScreenImage != null)
+            {
+                prevScreenImage.textureHandle_?.Dispose();
+                prevScreenImage.textureHandle_ = null;
+                prevScreenImage = null;
+                dropped++;
+            }
+
+            if (nextScreenImage != null)
+            {
+                nextScreenImage.textureHandle_?.Dispose();
+                nextScreenImage.textureHandle_ = null;
+                nextScreenImage = null;
+                dropped++;
+            }
+
+            return dropped;
+        }
+
+        /// <summary>
         /// Returns whether the root controller is currently suspended.
         /// </summary>
         /// <returns><see langword="true" /> if suspended; otherwise <see langword="false" />.</returns>
