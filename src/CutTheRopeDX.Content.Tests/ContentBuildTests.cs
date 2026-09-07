@@ -142,7 +142,7 @@ namespace CutTheRopeDX.Content.Tests
         public void AStaleGeneratedManifestInTheSourceTreeIsNeverShipped()
         {
             Fill();
-            Write("images/image_dimensions.json", "{\"images\":{\"gone\":{\"w\":1,\"h\":1}}}");
+            Write("images/image_dimensions.json", /*lang=json,strict*/ "{\"images\":{\"gone\":{\"w\":1,\"h\":1}}}");
 
             ContentBuildResult result = GameContentBuilder.Build(Source, Intermediate);
 
@@ -207,15 +207,15 @@ namespace CutTheRopeDX.Content.Tests
         private void Fill()
         {
             WritePng("images/menu/logo.png", 12, 34);
-            Write("images/menu/logo.json", "{\"frames\":[]}");
+            Write("images/menu/logo.json", /*lang=json,strict*/ "{\"frames\":[]}");
             Write("images/animations/fx_pause.xml", "<animation />");
             Write("sounds/menu_music.wav", "RIFF....WAVE");
             Write("sounds/sfx/tap.wav", "RIFF....WAVE");
             Write("maps/1_1.xml", "<level id=\"1\" />");
-            Write("locales/en.json", "{\"PLAY\":\"Play\"}");
+            Write("locales/en.json", /*lang=json,strict*/ "{\"PLAY\":\"Play\"}");
             Write("fonts/Gooddog.ttf", "sfnt");
             Write("video_hd/intro.mp4", "frames");
-            Write("packlist.json", "{\"packs\":[]}");
+            Write("packlist.json", /*lang=json,strict*/ "{\"packs\":[]}");
             Write("ctroriginal_packs.json", "{}");
         }
 

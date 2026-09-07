@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.Browser
