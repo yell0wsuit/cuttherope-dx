@@ -62,6 +62,11 @@ jobs:
             # measuring the images, so a resized or added PNG would leave them sizing sprites
             # from stale numbers. Every job that needs the images starts here, so this is the
             # one place that can see them.
+            #
+            # Only the images file_manifest.json ships are compared. A working tree can hold
+            # PNGs that are staged for later work and not published yet, and those are not
+            # content this manifest is meant to describe -- measuring the directory instead
+            # would pass here and fail on the machine that has them.
             - name: Check the checked-in image dimensions are current
               run: |
                   BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
@@ -70,13 +75,17 @@ jobs:
                   import json, os, sys
                   built = json.load(open(
                       os.path.join(os.environ["RUNNER_TEMP"],
-                                   "content-check/images/image_dimensions.json")))
-                  tracked = json.load(open("content/images/image_dimensions.json"))
-                  if built != tracked:
-                      names = set(built["images"]) ^ set(tracked["images"])
-                      resized = {k for k in set(built["images"]) & set(tracked["images"])
-                                 if built["images"][k] != tracked["images"][k]}
+                                   "content-check/images/image_dimensions.json")))["images"]
+                  tracked = json.load(open("content/images/image_dimensions.json"))["images"]
+                  published = json.load(open("content/file_manifest.json"))["files"]
+                  shipped = {name[len("images/"):-len(".png")] for name in published
+                             if name.startswith("images/") and name.endswith(".png")}
+                  measured = {k: v for k, v in built.items() if k in shipped}
+                  if measured != tracked:
+                      names = set(measured) ^ set(tracked)
+                      resized = {k for k in set(measured) & set(tracked)
+                                 if measured[k] != tracked[k]}
                       sys.exit("content/images/image_dimensions.json is stale. "
                                f"Added/removed: {sorted(names)}. Resized: {sorted(resized)}. "
-                               "Copy the built manifest over it and commit.")
+                               "Regenerate it from the shipped images and commit.")
                   PY
