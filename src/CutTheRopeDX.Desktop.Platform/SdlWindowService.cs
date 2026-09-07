@@ -28,7 +28,14 @@ namespace CutTheRopeDX.Desktop.Platform
                 ToggleFullScreen();
             }
 
+            Show();
             RefreshSurface();
+        }
+        /// <summary>Reveals the window the backend created hidden, once it is sized and placed.</summary>
+        public void Show()
+        {
+            Check(SDL.ShowWindow(window));
+            _ = SDL.SyncWindow(window);
         }
         public void ToggleFullScreen()
         {

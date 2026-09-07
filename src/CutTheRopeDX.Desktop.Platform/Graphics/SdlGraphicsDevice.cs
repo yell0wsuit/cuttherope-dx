@@ -57,11 +57,17 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         }
 
         /// <summary>Creates a fresh window for this backend's required flags.</summary>
+        /// <remarks>
+        /// The window starts hidden. Candidates are built and thrown away until one draws a
+        /// validation frame, and the survivor is still at this probe size until the host sizes and
+        /// places it, so a visible window here would flash the rejected backends and a stray
+        /// 800x600 corner window before the real one settles. The host shows it once it is ready.
+        /// </remarks>
         protected void CreateWindow(SDL.WindowFlags flags)
         {
             CheckThread();
             Window = SDL.CreateWindow("Desktop Skia probe", 800, 600,
-                flags | SDL.WindowFlags.Resizable | SDL.WindowFlags.HighPixelDensity);
+                flags | SDL.WindowFlags.Resizable | SDL.WindowFlags.HighPixelDensity | SDL.WindowFlags.Hidden);
             if (Window == 0)
             {
                 throw new InvalidOperationException(SDL.GetError());
