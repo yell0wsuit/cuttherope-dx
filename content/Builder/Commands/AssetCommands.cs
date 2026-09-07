@@ -54,11 +54,9 @@ namespace CutTheRopeDX.Content.Commands
                 throw new ArgumentException("The build command requires an output directory.");
             }
 
-            ContentCopyResult result = GameContentBuilder.Build(
+            ContentBuildResult result = GameContentBuilder.Build(
                 source, Path.GetFullPath(commandLine.OutputDirectory));
-            Console.WriteLine(
-                $"Content build: {result.Copied.Count} written, {result.Unchanged.Count} unchanged, "
-                + $"{result.Removed.Count} removed.");
+            Console.WriteLine($"Content build: {result.Files} assets listed in {result.ListPath}.");
             return 0;
         }
 

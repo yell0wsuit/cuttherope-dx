@@ -6,7 +6,7 @@ namespace CutTheRopeDX.Content.Commands
     public enum ContentCommand
     {
         /// <summary>
-        /// Produces the runtime content tree from the source assets.
+        /// Works out which source assets ship and writes the build's own outputs.
         /// </summary>
         Build,
 
@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Content.Commands
     /// </summary>
     /// <param name="Command">The selected command.</param>
     /// <param name="SourceDirectory">The content source tree, defaulting to <c>content</c>.</param>
-    /// <param name="OutputDirectory">Where a build writes; required by <see cref="ContentCommand.Build"/>.</param>
+    /// <param name="OutputDirectory">Where a build writes its own outputs; required by <see cref="ContentCommand.Build"/>.</param>
     public sealed record ContentCommandLine(
         ContentCommand Command,
         string? SourceDirectory,

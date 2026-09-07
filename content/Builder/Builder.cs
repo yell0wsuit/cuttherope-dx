@@ -2,29 +2,42 @@ using System.Text.Json;
 
 namespace CutTheRopeDX.Content
 {
+    /// <summary>What one content build decided.</summary>
+    /// <param name="Files">How many source assets the game will ship.</param>
+    /// <param name="ListPath">The file list MSBuild deploys from.</param>
+    public sealed record ContentBuildResult(int Files, string ListPath);
+
     /// <summary>
-    /// Produces the content tree the game reads at runtime.
+    /// Works out what the game ships and writes the two small files a build needs.
     /// </summary>
     /// <remarks>
-    /// The build is a byte-preserving copy plus one generated manifest. Nothing is re-encoded and
-    /// nothing is packed into a container: every format here is one the game already opens
-    /// directly, so a conversion step could only lose fidelity, cost build time, and hide which
-    /// bytes actually shipped.
+    /// Neither output is content. One is the list of source assets for MSBuild to copy, the other
+    /// is the image dimensions manifest, and together they are a few hundred kilobytes: the assets
+    /// themselves are never duplicated into a staging tree on the way to the application.
     /// </remarks>
     public static class GameContentBuilder
     {
-        /// <summary>Runs one content build.</summary>
+        /// <summary>Name of the file list the MSBuild targets read.</summary>
+        public const string FileListName = "content_files.txt";
+
+        /// <summary>Works out what to ship and writes the build's own outputs.</summary>
         /// <param name="sourceDirectory">Root of the content source tree.</param>
-        /// <param name="outputDirectory">Directory the build writes into.</param>
-        /// <returns>What was written, skipped and deleted.</returns>
-        public static ContentCopyResult Build(string sourceDirectory, string outputDirectory)
+        /// <param name="intermediateDirectory">Directory the build writes its own outputs to.</param>
+        /// <returns>What the build decided.</returns>
+        public static ContentBuildResult Build(string sourceDirectory, string intermediateDirectory)
         {
-            ContentCopyResult result = ContentCopy.Run(
-                sourceDirectory, outputDirectory, ContentCopy.DesktopRules);
+            SortedDictionary<string, string> selected =
+                ContentSelection.Select(sourceDirectory, ContentSelection.DesktopRules);
+
+            _ = Directory.CreateDirectory(intermediateDirectory);
+            string listPath = Path.Combine(intermediateDirectory, FileListName);
+            File.WriteAllLines(listPath, selected.Values);
+
             EmitImageDimensionsManifest(
                 Path.Combine(sourceDirectory, "images"),
-                Path.Combine(outputDirectory, "images"));
-            return result;
+                Path.Combine(intermediateDirectory, "images"));
+
+            return new ContentBuildResult(selected.Count, listPath);
         }
 
         /// <summary>

@@ -5,8 +5,13 @@ using Xunit;
 namespace CutTheRopeDX.Content.Tests
 {
     /// <summary>
-    /// What the content build produces from a source tree, and what it refuses to produce.
+    /// Which source assets the build says the game ships, and what it refuses to ship.
     /// </summary>
+    /// <remarks>
+    /// The build copies nothing; MSBuild deploys from the list it writes. So these cover the
+    /// decision - which files, under which names, and when the source tree is too incomplete to
+    /// build at all - rather than any file movement.
+    /// </remarks>
     public sealed class ContentBuildTests : IDisposable
     {
         private readonly string root = Path.Combine(
@@ -14,12 +19,11 @@ namespace CutTheRopeDX.Content.Tests
 
         private string Source => Path.Combine(root, "source");
 
-        private string Output => Path.Combine(root, "output");
+        private string Intermediate => Path.Combine(root, "obj");
 
         public ContentBuildTests()
         {
             _ = Directory.CreateDirectory(Source);
-            _ = Directory.CreateDirectory(Output);
         }
 
         public void Dispose()
@@ -35,35 +39,70 @@ namespace CutTheRopeDX.Content.Tests
         }
 
         [Fact]
-        public void EveryAssetTheGameReadsReachesTheOutputUnderItsOwnName()
+        public void EveryAssetTheGameReadsIsShippedUnderItsOwnName()
         {
             Fill();
 
-            _ = GameContentBuilder.Build(Source, Output);
+            SortedDictionary<string, string> selected =
+                ContentSelection.Select(Source, ContentSelection.DesktopRules);
 
-            Assert.True(File.Exists(Path.Combine(Output, "images", "menu", "logo.png")));
-            Assert.True(File.Exists(Path.Combine(Output, "images", "menu", "logo.json")));
-            Assert.True(File.Exists(Path.Combine(Output, "images", "animations", "fx_pause.xml")));
-            Assert.True(File.Exists(Path.Combine(Output, "sounds", "menu_music.wav")));
-            Assert.True(File.Exists(Path.Combine(Output, "sounds", "sfx", "tap.wav")));
-            Assert.True(File.Exists(Path.Combine(Output, "maps", "1_1.xml")));
-            Assert.True(File.Exists(Path.Combine(Output, "locales", "en.json")));
-            Assert.True(File.Exists(Path.Combine(Output, "fonts", "Gooddog.ttf")));
-            Assert.True(File.Exists(Path.Combine(Output, "video_hd", "intro.mp4")));
-            Assert.True(File.Exists(Path.Combine(Output, "packlist.json")));
+            Assert.Equal(
+                [
+                    "ctroriginal_packs.json",
+                    "fonts/Gooddog.ttf",
+                    "images/animations/fx_pause.xml",
+                    "images/menu/logo.json",
+                    "images/menu/logo.png",
+                    "locales/en.json",
+                    "maps/1_1.xml",
+                    "packlist.json",
+                    "sounds/menu_music.wav",
+                    "sounds/sfx/tap.wav",
+                    "video_hd/intro.mp4",
+                ],
+                selected.Keys);
         }
 
         [Fact]
-        public void APngReachesTheOutputByteForByte()
+        public void TheShippedNameMapsBackToTheSourceFile()
         {
             Fill();
-            string sourcePng = Path.Combine(Source, "images", "menu", "logo.png");
 
-            _ = GameContentBuilder.Build(Source, Output);
+            SortedDictionary<string, string> selected =
+                ContentSelection.Select(Source, ContentSelection.DesktopRules);
 
             Assert.Equal(
-                File.ReadAllBytes(sourcePng),
-                File.ReadAllBytes(Path.Combine(Output, "images", "menu", "logo.png")));
+                Path.Combine(Source, "images", "menu", "logo.png"),
+                selected["images/menu/logo.png"]);
+        }
+
+        [Fact]
+        public void TheFileListNamesEverySelectedSourceOncePerLine()
+        {
+            Fill();
+
+            ContentBuildResult result = GameContentBuilder.Build(Source, Intermediate);
+
+            string[] lines = File.ReadAllLines(result.ListPath);
+            Assert.Equal(result.Files, lines.Length);
+            Assert.All(lines, line => Assert.True(Path.IsPathFullyQualified(line)));
+            Assert.All(lines, line => Assert.True(File.Exists(line)));
+            Assert.Equal(lines.Length, new HashSet<string>(lines, StringComparer.Ordinal).Count);
+        }
+
+        [Fact]
+        public void TheBuildWritesNothingButItsOwnTwoOutputs()
+        {
+            Fill();
+
+            _ = GameContentBuilder.Build(Source, Intermediate);
+
+            string[] written = [.. Directory
+                .EnumerateFiles(Intermediate, "*", SearchOption.AllDirectories)
+                .Select(path => Path.GetRelativePath(Intermediate, path)
+                    .Replace(Path.DirectorySeparatorChar, '/'))
+                .Order(StringComparer.Ordinal)];
+            Assert.Equal(["content_files.txt", "images/image_dimensions.json"], written);
         }
 
         [Fact]
@@ -71,12 +110,11 @@ namespace CutTheRopeDX.Content.Tests
         {
             Fill();
 
-            _ = GameContentBuilder.Build(Source, Output);
+            _ = GameContentBuilder.Build(Source, Intermediate);
 
             using JsonDocument manifest = JsonDocument.Parse(
-                File.ReadAllText(Path.Combine(Output, "images", "image_dimensions.json")));
-            JsonElement images = manifest.RootElement.GetProperty("images");
-            JsonElement logo = images.GetProperty("menu/logo");
+                File.ReadAllText(Path.Combine(Intermediate, "images", "image_dimensions.json")));
+            JsonElement logo = manifest.RootElement.GetProperty("images").GetProperty("menu/logo");
             Assert.Equal(12, logo.GetProperty("w").GetInt32());
             Assert.Equal(34, logo.GetProperty("h").GetInt32());
         }
@@ -86,105 +124,44 @@ namespace CutTheRopeDX.Content.Tests
         {
             Fill();
             Write("Builder/Program.cs", "// not an asset");
+            Write("Builder/obj/content/content_files.txt", "stale");
             Write("bin/Debug/stale.json", "{}");
             Write("obj/work.json", "{}");
             Write("images/.DS_Store", "junk");
 
-            _ = GameContentBuilder.Build(Source, Output);
+            SortedDictionary<string, string> selected =
+                ContentSelection.Select(Source, ContentSelection.DesktopRules);
 
-            Assert.False(Directory.Exists(Path.Combine(Output, "Builder")));
-            Assert.False(Directory.Exists(Path.Combine(Output, "bin")));
-            Assert.False(Directory.Exists(Path.Combine(Output, "obj")));
-            Assert.False(File.Exists(Path.Combine(Output, "images", ".DS_Store")));
+            Assert.DoesNotContain(selected.Keys, key => key.StartsWith("Builder/", StringComparison.Ordinal));
+            Assert.DoesNotContain(selected.Keys, key => key.StartsWith("bin/", StringComparison.Ordinal));
+            Assert.DoesNotContain(selected.Keys, key => key.StartsWith("obj/", StringComparison.Ordinal));
+            Assert.DoesNotContain(selected.Keys, key => key.EndsWith(".DS_Store", StringComparison.Ordinal));
         }
 
         [Fact]
-        public void ASecondBuildWithNothingChangedWritesNothing()
-        {
-            Fill();
-            _ = GameContentBuilder.Build(Source, Output);
-
-            ContentCopyResult second = GameContentBuilder.Build(Source, Output);
-
-            Assert.Empty(second.Copied);
-            Assert.Empty(second.Removed);
-            Assert.NotEmpty(second.Unchanged);
-        }
-
-        [Fact]
-        public void AChangedSourceIsWrittenAgainEvenWhenItsSizeIsTheSame()
-        {
-            Fill();
-            _ = GameContentBuilder.Build(Source, Output);
-            string map = Path.Combine(Source, "maps", "1_1.xml");
-            File.WriteAllText(map, "<level id=\"2\" />");
-            File.SetLastWriteTimeUtc(map, File.GetLastWriteTimeUtc(map).AddYears(-5));
-
-            ContentCopyResult rebuilt = GameContentBuilder.Build(Source, Output);
-
-            Assert.Contains("maps/1_1.xml", rebuilt.Copied);
-            Assert.Equal(
-                "<level id=\"2\" />",
-                File.ReadAllText(Path.Combine(Output, "maps", "1_1.xml")));
-        }
-
-        [Fact]
-        public void ADeletedSourceTakesItsOutputWithIt()
-        {
-            Fill();
-            Write("maps/1_2.xml", "<level id=\"2\" />");
-            _ = GameContentBuilder.Build(Source, Output);
-            Assert.True(File.Exists(Path.Combine(Output, "maps", "1_2.xml")));
-
-            File.Delete(Path.Combine(Source, "maps", "1_2.xml"));
-            ContentCopyResult rebuilt = GameContentBuilder.Build(Source, Output);
-
-            Assert.Contains("maps/1_2.xml", rebuilt.Removed);
-            Assert.False(File.Exists(Path.Combine(Output, "maps", "1_2.xml")));
-        }
-
-        [Fact]
-        public void AStaleGeneratedManifestInTheSourceTreeIsNeverCopiedOverTheFreshOne()
+        public void AStaleGeneratedManifestInTheSourceTreeIsNeverShipped()
         {
             Fill();
             Write("images/image_dimensions.json", "{\"images\":{\"gone\":{\"w\":1,\"h\":1}}}");
 
-            ContentCopyResult first = GameContentBuilder.Build(Source, Output);
-            ContentCopyResult second = GameContentBuilder.Build(Source, Output);
+            ContentBuildResult result = GameContentBuilder.Build(Source, Intermediate);
 
-            Assert.DoesNotContain("images/image_dimensions.json", first.Copied);
-            Assert.Empty(second.Copied);
-            using JsonDocument manifest = JsonDocument.Parse(
-                File.ReadAllText(Path.Combine(Output, "images", "image_dimensions.json")));
-            JsonElement images = manifest.RootElement.GetProperty("images");
-            Assert.False(images.TryGetProperty("gone", out _));
-            Assert.True(images.TryGetProperty("menu/logo", out _));
+            Assert.DoesNotContain(
+                "images/image_dimensions.json",
+                ContentSelection.Select(Source, ContentSelection.DesktopRules).Keys);
+            Assert.DoesNotContain(
+                File.ReadAllLines(result.ListPath),
+                line => line.EndsWith("image_dimensions.json", StringComparison.Ordinal));
         }
 
         [Fact]
-        public void TheGeneratedManifestSurvivesTheStaleOutputSweep()
+        public void TheSelectionIsTheSameEveryTime()
         {
             Fill();
-            _ = GameContentBuilder.Build(Source, Output);
 
-            ContentCopyResult rebuilt = GameContentBuilder.Build(Source, Output);
-
-            Assert.DoesNotContain("images/image_dimensions.json", rebuilt.Removed);
-            Assert.True(File.Exists(Path.Combine(Output, "images", "image_dimensions.json")));
-        }
-
-        [Fact]
-        public void AnEmptiedDirectoryDoesNotSurviveAsAnEmptyShell()
-        {
-            Fill();
-            Write("video_hd/outro.mp4", "frames");
-            _ = GameContentBuilder.Build(Source, Output);
-
-            File.Delete(Path.Combine(Source, "video_hd", "intro.mp4"));
-            File.Delete(Path.Combine(Source, "video_hd", "outro.mp4"));
-            _ = GameContentBuilder.Build(Source, Output);
-
-            Assert.False(Directory.Exists(Path.Combine(Output, "video_hd")));
+            Assert.Equal(
+                ContentSelection.Select(Source, ContentSelection.DesktopRules),
+                ContentSelection.Select(Source, ContentSelection.DesktopRules));
         }
 
         [Theory]
@@ -199,55 +176,31 @@ namespace CutTheRopeDX.Content.Tests
             Directory.Delete(Path.Combine(Source, missing), recursive: true);
 
             ContentBuildException failure = Assert.Throws<ContentBuildException>(
-                () => GameContentBuilder.Build(Source, Output));
+                () => GameContentBuilder.Build(Source, Intermediate));
 
             Assert.Contains(missing, failure.Message, StringComparison.Ordinal);
             Assert.Contains("fetch the external assets", failure.Message, StringComparison.Ordinal);
         }
 
         [Fact]
-        public void AnOutputTheBuildWouldReadBackAsInputIsRefused()
+        public void ASourceTreeWithNoAnimationsFailsRatherThanShippingAGameThatCannotStart()
         {
             Fill();
+            File.Delete(Path.Combine(Source, "images", "animations", "fx_pause.xml"));
 
             ContentBuildException failure = Assert.Throws<ContentBuildException>(
-                () => GameContentBuilder.Build(Source, Path.Combine(Source, "images", "built")));
+                () => GameContentBuilder.Build(Source, Intermediate));
 
-            Assert.Contains("its own source", failure.Message, StringComparison.Ordinal);
-        }
-
-        [Fact]
-        public void AnOutputUnderAnExcludedDirectoryIsAllowed()
-        {
-            Fill();
-
-            _ = GameContentBuilder.Build(Source, Path.Combine(Source, "Builder", "bin", "content"));
-
-            Assert.True(File.Exists(
-                Path.Combine(Source, "Builder", "bin", "content", "images", "menu", "logo.png")));
+            Assert.Contains("images/**/*.xml", failure.Message, StringComparison.Ordinal);
         }
 
         [Fact]
         public void AMissingSourceTreeIsReportedRatherThanProducingAnEmptyBuild()
         {
             ContentBuildException failure = Assert.Throws<ContentBuildException>(
-                () => GameContentBuilder.Build(Path.Combine(root, "absent"), Output));
+                () => GameContentBuilder.Build(Path.Combine(root, "absent"), Intermediate));
 
             Assert.Contains("No content source directory", failure.Message, StringComparison.Ordinal);
-        }
-
-        [Fact]
-        public void OutputPathsAreConfinedToTheOutputDirectory()
-        {
-            Fill();
-            SortedDictionary<string, string> selected = ContentCopy.Select(Source, ContentCopy.DesktopRules);
-            string output = Path.GetFullPath(Output);
-
-            Assert.All(selected.Keys, relativePath =>
-            {
-                string resolved = Path.GetFullPath(Path.Combine(output, relativePath));
-                Assert.StartsWith(output + Path.DirectorySeparatorChar, resolved, StringComparison.Ordinal);
-            });
         }
 
         /// <summary>Builds a source tree holding one of everything the game reads.</summary>
