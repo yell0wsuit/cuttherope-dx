@@ -41,6 +41,18 @@ namespace CutTheRopeDX.Framework.Platform
         ITextureHandle DetachRenderTarget();
 
         /// <summary>
+        /// Creates the texture a movie's decoded frames are written into.
+        /// </summary>
+        /// <param name="width">Frame width in pixels.</param>
+        /// <param name="height">Frame height in pixels.</param>
+        /// <returns>A frame texture owned by the caller.</returns>
+        /// <remarks>
+        /// Video players decode on their own thread and must not know which graphics API is
+        /// running, so the renderer that owns the device makes the frame surface for them.
+        /// </remarks>
+        IVideoFrameTexture CreateVideoFrameTexture(int width, int height);
+
+        /// <summary>
         /// Clears the active render target on the graphics device so subsequent draws target the back buffer.
         /// </summary>
         void ResetRenderTarget();

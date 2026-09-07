@@ -6,14 +6,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using FFmpeg.AutoGen;
 
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -161,12 +159,12 @@ namespace CutTheRopeDX.Framework.Media
                     if (frameReady)
                     {
                         frameReady = false;
-                        videoTexture.SetData(videoBuffer);
+                        videoTexture.Update(videoBuffer);
                     }
                 }
             }
 
-            return videoTextureHandle;
+            return videoTexture;
         }
 
         /// <inheritdoc/>
@@ -867,8 +865,10 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             videoTexture?.Dispose();
-            videoTexture = new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            videoTextureHandle = new MonoGameTexture(videoTexture);
+
+            // The renderer owns the graphics device, so it makes the frame surface; this player
+            // decodes on its own thread and never learns which graphics API is running.
+            videoTexture = PlatformServices.Render?.CreateVideoFrameTexture(width, height);
             textureWidth = width;
             textureHeight = height;
         }
@@ -948,7 +948,6 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = null;
-            videoTextureHandle = null;
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
@@ -1070,10 +1069,9 @@ namespace CutTheRopeDX.Framework.Media
         private double nextFramePts;
 
         /// <summary>MonoGame texture for rendering video frames.</summary>
-        private Texture2D videoTexture;
+        private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
-        private MonoGameTexture videoTextureHandle;
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;

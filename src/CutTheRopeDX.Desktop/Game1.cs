@@ -382,7 +382,7 @@ namespace CutTheRopeDX
             {
                 return;
             }
-            Texture2D texture = ((MonoGameTexture)textureHandle).Texture;
+            Texture2D texture = ((MonoGameVideoFrameTexture)textureHandle).Texture;
             if (_ignoreMouseClick > 0)
             {
                 _ignoreMouseClick--;

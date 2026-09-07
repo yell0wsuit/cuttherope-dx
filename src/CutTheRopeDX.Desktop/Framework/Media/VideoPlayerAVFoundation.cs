@@ -9,13 +9,10 @@ using CoreMedia;
 
 using CoreVideo;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using Foundation;
-
-using Microsoft.Xna.Framework.Graphics;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -95,20 +92,20 @@ namespace CutTheRopeDX.Framework.Media
             if (player == null || videoOutput == null || HasPlaybackFinished)
             {
                 Console.WriteLine($"[AVFoundation] GetTexture early return: player={player != null}, videoOutput={videoOutput != null}, playbackFinished={HasPlaybackFinished}, videoTexture={videoTexture != null}");
-                return videoTextureHandle;
+                return videoTexture;
             }
 
             CMTime itemTime = player.CurrentTime;
             if (!videoOutput.HasNewPixelBufferForItemTime(itemTime))
             {
-                return videoTextureHandle;
+                return videoTexture;
             }
 
             CMTime displayTime = default;
             using CVPixelBuffer pixelBuffer = videoOutput.CopyPixelBuffer(itemTime, ref displayTime);
             if (pixelBuffer == null)
             {
-                return videoTextureHandle;
+                return videoTexture;
             }
 
             _ = pixelBuffer.Lock(CVPixelBufferLock.ReadOnly);
@@ -127,7 +124,7 @@ namespace CutTheRopeDX.Framework.Media
 
             if (videoTexture != null && videoBuffer != null)
             {
-                videoTexture.SetData(videoBuffer);
+                videoTexture.Update(videoBuffer);
             }
 
             if (!loggedFirstFrame && videoTexture != null)
@@ -137,7 +134,7 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             frameCount++;
-            return videoTextureHandle;
+            return videoTexture;
         }
 
         /// <inheritdoc/>
@@ -253,8 +250,7 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             videoTexture?.Dispose();
-            videoTexture = new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            videoTextureHandle = new MonoGameTexture(videoTexture);
+            videoTexture = PlatformServices.Render?.CreateVideoFrameTexture(width, height);
             videoWidth = width;
             videoHeight = height;
 
@@ -355,7 +351,6 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = null;
-            videoTextureHandle = null;
             videoBuffer = null;
             videoWidth = 0;
             videoHeight = 0;
@@ -378,10 +373,9 @@ namespace CutTheRopeDX.Framework.Media
         private NSObject playbackObserver;
 
         /// <summary>MonoGame texture for rendering video frames.</summary>
-        private Texture2D videoTexture;
+        private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
-        private MonoGameTexture videoTextureHandle;
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;

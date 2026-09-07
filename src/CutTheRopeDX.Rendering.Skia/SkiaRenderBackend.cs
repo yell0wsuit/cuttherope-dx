@@ -445,6 +445,12 @@ namespace CutTheRopeDX.Rendering.Skia
         }
 
         /// <inheritdoc />
+        public IVideoFrameTexture CreateVideoFrameTexture(int width, int height)
+        {
+            return new SkiaVideoFrameTexture(width, height);
+        }
+
+        /// <inheritdoc />
         public ITextureHandle DetachRenderTarget()
         {
             if (_renderTarget is null)

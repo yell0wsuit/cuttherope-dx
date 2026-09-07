@@ -224,6 +224,13 @@ namespace CutTheRopeDX.Desktop
             Global.GraphicsDevice.Clear(Color.Black);
         }
 
+        /// <inheritdoc />
+        public IVideoFrameTexture CreateVideoFrameTexture(int width, int height)
+        {
+            return new MonoGameVideoFrameTexture(
+                new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color));
+        }
+
         /// <summary>
         /// Detaches and returns the current render target, setting the internal reference to <see langword="null"/>.
         /// Used for screen capture operations.
