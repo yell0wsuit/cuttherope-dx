@@ -2,6 +2,14 @@
   <PropertyGroup>
     <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
     <ContentSourceDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..'))</ContentSourceDir>
+
+    <!--
+      The same directory, without the trailing separator, for passing on a command line. On
+      Windows a quoted path that ends in a backslash escapes the closing quote, so the argument
+      arrives with a stray quote in it and the builder rejects it as an illegal path. The two
+      forms are kept apart because MakeRelative below wants the separator that breaks Exec.
+    -->
+    <ContentSourcePath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..'))</ContentSourcePath>
     <ContentIntermediateDir>$(MSBuildThisFileDirectory)obj/content</ContentIntermediateDir>
     <ContentFileList>$(ContentIntermediateDir)/content_files.txt</ContentFileList>
 
@@ -30,9 +38,9 @@
              Condition="'$(BuildContent)' == 'true'"
              RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
   </Target>
 
   <!--
