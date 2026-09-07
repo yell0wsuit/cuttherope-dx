@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Framework.Media
     /// </summary>
     /// <remarks>
     /// This class wraps platform-specific video player implementations (FFmpeg, AVFoundation,
-    /// or MonoGame stub) and notifies delegates when playback finishes.
+    /// or the no-op stub) and notifies delegates when playback finishes.
     /// </remarks>
     internal sealed class MovieMgr : FrameworkTypes, IDisposable
     {
@@ -17,16 +17,16 @@ namespace CutTheRopeDX.Framework.Media
         /// Initializes a new instance of the <see cref="MovieMgr"/> class.
         /// </summary>
         /// <remarks>
-        /// Creates a platform-specific video player (FFmpeg for DesktopVK, AVFoundation
-        /// for macOS 26+, MonoGame stub otherwise).
+        /// Creates a platform-specific video player (FFmpeg, AVFoundation on macOS 26+,
+        /// or the no-op stub when neither is built in).
         /// </remarks>
         public MovieMgr()
         {
-            // Which concrete backend (AVFoundation/FFmpeg/MonoGame stub) is available depends on
+            // Which concrete backend (AVFoundation/FFmpeg/no-op stub) is available depends on
             // compile-time constants only the desktop host's build defines, so the desktop host
             // resolves and registers the factory at boot. Headless never sets it, so the Core-owned
             // no-op stub is used there.
-            videoPlayer = PlatformServices.VideoPlayerFactory?.Invoke() ?? new VideoPlayerMonoGame();
+            videoPlayer = PlatformServices.VideoPlayerFactory?.Invoke() ?? new VideoPlayerNone();
             videoPlayer.PlaybackFinished += OnPlaybackFinished;
         }
 

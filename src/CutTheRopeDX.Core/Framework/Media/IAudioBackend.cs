@@ -42,10 +42,5 @@ namespace CutTheRopeDX.Framework.Media
         void PauseMusic();
         void ResumeMusic();
         AudioPlaybackState MusicState { get; }
-        /// <summary>
-        /// Installs the song-completion callback (MonoGame decoder-finished workaround).
-        /// Returns false when the platform doesn't need or support it.
-        /// </summary>
-        bool TryInstallSongCompletionCallback(IMusicTrack track, EventHandler<EventArgs> onDecoderFinished);
     }
 }

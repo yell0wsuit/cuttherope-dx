@@ -21,8 +21,8 @@ namespace CutTheRopeDX.Framework.Media
     /// </summary>
     /// <remarks>
     /// Uses <see cref="AVPlayer"/> for playback and <see cref="AVPlayerItemVideoOutput"/>
-    /// for extracting video frames as pixel buffers, which are then converted to
-    /// MonoGame textures. Requires macOS 26 or later.
+    /// for extracting video frames as pixel buffers, which are then converted into the
+    /// renderer's frame texture. Requires macOS 26 or later.
     /// </remarks>
     internal sealed class VideoPlayerAVFoundation : IVideoPlayer
     {
@@ -268,7 +268,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="width">Frame width in pixels.</param>
         /// <param name="height">Frame height in pixels.</param>
         /// <remarks>
-        /// Converts BGRA pixel format to RGBA for MonoGame texture compatibility.
+        /// Converts BGRA pixel format to the RGBA the frame texture expects.
         /// </remarks>
         private unsafe void CopyPixelBuffer(CVPixelBuffer pixelBuffer, int width, int height)
         {
@@ -372,7 +372,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Observer for playback finished notifications.</summary>
         private NSObject playbackObserver;
 
-        /// <summary>MonoGame texture for rendering video frames.</summary>
+        /// <summary>The texture each decoded frame is written into.</summary>
         private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>

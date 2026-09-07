@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Framework.Media
     /// Stub video player when VLC, AVFoundation or FFmpeg is unavailable.
     /// Skips video playback immediately.
     /// </summary>
-    internal sealed class VideoPlayerMonoGame : IVideoPlayer
+    internal sealed class VideoPlayerNone : IVideoPlayer
     {
         /// <inheritdoc/>
         public bool IsPaused { get; private set; }

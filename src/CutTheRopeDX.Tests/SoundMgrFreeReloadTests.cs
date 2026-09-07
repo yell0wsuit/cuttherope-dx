@@ -165,11 +165,6 @@ namespace CutTheRopeDX.Tests
             }
 
             public AudioPlaybackState MusicState => AudioPlaybackState.Stopped;
-
-            public bool TryInstallSongCompletionCallback(IMusicTrack track, EventHandler<EventArgs> onDecoderFinished)
-            {
-                return false;
-            }
         }
 
         private sealed class FakeSoundEffect : ISoundEffect

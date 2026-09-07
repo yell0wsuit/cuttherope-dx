@@ -263,7 +263,6 @@ namespace CutTheRopeDX.Desktop
 
         private void Update(float delta)
         {
-            SoundMgr.Update(TimeSpan.FromMilliseconds(delta));
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTick(delta);
             input.EndUpdate();
             if (clock.Elapsed >= nextSave)
@@ -320,7 +319,7 @@ namespace CutTheRopeDX.Desktop
             try { CtrRenderer.OnDrawFrame(); }
             finally { Renderer.EndFrame(); }
 
-            // The native cursor stands in for the sprite the MonoGame host drew here, so it is
+            // The native cursor stands in for the sprite the old host drew here, so it is
             // refreshed at the same point in the frame. Core only enables and disables the
             // service, so tracking the presentation scale and the pressed variant is the host's.
             cursor.Update(ScreenPresentation.Instance.Snapshot.Scale, window.DevicePixelRatio, input.PrimaryPressed);

@@ -267,17 +267,6 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             : AudioPlaybackState.Stopped;
 
         /// <inheritdoc />
-        /// <remarks>
-        /// The workaround exists because MonoGame announced a song as finished while its decoded
-        /// tail was still queued, leaving the game to time the restart itself. The mixer repeats a
-        /// track natively, so there is nothing to schedule and nothing to install.
-        /// </remarks>
-        public bool TryInstallSongCompletionCallback(IMusicTrack track, EventHandler<EventArgs> onDecoderFinished)
-        {
-            return false;
-        }
-
-        /// <inheritdoc />
         public void Dispose()
         {
             if (disposed)

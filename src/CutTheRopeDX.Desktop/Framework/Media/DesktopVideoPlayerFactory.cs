@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Framework.Media
                     return new VideoPlayerFFmpeg();
 #endif
                 default:
-                    return new VideoPlayerMonoGame();
+                    return new VideoPlayerNone();
             }
 #pragma warning restore IDE0010, IDE0066
         }

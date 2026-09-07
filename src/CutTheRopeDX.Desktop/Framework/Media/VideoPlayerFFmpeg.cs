@@ -1077,7 +1077,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Presentation timestamp of the next frame to display.</summary>
         private double nextFramePts;
 
-        /// <summary>MonoGame texture for rendering video frames.</summary>
+        /// <summary>The texture each decoded frame is written into.</summary>
         private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
@@ -1103,7 +1103,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Audio sample rate in Hz.</summary>
         private int audioSampleRate;
 
-        /// <summary>MonoGame dynamic sound effect for audio playback.</summary>
+        /// <summary>The PCM sink the decoded soundtrack is pushed into.</summary>
         private SdlPcmStream audioInstance;
 
         /// <summary>Native buffer for resampled audio data.</summary>

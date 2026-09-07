@@ -214,13 +214,12 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Fact]
-        public void MusicRepeatsNativelyInsteadOfThroughTheCompletionWorkaround()
+        public void MusicRepeatsNatively()
         {
             IMusicTrack track = backend.LoadMusic("sounds/loop");
 
             backend.PlayMusic(track, repeating: true);
 
-            Assert.False(backend.TryInstallSongCompletionCallback(track, static (_, _) => { }));
             Assert.Equal(TimeSpan.FromMilliseconds(40), track.Duration);
 
             // The track is 40 ms long; native repeating is what keeps it audible beyond that.

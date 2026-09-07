@@ -576,11 +576,6 @@ namespace CutTheRopeDX.Tests
             public void ResumeMusic()
             {
             }
-
-            public bool TryInstallSongCompletionCallback(IMusicTrack track, EventHandler<EventArgs> onDecoderFinished)
-            {
-                return false;
-            }
         }
 
         private sealed class RecordingSoundEffect : ISoundEffect

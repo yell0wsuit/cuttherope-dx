@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX;
@@ -46,42 +45,6 @@ if (cli.IsHeadless)
     return CustomLevelSession.IsActive && !HeadlessHost.IsInGameplay() ? 1 : 0;
 }
 
-if (Array.Exists(args, arg => arg == "--sdl"))
-{
-    using SdlDesktopHost host = new();
-    host.Run(args);
-    return 0;
-}
-
-InstallAlsoftConfig();
-
-using Game1 game = new();
-game.Run();
+using SdlDesktopHost host = new();
+host.Run(args);
 return 0;
-
-// OpenAL Soft's own config-file discovery depends on the process's current working
-// directory, which is unreliable across launch methods - Windows/Linux launchers set it
-// to the executable's own folder, but macOS Finder/LaunchServices does not, and does not
-// set it to any predictable directory at all. Resolve the bundled alsoft.ini explicitly and
-// point OpenAL Soft at it via ALSOFT_CONF, which takes priority over every other config-file
-// search path, so playback settings apply the same way regardless of how the game was launched.
-static void InstallAlsoftConfig()
-{
-    string baseDir = AppContext.BaseDirectory;
-    string[] candidates =
-    [
-        Path.Combine(baseDir, "alsoft.ini"),
-        // net10.0-macos app bundle: the managed assembly runs from Contents/MonoBundle,
-        // but alsoft.ini ships as a BundleResource under the sibling Contents/Resources.
-        Path.Combine(baseDir, "..", "Resources", "alsoft.ini"),
-    ];
-
-    foreach (string candidate in candidates)
-    {
-        if (File.Exists(candidate))
-        {
-            Environment.SetEnvironmentVariable("ALSOFT_CONF", Path.GetFullPath(candidate));
-            return;
-        }
-    }
-}

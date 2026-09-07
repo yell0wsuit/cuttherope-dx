@@ -7,7 +7,7 @@ using CutTheRopeDX.Helpers;
 namespace CutTheRopeDX.Framework.Media
 {
     /// <summary>
-    /// Manages sound effects and music playback using MonoGame's audio framework.
+    /// Manages sound effects and music playback through the host's audio backend.
     /// Handles loading, caching, and playing of sound effects and background music.
     /// </summary>
     internal sealed class SoundMgr : FrameworkTypes
@@ -165,59 +165,11 @@ namespace CutTheRopeDX.Framework.Media
                 IMusicTrack track = _backend.LoadMusic(musicPath);
                 activeSong = track;
                 _backend.PlayMusic(track, true);
-                usesSongCompletionWorkaround =
-                    _backend.TryInstallSongCompletionCallback(track, OnSongDecoderFinished);
             }
             catch (Exception)
             {
                 activeSong = null;
-                usesSongCompletionWorkaround = false;
             }
-        }
-
-        /// <summary>
-        /// Advances a pending music-loop restart after MonoGame's queued decoded tail
-        /// has had time to reach the audio device.
-        /// </summary>
-        /// <param name="elapsed">Elapsed game time since the previous update.</param>
-        public static void Update(TimeSpan elapsed)
-        {
-            if (_backend == null ||
-                !usesSongCompletionWorkaround ||
-                !songLoopScheduler.Advance(
-                    elapsed,
-                    _backend.MusicState == AudioPlaybackState.Playing))
-            {
-                return;
-            }
-
-            IMusicTrack track = activeSong;
-            if (track == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _backend.PlayMusic(track, true);
-            }
-            catch (Exception)
-            {
-                StopMusic();
-            }
-        }
-
-        /// <summary>
-        /// Records how much audio remains queued when MonoGame reports decoder EOF.
-        /// </summary>
-        private static void OnSongDecoderFinished(object sender, EventArgs args)
-        {
-            if (!usesSongCompletionWorkaround || !ReferenceEquals(sender, activeSong))
-            {
-                return;
-            }
-
-            songLoopScheduler.Schedule(activeSong.Duration);
         }
 
         /// <summary>
@@ -328,9 +280,7 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
-            usesSongCompletionWorkaround = false;
             activeSong = null;
-            songLoopScheduler.Cancel();
             try
             {
                 _backend?.StopMusic();
@@ -527,16 +477,6 @@ namespace CutTheRopeDX.Framework.Media
         /// Music track currently owned by the media player.
         /// </summary>
         private static IMusicTrack activeSong;
-
-        /// <summary>
-        /// Waits for the native voice's queued tail before restarting <see cref="activeSong"/>.
-        /// </summary>
-        private static readonly SongLoopScheduler songLoopScheduler = new();
-
-        /// <summary>
-        /// Whether MonoGame's premature completion callback was replaced successfully.
-        /// </summary>
-        private static bool usesSongCompletionWorkaround;
 
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.
