@@ -160,10 +160,10 @@ namespace CutTheRopeDX.Framework.Media
 
             StopMusic();
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
-            IMusicTrack track = _backend.LoadMusic(musicPath);
-            activeSong = track;
             try
             {
+                IMusicTrack track = _backend.LoadMusic(musicPath);
+                activeSong = track;
                 _backend.PlayMusic(track, true);
                 usesSongCompletionWorkaround =
                     _backend.TryInstallSongCompletionCallback(track, OnSongDecoderFinished);
