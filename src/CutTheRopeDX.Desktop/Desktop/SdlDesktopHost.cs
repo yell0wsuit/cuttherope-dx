@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop.Platform;
@@ -20,8 +22,8 @@ using SkiaSharp;
 namespace CutTheRopeDX.Desktop
 {
     /// <summary>
-    /// Opt-in SDL composition, selected by <c>--sdl</c>. Movies are skipped; the legacy host
-    /// remains the path with working video.
+    /// Opt-in SDL composition, selected by <c>--sdl</c>. The legacy host remains available as the
+    /// comparison path.
     /// </summary>
     internal sealed class SdlDesktopHost : IHostApp, IDisposable
     {
@@ -41,6 +43,7 @@ namespace CutTheRopeDX.Desktop
         private int frameCount;
         private int frameLimit;
         private string screenshot;
+        private readonly Queue<(int Frame, float X, float Y, bool? Down)> taps = new();
 
         public bool CanExit => true;
         public string LevelEditorUrl => null;
@@ -55,7 +58,49 @@ namespace CutTheRopeDX.Desktop
             return input?.IsKeyPressed(key) == true;
         }
 
-        public void DrawMovie() { }
+        /// <summary>
+        /// Draws the current movie frame over the whole presentation viewport, and lets a click
+        /// skip the cutscene.
+        /// </summary>
+        /// <remarks>
+        /// The frame replaces the scene rather than compositing with it, so pending quads are
+        /// flushed and the surface cleared first. A press held from before the movie started
+        /// cannot skip it: the router drops held presses when focus is lost, which is what stops
+        /// the click that returns to the window from also ending the cutscene.
+        /// </remarks>
+        public void DrawMovie()
+        {
+            Renderer.FlushQuads();
+            SdlGraphicsDevice device = selection.Device;
+
+            // Core shows a view from inside an update, and showing the movie view draws it, so
+            // this runs outside the draw phase too. There is no canvas then; the frame that
+            // follows draws the same movie anyway.
+            if (!device.HasFrame)
+            {
+                return;
+            }
+
+            device.Canvas.Clear(SKColors.Black);
+            MovieMgr movies = Application.SharedMovieMgr();
+            if (!movies.IsTextureReady() || movies.GetTexture() is not SkiaVideoFrameTexture frame)
+            {
+                return;
+            }
+
+            if (input.PrimaryPressed)
+            {
+                movies.Stop();
+                return;
+            }
+
+            CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            device.Canvas.DrawBitmap(
+                frame.Bitmap,
+                SKRect.Create(viewport.x, viewport.y, viewport.w, viewport.h),
+                SkiaTexture.LinearSampling,
+                paint: null);
+        }
         public void OpenUrl(string url)
         {
             try { _ = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
@@ -67,6 +112,7 @@ namespace CutTheRopeDX.Desktop
             string renderer = Option(args, "--renderer") ?? "auto";
             frameLimit = int.TryParse(Option(args, "--sdl-frames"), out int frames) ? Math.Max(0, frames) : 0;
             screenshot = Option(args, "--sdl-screenshot");
+            ScheduleTaps(args);
             GraphicsBackendKind? forced = renderer switch
             {
                 "auto" => null,
@@ -85,14 +131,14 @@ namespace CutTheRopeDX.Desktop
             string platform = OperatingSystem.IsMacOS() ? "macos" : OperatingSystem.IsWindows() ? "windows" : "linux";
             selection = BackendSelector.Select(platform, forced, CreateDevice, ValidateDevice);
             SdlGraphicsDevice device = selection.Device;
-            _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview (video pending)");
+            _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview");
             string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
             PlatformServices.Content = new FileContentStore(root);
 
             // A machine with no usable audio device still plays the game, so this reports failure
             // rather than throwing: the graphics that already came up must not depend on it.
             audio = SdlAudioBackend.TryOpen(root);
-            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio {(audio == null ? "unavailable" : "on")}, movies skipped");
+            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio {(audio == null ? "unavailable" : "on")}");
             foreach (Exception failure in selection.Failures)
             {
                 Console.Error.WriteLine($"[sdl] rejected renderer: {failure.Message}");
@@ -122,7 +168,10 @@ namespace CutTheRopeDX.Desktop
                         CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
                     }
 
-                    loop.SetSuspended(!focused, clock.Elapsed);
+                    // A run working to a frame budget keeps stepping whatever the window manager
+                    // does with focus. Suspending stops frames being produced, so an unfocused
+                    // window would leave the budget unreachable and the run never ending.
+                    loop.SetSuspended(!focused && frameLimit == 0, clock.Elapsed);
                 },
                 Quit = Exit,
                 Resized = () => { device.Resize(); window.RefreshSurface(); },
@@ -142,7 +191,7 @@ namespace CutTheRopeDX.Desktop
             PlatformServices.Updates = new DesktopUpdateService();
             PlatformServices.FileWatchers = new DesktopFileWatcherFactory();
             PlatformServices.RichPresence = new RPCHelpers();
-            PlatformServices.VideoPlayerFactory = static () => new VideoPlayerMonoGame();
+            PlatformServices.VideoPlayerFactory = DesktopVideoPlayerFactory.Create;
             render = new(device);
             PlatformServices.Render = render;
             assets = new(PlatformServices.Content, device.Context);
@@ -156,6 +205,7 @@ namespace CutTheRopeDX.Desktop
             {
                 while (SDL.PollEvent(out SDL.Event evt))
                 {
+
                     gamepads.HandleEvent(in evt);
                     input.HandleEvent(in evt);
                 }
@@ -165,6 +215,7 @@ namespace CutTheRopeDX.Desktop
                     break;
                 }
 
+                InjectScheduledTaps();
                 _ = loop.Advance(clock.Elapsed, Update, Draw);
                 SDL.Delay(1);
             }
@@ -253,6 +304,86 @@ namespace CutTheRopeDX.Desktop
             device.Canvas.Clear(SKColors.Black);
             device.Flush();
             device.Present();
+        }
+
+        /// <summary>
+        /// Reads the <c>--sdl-tap FRAME:X,Y</c> options and schedules a press and release for
+        /// each. X and Y are fractions of the window, so a scripted run does not depend on its size.
+        /// </summary>
+        /// <param name="args">The command line.</param>
+        private void ScheduleTaps(string[] args)
+        {
+            // Long enough for the game to see the button held before it is let go.
+            const int HoldFrames = 6;
+            List<(int Frame, float X, float Y, bool? Down)> scheduled = [];
+            for (int index = 0; index + 1 < args.Length; index++)
+            {
+                if (args[index] != "--sdl-tap")
+                {
+                    continue;
+                }
+
+                string[] parts = args[index + 1].Split(':', ',');
+                if (parts.Length != 3 ||
+                    !int.TryParse(parts[0], out int frame) ||
+                    !float.TryParse(parts[1], out float x) ||
+                    !float.TryParse(parts[2], out float y))
+                {
+                    throw new ArgumentException($"Could not read the tap '{args[index + 1]}'; expected FRAME:X,Y.");
+                }
+
+                // A real click always arrives after the pointer has moved onto the target, and the
+                // menu tracks that motion to decide what is under the cursor, so the move is part
+                // of the tap rather than an extra.
+                scheduled.Add((frame - 1, x, y, null));
+                scheduled.Add((frame, x, y, true));
+                scheduled.Add((frame + HoldFrames, x, y, false));
+            }
+
+            foreach ((int Frame, float X, float Y, bool? Down) entry in scheduled.OrderBy(static entry => entry.Frame))
+            {
+                taps.Enqueue(entry);
+            }
+        }
+
+        /// <summary>
+        /// Pushes any scheduled press or release the frame counter has reached.
+        /// </summary>
+        /// <remarks>
+        /// The events go through SDL rather than straight into the router, so a scripted run
+        /// exercises exactly the path a real click takes. Each is sent once: the loop spins faster
+        /// than frames are drawn, so testing the counter alone would repeat every event.
+        /// </remarks>
+        private void InjectScheduledTaps()
+        {
+            while (taps.Count > 0 && taps.Peek().Frame <= frameCount)
+            {
+                (int _, float x, float y, bool? down) = taps.Dequeue();
+                uint id = SDL.GetWindowID(selection.Device.Window);
+                float px = x * window.WindowWidth;
+                float py = y * window.WindowHeight;
+                SDL.Event tap = default;
+                if (down == null)
+                {
+                    tap.Type = (uint)SDL.EventType.MouseMotion;
+                    tap.Motion.WindowID = id;
+                    tap.Motion.Which = 0;
+                    tap.Motion.X = px;
+                    tap.Motion.Y = py;
+                }
+                else
+                {
+                    tap.Type = (uint)(down.Value ? SDL.EventType.MouseButtonDown : SDL.EventType.MouseButtonUp);
+                    tap.Button.WindowID = id;
+                    tap.Button.Which = 0;
+                    tap.Button.Button = 1;
+                    tap.Button.Down = down.Value;
+                    tap.Button.X = px;
+                    tap.Button.Y = py;
+                }
+
+                _ = SDL.PushEvent(ref tap);
+            }
         }
 
         private static string Option(string[] args, string key)

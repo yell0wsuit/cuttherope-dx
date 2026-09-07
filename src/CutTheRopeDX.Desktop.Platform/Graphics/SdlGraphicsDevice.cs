@@ -29,6 +29,15 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <inheritdoc />
         public SKCanvas Canvas => surface?.Canvas ?? throw new InvalidOperationException("No acquired frame.");
 
+        /// <summary>
+        /// Whether a frame is acquired and <see cref="Canvas"/> can be drawn into.
+        /// </summary>
+        /// <remarks>
+        /// Core draws from inside updates as well as from the draw phase, so callers reached that
+        /// way have to ask rather than assume there is a canvas.
+        /// </remarks>
+        public bool HasFrame => surface != null;
+
         /// <inheritdoc />
         public int Width { get; protected set; }
 
