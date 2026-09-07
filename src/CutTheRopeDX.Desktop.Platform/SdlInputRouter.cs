@@ -18,8 +18,12 @@ namespace CutTheRopeDX.Desktop.Platform
         private int nextFinger = 1;
         private double wheelRemainder;
         public uint WindowId { get; set; }
-        public int WindowWidth { get; set; } = 1;
-        public int WindowHeight { get; set; } = 1;
+        /// <summary>
+        /// The window's current size in window units. Touch events arrive normalized to the
+        /// window, so they need it to become positions. Read per event rather than cached, so a
+        /// resize cannot leave it stale.
+        /// </summary>
+        public Func<(int Width, int Height)> WindowSize { get; set; } = () => (1, 1);
         public bool PrimaryPressed => pointers.ContainsKey(0);
         public Action<TouchLocation> Touch { get; set; } = _ => { };
         public Func<float, float, Vector2> MapPosition { get; set; } = (x, y) => new(x, y);
@@ -30,6 +34,7 @@ namespace CutTheRopeDX.Desktop.Platform
         public Action<bool> FocusChanged { get; set; } = _ => { };
         public Action Quit { get; set; } = () => { };
         public Action Resized { get; set; } = () => { };
+
         public void Pointer(int id, TouchLocationState state, float x, float y)
         {
             Vector2 position = MapPosition(x, y);
@@ -55,6 +60,7 @@ namespace CutTheRopeDX.Desktop.Platform
 
             Touch(new TouchLocation(id, state, position));
         }
+
         public void HandleEvent(in SDL.Event e)
         {
             switch ((SDL.EventType)e.Type)
@@ -125,7 +131,8 @@ namespace CutTheRopeDX.Desktop.Platform
                     {
                         TouchLocationState state = (SDL.EventType)e.Type == SDL.EventType.FingerDown ? TouchLocationState.Pressed :
                             (SDL.EventType)e.Type == SDL.EventType.FingerUp ? TouchLocationState.Released : TouchLocationState.Moved;
-                        Pointer(id, state, e.TFinger.X * WindowWidth, e.TFinger.Y * WindowHeight);
+                        (int width, int height) = WindowSize();
+                        Pointer(id, state, e.TFinger.X * width, e.TFinger.Y * height);
                         if (state == TouchLocationState.Released)
                         {
                             _ = fingers.Remove(key);
@@ -356,6 +363,7 @@ namespace CutTheRopeDX.Desktop.Platform
                     break;
             }
         }
+
         private bool Matches(uint id)
         {
             return WindowId == 0 || WindowId == id;
@@ -384,6 +392,7 @@ namespace CutTheRopeDX.Desktop.Platform
                 ToggleFullscreen();
             }
         }
+
         public void ClearInput()
         {
             foreach (KeyValuePair<int, Vector2> pair in pointers)
@@ -393,6 +402,7 @@ namespace CutTheRopeDX.Desktop.Platform
 
             pointers.Clear(); fingers.Clear(); held.Clear(); pressed.Clear(); gamepadBack.Clear(); wheelRemainder = 0;
         }
+
         public bool IsKeyPressed(KeyCode key)
         {
             return pressed.Remove(key);
@@ -435,6 +445,7 @@ namespace CutTheRopeDX.Desktop.Platform
         {
             return KeyMap.TryGetValue(key, out mapped);
         }
+
         public void Scroll(float amount, bool flipped)
         {
             wheelRemainder += amount * (flipped ? -120 : 120);

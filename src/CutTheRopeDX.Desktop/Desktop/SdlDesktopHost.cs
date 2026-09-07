@@ -18,7 +18,7 @@ using SkiaSharp;
 
 namespace CutTheRopeDX.Desktop
 {
-    /// <summary>Opt-in SDL composition; Batch 2 deliberately has silent audio and skipped movies.</summary>
+    /// <summary>Opt-in SDL composition</summary>
     internal sealed class SdlDesktopHost : IHostApp, IDisposable
     {
         private bool exiting;
@@ -80,7 +80,7 @@ namespace CutTheRopeDX.Desktop
             selection = BackendSelector.Select(platform, forced, CreateDevice, ValidateDevice);
             SdlGraphicsDevice device = selection.Device;
             _ = SDL.SetWindowTitle(device.Window, "Cut The Rope: DX - SDL preview (audio/video pending)");
-            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio silent, movies skipped (Batch 2)");
+            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio silent, movies skipped");
             foreach (Exception failure in selection.Failures)
             {
                 Console.Error.WriteLine($"[sdl] rejected renderer: {failure.Message}");
@@ -93,6 +93,8 @@ namespace CutTheRopeDX.Desktop
             window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
             input = new()
             {
+                WindowId = SDL.GetWindowID(device.Window),
+                WindowSize = () => (window.WindowWidth, window.WindowHeight),
                 MapPosition = window.MapWindowToView,
                 Touch = touch => CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess([touch]),
                 MouseMoved = position => Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(position.X), CtrRenderer.TransformY(position.Y)),

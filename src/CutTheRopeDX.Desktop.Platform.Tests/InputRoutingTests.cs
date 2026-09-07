@@ -40,6 +40,27 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.Equal(TouchLocationState.Released, touches[1].State);
             Assert.False(input.IsKeyDown(KeyCode.Escape));
         }
+        [Fact]
+        public void TouchesAreScaledByTheLiveWindowSize()
+        {
+            List<TouchLocation> touches = [];
+            SdlInputRouter input = new()
+            {
+                Touch = touches.Add,
+                WindowSize = () => (800, 600),
+            };
+
+            SDL.Event down = default;
+            down.Type = (uint)SDL.EventType.FingerDown;
+            down.TFinger.TouchID = 1;
+            down.TFinger.FingerID = 2;
+            down.TFinger.X = 0.5f;
+            down.TFinger.Y = 0.25f;
+            input.HandleEvent(down);
+
+            Assert.Equal(new Vector2(400, 150), touches[0].Position);
+        }
+
         [Theory]
         [InlineData(SDL.Keycode.Left, (int)KeyCode.Left)]
         [InlineData(SDL.Keycode.Right, (int)KeyCode.Right)]
