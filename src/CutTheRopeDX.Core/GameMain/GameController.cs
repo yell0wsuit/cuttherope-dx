@@ -914,6 +914,24 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// The resolver already knows when the menu key opens the pause overlay rather than
+        /// closing it, so only that answer is acted on. From the paused overlay it says Resume and
+        /// from a result screen it says Ignore, which is what makes asking twice harmless.
+        /// </remarks>
+        public override bool EnsurePaused()
+        {
+            GameControllerInputCommand command = ResolveInput(GameControllerInputKind.Menu);
+            if (command != GameControllerInputCommand.OpenPause)
+            {
+                return false;
+            }
+
+            ExecuteInputCommand(command);
+            return true;
+        }
+
         /// <summary>
         /// Advances to the next level or deactivates the controller at the end of a non-picker pack.
         /// </summary>

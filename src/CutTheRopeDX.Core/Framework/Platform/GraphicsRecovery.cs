@@ -149,9 +149,10 @@ namespace CutTheRopeDX.Framework.Platform
             }
             else
             {
-                // Whatever is on screen decides what this means. Gameplay opens its pause menu;
-                // a menu has no answer for it and carries on exactly where it was.
-                _ = Application.SharedRootController().MenuButtonPressed();
+                // Whatever is on screen decides what this means. Live gameplay opens its pause
+                // menu; a menu has no paused state and carries on exactly where it was, and a game
+                // that was already paused when the device went stays paused.
+                _ = Application.SharedRootController().EnsurePaused();
             }
 
             return new GraphicsRecoveryReport(reloaded, plan.DroppedCaptures);

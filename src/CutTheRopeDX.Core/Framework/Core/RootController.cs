@@ -345,6 +345,17 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Unlike the input overrides this does not stand in for the current controller while the
+        /// root is suspended: it is not input, and a suspended root is exactly the state recovery
+        /// asks this from.
+        /// </remarks>
+        public override bool EnsurePaused()
+        {
+            return currentController != null && currentController.EnsurePaused();
+        }
+
+        /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
             return currentController != null

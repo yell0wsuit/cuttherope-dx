@@ -138,15 +138,34 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             }
         }
 
-        /// <summary>Throws when a Vulkan call did not succeed.</summary>
-        /// <param name="result">The returned <c>VkResult</c>.</param>
-        /// <param name="operation">The call being made, for the failure message.</param>
+        /// <summary>Turns a Vulkan result into the failure it actually represents.</summary>
+        /// <param name="result">The <c>VkResult</c> the call returned.</param>
+        /// <param name="operation">The entry point, for the message.</param>
+        /// <remarks>
+        /// A lost device and a lost surface are separated from every other failure because the
+        /// host can do something about them. Reported as an ordinary error they read as a bug in
+        /// the call that happened to notice, and the recovery the host has for exactly this is
+        /// never reached.
+        /// </remarks>
         internal static void Check(int result, string operation)
         {
-            if (result != Vk.Success)
+            if (result == Vk.Success)
             {
-                throw new InvalidOperationException($"{operation} failed with VkResult {result}.");
+                return;
             }
+
+            string message = $"{operation} failed with VkResult {result}.";
+            throw IsDeviceLost(result)
+                ? new GraphicsDeviceLostException(message)
+                : new InvalidOperationException(message);
+        }
+
+        /// <summary>Whether a result means the device or its surface has gone.</summary>
+        /// <param name="result">The <c>VkResult</c> to classify.</param>
+        internal static bool IsDeviceLost(int result)
+        {
+            return result is Vk.ErrorDeviceLost or Vk.ErrorSurfaceLostKhr
+                or Vk.ErrorFullScreenExclusiveModeLostExt;
         }
     }
 
@@ -156,6 +175,15 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         internal const int Success = 0;
         internal const int SuboptimalKhr = 1000001003;
         internal const int ErrorOutOfDateKhr = -1000001004;
+
+        /// <summary>The driver has abandoned the device; nothing made by it can be used again.</summary>
+        internal const int ErrorDeviceLost = -4;
+
+        /// <summary>The window's surface has gone, which takes the swapchain with it.</summary>
+        internal const int ErrorSurfaceLostKhr = -1000000000;
+
+        /// <summary>Exclusive fullscreen was taken away, which invalidates the swapchain.</summary>
+        internal const int ErrorFullScreenExclusiveModeLostExt = -1000255000;
 
         internal const uint StructureApplicationInfo = 0;
         internal const uint StructureInstanceCreateInfo = 1;

@@ -664,6 +664,21 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Puts this controller into its paused state if it has one and is not already in it.
+        /// </summary>
+        /// <returns><see langword="true" /> if this call is what paused it.</returns>
+        /// <remarks>
+        /// This is deliberately not the menu button. A button press toggles, which is right for a
+        /// player and wrong for anything the game does to itself: asking twice, or asking a screen
+        /// that is already paused, would resume it. Most screens have no paused state and answer
+        /// <see langword="false" />.
+        /// </remarks>
+        public virtual bool EnsurePaused()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Handles mouse-move input.
         /// </summary>
         /// <param name="x">Mouse X coordinate.</param>

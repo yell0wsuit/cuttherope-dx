@@ -171,6 +171,36 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.Equal(events.Count, new HashSet<string>(events).Count);
         }
 
+        [Theory]
+        [InlineData(Vk.ErrorDeviceLost)]
+        [InlineData(Vk.ErrorSurfaceLostKhr)]
+        [InlineData(Vk.ErrorFullScreenExclusiveModeLostExt)]
+        public void ALostVulkanDeviceIsReportedAsSomethingTheHostCanRecoverFrom(int result)
+        {
+            GraphicsDeviceLostException lost = Assert.Throws<GraphicsDeviceLostException>(
+                () => VulkanApi.Check(result, "vkQueuePresentKHR"));
+
+            Assert.Contains("vkQueuePresentKHR", lost.Message, StringComparison.Ordinal);
+            Assert.Contains(result.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                lost.Message, StringComparison.Ordinal);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-2)]
+        [InlineData(Vk.ErrorOutOfDateKhr)]
+        public void AnOrdinaryVulkanFailureIsStillAnOrdinaryFailure(int result)
+        {
+            _ = Assert.Throws<InvalidOperationException>(
+                () => VulkanApi.Check(result, "vkQueueSubmit"));
+        }
+
+        [Fact]
+        public void ASucceedingVulkanCallReportsNothing()
+        {
+            VulkanApi.Check(Vk.Success, "vkQueueSubmit");
+        }
+
         /// <summary>Builds a live selection whose resources record their own release.</summary>
         private static GraphicsSelection<Resource> Select(
             string platform, GraphicsBackendKind? forced, List<string> events)

@@ -20,6 +20,12 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <summary>The <c>MTLCommandQueue</c> shared with the Skia context.</summary>
         private nint queue;
 
+        /// <summary><c>MTLCommandBufferStatusCompleted</c>.</summary>
+        private const int MTLCommandBufferStatusCompleted = 4;
+
+        /// <summary><c>MTLCommandBufferStatusError</c>.</summary>
+        private const int MTLCommandBufferStatusError = 5;
+
         /// <summary>The <c>CAMetalDrawable</c> held between <see cref="AcquireFrame" /> and <see cref="Present" />.</summary>
         private nint drawable;
 
@@ -116,9 +122,20 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             _ = ObjC.Send(command, "presentDrawable:", drawable);
             _ = ObjC.Send(command, "commit");
             _ = ObjC.Send(command, "waitUntilCompleted"); // Prototype uses one frame in flight.
-            if (ObjC.Send(command, "status") != 4)
+
+            // Waiting leaves the buffer either completed or in error, and the error state after a
+            // present is how a GPU reset or a removed device reaches this process. Reported as an
+            // ordinary failure it would take the game down instead of reaching recovery.
+            nint status = ObjC.Send(command, "status");
+            if (status == MTLCommandBufferStatusError)
             {
-                throw new InvalidOperationException("Metal presentation command failed.");
+                throw new GraphicsDeviceLostException("The Metal presentation command failed.");
+            }
+
+            if (status != MTLCommandBufferStatusCompleted)
+            {
+                throw new InvalidOperationException(
+                    $"Metal presentation ended in command buffer status {status}.");
             }
 
             ClearSurface();

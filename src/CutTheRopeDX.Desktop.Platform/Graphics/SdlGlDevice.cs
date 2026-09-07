@@ -95,10 +95,18 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// A swap that fails means the context is no longer usable, which on this backend is what
+        /// a driver reset looks like. Skia notices the same loss when it abandons the context, but
+        /// only on the frame after this one.
+        /// </remarks>
         public override void Present()
         {
             CheckThread();
-            Check(SDL.GLSwapWindow(Window));
+            if (!SDL.GLSwapWindow(Window))
+            {
+                throw new GraphicsDeviceLostException($"SDL could not swap the GL window: {SDL.GetError()}");
+            }
         }
     }
 }

@@ -574,7 +574,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
                 if (acquired is not (Vk.Success or Vk.SuboptimalKhr))
                 {
-                    throw new InvalidOperationException($"vkAcquireNextImageKHR failed with VkResult {acquired}.");
+                    VulkanApi.Check(acquired, "vkAcquireNextImageKHR");
                 }
 
                 VulkanApi.Check(vk.WaitForFences(device, 1, fence, 1, Vk.WholeTimeout), "vkWaitForFences");

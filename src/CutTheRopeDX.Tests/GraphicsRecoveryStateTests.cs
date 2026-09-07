@@ -80,6 +80,37 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void RecoveryLeavesAnAlreadyPausedGamePaused()
+        {
+            _ = HeadlessGame.Boot();
+            GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
+            GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            HeadlessGame.StepFrames(scene, 60);
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+            Assert.False(scene.updateable);
+
+            Recover();
+
+            Assert.False(scene.updateable);
+            Assert.True(controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled());
+        }
+
+        [Fact]
+        public void RepeatedLossesOverAPausedGameNeverResumeIt()
+        {
+            _ = HeadlessGame.Boot();
+            GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
+            GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
+            HeadlessGame.StepFrames(scene, 60);
+
+            for (int loss = 0; loss < 4; loss++)
+            {
+                Recover();
+                Assert.False(scene.updateable);
+            }
+        }
+
+        [Fact]
         public void RecoveryLeavesAMenuOnTheSameScreenWithTheSameSelectionAndScroll()
         {
             _ = HeadlessGame.Boot();

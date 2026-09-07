@@ -388,6 +388,11 @@ namespace CutTheRopeDX.Desktop
             render.Rebind(device);
             assets.Rebind(device.Context);
             GraphicsRecoveryReport report = GraphicsRecovery.Complete(plan);
+
+            // Building a device takes real time, and the loop would otherwise treat all of it as
+            // gameplay owed and replay it as one batch of catch-up updates. Nothing happened
+            // during it that the game should live through, so the accounting starts again here.
+            loop.Reset(clock.Elapsed);
             Console.WriteLine(
                 $"[sdl] recovered on {selection.Kind} at frame {frameCount}: "
                 + $"{report.ReloadedAssets} assets reloaded, {report.DroppedCaptures} captures dropped");
