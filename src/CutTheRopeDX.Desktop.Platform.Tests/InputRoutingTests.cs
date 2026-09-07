@@ -40,6 +40,25 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.Equal(TouchLocationState.Released, touches[1].State);
             Assert.False(input.IsKeyDown(KeyCode.Escape));
         }
+        [Theory]
+        [InlineData(SDL.Keycode.Left, (int)KeyCode.Left)]
+        [InlineData(SDL.Keycode.Right, (int)KeyCode.Right)]
+        [InlineData(SDL.Keycode.F5, (int)KeyCode.F5)]
+        [InlineData(SDL.Keycode.Space, (int)KeyCode.Space)]
+        [InlineData(SDL.Keycode.Return, (int)KeyCode.Enter)]
+        [InlineData(SDL.Keycode.Escape, (int)KeyCode.Escape)]
+        public void EveryKeyCoreAsksAboutIsReported(SDL.Keycode pressed, int expectedCode)
+        {
+            KeyCode expected = (KeyCode)expectedCode;
+            SdlInputRouter input = new();
+            input.Key(pressed, true, false, SDL.Keymod.None);
+            Assert.True(input.IsKeyDown(expected));
+            Assert.True(input.IsKeyPressed(expected));
+
+            // IsKeyPressed reports an edge, so the same press must not report twice.
+            Assert.False(input.IsKeyPressed(expected));
+        }
+
         [Fact]
         public void FullscreenEdgesAndFractionalWheelArePreserved()
         {

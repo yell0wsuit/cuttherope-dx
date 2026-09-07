@@ -415,11 +415,25 @@ namespace CutTheRopeDX.Desktop.Platform
 
             return false;
         }
+
+        /// <summary>
+        /// The keys Core asks about, and nothing else. SDL derives arrow and function keycodes
+        /// from scancodes, so unlike the ASCII keys they cannot be translated arithmetically.
+        /// </summary>
+        private static readonly Dictionary<SDL.Keycode, KeyCode> KeyMap = new()
+        {
+            [SDL.Keycode.Escape] = KeyCode.Escape,
+            [SDL.Keycode.Return] = KeyCode.Enter,
+            [SDL.Keycode.KpEnter] = KeyCode.Enter,
+            [SDL.Keycode.Space] = KeyCode.Space,
+            [SDL.Keycode.Left] = KeyCode.Left,
+            [SDL.Keycode.Right] = KeyCode.Right,
+            [SDL.Keycode.F5] = KeyCode.F5,
+        };
+
         private static bool TryMapKey(SDL.Keycode key, out KeyCode mapped)
         {
-            uint code = (uint)key;
-            int value = code is >= 97 and <= 122 ? (int)code - 32 : code switch { 27 => 27, 13 => 13, 32 => 32, 8 => 8, 9 => 9, _ => -1 };
-            mapped = (KeyCode)value; return value >= 0;
+            return KeyMap.TryGetValue(key, out mapped);
         }
         public void Scroll(float amount, bool flipped)
         {
