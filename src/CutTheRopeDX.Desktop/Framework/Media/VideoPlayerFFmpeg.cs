@@ -132,6 +132,10 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!fileExists(fullPath) || !librariesLoaded)
             {
+                // Both of these skip the cutscene silently otherwise, which makes a missing video
+                // file look exactly like a missing decoder.
+                Console.WriteLine(
+                    $"[FFmpeg] Skipping {moviePath}: file={fileExists(fullPath)}, libraries={librariesLoaded}");
                 PlaybackFinished?.Invoke();
                 return;
             }
