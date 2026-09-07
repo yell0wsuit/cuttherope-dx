@@ -43,6 +43,7 @@ namespace CutTheRopeDX.Desktop
         private int frameCount;
         private int frameLimit;
         private string screenshot;
+        private bool drewMovie;
         private readonly Queue<(int Frame, float X, float Y, bool? Down)> taps = new();
 
         public bool CanExit => true;
@@ -81,6 +82,9 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
+            // A movie replaces the scene, so the frame goes straight to the surface and the
+            // render target is not presented over it afterwards.
+            drewMovie = true;
             device.Canvas.Clear(SKColors.Black);
             MovieMgr movies = Application.SharedMovieMgr();
             if (!movies.IsTextureReady() || movies.GetTexture() is not SkiaVideoFrameTexture frame)
@@ -243,6 +247,7 @@ namespace CutTheRopeDX.Desktop
             }
 
             device.Canvas.Clear(SKColors.Black);
+            drewMovie = false;
             Renderer.BeginFrame();
             try { CtrRenderer.OnDrawFrame(); }
             finally { Renderer.EndFrame(); }
@@ -251,7 +256,11 @@ namespace CutTheRopeDX.Desktop
             // refreshed at the same point in the frame. Core only enables and disables the
             // service, so tracking the presentation scale and the pressed variant is the host's.
             cursor.Update(ScreenPresentation.Instance.Snapshot.Scale, window.DevicePixelRatio, input.PrimaryPressed);
-            Renderer.CopyFromRenderTargetToScreen();
+            if (!drewMovie)
+            {
+                Renderer.CopyFromRenderTargetToScreen();
+            }
+
             device.Flush();
             frameCount++;
             if (frameLimit > 0 && frameCount >= frameLimit && screenshot != null)
