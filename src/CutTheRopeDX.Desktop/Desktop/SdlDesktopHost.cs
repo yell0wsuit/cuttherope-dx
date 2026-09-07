@@ -29,6 +29,7 @@ namespace CutTheRopeDX.Desktop
         private SdlWindowService window;
         private SdlInputRouter input;
         private SdlCursorService cursor;
+        private SdlGamepadService gamepads;
         private readonly SdlHostLoop loop = new();
         private readonly Stopwatch clock = new();
         private TimeSpan nextSave = TimeSpan.FromSeconds(1);
@@ -70,7 +71,7 @@ namespace CutTheRopeDX.Desktop
                 "angle" => GraphicsBackendKind.Angle,
                 _ => throw new ArgumentException($"Unknown SDL renderer '{renderer}'."),
             };
-            if (!SDL.Init(SDL.InitFlags.Video | SDL.InitFlags.Events))
+            if (!SDL.Init(SDL.InitFlags.Video | SDL.InitFlags.Events | SDL.InitFlags.Gamepad))
             {
                 throw new InvalidOperationException(SDL.GetError());
             }
@@ -117,6 +118,13 @@ namespace CutTheRopeDX.Desktop
                 Quit = Exit,
                 Resized = () => { device.Resize(); window.RefreshSurface(); },
             };
+            // SDL reports gamepad buttons only for devices that have been opened, so the Back
+            // handling in the router is inert until this runs.
+            gamepads = new(
+                static () => SDL.GetGamepads(out _) ?? [],
+                static id => SDL.OpenGamepad(id),
+                static handle => SDL.CloseGamepad(handle));
+            gamepads.OpenConnected();
             cursor = new(input.ClearInput);
             cursor.Load(Path.Combine(root, "images/cursor.png"), Path.Combine(root, "images/cursor_active.png"));
             PlatformServices.Host = this;
@@ -139,6 +147,7 @@ namespace CutTheRopeDX.Desktop
             {
                 while (SDL.PollEvent(out SDL.Event evt))
                 {
+                    gamepads.HandleEvent(in evt);
                     input.HandleEvent(in evt);
                 }
 
@@ -253,6 +262,7 @@ namespace CutTheRopeDX.Desktop
                 Preferences.Update();
             }
             PlatformServices.RichPresence?.Dispose();
+            gamepads?.Dispose();
             cursor?.Dispose();
             render?.Dispose();
             assets?.Dispose();
