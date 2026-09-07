@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             List<GraphicsBackendKind> attempts = [];
 
             GraphicsRecoveryFailedException failure = Assert.Throws<GraphicsRecoveryFailedException>(
-                () => coordinator.Recover<Resource>(lost, (kind, _) =>
+                () => coordinator.Recover(lost, (kind, _) =>
                 {
                     attempts.Add(kind);
                     throw new InvalidOperationException(kind.ToString());
@@ -141,7 +141,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                 _ => { });
 
             GraphicsRecoveryFailedException failure = Assert.Throws<GraphicsRecoveryFailedException>(
-                () => coordinator.Recover<Resource>(lost, (_, _) => throw creation, _ => { }));
+                () => coordinator.Recover(lost, (_, _) => throw creation, _ => { }));
 
             IReadOnlyList<Exception> reported = ((AggregateException)failure.InnerException).Flatten().InnerExceptions;
             Assert.Contains(creation, reported);
