@@ -2,7 +2,7 @@
 
 # Copies FFmpeg dylibs from Homebrew into a Frameworks directory and rewrites
 # install names so the bundle is fully self-contained.
-# Usage: ./bundle_ffmpeg_macos.sh <frameworks_dir>
+# Usage: ./bundle_ffmpeg_macos.sh <frameworks_dir> [license_dir]
 #
 # Requires Homebrew FFmpeg: brew install ffmpeg@9
 
@@ -10,9 +10,15 @@ set -e
 
 FRAMEWORKS_DIR="$1"
 if [ -z "$FRAMEWORKS_DIR" ]; then
-    echo "Usage: bundle_ffmpeg_macos.sh <frameworks_dir>"
+    echo "Usage: bundle_ffmpeg_macos.sh <frameworks_dir> [license_dir]"
     exit 1
 fi
+
+# Where the LGPL notice goes. codesign treats everything under Contents/Frameworks as code
+# and refuses to seal a bundle holding a stray text file there, so a caller assembling an
+# .app passes Contents/Resources instead. Defaults to the Frameworks directory for callers
+# that are not building a bundle.
+LICENSE_DIR="${2:-$FRAMEWORKS_DIR}"
 
 # The FFmpeg major this build ships. It has to match the one FFmpeg.AutoGen binds
 # against, because the binding resolves every function from a library named for its
@@ -103,10 +109,11 @@ done
 
 # Copy FFmpeg license for LGPL compliance
 FFMPEG_CELLAR=$(python3 -c "import pathlib; print(pathlib.Path('$FFMPEG_LIB/..').resolve())")
+mkdir -p "$LICENSE_DIR"
 if [ -f "$FFMPEG_CELLAR/LICENSE" ]; then
-    cp "$FFMPEG_CELLAR/LICENSE" "$FRAMEWORKS_DIR/FFmpeg-LICENSE.txt"
+    cp "$FFMPEG_CELLAR/LICENSE" "$LICENSE_DIR/FFmpeg-LICENSE.txt"
 elif [ -f "$FFMPEG_CELLAR/COPYING.LGPLv2.1" ]; then
-    cp "$FFMPEG_CELLAR/COPYING.LGPLv2.1" "$FRAMEWORKS_DIR/FFmpeg-LICENSE.txt"
+    cp "$FFMPEG_CELLAR/COPYING.LGPLv2.1" "$LICENSE_DIR/FFmpeg-LICENSE.txt"
 fi
 
 TOTAL=$(ls "$FRAMEWORKS_DIR"/*.dylib 2>/dev/null | wc -l | tr -d ' ')

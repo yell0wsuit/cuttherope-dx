@@ -65,16 +65,21 @@ mkdir -p "$APP_DIR/Contents/MacOS"
 mkdir -p "$APP_DIR/Contents/Resources"
 
 # Copy runtime files
-rsync -av \
+# Resources/ is excluded because the publish puts the .icns there and a bundle keeps its
+# resources in Contents/Resources, not beside the executable. codesign treats a Resources
+# directory under Contents/MacOS as a nested code object it cannot seal, and refuses to
+# sign the bundle at all; the icon is copied to its proper home a few lines below.
+rsync -a \
   --exclude '*.app' \
   --exclude 'content' \
   --exclude 'icons' \
+  --exclude 'Resources' \
   "$PUBLISH_DIR/" \
   "$APP_DIR/Contents/MacOS/"
 
 # Copy game content
 if [ -d "$PUBLISH_DIR/content" ]; then
-  rsync -av \
+  rsync -a \
     "$PUBLISH_DIR/content/" \
     "$APP_DIR/Contents/Resources/content/"
 else
@@ -101,7 +106,7 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
 # Step 3: Bundle FFmpeg
 # =========================
 echo "[3/5] Bundling FFmpeg dylibs into Frameworks..."
-"$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks"
+"$SCRIPT_DIR/bundle_ffmpeg_macos.sh" "$APP_DIR/Contents/Frameworks" "$APP_DIR/Contents/Resources"
 
 # =========================
 # Step 4: Finalize
@@ -111,9 +116,15 @@ echo "[4/5] Finalizing..."
 # Dev convenience: remove quarantine attribute
 xattr -dr com.apple.quarantine "$APP_DIR" || true
 
-# Ad-hoc codesign the entire .app bundle (deep signs all binaries and dylibs)
+# Ad-hoc codesign every nested library, then the bundle itself. The bundle carries more
+# than forty of them - SDL, its mixer codecs, Skia and the FFmpeg dylibs - and on Apple
+# Silicon an unsigned one fails to load rather than warning. --deep is Apple's deprecated
+# shorthand for this, so the two phases are spelled out, matching what the csproj does for
+# the AVFoundation bundle.
+echo "Codesigning dylibs..."
+find "$APP_DIR" -name '*.dylib' -print0 | xargs -0 -I {} codesign --force --sign - '{}'
 echo "Codesigning .app bundle..."
-codesign --force --deep --sign - "$APP_DIR"
+codesign --force --sign - "$APP_DIR"
 
 # =========================
 # Step 5: Package .dmg

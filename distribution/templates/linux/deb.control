@@ -4,5 +4,6 @@ Section: games
 Priority: optional
 Architecture: {{ARCHITECTURE}}
 Maintainer: {{MAINTAINER}}
+Depends: {{DEPENDS}}
 Description: {{DESCRIPTION}}
  Project website: https://github.com/yell0wsuit/cuttherope-dx
