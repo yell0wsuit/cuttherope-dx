@@ -44,6 +44,7 @@ namespace CutTheRopeDX.Desktop
         private int frameLimit;
         private string screenshot;
         private bool drewMovie;
+        private bool movieSkipArmed;
         private readonly Queue<(int Frame, float X, float Y, bool? Down)> taps = new();
 
         public bool CanExit => true;
@@ -92,7 +93,14 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            if (input.PrimaryPressed)
+            // The press that started the cutscene is still down when its first frame is drawn, so
+            // skipping waits for the pointer to come up once. Without that, choosing Play both
+            // opens the intro and dismisses it, and the movie is never seen.
+            if (!input.PrimaryPressed)
+            {
+                movieSkipArmed = true;
+            }
+            else if (movieSkipArmed)
             {
                 movies.Stop();
                 return;
@@ -258,6 +266,9 @@ namespace CutTheRopeDX.Desktop
             cursor.Update(ScreenPresentation.Instance.Snapshot.Scale, window.DevicePixelRatio, input.PrimaryPressed);
             if (!drewMovie)
             {
+                // Away from a movie the latch rests disarmed, so the next cutscene starts out
+                // immune to whatever press opened it.
+                movieSkipArmed = false;
                 Renderer.CopyFromRenderTargetToScreen();
             }
 
