@@ -10,6 +10,9 @@
     <PackageReference Include="SDL3-CS.Windows" />
     <PackageReference Include="SDL3-CS.Linux" />
     <PackageReference Include="SDL3-CS.MacOS" />
+    <PackageReference Include="SDL3-CS.Windows.Mixer" />
+    <PackageReference Include="SDL3-CS.Linux.Mixer" />
+    <PackageReference Include="SDL3-CS.MacOS.Mixer" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
     <PackageReference Include="SkiaSharp.NativeAssets.macOS" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
