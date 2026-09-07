@@ -617,6 +617,18 @@ namespace CutTheRopeDX.Framework.Core
         {
             if (disposing)
             {
+                // A disposed controller must not stay the routed one. Its views are about to
+                // become null, and every override that routes through it - input, and the pause
+                // that recovery asks for - dereferences them without asking whether it is still
+                // alive. Clearing the reference here keeps that from depending on the order in
+                // which callers happen to tear things down.
+                RootController root = Application.SharedRootController();
+                if (root != null && !ReferenceEquals(root, this)
+                    && ReferenceEquals(root.GetCurrentController(), this))
+                {
+                    root.SetCurrentController(null);
+                }
+
                 if (views != null)
                 {
                     foreach (View view in views.Values)
