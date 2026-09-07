@@ -162,13 +162,10 @@ namespace CutTheRopeDX.Framework.Media
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
             try
             {
-                IMusicTrack track = _backend.LoadMusic(musicPath);
-                activeSong = track;
-                _backend.PlayMusic(track, true);
+                _backend.PlayMusic(_backend.LoadMusic(musicPath), true);
             }
             catch (Exception)
             {
-                activeSong = null;
             }
         }
 
@@ -280,7 +277,6 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
-            activeSong = null;
             try
             {
                 _backend?.StopMusic();
@@ -473,10 +469,6 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static IAudioBackend _backend;
 
-        /// <summary>
-        /// Music track currently owned by the media player.
-        /// </summary>
-        private static IMusicTrack activeSong;
 
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.

@@ -153,7 +153,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <remarks>
         /// Todo: Add custom save directory when setting UI is implemented.
         /// </remarks>
-        private static string SaveDirectory
+        internal static string SaveDirectory
         {
             get
             {

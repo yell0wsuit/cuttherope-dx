@@ -3,7 +3,6 @@
   <Project Path="src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop/CutTheRopeDX.Desktop.csproj" />
   <Project Path="src/CutTheRopeDX.Desktop.Tests/CutTheRopeDX.Desktop.Tests.csproj" />
-  <Project Path="src/CutTheRopeDX.Launcher/CutTheRopeDX.Launcher.csproj" />
   <Project Path="src/CutTheRopeDX.Tests/CutTheRopeDX.Tests.csproj" />
   <Project Path="src/CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
   <Project Path="src/CutTheRopeDX.Rendering.Skia.Tests/CutTheRopeDX.Rendering.Skia.Tests.csproj" />

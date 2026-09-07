@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CutTheRopeDX.Core\CutTheRopeDX.Core.csproj" />
-    <ProjectReference Include="..\CutTheRopeDX.Launcher\CutTheRopeDX.Launcher.csproj" />
   </ItemGroup>
 
   <!--

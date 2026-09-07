@@ -38,6 +38,7 @@ namespace CutTheRopeDX.Desktop
         private SdlGamepadService gamepads;
         private SdlAudioBackend audio;
         private GraphicsRecoveryCoordinator recovery;
+        private RendererMemory rendererMemory;
         private readonly SkiaResourceRegistry registry = new();
         private readonly SdlHostLoop loop = new();
         private readonly Stopwatch clock = new();
@@ -174,7 +175,15 @@ namespace CutTheRopeDX.Desktop
             initialized = true;
             string platform = OperatingSystem.IsMacOS() ? "macos" : OperatingSystem.IsWindows() ? "windows" : "linux";
             recovery = new(platform, forced);
-            selection = BackendSelector.Select(platform, forced, CreateDevice, ValidateDevice);
+
+            // A driver that faults while starting up takes the process with it, so the renderer
+            // being tried is written down first and the note torn up once one has drawn a frame.
+            rendererMemory = new(Path.Combine(Preferences.SaveDirectory, "renderer.txt"));
+            selection = BackendSelector.Attempt(
+                rendererMemory.Filter(BackendSelector.PreferenceOrder(platform, forced)),
+                (kind, lifetime) => { rendererMemory.BeginAttempt(kind); return CreateDevice(kind, lifetime); },
+                ValidateDevice);
+            rendererMemory.RecordSuccess();
             SdlGraphicsDevice device = selection.Device;
             _ = SDL.SetWindowTitle(device.Window, WindowTitle);
             string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
