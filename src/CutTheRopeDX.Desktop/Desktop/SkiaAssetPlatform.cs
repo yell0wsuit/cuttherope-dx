@@ -89,7 +89,9 @@ namespace CutTheRopeDX.Desktop
         }
         public FontGeneric Font(string resourceName)
         {
-            return SkiaFontCache.Load(Resources.FontConfig.GetConfiguration(resourceName, LanguageHelper.CurrentAsInt));
+            return SkiaFontCache.Load(
+                Resources.FontConfig.GetConfiguration(resourceName, LanguageHelper.CurrentAsInt),
+                SkiaFontCache.PathForConfiguredFile);
         }
 
         public void ClearFontCache()
