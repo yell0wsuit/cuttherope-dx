@@ -49,8 +49,21 @@ namespace CutTheRopeDX.Desktop
         private bool moviePressArmed;
         private readonly Queue<(int Frame, float X, float Y, bool? Down)> taps = new();
         private readonly Queue<int> scheduledLosses = new();
+        private int recoveriesWithoutAFrame;
 
         private const string WindowTitle = "Cut The Rope: DX - SDL preview";
+
+        /// <summary>
+        /// How many devices may be built without one of them drawing anything before the run is
+        /// given up as unrecoverable.
+        /// </summary>
+        /// <remarks>
+        /// Bringing a device up resizes the window, and a resize is itself something that can
+        /// report a lost device, so a device that comes up but cannot be resized would replace
+        /// itself forever without ever presenting. A device that draws even one frame resets this,
+        /// so an unlucky burst of real losses is not mistaken for that.
+        /// </remarks>
+        private const int MaximumFramelessRecoveries = 4;
 
         public bool CanExit => true;
         public string LevelEditorUrl => null;
@@ -229,7 +242,7 @@ namespace CutTheRopeDX.Desktop
             loop.Reset(clock.Elapsed);
             while (!exiting)
             {
-                while (SDL.PollEvent(out SDL.Event evt))
+                while (!exiting && SDL.PollEvent(out SDL.Event evt))
                 {
 
                     gamepads.HandleEvent(in evt);
@@ -269,9 +282,22 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
+            GuardDevice(DrawFrame);
+        }
+
+        /// <summary>Runs work that touches the device, recovering if it reports a loss.</summary>
+        /// <param name="work">The device work to attempt.</param>
+        /// <remarks>
+        /// Drawing is not the only thing that talks to the device. Resizing rebuilds the swapchain
+        /// and waits for the device to go idle, which is one of the first places a driver reports a
+        /// reset, and it runs from event handling rather than from the frame. A loss reaching this
+        /// from anywhere has to end in recovery, not in an unhandled exception out of the run loop.
+        /// </remarks>
+        private void GuardDevice(Action work)
+        {
             try
             {
-                DrawFrame();
+                work();
             }
             catch (GraphicsDeviceLostException lost)
             {
@@ -317,6 +343,7 @@ namespace CutTheRopeDX.Desktop
                 data.SaveTo(file);
             }
             device.Present();
+            recoveriesWithoutAFrame = 0;
             if (frameLimit > 0 && frameCount >= frameLimit)
             {
                 Exit();
@@ -338,7 +365,11 @@ namespace CutTheRopeDX.Desktop
             input.WindowSize = () => (window.WindowWidth, window.WindowHeight);
             input.MapPosition = (x, y) => window.MapWindowToView(x, y);
             input.ToggleFullscreen = () => window.ToggleFullScreen();
-            input.Resized = () => { selection.Device.Resize(); window.RefreshSurface(); };
+            input.Resized = () => GuardDevice(() =>
+            {
+                selection.Device.Resize();
+                window.RefreshSurface();
+            });
         }
 
         /// <summary>
@@ -355,7 +386,20 @@ namespace CutTheRopeDX.Desktop
         /// </remarks>
         private void RecoverDevice(GraphicsDeviceLostException lost)
         {
+            if (exiting)
+            {
+                return;
+            }
+
             Console.Error.WriteLine($"[sdl] device lost: {lost.Message}");
+            recoveriesWithoutAFrame++;
+            if (recoveriesWithoutAFrame > MaximumFramelessRecoveries)
+            {
+                Abandon($"The graphics device was replaced {MaximumFramelessRecoveries} times "
+                    + "without any of them drawing a frame.");
+                return;
+            }
+
             GraphicsRecoveryPlan plan = GraphicsRecovery.Begin();
 
             // A press that was down when the device went is not a press the player is still
@@ -378,7 +422,7 @@ namespace CutTheRopeDX.Desktop
             }
             catch (GraphicsRecoveryFailedException failure)
             {
-                Abandon(failure);
+                Abandon(failure.Message);
                 return;
             }
 
@@ -398,17 +442,22 @@ namespace CutTheRopeDX.Desktop
                 + $"{report.ReloadedAssets} assets reloaded, {report.DroppedCaptures} captures dropped");
         }
 
-        /// <summary>Shuts the game down after no renderer could replace the lost device.</summary>
-        /// <param name="failure">The candidates that were tried and why each refused.</param>
+        /// <summary>Shuts the game down when the graphics device cannot be got back.</summary>
+        /// <param name="reason">What was tried, for the log and the dialog.</param>
         /// <remarks>
         /// Nothing here touches the graphics device. The message box is asked for with no parent
         /// window, because the only window the game had belonged to the device that has gone, and
         /// drawing recovery UI through dead resources is how a recoverable failure turns into a
         /// crash on the way out.
         /// </remarks>
-        private void Abandon(GraphicsRecoveryFailedException failure)
+        private void Abandon(string reason)
         {
-            Console.Error.WriteLine($"[sdl] {failure.Message}");
+            if (exiting)
+            {
+                return;
+            }
+
+            Console.Error.WriteLine($"[sdl] {reason}");
             audio?.Dispose();
             audio = null;
             window?.SavePreferences();
@@ -419,7 +468,7 @@ namespace CutTheRopeDX.Desktop
             _ = SDL.ShowSimpleMessageBox(
                 SDL.MessageBoxFlags.Error,
                 "Cut the Rope: DX",
-                $"{failure.Message}\n\nThe game has to close. Your progress has been saved.",
+                $"{reason}\n\nThe game cannot continue and has to be closed. Your progress is unaffected.",
                 0);
             Exit();
         }
