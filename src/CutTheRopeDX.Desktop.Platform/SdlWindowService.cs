@@ -22,6 +22,7 @@ namespace CutTheRopeDX.Desktop.Platform
         {
             Check(SDL.SetWindowMinimumSize(window, 320, 480));
             ApplyWindowSize(width, height);
+            Center();
             if (fullscreen != IsFullScreen)
             {
                 ToggleFullScreen();
@@ -49,6 +50,23 @@ namespace CutTheRopeDX.Desktop.Platform
             windowedWidth = width; windowedHeight = height;
             if (!IsFullScreen) { Check(SDL.SetWindowSize(window, width, height)); Check(SDL.SyncWindow(window)); }
             RefreshSurface(); SavePreferences();
+        }
+        /// <summary>Puts the window in the middle of the display it was placed on.</summary>
+        /// <remarks>
+        /// The window is born at the backend's probe size and only then resized to the saved one,
+        /// and a resize keeps the top-left corner fixed, so whatever placement SDL chose for the
+        /// original size leaves the real window sitting off-center.
+        /// </remarks>
+        public void Center()
+        {
+            if (IsFullScreen)
+            {
+                return;
+            }
+
+            int centered = (int)SDL.WindowPosCenteredDisplay((int)SDL.GetDisplayForWindow(window));
+            Check(SDL.SetWindowPosition(window, centered, centered));
+            Check(SDL.SyncWindow(window));
         }
         public void RefreshSurface()
         {
