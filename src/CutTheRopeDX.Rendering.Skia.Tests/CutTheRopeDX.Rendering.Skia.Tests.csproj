@@ -24,7 +24,7 @@
     skip themselves when the typeface they need did not arrive.
   -->
   <ItemGroup>
-    <None Include="../../content/fonts/*.ttf" Link="fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../content/fonts/*.ttf;../../content/fonts/*.otf" Link="fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

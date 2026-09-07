@@ -15,6 +15,45 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
     public sealed class FontLayoutTests
     {
         [Theory]
+        [InlineData("PlaypenSans-SemiBold.ttf", "Rope")]
+        [InlineData("Cafe24DongdongRegular.otf", "\ud55c\uad6d\uc5b4")]
+        public void BothOutlineFlavorsLoadAndRender(string file, string text)
+        {
+            // Skia reads the sfnt version tag, not the file name: TrueType outlines and the
+            // PostScript outlines an .otf carries are both supported. The desktop ships the
+            // authored .otf, so nothing converts it before Skia sees it.
+            string path = Path.Combine(AppContext.BaseDirectory, "fonts", file);
+            Assert.SkipUnless(File.Exists(path), $"Font '{file}' is a fetched asset and is not present.");
+
+            using SKTypeface typeface = SKTypeface.FromData(SKData.CreateCopy(File.ReadAllBytes(path)));
+            Assert.NotNull(typeface);
+
+            using SKFont font = new(typeface, 40f);
+            Assert.All(font.GetGlyphs(text), glyph => Assert.NotEqual(0, glyph));
+
+            using SKSurface surface = SKSurface.Create(new SKImageInfo(200, 200));
+            surface.Canvas.Clear(SKColors.Black);
+            using SKPaint paint = new() { IsAntialias = true, Color = SKColors.White };
+            surface.Canvas.DrawText(text, 10, 60, SKTextAlign.Left, font, paint);
+
+            using SKImage image = surface.Snapshot();
+            using SKBitmap pixels = SKBitmap.FromImage(image);
+            int lit = 0;
+            for (int y = 0; y < 200; y++)
+            {
+                for (int x = 0; x < 200; x++)
+                {
+                    if (pixels.GetPixel(x, y).Red > 8)
+                    {
+                        lit++;
+                    }
+                }
+            }
+
+            Assert.True(lit > 50, $"'{file}' drew {lit} lit pixels");
+        }
+
+        [Theory]
         [InlineData("PlaypenSans-SemiBold.ttf", "Rope", false)]
         [InlineData("MPLUSRounded1c-Medium.ttf", "日本語", true)]
         public void MultilingualTextRendersUnderModelRotation(string file, string text, bool rotated)
