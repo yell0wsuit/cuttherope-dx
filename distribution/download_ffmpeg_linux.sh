@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Downloads prebuilt FFmpeg 8.1 LGPL shared libraries for Linux x64 from BtbN/FFmpeg-Builds.
+# Downloads prebuilt FFmpeg 9.0 LGPL shared libraries for Linux x64 from BtbN/FFmpeg-Builds.
+# The major version must match the one FFmpeg.AutoGen binds against: it resolves each
+# function from a library named for its own soname, so a mismatch leaves no video decoder.
 # Usage: ./download_ffmpeg_linux.sh <output_dir>
 #
 # The shared libraries (.so files) and LICENSE are copied into <output_dir>/ffmpeg/.
@@ -17,7 +19,7 @@ if [ -z "$OUTPUT_DIR" ]; then
 fi
 
 RELEASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
-ARCHIVE_NAME="ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1.tar.xz"
+ARCHIVE_NAME="ffmpeg-n9.0-latest-linux64-lgpl-shared-9.0.tar.xz"
 FFMPEG_URL="$RELEASE_URL/$ARCHIVE_NAME"
 CHECKSUMS_URL="$RELEASE_URL/checksums.sha256"
 FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
@@ -67,7 +69,7 @@ echo "FFmpeg checksum verified."
 echo "Extracting shared libraries..."
 tar -xf "$TEMP_DIR/$ARCHIVE_NAME" -C "$TEMP_DIR"
 
-# The archive extracts to a directory like ffmpeg-n8.1-latest-linux64-lgpl-shared-8.1/
+# The archive extracts to a directory like ffmpeg-n9.0-latest-linux64-lgpl-shared-9.0/
 EXTRACTED_DIR=$(find "$TEMP_DIR" -maxdepth 1 -type d -name 'ffmpeg-*' | head -1)
 if [ -z "$EXTRACTED_DIR" ]; then
     echo "Error: could not find extracted FFmpeg directory"

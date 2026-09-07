@@ -110,9 +110,14 @@ def publish(
 
 
 def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
-    """Download BtbN FFmpeg LGPL shared libraries for one Windows architecture."""
+    """Download BtbN FFmpeg LGPL shared libraries for one Windows architecture.
+
+    The major version has to match the one FFmpeg.AutoGen binds against, because it
+    resolves each function from a library named for its own soname; a mismatch loads
+    nothing and leaves the game with no video decoder.
+    """
     release_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
-    archive_name = f"ffmpeg-n8.1-latest-{btbn_arch}-lgpl-shared-8.1.zip"
+    archive_name = f"ffmpeg-n9.0-latest-{btbn_arch}-lgpl-shared-9.0.zip"
     ffmpeg_url = f"{release_url}/{archive_name}"
     checksums_url = f"{release_url}/checksums.sha256"
     destination = output_dir / FFMPEG_DIRECTORY

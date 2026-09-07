@@ -17,7 +17,7 @@
     <PackageVersion Include="MonoGame.Runtime.Windows.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="MonoGame.Runtime.Mac.Vulkan" Version="$(MonoGameVersion)" />
     <PackageVersion Include="MonoGame.Runtime.Linux.Vulkan" Version="$(MonoGameVersion)" />
-    <PackageVersion Include="FFmpeg.AutoGen" Version="8.1.0" />
+    <PackageVersion Include="FFmpeg.AutoGen" Version="9.0.1.1" />
     <PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
     <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="$(SkiaSharpVersion)" />

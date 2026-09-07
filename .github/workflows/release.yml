@@ -167,8 +167,10 @@ jobs:
                   name: built-content
                   path: ${{ env.CONTENT_DIR }}
 
-            # bundle_ffmpeg_macos.sh copies the dylibs out of Homebrew's ffmpeg.
-            - run: brew install ffmpeg
+            # bundle_ffmpeg_macos.sh copies the dylibs out of Homebrew's ffmpeg. The major is
+            # pinned because FFmpeg.AutoGen resolves functions by soname, so a runner that had
+            # moved on to the next FFmpeg would ship a bundle with no working video decoder.
+            - run: brew install ffmpeg@9
 
             - name: Build ffmpeg DMG
               env:
