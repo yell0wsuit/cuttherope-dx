@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Desktop.Platform;
@@ -52,7 +53,14 @@ namespace CutTheRopeDX.Desktop
         private readonly Queue<int> scheduledLosses = new();
         private int recoveriesWithoutAFrame;
 
-        private const string WindowTitle = "Cut The Rope: DX - SDL preview";
+        /// <summary>
+        /// The running version, exactly as the assembly records it. Read once: the attribute does
+        /// not change while the process runs.
+        /// </summary>
+        internal static readonly string Version = ResolveVersion();
+
+        /// <summary>The Cut the Rope: DX name shown in the title.</summary>
+        internal const string CtrDXProductName = "Cut The Rope: DX";
 
         /// <summary>
         /// How many devices may be built without one of them drawing anything before the run is
@@ -185,7 +193,7 @@ namespace CutTheRopeDX.Desktop
                 ValidateDevice);
             rendererMemory.RecordSuccess();
             SdlGraphicsDevice device = selection.Device;
-            _ = SDL.SetWindowTitle(device.Window, WindowTitle);
+            _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));
             string root = SkiaAssetPlatform.ResolveContentRoot(AppContext.BaseDirectory);
             PlatformServices.Content = new FileContentStore(root);
 
@@ -434,7 +442,7 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            _ = SDL.SetWindowTitle(device.Window, WindowTitle);
+            _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));
             AttachWindow(device);
             window.Initialize(width, height, fullscreen);
             render.Rebind(device);
@@ -631,6 +639,39 @@ namespace CutTheRopeDX.Desktop
 
                 _ = SDL.PushEvent(ref tap);
             }
+        }
+
+        /// <summary>
+        /// Builds the window title: the CTRDX product name, the running version, and the renderer drawing it.
+        /// </summary>
+        /// <remarks>
+        /// The renderer is not settled at startup: a device loss can bring the game back on a
+        /// different one, so the title is rebuilt whenever a device is, rather than being fixed
+        /// once. <see cref="GraphicsBackendKind"/> already spells the names the way they are
+        /// written down - Metal, OpenGL, Vulkan - so it is used as it stands.
+        /// </remarks>
+        /// <param name="renderer">The renderer currently drawing.</param>
+        /// <returns>The title to give the window.</returns>
+        internal static string TitleFor(GraphicsBackendKind renderer)
+        {
+            return $"{CtrDXProductName} v{Version} | {renderer}";
+        }
+
+        /// <summary>
+        /// Reads the assembly's informational version.
+        /// </summary>
+        /// <remarks>
+        /// Reported as recorded, including the "+&lt;hash&gt;" a revision-stamped development build
+        /// appends: naming the exact commit is the point of showing a version on an unreleased
+        /// build. A release sets no suffix, so it reads as a plain four-part version.
+        /// </remarks>
+        /// <returns>The version to show, or "Unknown" when the assembly carries none.</returns>
+        private static string ResolveVersion()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            return assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                ?? assembly.GetName().Version?.ToString()
+                ?? "Unknown";
         }
 
         private static string Option(string[] args, string key)
