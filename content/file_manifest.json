@@ -1,5 +1,5 @@
 {
-    "version": 4,
+    "version": 5,
     "files": {
         "fonts/Cafe24DongdongRegular.otf": "9768b4c22405d8aea8f84f0f59748f80fa4e78ef32a4b64851a427cd8bbd2bab",
         "fonts/KNMaiyuan-Regular.ttf": "94ea78c51086b1ea58c1744784b2335dea2c5ef1c5193b80e02c7d46b8e0283f",
@@ -182,6 +182,7 @@
         "images/obj_ghost.png": "fb9d37b0a8845ce5c78aef22d3a4529f738488769bae59be45e4bd6c4270b64c",
         "images/obj_gun.png": "0c2f4cb6967799445e79680c86de426ea5fab265bfdc4ab3cb1d47e2748c4a9a",
         "images/obj_hat.png": "58b6e5f4e6b7b79b9c3339b68c1e31bd94b57ca93fb4632800909ffd2af3601b",
+        "images/obj_hat_maskable.png": "549599c55b24faa9d57d304e4732c1ddcd7c065bde25d92ea909c64303b457ae",
         "images/obj_hook.png": "052aea06519273bfbb1d38ce52a7d23f2d5473c90a6c17d6541a693403661a7d",
         "images/obj_hook_auto_chain.png": "fc5e539a010970249cbbda0bee7d6209670bd477adb52776c518fd5c964721f8",
         "images/obj_hook_chain.png": "77744e80f87ebdce456183b86daa69b4bd866188aa06d09ea869caab761173bf",
