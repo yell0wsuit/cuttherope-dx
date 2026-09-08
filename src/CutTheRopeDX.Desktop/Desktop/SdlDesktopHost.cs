@@ -22,10 +22,7 @@ using SkiaSharp;
 
 namespace CutTheRopeDX.Desktop
 {
-    /// <summary>
-    /// Opt-in SDL composition, selected by <c>--sdl</c>. The legacy host remains available as the
-    /// comparison path.
-    /// </summary>
+    /// <summary>The desktop host: SDL3 window/input/audio composed with the SkiaSharp renderer.</summary>
     internal sealed class SdlDesktopHost : IHostApp, IDisposable
     {
         private bool exiting;
