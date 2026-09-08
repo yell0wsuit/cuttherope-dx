@@ -82,6 +82,66 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void MoviePressStaysHeldUntilEveryFingerIsReleased(bool reverseReleaseOrder)
+        {
+            SdlInputRouter input = new();
+            Assert.False(input.PrimaryPressed);
+
+            input.HandleEvent(Finger(SDL.EventType.FingerDown, 1));
+            Assert.True(input.PrimaryPressed);
+            input.HandleEvent(Finger(SDL.EventType.FingerDown, 2));
+            input.HandleEvent(Finger(SDL.EventType.FingerUp, reverseReleaseOrder ? 2ul : 1ul));
+            Assert.True(input.PrimaryPressed);
+            input.HandleEvent(Finger(SDL.EventType.FingerUp, reverseReleaseOrder ? 1ul : 2ul));
+            Assert.False(input.PrimaryPressed);
+        }
+
+        [Fact]
+        public void MoviePressIncludesMouseAndTouchUntilBothAreReleased()
+        {
+            SdlInputRouter input = new();
+            input.Pointer(0, TouchLocationState.Pressed, 10, 20);
+            input.HandleEvent(Finger(SDL.EventType.FingerDown, 1));
+            input.Pointer(0, TouchLocationState.Released, 10, 20);
+            Assert.True(input.PrimaryPressed);
+
+            input.HandleEvent(Finger(SDL.EventType.FingerUp, 1));
+            Assert.False(input.PrimaryPressed);
+        }
+
+        [Fact]
+        public void FocusLossClearsMovieTouchPressWithoutReplayingHeldMotion()
+        {
+            SdlInputRouter input = new();
+            input.HandleEvent(Finger(SDL.EventType.FingerDown, 1));
+            Assert.True(input.PrimaryPressed);
+
+            SDL.Event focusLost = default;
+            focusLost.Type = (uint)SDL.EventType.WindowFocusLost;
+            input.HandleEvent(focusLost);
+            Assert.False(input.PrimaryPressed);
+            input.HandleEvent(Finger(SDL.EventType.FingerMotion, 1));
+            input.HandleEvent(Finger(SDL.EventType.FingerUp, 1));
+            Assert.False(input.PrimaryPressed);
+
+            input.HandleEvent(Finger(SDL.EventType.FingerDown, 1));
+            Assert.True(input.PrimaryPressed);
+        }
+
+        private static SDL.Event Finger(SDL.EventType type, ulong id)
+        {
+            SDL.Event finger = default;
+            finger.Type = (uint)type;
+            finger.TFinger.TouchID = 1;
+            finger.TFinger.FingerID = id;
+            finger.TFinger.X = 0.5f;
+            finger.TFinger.Y = 0.5f;
+            return finger;
+        }
+
+        [Theory]
         [InlineData(SDL.Keycode.Left, (int)KeyCode.Left)]
         [InlineData(SDL.Keycode.Right, (int)KeyCode.Right)]
         [InlineData(SDL.Keycode.F5, (int)KeyCode.F5)]

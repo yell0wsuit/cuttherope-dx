@@ -24,7 +24,14 @@ namespace CutTheRopeDX.Desktop.Platform
         /// resize cannot leave it stale.
         /// </summary>
         public Func<(int Width, int Height)> WindowSize { get; set; } = () => (1, 1);
-        public bool PrimaryPressed => pointers.ContainsKey(0);
+
+        /// <summary>
+        /// Whether any pointer is down. Mouse presses arrive as id 0 and fingers are numbered from
+        /// 1, and SDL's synthetic touch-to-mouse events are dropped, so asking only about the mouse
+        /// would report a touchscreen as untouched.
+        /// </summary>
+        public bool PrimaryPressed => pointers.Count > 0;
+
         public Action<TouchLocation> Touch { get; set; } = _ => { };
         public Func<float, float, Vector2> MapPosition { get; set; } = (x, y) => new(x, y);
         public Action<Vector2> MouseMoved { get; set; } = _ => { };
