@@ -15,6 +15,63 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
     public sealed class FontLayoutTests
     {
         [Theory]
+        [InlineData(2, 0.5f)]
+        [InlineData(2, 1f)]
+        [InlineData(2, 2f)]
+        [InlineData(3, 0.5f)]
+        [InlineData(3, 1f)]
+        [InlineData(3, 2f)]
+        public void ScaledTextAlignsUsingItsRenderedWidth(int alignment, float sizeScale)
+        {
+            string path = Path.Combine(AppContext.BaseDirectory, "fonts", "PlaypenSans-SemiBold.ttf");
+            Assert.SkipUnless(File.Exists(path), "The shipping font is not present.");
+            using SKTypeface typeface = SKTypeface.FromFile(path);
+            using SkiaFont font = new(typeface, new FontConfiguration
+            {
+                FontFile = "PlaypenSans-SemiBold.ttf",
+                Size = 16,
+                Color = Color.White,
+            });
+            using FakeSkiaSurface actual = new();
+            using FakeSkiaSurface expected = new();
+            using SkiaRenderBackend renderer = new(actual);
+            IRenderBackend previous = PlatformServices.Render;
+            try
+            {
+                PlatformServices.Render = renderer;
+                actual.Canvas.Clear(SKColors.Transparent);
+                expected.Canvas.Clear(SKColors.Transparent);
+                const string text = "Rope";
+                const float left = 10;
+                const float top = 10;
+                const float wrapWidth = 100;
+                TextDrawCall call = new(
+                    [new FormattedString().InitWithStringAndWidth(text, font.StringWidth(text))],
+                    left, top, wrapWidth, alignment, -1,
+                    new RGBAColor(1, 1, 1, 1), new RGBAColor(1, 1, 1, 1),
+                    false, 0, 0, 0, 0, sizeScale);
+                font.DrawText(call);
+                renderer.EndFrame();
+
+                // Measure the actual sized face independently, then place its rendered advance
+                // against the requested center or right edge of the box.
+                using SKFont sizedFont = new(typeface, font.Font.Size * sizeScale);
+                float advance = sizedFont.MeasureText(text);
+                float x = left + ((wrapWidth - advance) / (alignment == 2 ? 2 : 1));
+                using SKPaint paint = new() { IsAntialias = true, Color = SKColors.White };
+                expected.Canvas.DrawText(
+                    text, x, top - sizedFont.Metrics.Ascent, SKTextAlign.Left, sizedFont, paint);
+                using SKBitmap actualPixels = actual.Pixels();
+                using SKBitmap expectedPixels = expected.Pixels();
+                Assert.Equal(expectedPixels.Pixels, actualPixels.Pixels);
+            }
+            finally
+            {
+                PlatformServices.Render = previous;
+            }
+        }
+
+        [Theory]
         [InlineData("PlaypenSans-SemiBold.ttf", "Rope")]
         [InlineData("Cafe24DongdongRegular.otf", "\ud55c\uad6d\uc5b4")]
         public void BothOutlineFlavorsLoadAndRender(string file, string text)

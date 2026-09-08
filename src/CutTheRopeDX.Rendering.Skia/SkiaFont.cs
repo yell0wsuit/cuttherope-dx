@@ -344,14 +344,18 @@ namespace CutTheRopeDX.Rendering.Skia
                     break;
                 }
 
+                // Lines were wrapped against glyph advances at the font's own size, so the width
+                // measured there becomes the width drawn only once the size multiplier is applied.
+                // The wrap width is already in final pixels.
+                float lineWidth = line.width * sizeScale;
                 float x = call.DrawX;
                 if (call.Align == 2)
                 {
-                    x += (call.WrapWidth - line.width) / 2f;
+                    x += (call.WrapWidth - lineWidth) / 2f;
                 }
                 else if (call.Align == 3)
                 {
-                    x += call.WrapWidth - line.width;
+                    x += call.WrapWidth - lineWidth;
                 }
 
                 if (call.IsPingPonging)
