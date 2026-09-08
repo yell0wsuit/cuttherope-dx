@@ -478,7 +478,9 @@ namespace CutTheRopeDX.Desktop
             audio = null;
             window?.SavePreferences();
             Preferences.RequestSave();
-            Preferences.Update();
+            // Forced: the host is shutting down after a fatal error, so a save still backing off
+            // from an earlier failure would never be retried.
+            Preferences.Update(force: true);
             window = null;
             PlatformServices.Window = null;
             _ = SDL.ShowSimpleMessageBox(
@@ -687,7 +689,9 @@ namespace CutTheRopeDX.Desktop
             {
                 window.SavePreferences();
                 Preferences.RequestSave();
-                Preferences.Update();
+                // Forced: the process is going away, so a save still backing off from an earlier
+                // failure would never be retried.
+                Preferences.Update(force: true);
             }
             PlatformServices.RichPresence?.Dispose();
             gamepads?.Dispose();

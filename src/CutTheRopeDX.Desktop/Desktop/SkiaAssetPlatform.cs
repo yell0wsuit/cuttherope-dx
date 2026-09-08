@@ -89,6 +89,62 @@ namespace CutTheRopeDX.Desktop
             return Load(contentPath);
         }
 
+        public ITextureHandle TintedRegion(
+            ITextureHandle source,
+            int x,
+            int y,
+            int width,
+            int height,
+            RGBAColor tint)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (source is not SkiaTexture texture)
+            {
+                return null;
+            }
+
+            // Skia's public colors are straight, so the region is read back premultiplied here to
+            // give the shared tint the pixels it expects.
+            SKImageInfo info = new(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+            using SKBitmap region = new(info);
+            if (!texture.Image.ReadPixels(info, region.GetPixels(), region.RowBytes, x, y))
+            {
+                return null;
+            }
+
+            byte[] pixels = region.Bytes;
+            PremultipliedTint.Apply(pixels, tint);
+            SKImage raster = SKImage.FromPixelCopy(info, pixels);
+            if (context == null)
+            {
+                return new SkiaTexture(raster);
+            }
+
+            SKImage uploaded;
+            try
+            {
+                uploaded = raster.ToTextureImage(context)
+                    ?? throw new InvalidOperationException("Could not upload a tinted region.");
+            }
+            catch
+            {
+                raster.Dispose();
+                throw;
+            }
+
+            // As in Load: the conversion hands back the source image when it already satisfies the
+            // request, and disposing it then would free the image the texture now owns.
+            if (!ReferenceEquals(uploaded, raster))
+            {
+                raster.Dispose();
+            }
+
+            // The copy is built from a level's atlas rather than a content path, so a lost device
+            // drops it instead of loading it again.
+            return new SkiaTexture(
+                uploaded, registry?.TrackTransient() ?? SkiaResourceRegistry.DeviceIndependent);
+        }
+
         public void FreeImage(string contentPath)
         {
             if (textures.Remove(contentPath, out SkiaTexture texture))
