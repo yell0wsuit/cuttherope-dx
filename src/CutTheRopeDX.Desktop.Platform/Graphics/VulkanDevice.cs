@@ -553,10 +553,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 return false;
             }
 
-            if (width != Width || height != Height)
+            // A resize with no drawable to build against leaves the swapchain destroyed and the
+            // last size behind, so a window restored to the size it had would pass a null handle
+            // to the driver if the size comparison were the only thing asked.
+            if (swapchain == 0 || width != Width || height != Height)
             {
                 Resize();
-                if (!GetDrawableSize(out _, out _))
+                if (swapchain == 0 || !GetDrawableSize(out _, out _))
                 {
                     return false;
                 }
