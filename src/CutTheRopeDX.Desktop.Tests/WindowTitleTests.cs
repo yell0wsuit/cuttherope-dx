@@ -1,6 +1,5 @@
 using System.Reflection;
 
-using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Desktop.Platform.Graphics;
 
 using Xunit;
