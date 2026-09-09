@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Diagnostics;
@@ -17,14 +18,17 @@ namespace CutTheRopeDX.Desktop
     internal static partial class CrashHandlers
     {
         private static ILoggerFactory owner;
+        private static string logDirectory;
 
         /// <summary>
         /// Hooks the two failure paths that would otherwise be silent.
         /// </summary>
         /// <param name="factory">The factory to flush when the process is going down.</param>
-        public static void Install(ILoggerFactory factory)
+        /// <param name="logs">Directory holding this run's log, offered to the player on a crash.</param>
+        public static void Install(ILoggerFactory factory, string logs)
         {
             owner = factory;
+            logDirectory = logs;
             AppDomain.CurrentDomain.UnhandledException += OnUnhandled;
             TaskScheduler.UnobservedTaskException += OnUnobserved;
         }
@@ -59,6 +63,12 @@ namespace CutTheRopeDX.Desktop
 
                 // The file provider buffers, and nothing else gets to run before the abort.
                 owner?.Dispose();
+
+                // After the flush, so the log the player is invited to open is already complete.
+                CrashDialog.Show(
+                    SdlDesktopHost.CtrDXProductName,
+                    Describe(args.ExceptionObject),
+                    logDirectory);
             }
             catch (Exception)
             {
@@ -86,6 +96,22 @@ namespace CutTheRopeDX.Desktop
             catch (Exception)
             {
             }
+        }
+
+        /// <summary>
+        /// Puts the failure in the player's terms, with enough of the fault to be worth quoting.
+        /// </summary>
+        /// <param name="failure">The exception, or whatever else was thrown.</param>
+        /// <returns>The dialog body.</returns>
+        private static string Describe(object failure)
+        {
+            string fault = failure is Exception exception
+                ? $"{exception.GetType().Name}: {exception.Message}"
+                : Convert.ToString(failure, CultureInfo.InvariantCulture) ?? "Unknown failure.";
+
+            return $"The game stopped unexpectedly.{Environment.NewLine}{Environment.NewLine}"
+                + $"{fault}{Environment.NewLine}{Environment.NewLine}"
+                + "A log of this session has been saved. Your progress is unaffected.";
         }
 
         [LoggerMessage(Level = LogLevel.Critical, Message = "Unhandled exception, terminating={Terminating}")]

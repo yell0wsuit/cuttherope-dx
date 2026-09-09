@@ -75,6 +75,16 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
+        /// Names the directory a save directory's logs are written to.
+        /// </summary>
+        /// <param name="saveDirectory">Directory the save data lives in.</param>
+        /// <returns>The log directory, which need not exist yet.</returns>
+        public static string DirectoryFor(string saveDirectory)
+        {
+            return Path.Combine(saveDirectory, "logs");
+        }
+
+        /// <summary>
         /// Builds the name of one run's log.
         /// </summary>
         /// <param name="stamp">When the run started.</param>
@@ -119,7 +129,7 @@ namespace CutTheRopeDX.Desktop
         {
             LogLevel fileLevel = requested ?? LogLevel.Information;
             LogLevel consoleLevel = requested ?? LogLevel.Information;
-            string directory = Path.Combine(saveDirectory, "logs");
+            string directory = DirectoryFor(saveDirectory);
             string path = Path.Combine(directory, LogFileName(stamp, fallback: false));
             bool canWriteFile = TryCreateLogDirectory(directory);
             int fallbackAttempted = 0;

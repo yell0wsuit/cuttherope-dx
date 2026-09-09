@@ -68,7 +68,11 @@ catch (ArgumentException error)
 // collected during resolution now that a logger can receive them.
 using ILoggerFactory loggerFactory = LoggingSetup.Create(Preferences.SaveDirectory, requestedLevel);
 Log.Factory = loggerFactory;
-CrashHandlers.Install(loggerFactory);
+CrashHandlers.Install(loggerFactory, LoggingSetup.DirectoryFor(Preferences.SaveDirectory));
+
+// A frame-limited run is a smoke test with nobody at the keyboard, and a modal window there
+// would hold the job open until something else killed it.
+CrashDialog.Enabled = Array.IndexOf(args, "--sdl-frames") < 0;
 
 if (CustomLevelSession.IsActive)
 {

@@ -427,19 +427,44 @@
             // the button working whatever happened behind it.
             const exportLog = document.getElementById("export-log");
             const exportStatus = document.getElementById("export-log-status");
+
+            // The splash is what a player looks at while waiting, so an outcome that stayed there
+            // would still be sitting under the Play button on the next launch.
+            const STATUS_LINGER_MS = 5000;
+            let statusTimer = null;
+
+            function showExportStatus(text, linger) {
+                clearTimeout(statusTimer);
+                statusTimer = null;
+                exportStatus.textContent = text;
+                exportStatus.hidden = false;
+                if (linger) {
+                    statusTimer = setTimeout(() => {
+                        exportStatus.hidden = true;
+                        statusTimer = null;
+                    }, STATUS_LINGER_MS);
+                }
+            }
+
             exportLog.addEventListener("click", async () => {
                 exportLog.disabled = true;
-                exportStatus.hidden = false;
-                exportStatus.textContent = "Collecting…";
+                // Not timed: the export replaces it as soon as it knows the outcome, and a
+                // progress note that cleared itself mid-export would read as a failure.
+                showExportStatus("Collecting…", false);
                 try {
                     const { exportZip } = await import("./log.js");
                     const saved = await exportZip();
-                    exportStatus.textContent =
+                    showExportStatus(
                         saved === 0
                             ? "No logs recorded yet."
-                            : `Exported ${saved} ${saved === 1 ? "session" : "sessions"}.`;
+                            : `Exported ${saved} ${saved === 1 ? "session" : "sessions"}.`,
+                        true,
+                    );
                 } catch (error) {
-                    exportStatus.textContent = `Could not export the log: ${error}`;
+                    showExportStatus(
+                        `Could not export the log: ${error}`,
+                        true,
+                    );
                 } finally {
                     exportLog.disabled = false;
                 }

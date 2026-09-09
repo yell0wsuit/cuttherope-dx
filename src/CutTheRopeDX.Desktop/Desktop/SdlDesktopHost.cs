@@ -525,11 +525,10 @@ namespace CutTheRopeDX.Desktop
             Preferences.Update(force: true);
             window = null;
             PlatformServices.Window = null;
-            _ = SDL.ShowSimpleMessageBox(
-                SDL.MessageBoxFlags.Error,
-                "Cut the Rope: DX",
+            CrashDialog.Show(
+                CtrDXProductName,
                 $"{reason}\n\nThe game cannot continue and has to be closed. Your progress is unaffected.",
-                0);
+                LoggingSetup.DirectoryFor(Preferences.SaveDirectory));
             Exit();
         }
 

@@ -69,7 +69,7 @@ namespace CutTheRopeDX.Desktop.Tests
                 DateTime stamp = new(2026, 9, 9, 11, 30, 0, DateTimeKind.Local);
                 ILoggerFactory factory = LoggingSetup.Create(root, null, stamp);
                 Log.Factory = factory;
-                CrashHandlers.Install(factory);
+                CrashHandlers.Install(factory, Path.Combine(root, "logs"));
 
                 CrashHandlers.OnUnhandled(
                     null,
