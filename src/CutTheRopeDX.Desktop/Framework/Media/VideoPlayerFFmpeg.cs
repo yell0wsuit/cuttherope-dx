@@ -7,10 +7,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using CutTheRopeDX.Desktop.Platform.Audio;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using FFmpeg.AutoGen;
+
+using Microsoft.Extensions.Logging;
 
 
 namespace CutTheRopeDX.Framework.Media
@@ -93,7 +96,8 @@ namespace CutTheRopeDX.Framework.Media
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to initialize FFmpeg: {ex.Message}");
+                    ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                    VideoPlayerLog.FfmpegInitializationFailed(logger, ex);
                 }
             }
         }
@@ -132,10 +136,8 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!fileExists(fullPath) || !librariesLoaded)
             {
-                // Both of these skip the cutscene silently otherwise, which makes a missing video
-                // file look exactly like a missing decoder.
-                Console.WriteLine(
-                    $"[FFmpeg] Skipping {moviePath}: file={fileExists(fullPath)}, libraries={librariesLoaded}");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.SkippingMovie(logger, moviePath, fileExists(fullPath), librariesLoaded);
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -314,7 +316,8 @@ namespace CutTheRopeDX.Framework.Media
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[FFmpeg] Decode thread exception: {ex}");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.DecodeThreadFailed(logger, ex);
                 HasPlaybackFinished = true;
             }
         }
@@ -334,7 +337,8 @@ namespace CutTheRopeDX.Framework.Media
             {
                 // A native FFmpeg load or decode failure here (e.g. a missing
                 // bundled dependency) must not crash the game — skip the video.
-                Console.WriteLine($"[FFmpeg] Video initialization failed: {ex.Message}");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.VideoInitializationFailed(logger, ex);
                 return false;
             }
         }
@@ -458,7 +462,8 @@ namespace CutTheRopeDX.Framework.Media
             if (!mute && !InitializeAudio())
             {
                 CleanupAudio();
-                Console.WriteLine("[FFmpeg] Audio init failed; continuing without audio.");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.AudioInitializationFailed(logger);
             }
 
             return true;

@@ -9,10 +9,13 @@ using CoreMedia;
 
 using CoreVideo;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using Foundation;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -35,7 +38,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
-            Console.WriteLine($"[AVFoundation] Play requested: {moviePath}, mute={mute}");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.PlayRequested(logger, moviePath, mute);
 
             Cleanup();
             HasPlaybackFinished = false;
@@ -49,7 +53,7 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!File.Exists(fullPath))
             {
-                Console.WriteLine($"[AVFoundation] Missing video: {fullPath}");
+                VideoPlayerLog.MissingVideo(logger, fullPath);
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -91,7 +95,9 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (player == null || videoOutput == null || HasPlaybackFinished)
             {
-                Console.WriteLine($"[AVFoundation] GetTexture early return: player={player != null}, videoOutput={videoOutput != null}, playbackFinished={HasPlaybackFinished}, videoTexture={videoTexture != null}");
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.GetTextureEarlyReturn(
+                    logger, player != null, videoOutput != null, HasPlaybackFinished, videoTexture != null);
                 return videoTexture;
             }
 
@@ -130,7 +136,8 @@ namespace CutTheRopeDX.Framework.Media
             if (!loggedFirstFrame && videoTexture != null)
             {
                 loggedFirstFrame = true;
-                Console.WriteLine($"[AVFoundation] First frame: {videoWidth}x{videoHeight}");
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.FirstFrame(logger, videoWidth, videoHeight);
             }
 
             frameCount++;
@@ -171,7 +178,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Stop");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Stop(logger);
             HasPlaybackFinished = true;
             player.Pause();
         }
@@ -184,7 +192,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Pause");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Pause(logger);
             IsPaused = true;
             player.Pause();
         }
@@ -197,7 +206,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Resume");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Resume(logger);
             IsPaused = false;
             player.Play();
         }
@@ -210,7 +220,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Start");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Start(logger);
             waitForStart = false;
             playStartTime = DateTime.UtcNow;
             player.Play();
@@ -221,10 +232,11 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (!waitForStart && HasPlaybackFinished)
             {
-                Console.WriteLine($"[AVFoundation] Update: triggering cleanup, videoTexture={videoTexture != null}");
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.UpdateCleanup(logger, videoTexture != null);
                 Cleanup();
                 IsPaused = false;
-                Console.WriteLine("[AVFoundation] Update: invoking PlaybackFinished");
+                VideoPlayerLog.UpdateFinishing(logger);
                 PlaybackFinished?.Invoke();
             }
         }
@@ -232,7 +244,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Dispose()
         {
-            Console.WriteLine("[AVFoundation] Dispose");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Disposing(logger);
             Cleanup();
             IsPaused = false;
         }
@@ -320,7 +333,8 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private void OnPlaybackFinished()
         {
-            Console.WriteLine($"[AVFoundation] Playback finished, videoTexture={videoTexture != null}");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.PlaybackFinished(logger, videoTexture != null);
             HasPlaybackFinished = true;
         }
 
