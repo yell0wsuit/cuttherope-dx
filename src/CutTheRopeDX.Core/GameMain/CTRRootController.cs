@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -81,6 +82,7 @@ namespace CutTheRopeDX.GameMain
 
             StopGameplayPrefetch();
 
+            long startedTicks = Stopwatch.GetTimestamp();
             string[] levelResources = LevelResourceScanner.GetRequiredResources(map);
             TrackSessionResources(levelResources);
 
@@ -94,6 +96,17 @@ namespace CutTheRopeDX.GameMain
             {
                 SetMapName(newMapName);
             }
+
+            double elapsedMs = Stopwatch.GetElapsedTime(startedTicks).TotalMilliseconds;
+            ILogger logger = Log.For(LogCategories.ContentXml);
+            CTRRootControllerLog.LevelReady(
+                logger,
+                pack,
+                level,
+                newMapName,
+                elapsedMs,
+                MemoryReport.ManagedMegabytes,
+                MemoryReport.WorkingSetMegabytes);
 
             StartBoxResourceScanIfNeeded();
             QueueOrPollBoxPrefetch();
@@ -194,6 +207,9 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(levelResources);
             resourceMgr.StartLoading();
+            ILogger logger = Log.For(LogCategories.ContentXml);
+            string mapName = GetMapName();
+            CTRRootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
             ((LoadingController)GetChild(2)).nextController = 0;
             ActivateChild(2);
         }
@@ -214,6 +230,9 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.LoadPack(PackConfig.GetBoxBackgrounds(pack));
             resourceMgr.LoadPack(levelResources);
             resourceMgr.StartLoading();
+            ILogger logger = Log.For(LogCategories.ContentXml);
+            string mapName = GetMapName();
+            CTRRootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
             ((LoadingController)GetChild(2)).nextController = 0;
             ActivateChild(2);
         }
@@ -903,5 +922,24 @@ namespace CutTheRopeDX.GameMain
     {
         [LoggerMessage(Level = LogLevel.Debug, Message = "Loading finished; showing the menu.")]
         public static partial void ShowingMenu(ILogger logger);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Loading level pack {Pack} level {Level} '{MapName}': {ResourceCount} resources")]
+        public static partial void LevelLoadStarted(
+            ILogger logger, int pack, int level, string mapName, int resourceCount);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Level pack {Pack} level {Level} '{MapName}' ready in {ElapsedMs:F1} ms; "
+                + "managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
+        public static partial void LevelReady(
+            ILogger logger,
+            int pack,
+            int level,
+            string mapName,
+            double elapsedMs,
+            long managedMb,
+            long workingSetMb);
     }
 }

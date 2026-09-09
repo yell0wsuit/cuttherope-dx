@@ -45,9 +45,15 @@ namespace CutTheRopeDX.Helpers
                 try
                 {
                     UpdateInfo info = await FetchLatestReleaseAsync(currentVersion, cts.Token).ConfigureAwait(false);
+                    ILogger logger = Log.For(LogCategories.UpdateCheck);
                     if (info != null)
                     {
                         _ = Interlocked.Exchange(ref updateInfo, info);
+                        UpdateCheckerLog.UpdateAvailable(logger, currentVersion, info.LatestVersion);
+                    }
+                    else
+                    {
+                        UpdateCheckerLog.UpToDate(logger, currentVersion);
                     }
                 }
                 catch (Exception failure)
@@ -282,7 +288,13 @@ namespace CutTheRopeDX.Helpers
     /// <summary>Log messages for the release check.</summary>
     internal static partial class UpdateCheckerLog
     {
-        [LoggerMessage(Level = LogLevel.Debug, Message = "Update check did not complete.")]
+        [LoggerMessage(Level = LogLevel.Information, Message = "Update check did not complete.")]
         public static partial void CheckFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Update available: {Current} -> {Latest}")]
+        public static partial void UpdateAvailable(ILogger logger, string current, string latest);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Up to date on {Current}.")]
+        public static partial void UpToDate(ILogger logger, string current);
     }
 }

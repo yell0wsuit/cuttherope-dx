@@ -102,14 +102,15 @@ namespace CutTheRopeDX.Desktop
         /// <param name="stamp">The time this run's log file is named after.</param>
         /// <returns>The factory, which the caller owns and must dispose.</returns>
         /// <remarks>
-        /// Without a switch the file keeps everything from <see cref="LogLevel.Information"/> up
-        /// while the console shows only warnings and worse, so a scripted run's stdout stays
-        /// readable. A switch overrides both: someone who asks for trace wants to see it.
+        /// Without a switch both sinks keep everything from <see cref="LogLevel.Information"/> up,
+        /// so what a player sees in a terminal is what they send in the file. A switch overrides
+        /// both: someone who asks for trace wants to see it, and someone who asks for warnings
+        /// wants the rest gone.
         /// </remarks>
         public static ILoggerFactory Create(string saveDirectory, LogLevel? requested, DateTime stamp)
         {
             LogLevel fileLevel = requested ?? LogLevel.Information;
-            LogLevel consoleLevel = requested ?? LogLevel.Warning;
+            LogLevel consoleLevel = requested ?? LogLevel.Information;
             string directory = Path.Combine(saveDirectory, "logs");
             string path = Path.Combine(directory, LogFileName(stamp, fallback: false));
             bool canWriteFile = TryCreateLogDirectory(directory);

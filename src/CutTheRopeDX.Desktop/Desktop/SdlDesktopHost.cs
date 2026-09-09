@@ -306,6 +306,32 @@ namespace CutTheRopeDX.Desktop
             GuardDevice(DrawFrame);
         }
 
+        /// <summary>
+        /// Reports how long the game took to put its first frame on screen.
+        /// </summary>
+        /// <remarks>
+        /// Measured from when the process started rather than from when this host began, so the
+        /// figure includes the runtime coming up - which on a cold start is most of it.
+        /// </remarks>
+        private void ReportBoot()
+        {
+            double elapsedMs;
+            try
+            {
+                using Process self = Process.GetCurrentProcess();
+                elapsedMs = (DateTime.Now - self.StartTime).TotalMilliseconds;
+            }
+            catch (Exception failure) when (failure is InvalidOperationException or NotSupportedException)
+            {
+                // A platform that will not report a start time still gets the host's own share.
+                elapsedMs = clock.Elapsed.TotalMilliseconds;
+            }
+
+            ILogger logger = Log.For(LogCategories.SdlHost);
+            SdlDesktopHostLog.Booted(
+                logger, elapsedMs, MemoryReport.ManagedMegabytes, MemoryReport.WorkingSetMegabytes);
+        }
+
         /// <summary>Runs work that touches the device, recovering if it reports a loss.</summary>
         /// <param name="work">The device work to attempt.</param>
         /// <remarks>
@@ -355,6 +381,11 @@ namespace CutTheRopeDX.Desktop
 
             device.Flush();
             frameCount++;
+            if (frameCount == 1)
+            {
+                ReportBoot();
+            }
+
             if (frameLimit > 0 && frameCount >= frameLimit && screenshot != null)
             {
                 using SKBitmap bitmap = device.ReadPixels();
@@ -743,5 +774,11 @@ namespace CutTheRopeDX.Desktop
 
         [LoggerMessage(Level = LogLevel.Error, Message = "{Reason}")]
         public static partial void Abandoning(ILogger logger, string reason);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "First frame after {ElapsedMs:F0} ms; managed {ManagedMb} MB, "
+                + "working set {WorkingSetMb} MB")]
+        public static partial void Booted(ILogger logger, double elapsedMs, long managedMb, long workingSetMb);
     }
 }

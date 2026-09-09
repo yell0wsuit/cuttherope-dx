@@ -237,7 +237,7 @@ namespace CutTheRopeDX.Desktop.Tests
         }
 
         [Fact]
-        public void InformationReachesTheFileButNotTheConsoleByDefault()
+        public void InformationReachesBothSinksByDefault()
         {
             string root = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             _ = Directory.CreateDirectory(root);
@@ -251,7 +251,7 @@ namespace CutTheRopeDX.Desktop.Tests
                 factory.Dispose();
 
                 Assert.Contains("quiet", File.ReadAllText(LogPath(root, Stamp)));
-                Assert.DoesNotContain("quiet", captured.ToString());
+                Assert.Contains("quiet", captured.ToString());
             }
             finally
             {

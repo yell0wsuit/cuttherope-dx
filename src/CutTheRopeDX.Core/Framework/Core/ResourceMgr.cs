@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -492,6 +493,7 @@ namespace CutTheRopeDX.Framework.Core
             loadQueue.Clear();
             loaded = 0;
             loadCount = 0;
+            batchStartedTicks = Stopwatch.GetTimestamp();
         }
 
         /// <summary>
@@ -620,6 +622,9 @@ namespace CutTheRopeDX.Framework.Core
                 FreeResource(pack[i]);
                 i++;
             }
+
+            ILogger logger = Log.For(LogCategories.ContentResources);
+            ResourceMgrLog.PackFreed(logger, i, MemoryReport.ManagedMegabytes, MemoryReport.WorkingSetMegabytes);
         }
 
         /// <summary>
@@ -627,13 +632,17 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public virtual void LoadImmediately()
         {
+            int drained = 0;
             while (loadQueue.Count != 0)
             {
                 string resourceName = loadQueue[0];
                 loadQueue.RemoveAt(0);
                 LoadResource(resourceName);
                 loaded++;
+                drained++;
             }
+
+            ReportBatchComplete(drained, "immediate");
         }
 
         /// <summary>
@@ -676,6 +685,7 @@ namespace CutTheRopeDX.Framework.Core
                     TimerManager.StopTimer(Timer);
                 }
                 Timer = -1;
+                ReportBatchComplete(GetLoadCount(), "incremental");
                 resourcesDelegate.AllResourcesLoaded();
             }
         }
@@ -695,6 +705,8 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="resourceName">Logical resource name to load.</param>
         private static void LoadResource(string resourceName)
         {
+            ILogger logger = Log.For(LogCategories.ContentResources);
+            ResourceMgrLog.ResourceLoading(logger, resourceName);
             if (!TryResolveResource(resourceName, out string localizedName))
             {
                 return;
@@ -721,7 +733,6 @@ namespace CutTheRopeDX.Framework.Core
             }
             catch (Exception failure)
             {
-                ILogger logger = Log.For(LogCategories.ContentResources);
                 ResourceMgrLog.TextureLoadFailed(logger, localizedName, failure);
             }
         }
@@ -732,6 +743,8 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="resourceName">Logical resource name to free.</param>
         public void FreeResource(string resourceName)
         {
+            ILogger logger = Log.For(LogCategories.ContentResources);
+            ResourceMgrLog.ResourceFreeing(logger, resourceName);
             if (!TryResolveResource(resourceName, out string localizedName))
             {
                 return;
@@ -768,9 +781,39 @@ namespace CutTheRopeDX.Framework.Core
         private readonly Dictionary<string, object> s_Resources = [];
 
         /// <summary>
+        /// Reports what a finished load batch cost, in resources, time and memory.
+        /// </summary>
+        /// <param name="count">How many resources the batch loaded.</param>
+        /// <param name="mode">Which drain produced it, immediate or incremental.</param>
+        /// <remarks>
+        /// A batch of nothing is not reported: entering a controller that needs no new resource
+        /// still runs a batch, and those would otherwise be most of the lines here.
+        /// </remarks>
+        private void ReportBatchComplete(int count, string mode)
+        {
+            if (count <= 0)
+            {
+                return;
+            }
+
+            double elapsedMs = Stopwatch.GetElapsedTime(batchStartedTicks).TotalMilliseconds;
+            ILogger logger = Log.For(LogCategories.ContentResources);
+            ResourceMgrLog.BatchLoaded(
+                logger,
+                count,
+                mode,
+                elapsedMs,
+                MemoryReport.ManagedMegabytes,
+                MemoryReport.WorkingSetMegabytes);
+        }
+
+        /// <summary>
         /// Number of resources loaded in the current batch.
         /// </summary>
         private int loaded;
+
+        /// <summary>When the current batch was started, for the completion report.</summary>
+        private long batchStartedTicks = Stopwatch.GetTimestamp();
 
         /// <summary>
         /// Total number of resources queued in the current batch.
@@ -834,5 +877,23 @@ namespace CutTheRopeDX.Framework.Core
     {
         [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load texture '{ResourceName}'")]
         public static partial void TextureLoadFailed(ILogger logger, string resourceName, Exception exception);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Loaded {Count} resources ({Mode}) in {ElapsedMs:F1} ms; "
+                + "managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
+        public static partial void BatchLoaded(
+            ILogger logger, int count, string mode, double elapsedMs, long managedMb, long workingSetMb);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Freed {Count} resources; managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
+        public static partial void PackFreed(ILogger logger, int count, long managedMb, long workingSetMb);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Loading resource '{ResourceName}'")]
+        public static partial void ResourceLoading(ILogger logger, string resourceName);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Freeing resource '{ResourceName}'")]
+        public static partial void ResourceFreeing(ILogger logger, string resourceName);
     }
 }
