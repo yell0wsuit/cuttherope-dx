@@ -8,6 +8,8 @@ using System.Text.Json;
 
 using CutTheRopeDX.Framework.Platform;
 
+using Microsoft.Extensions.Logging;
+
 namespace CutTheRopeDX.Framework.Core
 {
     /// <summary>
@@ -124,6 +126,42 @@ namespace CutTheRopeDX.Framework.Core
         /// </remarks>
         private static readonly HashSet<int> DirtyBoxes = [];
 
+        /// <summary>A diagnostic emitted before a logger exists to receive it.</summary>
+        /// <param name="Level">Severity to log it at once one does.</param>
+        /// <param name="Message">The message text.</param>
+        internal readonly record struct StartupDiagnostic(LogLevel Level, string Message);
+
+        // Resolving the save directory is diagnosed, and it has to happen before a file sink can be
+        // built, because the sink is written into the directory this decides on. The records wait
+        // here for the host to replay them.
+        private static readonly List<StartupDiagnostic> startupDiagnostics = [];
+
+        /// <summary>Returns the diagnostics collected before logging was available, and clears them.</summary>
+        /// <returns>The collected records, oldest first.</returns>
+        internal static IReadOnlyList<StartupDiagnostic> DrainStartupDiagnostics()
+        {
+            lock (startupDiagnostics)
+            {
+                StartupDiagnostic[] drained = [.. startupDiagnostics];
+                startupDiagnostics.Clear();
+                return drained;
+            }
+        }
+
+        private static void NoteStartup(LogLevel level, string message)
+        {
+            lock (startupDiagnostics)
+            {
+                startupDiagnostics.Add(new StartupDiagnostic(level, message));
+            }
+        }
+
+        /// <summary>Clears the cached directory so the next access resolves it again.</summary>
+        internal static void ForgetSaveDirectory()
+        {
+            SaveDirectory = null;
+        }
+
         /// <summary>How many consecutive write failures are tolerated before giving up.</summary>
         private const int MaxSaveAttempts = 5;
 
@@ -160,10 +198,11 @@ namespace CutTheRopeDX.Framework.Core
                 if (field == null)
                 {
                     field = DetermineSaveDirectory();
-                    Console.WriteLine($"[Preferences] Using save directory: {field}");
+                    NoteStartup(LogLevel.Information, $"Using save directory: {field}");
                 }
                 return field;
             }
+            private set;
         }
 
         /// <summary>
@@ -211,7 +250,7 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             // Last resort: current directory
-            Console.WriteLine("[Preferences] Warning: All save directory options failed, using current directory");
+            NoteStartup(LogLevel.Warning, "All save directory options failed, using current directory");
             return ".";
         }
 
@@ -247,11 +286,11 @@ namespace CutTheRopeDX.Framework.Core
                     try
                     {
                         File.Move(oldPath, newPath);
-                        Console.WriteLine($"[Preferences] Migrated {fileName} to new save directory");
+                        NoteStartup(LogLevel.Information, $"Migrated {fileName} to new save directory");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"[Preferences] Failed to migrate {fileName}: {ex.Message}");
+                        NoteStartup(LogLevel.Warning, $"Failed to migrate {fileName}: {ex.Message}");
                     }
                 }
             }
