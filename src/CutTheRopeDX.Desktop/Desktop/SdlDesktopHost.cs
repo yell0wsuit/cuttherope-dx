@@ -11,10 +11,13 @@ using CutTheRopeDX.Desktop.Platform.Audio;
 using CutTheRopeDX.Desktop.Platform.Graphics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 using CutTheRopeDX.Rendering.Skia;
+
+using Microsoft.Extensions.Logging;
 
 using SDL3;
 
@@ -153,7 +156,11 @@ namespace CutTheRopeDX.Desktop
         public void OpenUrl(string url)
         {
             try { _ = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
-            catch (Exception error) { Console.Error.WriteLine($"Could not open URL: {error.Message}"); }
+            catch (Exception error)
+            {
+                ILogger logger = Log.For(LogCategories.SdlHost);
+                SdlDesktopHostLog.OpenUrlFailed(logger, url, error);
+            }
         }
 
         public void Run(string[] args)
@@ -197,10 +204,11 @@ namespace CutTheRopeDX.Desktop
             // A machine with no usable audio device still plays the game, so this reports failure
             // rather than throwing: the graphics that already came up must not depend on it.
             audio = SdlAudioBackend.TryOpen(root);
-            Console.WriteLine($"[sdl] renderer={selection.Kind}; audio {(audio == null ? "unavailable" : "on")}");
+            ILogger hostLogger = Log.For(LogCategories.SdlHost);
+            SdlDesktopHostLog.Renderer(hostLogger, selection.Kind, audio == null ? "unavailable" : "on");
             foreach (Exception failure in selection.Failures)
             {
-                Console.Error.WriteLine($"[sdl] rejected renderer: {failure.Message}");
+                SdlDesktopHostLog.RejectedRenderer(hostLogger, failure.Message);
             }
 
             Preferences.LoadPreferences();
@@ -404,7 +412,8 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            Console.Error.WriteLine($"[sdl] device lost: {lost.Message}");
+            ILogger lostLogger = Log.For(LogCategories.SdlHost);
+            SdlDesktopHostLog.DeviceLost(lostLogger, lost.Message);
             recoveriesWithoutAFrame++;
             if (recoveriesWithoutAFrame > MaximumFramelessRecoveries)
             {
@@ -450,9 +459,13 @@ namespace CutTheRopeDX.Desktop
             // gameplay owed and replay it as one batch of catch-up updates. Nothing happened
             // during it that the game should live through, so the accounting starts again here.
             loop.Reset(clock.Elapsed);
-            Console.WriteLine(
-                $"[sdl] recovered on {selection.Kind} at frame {frameCount}: "
-                + $"{report.ReloadedAssets} assets reloaded, {report.DroppedCaptures} captures dropped");
+            ILogger recoveredLogger = Log.For(LogCategories.SdlHost);
+            SdlDesktopHostLog.Recovered(
+                recoveredLogger,
+                selection.Kind,
+                frameCount,
+                report.ReloadedAssets,
+                report.DroppedCaptures);
         }
 
         /// <summary>Shuts the game down when the graphics device cannot be got back.</summary>
@@ -470,7 +483,8 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            Console.Error.WriteLine($"[sdl] {reason}");
+            ILogger abandonLogger = Log.For(LogCategories.SdlHost);
+            SdlDesktopHostLog.Abandoning(abandonLogger, reason);
             audio?.Dispose();
             audio = null;
             window?.SavePreferences();
@@ -699,5 +713,35 @@ namespace CutTheRopeDX.Desktop
             selection?.Dispose();
             if (initialized) { SDL.Quit(); initialized = false; }
         }
+    }
+
+    /// <summary>Log messages for the SDL host.</summary>
+    internal static partial class SdlDesktopHostLog
+    {
+        [LoggerMessage(Level = LogLevel.Error, Message = "Could not open URL {Url}")]
+        public static partial void OpenUrlFailed(ILogger logger, string url, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Renderer {Renderer}, audio {AudioState}")]
+        public static partial void Renderer(ILogger logger, GraphicsBackendKind renderer, string audioState);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Rejected renderer: {Reason}")]
+        public static partial void RejectedRenderer(ILogger logger, string reason);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Device lost: {Reason}")]
+        public static partial void DeviceLost(ILogger logger, string reason);
+
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Recovered on {Renderer} at frame {Frame}: {ReloadedAssets} assets reloaded, "
+                + "{DroppedCaptures} captures dropped")]
+        public static partial void Recovered(
+            ILogger logger,
+            GraphicsBackendKind renderer,
+            int frame,
+            int reloadedAssets,
+            int droppedCaptures);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "{Reason}")]
+        public static partial void Abandoning(ILogger logger, string reason);
     }
 }
