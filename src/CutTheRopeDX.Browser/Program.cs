@@ -8,8 +8,6 @@ using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Rendering.Skia;
 
-using Microsoft.Extensions.Logging;
-
 [assembly: SupportedOSPlatform("browser")]
 
 await GLContextInterop.ImportAsync();
@@ -24,12 +22,7 @@ await BrowserVideoPlayer.ImportAsync();
 // Installed before anything else can fail, so a boot that never reaches the game still leaves a
 // record the player can export. The banner goes first for the same reason it does on desktop:
 // whoever reads the report needs to know which build produced it.
-ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
-{
-    _ = builder.SetMinimumLevel(LogLevel.Information);
-    _ = builder.AddProvider(new BrowserLogStore());
-});
-Log.Factory = loggerFactory;
+Log.Factory = new BrowserLogStore();
 _ = LogInterop.Begin(BrowserBuild.ComposeHeader());
 
 // Announced before the content bundle starts downloading, so the level transfer overlaps a ~56 MB
