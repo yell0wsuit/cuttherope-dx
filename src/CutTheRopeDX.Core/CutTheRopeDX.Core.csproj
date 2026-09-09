@@ -16,4 +16,7 @@
     <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Platform" />
     <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Platform.Tests" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
 </Project>
