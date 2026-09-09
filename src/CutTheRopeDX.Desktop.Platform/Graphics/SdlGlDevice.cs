@@ -1,5 +1,9 @@
 using System;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 using SDL3;
 
 using SkiaSharp;
@@ -53,7 +57,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 ?? throw new InvalidOperationException("Skia GL procedure resolution failed."));
             Context = Own(GRContext.CreateGl(binding)
                 ?? throw new InvalidOperationException("Skia GL context creation failed."));
-            Console.WriteLine("OpenGL adapter-type=unknown (no portable GL hardware classification)");
+            ILogger logger = Log.For(LogCategories.SdlGraphics);
+            GraphicsDeviceLog.Adapter(logger, "unknown", "(no portable GL hardware classification)");
         }
 
         /// <inheritdoc />

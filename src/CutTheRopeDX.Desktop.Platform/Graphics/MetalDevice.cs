@@ -1,6 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 using SDL3;
 
 using SkiaSharp;
@@ -63,7 +67,9 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             }
 
             Own(() => ObjC.Send(device, "release"));
-            Console.WriteLine("Metal adapter-type=hardware name=" + Marshal.PtrToStringUTF8(ObjC.Send(ObjC.Send(device, "name"), "UTF8String")));
+            string adapterName = Marshal.PtrToStringUTF8(ObjC.Send(ObjC.Send(device, "name"), "UTF8String"));
+            ILogger logger = Log.For(LogCategories.SdlGraphics);
+            GraphicsDeviceLog.Adapter(logger, "hardware", adapterName);
             _ = ObjC.Send(layer, "setDevice:", device);
             _ = ObjC.Send(layer, "setPixelFormat:", 80); // MTLPixelFormatBGRA8Unorm
             _ = ObjC.Send(layer, "setFramebufferOnly:", 0);

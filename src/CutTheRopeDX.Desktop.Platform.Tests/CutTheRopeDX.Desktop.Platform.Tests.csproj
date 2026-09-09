@@ -6,6 +6,17 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
+    <!-- Core brings in Abstractions only; these tests build a real LoggerFactory. -->
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <ProjectReference Include="../CutTheRopeDX.Desktop.Platform/CutTheRopeDX.Desktop.Platform.csproj" />
+  </ItemGroup>
+
+  <!--
+    The recording provider is shared with CutTheRopeDX.Tests, which this project does not
+    reference. Link it rather than keeping a second copy in step with the first.
+  -->
+  <ItemGroup>
+    <Compile Include="../CutTheRopeDX.Tests/RecordingLoggerProvider.cs"
+             Link="RecordingLoggerProvider.cs" />
   </ItemGroup>
 </Project>

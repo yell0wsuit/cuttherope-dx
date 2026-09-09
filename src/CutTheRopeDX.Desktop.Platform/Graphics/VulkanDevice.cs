@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 using SDL3;
 
 using SkiaSharp;
@@ -199,7 +203,11 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
             physicalDevice = best;
             queueFamily = bestFamily;
-            Console.WriteLine($"Vulkan adapter-type={(bestType == 0 ? "discrete" : bestType == 1 ? "integrated" : bestType == 2 ? "virtual" : "software")} name={bestName}");
+            string adapterType = bestType == 0 ? "discrete"
+                : bestType == 1 ? "integrated"
+                : bestType == 2 ? "virtual" : "software";
+            ILogger logger = Log.For(LogCategories.SdlGraphics);
+            GraphicsDeviceLog.Adapter(logger, adapterType, bestName);
             if (bestType == 3)
             {
                 throw new InvalidOperationException("Only a software Vulkan adapter is available.");
