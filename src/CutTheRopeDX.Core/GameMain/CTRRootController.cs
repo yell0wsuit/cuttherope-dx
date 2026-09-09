@@ -588,6 +588,8 @@ namespace CutTheRopeDX.GameMain
                 else
                 {
                     Console.Error.WriteLine(error);
+                    ILogger rejectedLogger = Log.For(LogCategories.Playtest);
+                    PlaytestLog.LevelRejected(rejectedLogger, error);
                 }
 
                 return;

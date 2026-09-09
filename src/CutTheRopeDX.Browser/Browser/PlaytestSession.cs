@@ -3,8 +3,11 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Browser
 {
@@ -60,14 +63,18 @@ namespace CutTheRopeDX.Browser
         {
             await PlaytestInterop.ImportAsync();
 
+            ILogger logger = Log.For(LogCategories.Playtest);
             _nonce = PlaytestInterop.NonceFromQuery();
             if (string.IsNullOrEmpty(_nonce))
             {
+                PlaytestLog.SessionInactive(logger, "the page was opened without a playtest nonce");
                 return false;
             }
 
+            string handshake = PlaytestHandshake.FormatLine(ResolveVersion());
             PlaytestInterop.Open();
-            PlaytestInterop.Post(PlaytestChannelMessage.FormatReady(_nonce, PlaytestHandshake.FormatLine(ResolveVersion())));
+            PlaytestInterop.Post(PlaytestChannelMessage.FormatReady(_nonce, handshake));
+            PlaytestLog.Handshake(logger, handshake);
 
             DateTime deadline = DateTime.UtcNow + LevelTimeout;
             while (DateTime.UtcNow < deadline)
@@ -78,6 +85,7 @@ namespace CutTheRopeDX.Browser
                     PlatformServices.FileWatchers = _watchers;
                     CustomLevelSession.Activate(LevelPath);
                     IsActive = true;
+                    PlaytestLog.SessionActive(logger, LevelPath);
 
                     // Stands in for the stderr pipe the desktop editor reads. Installed only for a
                     // playtest, so a normal game's console output is untouched.
@@ -88,7 +96,7 @@ namespace CutTheRopeDX.Browser
                 await Task.Delay(PollInterval);
             }
 
-            Console.Error.WriteLine("playtest: no editor answered; starting the normal game.");
+            PlaytestLog.SessionInactive(logger, "no editor answered; starting the normal game");
             return false;
         }
 
@@ -132,6 +140,8 @@ namespace CutTheRopeDX.Browser
             }
 
             PlaytestInterop.Post(PlaytestChannelMessage.FormatBye(_nonce));
+            ILogger logger = Log.For(LogCategories.Playtest);
+            PlaytestLog.SessionClosed(logger);
             PlaytestInterop.CloseWindow();
         }
 
@@ -167,6 +177,8 @@ namespace CutTheRopeDX.Browser
             string scratch = LevelPath + ".tmp";
             File.WriteAllText(scratch, newest);
             File.Move(scratch, LevelPath, true);
+            ILogger logger = Log.For(LogCategories.Playtest);
+            PlaytestLog.LevelReceived(logger, newest.Length);
             return true;
         }
 

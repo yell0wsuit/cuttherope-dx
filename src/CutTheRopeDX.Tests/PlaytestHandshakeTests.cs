@@ -17,9 +17,13 @@ namespace CutTheRopeDX.Tests
             string version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
                 ?? assembly.GetName().Version?.ToString() ?? "";
 
-            PlaytestHandshake.Announce(writer);
+            string announced = PlaytestHandshake.Announce(writer);
 
             Assert.Equal(PlaytestHandshake.FormatLine(version) + writer.NewLine, writer.ToString());
+
+            // What is returned has to be what was written: the caller logs it, and a version
+            // resolved a second time from a different assembly would not match.
+            Assert.Equal(PlaytestHandshake.FormatLine(version), announced);
         }
 
         [Fact]

@@ -45,6 +45,9 @@ namespace CutTheRopeDX.Framework.Diagnostics
         /// <summary>Sound effect and music playback.</summary>
         public const string MediaSound = "Media.Sound";
 
+        /// <summary>The playtest session: the editor's level, its reloads, and its failures.</summary>
+        public const string Playtest = "Playtest";
+
         /// <summary>The background release check.</summary>
         public const string UpdateCheck = "UpdateCheck";
 

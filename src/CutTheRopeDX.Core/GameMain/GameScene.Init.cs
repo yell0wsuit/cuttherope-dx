@@ -4,9 +4,12 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -115,6 +118,8 @@ namespace CutTheRopeDX.GameMain
                 else
                 {
                     Console.Error.WriteLine(error);
+                    ILogger logger = Log.For(LogCategories.Playtest);
+                    PlaytestLog.LevelRejected(logger, error);
                 }
 
                 return;

@@ -34,8 +34,7 @@ _ = LogInterop.Begin(BrowserBuild.ComposeHeader());
 
 // Announced before the content bundle starts downloading, so the level transfer overlaps a ~56 MB
 // load rather than following it. A normal launch returns immediately.
-bool playtest = await PlaytestSession.BeginAsync();
-Console.WriteLine($"playtest: {(playtest ? "active" : "inactive")}");
+_ = await PlaytestSession.BeginAsync();
 
 // The canvas moves to this thread before Skia exists, and never moves back: the
 // released SkiaSharp archive calls GL on whichever thread it is running on, so the

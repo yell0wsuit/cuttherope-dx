@@ -12,6 +12,10 @@ using Microsoft.Extensions.Logging;
 
 CommandLineResult cli = CommandLine.Parse(args);
 
+// Held rather than logged where it happens: the factory is built further down, after the headless
+// branch has had its chance to return without one.
+string handshake = null;
+
 if (cli.IsCustomLevel)
 {
     if (cli.ErrorMessage != null)
@@ -30,7 +34,7 @@ if (cli.IsCustomLevel)
 
     // Tell the launcher, before the run loop blocks, that this build understood --level and loaded the
     // level. A build too old for the switch never reaches here, so the line's absence is the signal.
-    PlaytestHandshake.Announce(Console.Out);
+    handshake = PlaytestHandshake.Announce(Console.Out);
 }
 
 if (cli.IsHeadless)
@@ -65,6 +69,13 @@ catch (ArgumentException error)
 using ILoggerFactory loggerFactory = LoggingSetup.Create(Preferences.SaveDirectory, requestedLevel);
 Log.Factory = loggerFactory;
 CrashHandlers.Install(loggerFactory);
+
+if (CustomLevelSession.IsActive)
+{
+    ILogger playtestLogger = Log.For(LogCategories.Playtest);
+    PlaytestLog.SessionActive(playtestLogger, CustomLevelSession.LevelPath);
+    PlaytestLog.Handshake(playtestLogger, handshake);
+}
 
 ILogger startupLogger = Log.For(LogCategories.Preferences);
 foreach (Preferences.StartupDiagnostic diagnostic in Preferences.DrainStartupDiagnostics())

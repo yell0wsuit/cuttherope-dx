@@ -47,13 +47,19 @@ namespace CutTheRopeDX.GameMain
         {
             if (!CustomLevelFile.TryLoad(CustomLevelSession.LevelPath, out System.Xml.Linq.XElement map, out string error))
             {
+                // Undecorated, and first: this is the only thing the editor reads. The log copy
+                // below is for whoever reads the report afterwards.
                 Console.Error.WriteLine(error);
+                ILogger rejectedLogger = Log.For(LogCategories.Playtest);
+                PlaytestLog.LevelRejected(rejectedLogger, error);
                 return;
             }
 
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             string[] required = LevelResourceScanner.GetRequiredResources(map);
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.GetSessionResources());
+            ILogger logger = Log.For(LogCategories.Playtest);
+            PlaytestLog.LevelChanged(logger, kind, required.Length);
 
             if (kind == CustomLevelReloadKind.Instant)
             {

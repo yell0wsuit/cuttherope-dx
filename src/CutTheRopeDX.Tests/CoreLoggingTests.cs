@@ -89,8 +89,9 @@ namespace CutTheRopeDX.Tests
         }
 
         /// <summary>
-        /// The editor reads level errors straight off the standard error pipe, so these lines
-        /// carry no timestamp, level or category and go nowhere near the log.
+        /// The editor reads level errors straight off the standard error pipe, so what lands
+        /// there carries no timestamp, level or category. The log gets its own copy; what must
+        /// never happen is a decorated line reaching the pipe.
         /// </summary>
         [Fact]
         public void ACustomLevelFailureStaysBareOnStandardError()
@@ -113,8 +114,15 @@ namespace CutTheRopeDX.Tests
 
                 string written = captured.ToString();
                 Assert.NotEqual(string.Empty, written);
+
+                // A tab is what Compose puts between the timestamp, level and category, so its
+                // absence is what proves nothing decorated reached the editor's pipe.
                 Assert.DoesNotContain("\t", written);
-                Assert.Empty(recorder.Records);
+
+                LogRecord entry = Assert.Single(recorder.Records);
+                Assert.Equal(LogCategories.Playtest, entry.Category);
+                Assert.Equal(LogLevel.Warning, entry.Level);
+                Assert.DoesNotContain(LogCategories.Playtest, written);
             }
             finally
             {
