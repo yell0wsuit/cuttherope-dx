@@ -6,8 +6,11 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -287,7 +290,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             AndroidAPI.DisableBanners();
                         }
-                        LOG();
+                        ILogger logger = Log.For(LogCategories.Application);
+                        CTRRootControllerLog.ShowingMenu(logger);
                         ActivateChild(1);
                         //Show menu presence after loading screen
                         PlatformServices.RichPresence?.MenuPresence();
@@ -892,5 +896,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Timer handle draining the background prefetch queue, or −1 if inactive.</summary>
         private int prefetchDrainTimer = -1;
+    }
+
+    /// <summary>Log messages for the root controller's lifecycle.</summary>
+    internal static partial class CTRRootControllerLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Loading finished; showing the menu.")]
+        public static partial void ShowingMenu(ILogger logger);
     }
 }

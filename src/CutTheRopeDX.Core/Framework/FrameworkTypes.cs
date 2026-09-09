@@ -86,13 +86,6 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// No-op logging stub.
-        /// </summary>
-        public static void LOG()
-        {
-        }
-
-        /// <summary>
         /// Returns <paramref name="H"/> on WVGA displays, <paramref name="L"/> otherwise.
         /// </summary>
         /// <param name="H">Value for WVGA resolution.</param>

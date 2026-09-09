@@ -6,6 +6,9 @@ namespace CutTheRopeDX.Framework.Diagnostics
     /// </summary>
     internal static class LogCategories
     {
+        /// <summary>Application lifecycle: runtime startup, teardown, and root controller flow.</summary>
+        public const string Application = "Application";
+
         /// <summary>The SDL host: renderer selection, device loss, shutdown.</summary>
         public const string SdlHost = "Sdl.Host";
 
