@@ -234,6 +234,27 @@
                 border-radius: 8px;
                 cursor: pointer;
             }
+            #export-log {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+                border: 1px solid #3a3f47;
+                border-radius: 8px;
+                background: transparent;
+                color: #e6e6e6;
+                cursor: pointer;
+                opacity: 0.75;
+            }
+            #export-log:hover {
+                opacity: 1;
+            }
+            #export-log[hidden],
+            #export-log-status[hidden] {
+                display: none;
+            }
+            #export-log-status {
+                font-size: 0.8rem;
+                opacity: 0.6;
+            }
             #update {
                 padding: 20px 24px;
                 border: 0;
@@ -308,6 +329,8 @@
                 level will restart.
             </p>
             <button id="resume" hidden>Resume</button>
+            <button id="export-log">Export log</button>
+            <p id="export-log-status" role="status" hidden></p>
         </div>
         <dialog id="update">
             <p>A new version of the game is ready.</p>
@@ -396,6 +419,30 @@
             start.addEventListener("click", async () => {
                 await globalThis.ctrdxStart();
                 splash.classList.add("hidden");
+            });
+
+            // The page owns this rather than the game: a run that never reached the game is
+            // exactly the run whose log is worth having, and the worker that would have served
+            // the request is the thing that did not start. Reading the database directly leaves
+            // the button working whatever happened behind it.
+            const exportLog = document.getElementById("export-log");
+            const exportStatus = document.getElementById("export-log-status");
+            exportLog.addEventListener("click", async () => {
+                exportLog.disabled = true;
+                exportStatus.hidden = false;
+                exportStatus.textContent = "Collecting…";
+                try {
+                    const { exportZip } = await import("./log.js");
+                    const saved = await exportZip();
+                    exportStatus.textContent =
+                        saved === 0
+                            ? "No logs recorded yet."
+                            : `Exported ${saved} ${saved === 1 ? "session" : "sessions"}.`;
+                } catch (error) {
+                    exportStatus.textContent = `Could not export the log: ${error}`;
+                } finally {
+                    exportLog.disabled = false;
+                }
             });
 
             // The application is imported here rather than through its own script tag so that

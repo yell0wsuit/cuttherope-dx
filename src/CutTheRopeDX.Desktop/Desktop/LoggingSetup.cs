@@ -1,8 +1,9 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
+
+using CutTheRopeDX.Framework.Diagnostics;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -28,6 +29,13 @@ namespace CutTheRopeDX.Desktop
 
         /// <summary>Prefix every log file name starts with.</summary>
         private const string LogFilePrefix = "ctrdx";
+
+        /// <summary>Which build this is, as the banner reports it.</summary>
+#if DEBUG
+        private const string Configuration = "Debug";
+#else
+        private const string Configuration = "Release";
+#endif
 
         /// <summary>
         /// How many log files are kept in the directory, this run's own included.
@@ -119,6 +127,7 @@ namespace CutTheRopeDX.Desktop
             if (canWriteFile)
             {
                 PruneOldLogs(directory);
+                WriteHeader(path);
             }
 
             try
@@ -165,8 +174,10 @@ namespace CutTheRopeDX.Desktop
                             {
                                 if (Interlocked.Exchange(ref fallbackAttempted, 1) == 0)
                                 {
-                                    error.UseNewLogFileName(
-                                        Path.Combine(directory, LogFileName(stamp, fallback: true)));
+                                    string fallbackPath =
+                                        Path.Combine(directory, LogFileName(stamp, fallback: true));
+                                    WriteHeader(fallbackPath);
+                                    error.UseNewLogFileName(fallbackPath);
                                 }
                             };
                         });
@@ -176,6 +187,45 @@ namespace CutTheRopeDX.Desktop
                     // already wrote. The default sends every level to stdout.
                     _ = builder.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Error);
                 });
+            }
+        }
+
+        /// <summary>
+        /// Names the build a log came from.
+        /// </summary>
+        /// <returns>The banner, as three lines with no trailing newline.</returns>
+        /// <remarks>
+        /// Deliberately not a log entry: this is the first thing anyone reads on a report, and a
+        /// timestamp, level and category in front of each line would only get in the way of it.
+        /// </remarks>
+        public static string ComposeHeader()
+        {
+            return string.Join(
+                Environment.NewLine,
+                SdlDesktopHost.CtrDXProductName,
+                Configuration + " version",
+                "Version: " + SdlDesktopHost.Version);
+        }
+
+        /// <summary>
+        /// Puts the banner at the top of a run's log, before the provider opens it.
+        /// </summary>
+        /// <param name="path">The log file about to be written.</param>
+        /// <remarks>
+        /// A log that cannot be headed is still worth having, so a failure here is dropped: the
+        /// provider is about to report the same problem through its own fallback.
+        /// </remarks>
+        private static void WriteHeader(string path)
+        {
+            try
+            {
+                File.AppendAllText(path, ComposeHeader() + Environment.NewLine);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
         }
 
@@ -254,28 +304,10 @@ namespace CutTheRopeDX.Desktop
         /// <param name="category">Category name.</param>
         /// <param name="message">The rendered message.</param>
         /// <param name="exception">The attached exception, if any.</param>
-        /// <returns>The line, plus the exception on lines of its own when there is one.</returns>
-        /// <remarks>
-        /// The default formatter runs the message straight into the exception, which is unreadable
-        /// exactly when it matters most.
-        /// </remarks>
+        /// <returns>The line, in the shape every host writes.</returns>
         public static string Compose(LogLevel level, string category, string message, Exception exception)
         {
-            StringBuilder line = new();
-            _ = line.Append(DateTime.Now.ToString("O", CultureInfo.InvariantCulture))
-                .Append('\t')
-                .Append(level)
-                .Append('\t')
-                .Append(category)
-                .Append('\t')
-                .Append(message);
-
-            if (exception != null)
-            {
-                _ = line.AppendLine().Append(exception);
-            }
-
-            return line.ToString();
+            return LogEntryFormat.Compose(level, category, message, exception);
         }
     }
 }

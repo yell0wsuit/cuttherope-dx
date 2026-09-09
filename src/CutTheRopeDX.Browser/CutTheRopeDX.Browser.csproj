@@ -34,6 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <EmccExportedRuntimeMethod Include="GL" />
@@ -67,8 +68,7 @@
 
   <!-- Development serves coi-sw directly; publish swaps in the cache-aware variant. -->
   <ItemGroup>
-    <ServiceWorker Include="wwwroot/coi-sw.js"
-                   PublishedContent="wwwroot/service-worker.published.js" />
+    <ServiceWorker Include="wwwroot/coi-sw.js" PublishedContent="wwwroot/service-worker.published.js" />
   </ItemGroup>
 
 </Project>

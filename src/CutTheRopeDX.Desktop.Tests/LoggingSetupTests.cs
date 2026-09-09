@@ -71,6 +71,31 @@ namespace CutTheRopeDX.Desktop.Tests
             }
         }
 
+        [Fact]
+        public void EveryLogOpensWithTheBuildItCameFrom()
+        {
+            string root = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            _ = Directory.CreateDirectory(root);
+            try
+            {
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
+                factory.CreateLogger("Sdl.Host").Log(LogLevel.Information, default, "after the banner", null,
+                    static (message, _) => message);
+                factory.Dispose();
+
+                string[] lines = File.ReadAllLines(LogPath(root, Stamp));
+
+                Assert.Equal("Cut The Rope: DX", lines[0]);
+                Assert.EndsWith(" version", lines[1]);
+                Assert.StartsWith("Version: ", lines[2]);
+                Assert.Contains(lines, line => line.Contains("after the banner", StringComparison.Ordinal));
+            }
+            finally
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+
         [Theory]
         [InlineData(LogLevel.Trace, LogLevel.Trace, true)]
         [InlineData(LogLevel.Error, LogLevel.Warning, false)]
