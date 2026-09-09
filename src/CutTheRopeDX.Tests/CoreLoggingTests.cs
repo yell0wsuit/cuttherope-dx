@@ -115,14 +115,19 @@ namespace CutTheRopeDX.Tests
                 string written = captured.ToString();
                 Assert.NotEqual(string.Empty, written);
 
-                // A tab is what Compose puts between the timestamp, level and category, so its
-                // absence is what proves nothing decorated reached the editor's pipe.
-                Assert.DoesNotContain("\t", written);
+                // The editor matches these bytes, so the line has to be the reason and nothing
+                // else: no bracketed level, no category, and no timestamp in front of it.
+                Assert.DoesNotContain("[", written);
+                Assert.DoesNotContain(LogCategories.Playtest, written);
 
                 LogRecord entry = Assert.Single(recorder.Records);
                 Assert.Equal(LogCategories.Playtest, entry.Category);
                 Assert.Equal(LogLevel.Warning, entry.Level);
-                Assert.DoesNotContain(LogCategories.Playtest, written);
+
+                // The logged copy is the same reason with a prefix, so what reached the pipe is
+                // exactly its tail. Asserting the relationship rather than the wording keeps this
+                // honest if the reason is ever reworded.
+                Assert.EndsWith(written.TrimEnd(), entry.Message, StringComparison.Ordinal);
             }
             finally
             {

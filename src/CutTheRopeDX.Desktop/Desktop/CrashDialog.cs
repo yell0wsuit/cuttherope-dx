@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 
 using SDL3;
@@ -45,7 +46,9 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            bool offerLog = !string.IsNullOrEmpty(logDirectory);
+            // Offered only when there is something to open. File logging can have fallen back to
+            // console-only, and a button that reveals nothing is worse than no button.
+            bool offerLog = !string.IsNullOrEmpty(logDirectory) && Directory.Exists(logDirectory);
             if (Prompt(title, message, offerLog) == OpenLogButton && offerLog)
             {
                 OpenFolder(logDirectory);
@@ -131,7 +134,14 @@ namespace CutTheRopeDX.Desktop
                 string command = OperatingSystem.IsWindows() ? "explorer"
                     : OperatingSystem.IsMacOS() ? "open"
                     : "xdg-open";
-                using Process opened = Process.Start(new ProcessStartInfo(command, directory));
+
+                // The path goes in as one argument rather than as a command line. A save
+                // directory can contain a space - the macOS fallback lives under "Application
+                // Support" - and a single argument string is split on those, which leaves the
+                // launcher looking for two directories that do not exist.
+                ProcessStartInfo start = new(command);
+                start.ArgumentList.Add(directory);
+                using Process opened = Process.Start(start);
             }
             catch (Exception)
             {

@@ -209,6 +209,31 @@ namespace CutTheRopeDX.Desktop.Tests
         }
 
         [Fact]
+        public void ComposeBracketsTheLevelAndSeparatesFieldsWithSpaces()
+        {
+            string formatted = LoggingSetup.Compose(LogLevel.Information, "Sdl.Host", "renderer=Metal", null);
+
+            Assert.DoesNotContain("\t", formatted);
+            Assert.Contains(" [Information] Sdl.Host renderer=Metal", formatted);
+        }
+
+        [Fact]
+        public void ComposeKeepsTheAccountNameOutOfTheLog()
+        {
+            string account = Environment.UserName;
+            Assert.True(account.Length >= 3, "This machine's account name is too short to redact.");
+
+            string formatted = LoggingSetup.Compose(
+                LogLevel.Information,
+                "Preferences",
+                $"Using save directory: /Users/{account}/Documents/save",
+                null);
+
+            Assert.DoesNotContain(account, formatted);
+            Assert.Contains("/Users/[redactedUsername]/Documents/save", formatted);
+        }
+
+        [Fact]
         public void ComposeOmitsTheExceptionBlockWhenThereIsNone()
         {
             Assert.DoesNotContain(
