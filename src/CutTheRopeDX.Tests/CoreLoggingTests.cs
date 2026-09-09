@@ -23,7 +23,8 @@ namespace CutTheRopeDX.Tests
             try
             {
                 const string json =
-                    """{"frames":{"spin":{"frame":{"x":0,"y":0,"w":4,"h":4},"rotated":true}}}""";
+                                         /*lang=json,strict*/
+                                         """{"frames":{"spin":{"frame":{"x":0,"y":0,"w":4,"h":4},"rotated":true}}}""";
 
                 _ = TexturePackerAtlasParser.Parse(json, null);
 

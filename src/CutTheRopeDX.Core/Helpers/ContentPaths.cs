@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
-using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Diagnostics;
+using CutTheRopeDX.Framework.Platform;
 
 using Microsoft.Extensions.Logging;
 

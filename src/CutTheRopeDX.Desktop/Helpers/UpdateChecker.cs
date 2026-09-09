@@ -6,8 +6,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Diagnostics;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 
 using Microsoft.Extensions.Logging;
