@@ -624,7 +624,8 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             ILogger logger = Log.For(LogCategories.ContentResources);
-            ResourceMgrLog.PackFreed(logger, i, MemoryReport.ManagedMegabytes, MemoryReport.WorkingSetMegabytes);
+            string memory = MemoryReport.Describe();
+            ResourceMgrLog.PackFreed(logger, i, memory);
         }
 
         /// <summary>
@@ -798,13 +799,8 @@ namespace CutTheRopeDX.Framework.Core
 
             double elapsedMs = Stopwatch.GetElapsedTime(batchStartedTicks).TotalMilliseconds;
             ILogger logger = Log.For(LogCategories.ContentResources);
-            ResourceMgrLog.BatchLoaded(
-                logger,
-                count,
-                mode,
-                elapsedMs,
-                MemoryReport.ManagedMegabytes,
-                MemoryReport.WorkingSetMegabytes);
+            string memory = MemoryReport.Describe();
+            ResourceMgrLog.BatchLoaded(logger, count, mode, elapsedMs, memory);
         }
 
         /// <summary>
@@ -880,15 +876,12 @@ namespace CutTheRopeDX.Framework.Core
 
         [LoggerMessage(
             Level = LogLevel.Information,
-            Message = "Loaded {Count} resources ({Mode}) in {ElapsedMs:F1} ms; "
-                + "managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
+            Message = "Loaded {Count} resources ({Mode}) in {ElapsedMs:F1} ms; {Memory}")]
         public static partial void BatchLoaded(
-            ILogger logger, int count, string mode, double elapsedMs, long managedMb, long workingSetMb);
+            ILogger logger, int count, string mode, double elapsedMs, string memory);
 
-        [LoggerMessage(
-            Level = LogLevel.Information,
-            Message = "Freed {Count} resources; managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
-        public static partial void PackFreed(ILogger logger, int count, long managedMb, long workingSetMb);
+        [LoggerMessage(Level = LogLevel.Information, Message = "Freed {Count} resources; {Memory}")]
+        public static partial void PackFreed(ILogger logger, int count, string memory);
 
         [LoggerMessage(Level = LogLevel.Debug, Message = "Loading resource '{ResourceName}'")]
         public static partial void ResourceLoading(ILogger logger, string resourceName);

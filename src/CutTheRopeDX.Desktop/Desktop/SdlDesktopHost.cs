@@ -328,8 +328,8 @@ namespace CutTheRopeDX.Desktop
             }
 
             ILogger logger = Log.For(LogCategories.SdlHost);
-            SdlDesktopHostLog.Booted(
-                logger, elapsedMs, MemoryReport.ManagedMegabytes, MemoryReport.WorkingSetMegabytes);
+            string memory = MemoryReport.Describe();
+            SdlDesktopHostLog.Booted(logger, elapsedMs, memory);
         }
 
         /// <summary>Runs work that touches the device, recovering if it reports a loss.</summary>
@@ -774,10 +774,7 @@ namespace CutTheRopeDX.Desktop
         [LoggerMessage(Level = LogLevel.Error, Message = "{Reason}")]
         public static partial void Abandoning(ILogger logger, string reason);
 
-        [LoggerMessage(
-            Level = LogLevel.Information,
-            Message = "First frame after {ElapsedMs:F0} ms; managed {ManagedMb} MB, "
-                + "working set {WorkingSetMb} MB")]
-        public static partial void Booted(ILogger logger, double elapsedMs, long managedMb, long workingSetMb);
+        [LoggerMessage(Level = LogLevel.Information, Message = "First frame after {ElapsedMs:F0} ms; {Memory}")]
+        public static partial void Booted(ILogger logger, double elapsedMs, string memory);
     }
 }

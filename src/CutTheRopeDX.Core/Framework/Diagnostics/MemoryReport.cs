@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace CutTheRopeDX.Framework.Diagnostics
 {
@@ -39,6 +40,25 @@ namespace CutTheRopeDX.Framework.Diagnostics
                     return 0;
                 }
             }
+        }
+
+        /// <summary>
+        /// Describes memory use, naming only the figures this platform will answer.
+        /// </summary>
+        /// <returns>The description, for a log entry to quote whole.</returns>
+        /// <remarks>
+        /// The working set is left out where it reads as zero, which is what the browser reports:
+        /// a log saying a page used no memory at all describes nothing, and reads as a defect in
+        /// the reporting rather than as the silence it is.
+        /// </remarks>
+        public static string Describe()
+        {
+            long workingSet = WorkingSetMegabytes;
+            return workingSet > 0
+                ? string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"managed {ManagedMegabytes} MB, working set {workingSet} MB")
+                : string.Create(CultureInfo.InvariantCulture, $"managed {ManagedMegabytes} MB");
         }
     }
 }

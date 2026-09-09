@@ -96,8 +96,8 @@ namespace CutTheRopeDX.GameMain
             {
                 double elapsedMs = Stopwatch.GetElapsedTime(loadStartedTicks).TotalMilliseconds;
                 ILogger logger = Log.For(LogCategories.ContentXml);
-                LoadingControllerLog.LevelReady(
-                    logger, elapsedMs, MemoryReport.ManagedMegabytes, MemoryReport.WorkingSetMegabytes);
+                string memory = MemoryReport.Describe();
+                LoadingControllerLog.LevelReady(logger, elapsedMs, memory);
             }
         }
 
@@ -142,11 +142,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>Log messages for the loading screen.</summary>
     internal static partial class LoadingControllerLog
     {
-        [LoggerMessage(
-            Level = LogLevel.Information,
-            Message = "Level ready in {ElapsedMs:F1} ms; managed {ManagedMb} MB, "
-                + "working set {WorkingSetMb} MB")]
-        public static partial void LevelReady(
-            ILogger logger, double elapsedMs, long managedMb, long workingSetMb);
+        [LoggerMessage(Level = LogLevel.Information, Message = "Level ready in {ElapsedMs:F1} ms; {Memory}")]
+        public static partial void LevelReady(ILogger logger, double elapsedMs, string memory);
     }
 }

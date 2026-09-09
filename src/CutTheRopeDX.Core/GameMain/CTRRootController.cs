@@ -99,14 +99,8 @@ namespace CutTheRopeDX.GameMain
 
             double elapsedMs = Stopwatch.GetElapsedTime(startedTicks).TotalMilliseconds;
             ILogger logger = Log.For(LogCategories.ContentXml);
-            CTRRootControllerLog.LevelReady(
-                logger,
-                pack,
-                level,
-                newMapName,
-                elapsedMs,
-                MemoryReport.ManagedMegabytes,
-                MemoryReport.WorkingSetMegabytes);
+            string memory = MemoryReport.Describe();
+            CTRRootControllerLog.LevelReady(logger, pack, level, newMapName, elapsedMs, memory);
 
             StartBoxResourceScanIfNeeded();
             QueueOrPollBoxPrefetch();
@@ -933,15 +927,8 @@ namespace CutTheRopeDX.GameMain
 
         [LoggerMessage(
             Level = LogLevel.Information,
-            Message = "Level pack {Pack} level {Level} '{MapName}' ready in {ElapsedMs:F1} ms; "
-                + "managed {ManagedMb} MB, working set {WorkingSetMb} MB")]
+            Message = "Level pack {Pack} level {Level} '{MapName}' ready in {ElapsedMs:F1} ms; {Memory}")]
         public static partial void LevelReady(
-            ILogger logger,
-            int pack,
-            int level,
-            string mapName,
-            double elapsedMs,
-            long managedMb,
-            long workingSetMb);
+            ILogger logger, int pack, int level, string mapName, double elapsedMs, string memory);
     }
 }
