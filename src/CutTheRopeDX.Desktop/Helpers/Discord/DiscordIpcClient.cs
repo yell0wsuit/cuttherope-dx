@@ -6,6 +6,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 namespace CutTheRopeDX.Helpers.Discord
 {
     /// <summary>
@@ -89,11 +93,13 @@ namespace CutTheRopeDX.Helpers.Discord
                 IsConnected = true;
                 return true;
             }
-            catch
+            catch (Exception failure)
             {
                 _connection?.Dispose();
                 _connection = null;
                 IsConnected = false;
+                ILogger logger = Log.For(LogCategories.RichPresence);
+                DiscordIpcLog.HandshakeFailed(logger, failure);
                 return false;
             }
         }
@@ -123,9 +129,11 @@ namespace CutTheRopeDX.Helpers.Discord
                 byte[] payload = BuildSetActivityPayload(details, state, startTimestamp, smallImageKey, smallImageText);
                 WriteFrame(OP_FRAME, payload);
             }
-            catch
+            catch (Exception failure)
             {
                 IsConnected = false;
+                ILogger logger = Log.For(LogCategories.RichPresence);
+                DiscordIpcLog.FrameFailed(logger, failure);
             }
         }
 
@@ -144,9 +152,11 @@ namespace CutTheRopeDX.Helpers.Discord
                 byte[] payload = BuildClearActivityPayload();
                 WriteFrame(OP_FRAME, payload);
             }
-            catch
+            catch (Exception failure)
             {
                 IsConnected = false;
+                ILogger logger = Log.For(LogCategories.RichPresence);
+                DiscordIpcLog.FrameFailed(logger, failure);
             }
         }
 
@@ -162,9 +172,10 @@ namespace CutTheRopeDX.Helpers.Discord
                         WriteFrame(OP_CLOSE, "{}"u8.ToArray());
                     }
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Best effort
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    DiscordIpcLog.FrameFailed(logger, failure);
                 }
 
                 _connection.Dispose();
@@ -222,8 +233,10 @@ namespace CutTheRopeDX.Helpers.Discord
                 payload = Encoding.UTF8.GetString(buf);
                 return true;
             }
-            catch
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.RichPresence);
+                DiscordIpcLog.ReadFailed(logger, failure);
                 return false;
             }
         }
@@ -362,5 +375,25 @@ namespace CutTheRopeDX.Helpers.Discord
             }
             return ms.ToArray();
         }
+    }
+
+    /// <summary>Log messages for the Discord IPC transport.</summary>
+    /// <remarks>
+    /// All of these are debug notes: Discord not running is the ordinary case, and rich presence
+    /// is a courtesy the game runs perfectly well without.
+    /// </remarks>
+    internal static partial class DiscordIpcLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Discord handshake failed.")]
+        public static partial void HandshakeFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not write a Discord frame.")]
+        public static partial void FrameFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not read a Discord frame.")]
+        public static partial void ReadFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Discord pipe {Index} did not accept a connection.")]
+        public static partial void PipeUnavailable(ILogger logger, int index, Exception exception);
     }
 }

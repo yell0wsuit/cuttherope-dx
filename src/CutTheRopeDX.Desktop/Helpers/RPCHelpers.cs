@@ -4,9 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers.Discord;
+
+using Microsoft.Extensions.Logging;
 
 
 namespace CutTheRopeDX.Helpers
@@ -83,9 +86,11 @@ namespace CutTheRopeDX.Helpers
                     client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
                     Volatile.Write(ref _client, client);
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Ignore connection failures
+                    // Discord not running is the common case, so this stays a debug note.
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    RPCHelpersLog.ConnectFailed(logger, failure);
                 }
             });
         }
@@ -110,9 +115,10 @@ namespace CutTheRopeDX.Helpers
                 {
                     client.ClearActivity();
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Best effort
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    RPCHelpersLog.ClearFailed(logger, failure);
                 }
 
                 client.Dispose();
@@ -171,5 +177,15 @@ namespace CutTheRopeDX.Helpers
                 smallImageKey: $"pack_{pack + 1}",
                 smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
         }
+    }
+
+    /// <summary>Log messages for rich presence.</summary>
+    internal static partial class RPCHelpersLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not connect to Discord.")]
+        public static partial void ConnectFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not clear the Discord activity.")]
+        public static partial void ClearFailed(ILogger logger, Exception exception);
     }
 }

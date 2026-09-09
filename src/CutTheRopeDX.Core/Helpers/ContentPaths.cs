@@ -3,6 +3,9 @@ using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Helpers
 {
@@ -277,11 +280,22 @@ namespace CutTheRopeDX.Helpers
                 using Stream stream = OpenStream(fileName);
                 document = XDocument.Load(stream);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                // The caller gets a null it cannot explain, and the null surfaces much later as
+                // a failure somewhere unrelated. Name the file and the reason here instead.
+                ILogger logger = Log.For(LogCategories.ContentXml);
+                ContentPathsLog.XmlLoadFailed(logger, fileName, failure);
             }
 
             return document?.Root;
         }
+    }
+
+    /// <summary>Log messages for content path resolution.</summary>
+    internal static partial class ContentPathsLog
+    {
+        [LoggerMessage(Level = LogLevel.Error, Message = "Could not load XML content '{FileName}'")]
+        public static partial void XmlLoadFailed(ILogger logger, string fileName, Exception exception);
     }
 }

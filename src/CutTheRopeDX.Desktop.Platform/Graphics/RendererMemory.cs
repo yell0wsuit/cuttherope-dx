@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 namespace CutTheRopeDX.Desktop.Platform.Graphics
 {
     /// <summary>
@@ -88,6 +92,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             {
                 // A machine that cannot record this still runs the game; it only loses the
                 // protection on the next launch, which is where it was before this existed.
+                ILogger logger = Log.For(LogCategories.SdlGraphics);
+                RendererMemoryLog.MarkerWriteFailed(logger, statePath, failure);
             }
         }
 
@@ -119,8 +125,20 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             }
             catch (Exception failure) when (IsFileSystemFailure(failure))
             {
+                ILogger logger = Log.For(LogCategories.SdlGraphics);
+                RendererMemoryLog.MarkerReadFailed(logger, path, failure);
                 return null;
             }
         }
+    }
+
+    /// <summary>Log messages for the renderer blame marker.</summary>
+    internal static partial class RendererMemoryLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not write the renderer marker '{Path}'")]
+        public static partial void MarkerWriteFailed(ILogger logger, string path, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not read the renderer marker '{Path}'")]
+        public static partial void MarkerReadFailed(ILogger logger, string path, Exception exception);
     }
 }

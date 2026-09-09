@@ -4,6 +4,7 @@ using System.IO;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Helpers;
 
 using Microsoft.Extensions.Logging;
 
@@ -56,6 +57,34 @@ namespace CutTheRopeDX.Tests
             finally
             {
                 Log.Factory = null;
+            }
+        }
+
+        [Fact]
+        public void UnreadableXmlContentIsReportedInsteadOfReturningABareNull()
+        {
+            string relativePath = Path.Combine("test-data", $"{Guid.NewGuid():N}.xml");
+            string fullPath = Path.Combine(ContentPaths.GetContentRootAbsolute(), relativePath);
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            File.WriteAllText(fullPath, "<map><object></map>");
+
+            RecordingLoggerProvider recorder = new();
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddProvider(recorder));
+            Log.Factory = factory;
+            try
+            {
+                Assert.Null(ContentPaths.LoadXml(relativePath));
+
+                LogRecord entry = Assert.Single(recorder.Records);
+                Assert.Equal(LogCategories.ContentXml, entry.Category);
+                Assert.Equal(LogLevel.Error, entry.Level);
+                Assert.Contains(relativePath, entry.Message);
+                Assert.NotNull(entry.Exception);
+            }
+            finally
+            {
+                Log.Factory = null;
+                File.Delete(fullPath);
             }
         }
 

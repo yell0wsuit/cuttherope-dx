@@ -5,9 +5,12 @@ using System.Linq;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -716,8 +719,10 @@ namespace CutTheRopeDX.Framework.Core
             {
                 _ = Application.GetTexture(localizedName);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.ContentResources);
+                ResourceMgrLog.TextureLoadFailed(logger, localizedName, failure);
             }
         }
 
@@ -822,5 +827,12 @@ namespace CutTheRopeDX.Framework.Core
             /// </summary>
             ELEMENT
         }
+    }
+
+    /// <summary>Log messages for resource loading.</summary>
+    internal static partial class ResourceMgrLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load texture '{ResourceName}'")]
+        public static partial void TextureLoadFailed(ILogger logger, string resourceName, Exception exception);
     }
 }

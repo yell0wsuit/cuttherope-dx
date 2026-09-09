@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Rendering.Skia;
+
+using Microsoft.Extensions.Logging;
 
 using SkiaSharp;
 
@@ -48,9 +51,18 @@ namespace CutTheRopeDX.Desktop
             }
 
             byte[] bytes;
-            try { bytes = content.Read(path + ".png"); }
-            catch (FileNotFoundException) { return null; }
-            catch (DirectoryNotFoundException) { return null; }
+            try
+            {
+                bytes = content.Read(path + ".png");
+            }
+            catch (Exception failure) when (failure is FileNotFoundException or DirectoryNotFoundException)
+            {
+                // The caller gets a null texture and draws nothing, which on screen looks like
+                // art that was never authored rather than a file that is not on disk.
+                ILogger logger = Log.For(LogCategories.ContentResources);
+                SkiaAssetPlatformLog.TextureMissing(logger, path, failure);
+                return null;
+            }
             using SKData data = SKData.CreateCopy(bytes);
             SKImage decoded = SKImage.FromEncodedData(data)
                 ?? throw new InvalidDataException($"Could not decode PNG '{path}'.");
@@ -211,5 +223,12 @@ namespace CutTheRopeDX.Desktop
             textures.Clear();
             ClearFontCache();
         }
+    }
+
+    /// <summary>Log messages for desktop asset loading.</summary>
+    internal static partial class SkiaAssetPlatformLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Texture '{Path}' is not in the content tree.")]
+        public static partial void TextureMissing(ILogger logger, string path, Exception exception);
     }
 }

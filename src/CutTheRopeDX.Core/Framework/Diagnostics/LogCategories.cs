@@ -33,7 +33,22 @@ namespace CutTheRopeDX.Framework.Diagnostics
         /// <summary>Texture atlas parsing.</summary>
         public const string ContentAtlas = "Content.Atlas";
 
-        /// <summary>Pack configuration and tutorial prompt loading.</summary>
+        /// <summary>Pack configuration, skin manifest and tutorial prompt loading.</summary>
         public const string ContentPacks = "Content.Packs";
+
+        /// <summary>XML content loading: maps, and the level data read from them.</summary>
+        public const string ContentXml = "Content.Xml";
+
+        /// <summary>Texture and asset resolution for the resource manager.</summary>
+        public const string ContentResources = "Content.Resources";
+
+        /// <summary>Sound effect and music playback.</summary>
+        public const string MediaSound = "Media.Sound";
+
+        /// <summary>The background release check.</summary>
+        public const string UpdateCheck = "UpdateCheck";
+
+        /// <summary>Discord rich presence.</summary>
+        public const string RichPresence = "RichPresence";
     }
 }

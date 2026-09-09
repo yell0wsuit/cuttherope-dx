@@ -7,7 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Helpers
 {
@@ -47,9 +50,11 @@ namespace CutTheRopeDX.Helpers
                         _ = Interlocked.Exchange(ref updateInfo, info);
                     }
                 }
-                catch (Exception)
+                catch (Exception failure)
                 {
-                    // Ignore network, cancellation, or parsing failures.
+                    // Being offline is ordinary, so this is a debug note rather than a warning.
+                    ILogger logger = Log.For(LogCategories.UpdateCheck);
+                    UpdateCheckerLog.CheckFailed(logger, failure);
                 }
             });
         }
@@ -272,5 +277,12 @@ namespace CutTheRopeDX.Helpers
         /// Latest update info fetched from the server.
         /// </summary>
         private static UpdateInfo updateInfo;
+    }
+
+    /// <summary>Log messages for the release check.</summary>
+    internal static partial class UpdateCheckerLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Update check did not complete.")]
+        public static partial void CheckFailed(ILogger logger, Exception exception);
     }
 }

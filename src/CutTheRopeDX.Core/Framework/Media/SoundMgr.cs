@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -93,8 +96,16 @@ namespace CutTheRopeDX.Framework.Media
                 loadedSounds.Add(localizedName, loaded);
                 return loaded;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                // Reported once per name: a sound whose file is missing is asked for again on
+                // every play, and a warning each time would bury the rest of the log.
+                if (reportedLoadFailures.Add(localizedName))
+                {
+                    ILogger logger = Log.For(LogCategories.MediaSound);
+                    SoundMgrLog.LoadFailed(logger, localizedName, failure);
+                }
+
                 return null;
             }
         }
@@ -164,8 +175,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 _backend.PlayMusic(_backend.LoadMusic(musicPath), true);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.MusicFailed(logger, musicPath, failure);
             }
         }
 
@@ -220,8 +233,10 @@ namespace CutTheRopeDX.Framework.Media
                     instance.Stop();
                 }
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "stop", failure);
             }
 
             _ = list.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
@@ -264,8 +279,10 @@ namespace CutTheRopeDX.Framework.Media
                         }
                         instance.Dispose();
                     }
-                    catch (Exception)
+                    catch (Exception failure)
                     {
+                        ILogger logger = Log.For(LogCategories.MediaSound);
+                        SoundMgrLog.BackendCallFailed(logger, "release", failure);
                     }
                 }
                 return true;
@@ -281,8 +298,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 _backend?.StopMusic();
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "stop music", failure);
             }
         }
 
@@ -309,8 +328,10 @@ namespace CutTheRopeDX.Framework.Media
                 musicPauseTickets.Push(pausedMusic);
                 pauseDepth++;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "pause", failure);
             }
         }
 
@@ -345,8 +366,10 @@ namespace CutTheRopeDX.Framework.Media
                     _backend.ResumeMusic();
                 }
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "resume", failure);
             }
         }
 
@@ -362,8 +385,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 ChangeListState(activeLoopedSounds, AudioPlaybackState.Playing, AudioPlaybackState.Paused);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "suspend effects", failure);
             }
         }
 
@@ -384,8 +409,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 ChangeListState(activeLoopedSounds, AudioPlaybackState.Paused, AudioPlaybackState.Playing);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "resume effects", failure);
             }
         }
 
@@ -412,8 +439,10 @@ namespace CutTheRopeDX.Framework.Media
                 instance.IsLooped = loop;
                 instance.Play();
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.PlayFailed(logger, resourceName, failure);
                 return null;
             }
 
@@ -501,5 +530,24 @@ namespace CutTheRopeDX.Framework.Media
         /// Independent of <see cref="pauseDepth"/> so transient pauses don't reactivate loops.
         /// </summary>
         private bool sfxSuspended;
+
+        /// <summary>Names already reported as unloadable, so each is logged once.</summary>
+        private readonly HashSet<string> reportedLoadFailures = [];
+    }
+
+    /// <summary>Log messages for sound effect and music playback.</summary>
+    internal static partial class SoundMgrLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load sound '{ResourceName}'")]
+        public static partial void LoadFailed(ILogger logger, string resourceName, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not play music '{MusicPath}'")]
+        public static partial void MusicFailed(ILogger logger, string musicPath, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not play sound '{ResourceName}'")]
+        public static partial void PlayFailed(ILogger logger, string resourceName, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Audio backend refused to {Operation}")]
+        public static partial void BackendCallFailed(ILogger logger, string operation, Exception exception);
     }
 }
