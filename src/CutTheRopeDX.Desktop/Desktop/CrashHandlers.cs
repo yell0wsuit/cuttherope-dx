@@ -44,7 +44,18 @@ namespace CutTheRopeDX.Desktop
             try
             {
                 ILogger logger = Log.For(LogCategories.SdlHost);
-                Unhandled(logger, args.ExceptionObject as Exception, args.IsTerminating);
+                if (args.ExceptionObject is Exception failure)
+                {
+                    Unhandled(logger, failure, args.IsTerminating);
+                }
+                else
+                {
+                    // A throw from outside C# need not carry an Exception, and this file is the
+                    // only evidence left on the Windows windowed build, so the payload's own text
+                    // stands in for the stack there is none of.
+                    string payload = args.ExceptionObject?.ToString() ?? "(none)";
+                    UnhandledPayload(logger, args.IsTerminating, payload);
+                }
 
                 // The file provider buffers, and nothing else gets to run before the abort.
                 owner?.Dispose();
@@ -79,6 +90,11 @@ namespace CutTheRopeDX.Desktop
 
         [LoggerMessage(Level = LogLevel.Critical, Message = "Unhandled exception, terminating={Terminating}")]
         private static partial void Unhandled(ILogger logger, Exception exception, bool terminating);
+
+        [LoggerMessage(
+            Level = LogLevel.Critical,
+            Message = "Unhandled failure, terminating={Terminating}: {Payload}")]
+        private static partial void UnhandledPayload(ILogger logger, bool terminating, string payload);
 
         [LoggerMessage(Level = LogLevel.Error, Message = "Unobserved task exception")]
         private static partial void Unobserved(ILogger logger, Exception exception);

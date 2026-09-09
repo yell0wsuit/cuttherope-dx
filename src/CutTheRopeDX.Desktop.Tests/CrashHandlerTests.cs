@@ -81,6 +81,10 @@ namespace CutTheRopeDX.Desktop.Tests
             }
             finally
             {
+                // Install hooks the process-wide events, and a handler left behind would inject a
+                // record into another test's recorder from a task finalized much later.
+                AppDomain.CurrentDomain.UnhandledException -= CrashHandlers.OnUnhandled;
+                TaskScheduler.UnobservedTaskException -= CrashHandlers.OnUnobserved;
                 Log.Factory = null;
                 Directory.Delete(root, recursive: true);
             }
@@ -92,6 +96,28 @@ namespace CutTheRopeDX.Desktop.Tests
             Log.Factory = null;
 
             CrashHandlers.OnUnhandled(null, new UnhandledExceptionEventArgs("not an exception", isTerminating: true));
+        }
+
+        [Fact]
+        public void APayloadThatIsNotAnExceptionStillDescribesItself()
+        {
+            RecordingLoggerProvider recorder = new();
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddProvider(recorder));
+            Log.Factory = factory;
+            try
+            {
+                CrashHandlers.OnUnhandled(
+                    null,
+                    new UnhandledExceptionEventArgs("not an exception", isTerminating: true));
+
+                LogRecord entry = Assert.Single(recorder.Records);
+                Assert.Equal(LogLevel.Critical, entry.Level);
+                Assert.Contains("not an exception", entry.Message);
+            }
+            finally
+            {
+                Log.Factory = null;
+            }
         }
     }
 }
