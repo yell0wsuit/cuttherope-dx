@@ -64,6 +64,7 @@ catch (ArgumentException error)
 // collected during resolution now that a logger can receive them.
 using ILoggerFactory loggerFactory = LoggingSetup.Create(Preferences.SaveDirectory, requestedLevel);
 Log.Factory = loggerFactory;
+CrashHandlers.Install(loggerFactory);
 
 ILogger startupLogger = Log.For(LogCategories.Preferences);
 foreach (Preferences.StartupDiagnostic diagnostic in Preferences.DrainStartupDiagnostics())

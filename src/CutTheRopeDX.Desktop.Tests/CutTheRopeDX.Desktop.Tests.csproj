@@ -12,6 +12,15 @@
   </ItemGroup>
 
   <!--
+    The recording provider is shared with CutTheRopeDX.Tests, which this project does not
+    reference. Link it rather than keeping a second copy in step with the first.
+  -->
+  <ItemGroup>
+    <Compile Include="../CutTheRopeDX.Tests/RecordingLoggerProvider.cs"
+             Link="RecordingLoggerProvider.cs" />
+  </ItemGroup>
+
+  <!--
     Desktop-facing tests: these exercise the host's own composition - video output, the FFmpeg
     library resolver, and the update checker - which CutTheRopeDX.Tests cannot reach because it
     references Core only. Core comes in transitively through Desktop's own ProjectReference.
