@@ -5,13 +5,14 @@
     <SkiaSharpVersion>4.151.2</SkiaSharpVersion>
     <SDL3Version>3.4.16</SDL3Version>
     <SDL3MixerVersion>3.2.4.11</SDL3MixerVersion>
+    <MELVersion>10.0.11</MELVersion>
   </PropertyGroup>
 
   <!-- Game -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MELVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MELVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="$(MELVersion)" />
     <PackageVersion Include="NReco.Logging.File" Version="1.4.0" />
     <PackageVersion Include="FFmpeg.AutoGen" Version="9.0.1.1" />
     <PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
