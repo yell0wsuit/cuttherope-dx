@@ -19,13 +19,14 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             try
             {
                 ILogger logger = Log.For(LogCategories.SdlGraphics);
-                GraphicsDeviceLog.Adapter(logger, "discrete", "Test GPU");
+                GraphicsDeviceLog.Adapter(logger, "discrete", "Test GPU", "API 1.3.280, driver 0x0226ECC0");
 
                 LogRecord entry = Assert.Single(recorder.Records);
                 Assert.Equal(LogCategories.SdlGraphics, entry.Category);
                 Assert.Equal(LogLevel.Information, entry.Level);
                 Assert.Contains("discrete", entry.Message);
                 Assert.Contains("Test GPU", entry.Message);
+                Assert.Contains("API 1.3.280", entry.Message);
             }
             finally
             {

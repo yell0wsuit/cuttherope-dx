@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Framework.Diagnostics;
@@ -167,6 +168,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
             nint best = 0;
             uint bestType = uint.MaxValue;
+            string bestVersion = "unknown";
             uint bestFamily = 0;
             string bestName = string.Empty;
             foreach (nint candidate in candidates)
@@ -194,6 +196,15 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 best = candidate;
                 bestFamily = family;
                 bestName = Marshal.PtrToStringUTF8((nint)properties.DeviceName) ?? "unknown";
+
+                // The API version is packed the way the specification defines, so it decodes for
+                // every vendor. The driver version's packing is the vendor's own, so it is left
+                // as the number they reported rather than decoded into something plausible but
+                // wrong.
+                bestVersion = string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"API {properties.ApiVersion >> 22}.{(properties.ApiVersion >> 12) & 0x3FF}."
+                        + $"{properties.ApiVersion & 0xFFF}, driver 0x{properties.DriverVersion:X8}");
             }
 
             if (best == 0)
@@ -207,7 +218,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 : bestType == 1 ? "integrated"
                 : bestType == 2 ? "virtual" : "software";
             ILogger logger = Log.For(LogCategories.SdlGraphics);
-            GraphicsDeviceLog.Adapter(logger, adapterType, bestName);
+            GraphicsDeviceLog.Adapter(logger, adapterType, bestName, bestVersion);
             if (bestType == 3)
             {
                 throw new InvalidOperationException("Only a software Vulkan adapter is available.");

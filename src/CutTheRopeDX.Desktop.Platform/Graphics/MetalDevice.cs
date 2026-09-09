@@ -69,7 +69,9 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Own(() => ObjC.Send(device, "release"));
             string adapterName = Marshal.PtrToStringUTF8(ObjC.Send(ObjC.Send(device, "name"), "UTF8String"));
             ILogger logger = Log.For(LogCategories.SdlGraphics);
-            GraphicsDeviceLog.Adapter(logger, "hardware", adapterName);
+            // Metal has no driver version of its own: it ships with the system, so the OS
+            // release is the version that identifies it.
+            GraphicsDeviceLog.Adapter(logger, "hardware", adapterName, RuntimeInformation.OSDescription);
             _ = ObjC.Send(layer, "setDevice:", device);
             _ = ObjC.Send(layer, "setPixelFormat:", 80); // MTLPixelFormatBGRA8Unorm
             _ = ObjC.Send(layer, "setFramebufferOnly:", 0);

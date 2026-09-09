@@ -88,6 +88,10 @@ namespace CutTheRopeDX.Desktop.Tests
                 Assert.Equal("Cut The Rope: DX", lines[0]);
                 Assert.EndsWith(" version", lines[1]);
                 Assert.StartsWith("Version: ", lines[2]);
+                Assert.StartsWith("OS: ", lines[3]);
+                Assert.StartsWith("CPU: ", lines[4]);
+                Assert.StartsWith("RAM: ", lines[5]);
+                Assert.EndsWith(" MB", lines[5]);
                 Assert.Contains(lines, line => line.Contains("after the banner", StringComparison.Ordinal));
             }
             finally

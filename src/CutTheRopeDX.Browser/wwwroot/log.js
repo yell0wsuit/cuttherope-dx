@@ -51,6 +51,27 @@ export function formatSessionId(date) {
     );
 }
 
+/**
+ * Describes the machine, as far as a page is allowed to ask.
+ *
+ * The desktop build reads this from the operating system; a page gets the user agent, a core
+ * count, and a memory figure the browser rounds hard for fingerprinting reasons. Both of the
+ * latter are optional, so each is reported only where it is answered.
+ *
+ * @returns {string} The device lines for the header.
+ */
+export function describeDevice() {
+    const lines = [`OS: ${navigator.userAgent}`];
+    if (typeof navigator.hardwareConcurrency === "number") {
+        lines.push(`CPU: ${navigator.hardwareConcurrency} cores`);
+    }
+    if (typeof navigator.deviceMemory === "number") {
+        // Reported in gigabytes, and rounded to a power of two by the browser.
+        lines.push(`RAM: ${navigator.deviceMemory * 1024} MB (approximate)`);
+    }
+    return lines.join("\n");
+}
+
 /** Starts this run's session. Safe to call more than once; only the first takes effect. */
 export function begin(header) {
     if (sessionId !== null) {
@@ -58,7 +79,7 @@ export function begin(header) {
     }
 
     sessionId = formatSessionId(new Date());
-    pending.push(header);
+    pending.push(header + "\n" + describeDevice());
     void flush();
     void prune();
     return sessionId;

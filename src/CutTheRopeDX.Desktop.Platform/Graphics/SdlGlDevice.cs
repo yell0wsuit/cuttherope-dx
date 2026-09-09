@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Framework.Diagnostics;
 
@@ -58,7 +59,41 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Context = Own(GRContext.CreateGl(binding)
                 ?? throw new InvalidOperationException("Skia GL context creation failed."));
             ILogger logger = Log.For(LogCategories.SdlGraphics);
-            GraphicsDeviceLog.Adapter(logger, "unknown", "(no portable GL hardware classification)");
+
+            // GL will not classify its hardware, but it does name the renderer and the driver, and
+            // GL_VERSION carries the driver build on most desktop drivers. That is the part worth
+            // having in a report.
+            string renderer = ReadGlString(GlRenderer);
+            string version = ReadGlString(GlVersion);
+            GraphicsDeviceLog.Adapter(logger, "unknown", renderer, version);
+        }
+
+        /// <summary>Name of the renderer, as <c>GL_RENDERER</c>.</summary>
+        private const uint GlRenderer = 0x1F01;
+
+        /// <summary>Version string, as <c>GL_VERSION</c>.</summary>
+        private const uint GlVersion = 0x1F02;
+
+        /// <summary>
+        /// Reads one of the driver's own description strings.
+        /// </summary>
+        /// <param name="name">The <c>glGetString</c> name to read.</param>
+        /// <returns>The value, or a placeholder when the driver will not answer.</returns>
+        /// <remarks>
+        /// Called with a current context, which is the only state in which these are defined.
+        /// A driver that refuses is described rather than allowed to fail the device: the game
+        /// runs perfectly well without knowing what it is running on.
+        /// </remarks>
+        private static unsafe string ReadGlString(uint name)
+        {
+            nint address = SDL.GLGetProcAddress("glGetString");
+            if (address == 0)
+            {
+                return "unknown";
+            }
+
+            byte* value = ((delegate* unmanaged[Cdecl]<uint, byte*>)address)(name);
+            return value == null ? "unknown" : Marshal.PtrToStringUTF8((nint)value) ?? "unknown";
         }
 
         /// <inheritdoc />

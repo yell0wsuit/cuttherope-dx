@@ -15,9 +15,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <param name="logger">Destination logger.</param>
         /// <param name="adapterType">Hardware class, or <c>unknown</c> where the API cannot say.</param>
         /// <param name="adapterName">Adapter name as the driver reports it.</param>
+        /// <param name="adapterVersion">
+        /// Driver or API version, in whatever form the backend can state one.
+        /// </param>
         [LoggerMessage(
             Level = LogLevel.Information,
-            Message = "Adapter type={AdapterType} name={AdapterName}")]
-        public static partial void Adapter(ILogger logger, string adapterType, string adapterName);
+            Message = "Adapter type={AdapterType} name={AdapterName} version={AdapterVersion}")]
+        public static partial void Adapter(
+            ILogger logger, string adapterType, string adapterName, string adapterVersion);
     }
 }

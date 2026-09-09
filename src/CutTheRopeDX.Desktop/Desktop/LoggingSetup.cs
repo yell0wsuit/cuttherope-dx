@@ -201,9 +201,9 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Names the build a log came from.
+        /// Names the build a log came from, and the machine that ran it.
         /// </summary>
-        /// <returns>The banner, as three lines with no trailing newline.</returns>
+        /// <returns>The banner, with no trailing newline.</returns>
         /// <remarks>
         /// Deliberately not a log entry: this is the first thing anyone reads on a report, and a
         /// timestamp, level and category in front of each line would only get in the way of it.
@@ -214,7 +214,10 @@ namespace CutTheRopeDX.Desktop
                 Environment.NewLine,
                 SdlDesktopHost.CtrDXProductName,
                 Configuration + " version",
-                "Version: " + SdlDesktopHost.Version);
+                "Version: " + SdlDesktopHost.Version,
+                "OS: " + DeviceReport.OperatingSystem,
+                "CPU: " + DeviceReport.Processor,
+                "RAM: " + DeviceReport.Memory());
         }
 
         /// <summary>
