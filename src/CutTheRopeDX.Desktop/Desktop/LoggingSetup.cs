@@ -26,8 +26,18 @@ namespace CutTheRopeDX.Desktop
         /// <summary>How many log files are kept, the live one included.</summary>
         private const int MaxRollingFiles = 4;
 
-        /// <summary>Name of the log, before any per-process fallback.</summary>
-        private const string LogFileName = "ctrdx.log";
+        /// <summary>Prefix every log file name starts with.</summary>
+        private const string LogFilePrefix = "ctrdx";
+
+        /// <summary>
+        /// How many log files are kept in the directory, this run's own included.
+        /// </summary>
+        /// <remarks>
+        /// A file name of its own per run means nothing ever overwrites itself, so something has
+        /// to bound the directory instead. Ten files at <see cref="FileSizeLimitBytes"/> apiece is
+        /// the worst case.
+        /// </remarks>
+        private const int MaxRetainedLogFiles = 10;
 
         /// <summary>
         /// Reads <c>--log-level</c>.
@@ -57,23 +67,58 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
+        /// Builds the name of one run's log.
+        /// </summary>
+        /// <param name="stamp">When the run started.</param>
+        /// <param name="fallback">Whether this is the second name tried after the first would not open.</param>
+        /// <returns>The file name, with no directory part.</returns>
+        /// <remarks>
+        /// Each run writes its own file, so the log a player sends carries that session alone and
+        /// starting the game again never overwrites the evidence being reported. The fallback adds
+        /// the process id, which is what separates two runs that started in the same second.
+        /// </remarks>
+        public static string LogFileName(DateTime stamp, bool fallback)
+        {
+            string name = LogFilePrefix + "-" + stamp.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
+            return fallback ? $"{name}-{Environment.ProcessId}.log" : name + ".log";
+        }
+
+        /// <summary>
+        /// Builds the factory, timestamping this run's log with the current time.
+        /// </summary>
+        /// <param name="saveDirectory">Directory the save data lives in; the log goes beside it.</param>
+        /// <param name="requested">The level from <see cref="ParseLevel"/>, if any.</param>
+        /// <returns>The factory, which the caller owns and must dispose.</returns>
+        public static ILoggerFactory Create(string saveDirectory, LogLevel? requested)
+        {
+            return Create(saveDirectory, requested, DateTime.Now);
+        }
+
+        /// <summary>
         /// Builds the factory.
         /// </summary>
         /// <param name="saveDirectory">Directory the save data lives in; the log goes beside it.</param>
         /// <param name="requested">The level from <see cref="ParseLevel"/>, if any.</param>
+        /// <param name="stamp">The time this run's log file is named after.</param>
         /// <returns>The factory, which the caller owns and must dispose.</returns>
         /// <remarks>
         /// Without a switch the file keeps everything from <see cref="LogLevel.Information"/> up
         /// while the console shows only warnings and worse, so a scripted run's stdout stays
         /// readable. A switch overrides both: someone who asks for trace wants to see it.
         /// </remarks>
-        public static ILoggerFactory Create(string saveDirectory, LogLevel? requested)
+        public static ILoggerFactory Create(string saveDirectory, LogLevel? requested, DateTime stamp)
         {
             LogLevel fileLevel = requested ?? LogLevel.Information;
             LogLevel consoleLevel = requested ?? LogLevel.Warning;
-            string path = Path.Combine(saveDirectory, "logs", LogFileName);
-            bool canWriteFile = TryCreateLogDirectory(Path.GetDirectoryName(path));
+            string directory = Path.Combine(saveDirectory, "logs");
+            string path = Path.Combine(directory, LogFileName(stamp, fallback: false));
+            bool canWriteFile = TryCreateLogDirectory(directory);
             int fallbackAttempted = 0;
+
+            if (canWriteFile)
+            {
+                PruneOldLogs(directory);
+            }
 
             try
             {
@@ -119,8 +164,8 @@ namespace CutTheRopeDX.Desktop
                             {
                                 if (Interlocked.Exchange(ref fallbackAttempted, 1) == 0)
                                 {
-                                    error.UseNewLogFileName(Path.Combine(
-                                        Path.GetDirectoryName(path), $"ctrdx-{Environment.ProcessId}.log"));
+                                    error.UseNewLogFileName(
+                                        Path.Combine(directory, LogFileName(stamp, fallback: true)));
                                 }
                             };
                         });
@@ -130,6 +175,42 @@ namespace CutTheRopeDX.Desktop
                     // already wrote. The default sends every level to stdout.
                     _ = builder.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Error);
                 });
+            }
+        }
+
+        /// <summary>
+        /// Deletes the oldest logs, keeping room for the run that is about to start one.
+        /// </summary>
+        /// <param name="directory">The log directory.</param>
+        /// <remarks>
+        /// A file that will not go - one another run still holds open, say - is left alone. Losing
+        /// the pruning is not worth failing a startup over.
+        /// </remarks>
+        private static void PruneOldLogs(string directory)
+        {
+            try
+            {
+                FileInfo[] existing = new DirectoryInfo(directory).GetFiles(LogFilePrefix + "-*.log");
+                Array.Sort(existing, static (a, b) => b.LastWriteTimeUtc.CompareTo(a.LastWriteTimeUtc));
+                for (int i = MaxRetainedLogFiles - 1; i < existing.Length; i++)
+                {
+                    try
+                    {
+                        existing[i].Delete();
+                    }
+                    catch (IOException)
+                    {
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                    }
+                }
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
             }
         }
 

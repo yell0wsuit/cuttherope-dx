@@ -66,7 +66,8 @@ namespace CutTheRopeDX.Desktop.Tests
             _ = Directory.CreateDirectory(root);
             try
             {
-                ILoggerFactory factory = LoggingSetup.Create(root, null);
+                DateTime stamp = new(2026, 9, 9, 11, 30, 0, DateTimeKind.Local);
+                ILoggerFactory factory = LoggingSetup.Create(root, null, stamp);
                 Log.Factory = factory;
                 CrashHandlers.Install(factory);
 
@@ -75,7 +76,8 @@ namespace CutTheRopeDX.Desktop.Tests
                     new UnhandledExceptionEventArgs(new InvalidOperationException("no drawable"), true));
 
                 // Install's own dispose already ran inside the handler; nothing further may write.
-                string written = File.ReadAllText(Path.Combine(root, "logs", "ctrdx.log"));
+                string written = File.ReadAllText(
+                    Path.Combine(root, "logs", LoggingSetup.LogFileName(stamp, fallback: false)));
                 Assert.Contains("no drawable", written);
                 Assert.Contains("Critical", written);
             }

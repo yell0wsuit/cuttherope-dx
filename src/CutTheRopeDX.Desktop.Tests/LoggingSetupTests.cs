@@ -9,26 +9,61 @@ namespace CutTheRopeDX.Desktop.Tests
 {
     public class LoggingSetupTests
     {
+        /// <summary>The stamp every test that needs a known file name builds its log with.</summary>
+        private static readonly DateTime Stamp = new(2026, 9, 9, 11, 30, 0, DateTimeKind.Local);
+
+        private static string LogPath(string root, DateTime stamp)
+        {
+            return Path.Combine(root, "logs", LoggingSetup.LogFileName(stamp, fallback: false));
+        }
+
         [Fact]
-        public void APreviousProcessFallbackDoesNotReplaceThePrimaryLog()
+        public void EachRunWritesItsOwnFileAndLeavesEarlierRunsAlone()
         {
             string root = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            string directory = Path.Combine(root, "logs");
-            _ = Directory.CreateDirectory(directory);
-            string primary = Path.Combine(directory, "ctrdx.log");
-            string fallback = Path.Combine(directory, "ctrdx-12345.log");
-            File.WriteAllText(primary, "primary history");
-            File.WriteAllText(fallback, "fallback history");
-            File.SetLastWriteTimeUtc(primary, DateTime.UtcNow.AddDays(-1));
+            _ = Directory.CreateDirectory(Path.Combine(root, "logs"));
+            string earlier = LogPath(root, Stamp.AddDays(-1));
+            File.WriteAllText(earlier, "earlier history");
             try
             {
-                using ILoggerFactory factory = LoggingSetup.Create(root, null);
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(LogLevel.Information, default, "new session", null,
                     static (message, _) => message);
                 factory.Dispose();
 
-                Assert.Contains("new session", File.ReadAllText(primary));
-                Assert.Equal("fallback history", File.ReadAllText(fallback));
+                Assert.Contains("new session", File.ReadAllText(LogPath(root, Stamp)));
+                Assert.Equal("earlier history", File.ReadAllText(earlier));
+            }
+            finally
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+
+        [Fact]
+        public void OldRunsArePrunedSoTheDirectoryStaysBounded()
+        {
+            string root = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string directory = Path.Combine(root, "logs");
+            _ = Directory.CreateDirectory(directory);
+            DateTime newest = Stamp.AddHours(-1);
+            for (int age = 0; age < 15; age++)
+            {
+                string path = LogPath(root, newest.AddHours(-age));
+                File.WriteAllText(path, "run history");
+                File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddHours(-age));
+            }
+
+            try
+            {
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
+                factory.Dispose();
+
+                // Nine survivors plus this run's own file.
+                Assert.Equal(10, Directory.GetFiles(directory, "ctrdx-*.log").Length);
+                Assert.True(File.Exists(LogPath(root, Stamp)));
+                Assert.True(File.Exists(LogPath(root, newest)));
+                Assert.False(File.Exists(LogPath(root, newest.AddHours(-9))));
             }
             finally
             {
@@ -51,12 +86,12 @@ namespace CutTheRopeDX.Desktop.Tests
             Console.SetError(error);
             try
             {
-                using ILoggerFactory factory = LoggingSetup.Create(root, requested);
+                using ILoggerFactory factory = LoggingSetup.Create(root, requested, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(emitted, default, "level marker", null,
                     static (message, _) => message);
                 factory.Dispose();
 
-                string contents = File.ReadAllText(Path.Combine(root, "logs", "ctrdx.log"));
+                string contents = File.ReadAllText(LogPath(root, Stamp));
                 Assert.Equal(expected, contents.Contains("level marker", StringComparison.Ordinal));
                 Assert.Equal(expected && emitted < LogLevel.Error,
                     output.ToString().Contains("level marker", StringComparison.Ordinal));
@@ -82,15 +117,16 @@ namespace CutTheRopeDX.Desktop.Tests
             {
                 if (blockFallback)
                 {
-                    _ = Directory.CreateDirectory(Path.Combine(root, "logs", "ctrdx.log"));
-                    _ = Directory.CreateDirectory(Path.Combine(root, "logs", $"ctrdx-{Environment.ProcessId}.log"));
+                    _ = Directory.CreateDirectory(LogPath(root, Stamp));
+                    _ = Directory.CreateDirectory(
+                        Path.Combine(root, "logs", LoggingSetup.LogFileName(Stamp, fallback: true)));
                 }
                 else
                 {
                     File.WriteAllText(Path.Combine(root, "logs"), "blocking file");
                 }
 
-                using ILoggerFactory factory = LoggingSetup.Create(root, null);
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(LogLevel.Warning, default, "console only", null,
                     static (message, _) => message);
             }
@@ -162,14 +198,14 @@ namespace CutTheRopeDX.Desktop.Tests
             _ = Directory.CreateDirectory(root);
 
             // A directory sitting where the log file belongs cannot be opened as a file.
-            _ = Directory.CreateDirectory(Path.Combine(root, "logs", "ctrdx.log"));
+            _ = Directory.CreateDirectory(LogPath(root, Stamp));
             try
             {
-                using ILoggerFactory factory = LoggingSetup.Create(root, null);
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(LogLevel.Warning, default, "recovered", null, static (message, _) => message);
                 factory.Dispose();
 
-                string fallback = Path.Combine(root, "logs", $"ctrdx-{Environment.ProcessId}.log");
+                string fallback = Path.Combine(root, "logs", LoggingSetup.LogFileName(Stamp, fallback: true));
                 Assert.True(File.Exists(fallback));
                 Assert.Contains("recovered", File.ReadAllText(fallback));
             }
@@ -186,11 +222,11 @@ namespace CutTheRopeDX.Desktop.Tests
             _ = Directory.CreateDirectory(root);
             try
             {
-                using ILoggerFactory factory = LoggingSetup.Create(root, null);
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(LogLevel.Warning, default, "written", null, static (message, _) => message);
                 factory.Dispose();
 
-                string path = Path.Combine(root, "logs", "ctrdx.log");
+                string path = LogPath(root, Stamp);
                 Assert.True(File.Exists(path));
                 Assert.Contains("written", File.ReadAllText(path));
             }
@@ -210,11 +246,11 @@ namespace CutTheRopeDX.Desktop.Tests
             Console.SetOut(captured);
             try
             {
-                using ILoggerFactory factory = LoggingSetup.Create(root, null);
+                using ILoggerFactory factory = LoggingSetup.Create(root, null, Stamp);
                 factory.CreateLogger("Sdl.Host").Log(LogLevel.Information, default, "quiet", null, static (message, _) => message);
                 factory.Dispose();
 
-                Assert.Contains("quiet", File.ReadAllText(Path.Combine(root, "logs", "ctrdx.log")));
+                Assert.Contains("quiet", File.ReadAllText(LogPath(root, Stamp)));
                 Assert.DoesNotContain("quiet", captured.ToString());
             }
             finally
