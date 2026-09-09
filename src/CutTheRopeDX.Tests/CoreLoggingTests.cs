@@ -3,6 +3,7 @@ using System.IO;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
+using CutTheRopeDX.GameMain;
 
 using Microsoft.Extensions.Logging;
 
@@ -55,6 +56,42 @@ namespace CutTheRopeDX.Tests
             finally
             {
                 Log.Factory = null;
+            }
+        }
+
+        /// <summary>
+        /// The editor reads level errors straight off the standard error pipe, so these lines
+        /// carry no timestamp, level or category and go nowhere near the log.
+        /// </summary>
+        [Fact]
+        public void ACustomLevelFailureStaysBareOnStandardError()
+        {
+            _ = HeadlessGame.Boot();
+            GameController controller = HeadlessGame.LoadLevelWithController(1, 4);
+            GameScene scene = (GameScene)controller.GetView(0).GetChild(0);
+
+            RecordingLoggerProvider recorder = new();
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddProvider(recorder));
+            Log.Factory = factory;
+            StringWriter captured = new();
+            TextWriter previous = Console.Error;
+            Console.SetError(captured);
+            try
+            {
+                CustomLevelSession.Activate(Path.Combine(Path.GetTempPath(), "does-not-exist.xml"));
+
+                scene.Reload();
+
+                string written = captured.ToString();
+                Assert.NotEqual(string.Empty, written);
+                Assert.DoesNotContain("\t", written);
+                Assert.Empty(recorder.Records);
+            }
+            finally
+            {
+                Console.SetError(previous);
+                Log.Factory = null;
+                CustomLevelSession.Clear();
             }
         }
     }

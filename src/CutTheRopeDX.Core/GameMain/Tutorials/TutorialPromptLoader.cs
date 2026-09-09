@@ -4,8 +4,11 @@ using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
+
+using Microsoft.Extensions.Logging;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -113,7 +116,8 @@ namespace CutTheRopeDX.GameMain.Tutorials
                         throw located;
                     }
 
-                    Console.Error.WriteLine(located.Message);
+                    TutorialPromptLoaderLog.InvalidPrompt(
+                        Log.For(LogCategories.ContentPacks), located.Message);
                 }
             }
 
@@ -454,5 +458,12 @@ namespace CutTheRopeDX.GameMain.Tutorials
             float SizeScale,
             float LineHeightScale,
             float Angle);
+    }
+
+    /// <summary>Log messages for tutorial prompt loading.</summary>
+    internal static partial class TutorialPromptLoaderLog
+    {
+        [LoggerMessage(Level = LogLevel.Error, Message = "{Reason}")]
+        public static partial void InvalidPrompt(ILogger logger, string reason);
     }
 }

@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -1191,14 +1194,15 @@ namespace CutTheRopeDX.GameMain
                         }
                         else
                         {
-                            Console.WriteLine($"[Game music] missing either musicPack or musicList for pack {cTRRootController.GetPack()}.");
+                            GameControllerLog.MissingMusicList(
+                                Log.For(LogCategories.GameMusic), cTRRootController.GetPack());
                         }
                         break;
                     case var p when p == MusicPackNames.CtROriginal:
                         CTRSoundMgr.PlayRandomMusic(MusicPacks.CtROriginal);
                         break;
                     default:
-                        Console.WriteLine($"[Game music] Unknown musicPack '{musicPack}'");
+                        GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);
                         break;
                 }
             }
@@ -1306,5 +1310,17 @@ namespace CutTheRopeDX.GameMain
                     "com.zeptolab.ctr.spookyboxcompleted",
                     "com.zeptolab.ctr.steamboxcompleted"
                 ];
+    }
+
+    /// <summary>Log messages for music pack resolution.</summary>
+    internal static partial class GameControllerLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Missing either musicPack or musicList for pack {Pack}.")]
+        public static partial void MissingMusicList(ILogger logger, int pack);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Unknown musicPack '{MusicPack}'")]
+        public static partial void UnknownMusicPack(ILogger logger, string musicPack);
     }
 }

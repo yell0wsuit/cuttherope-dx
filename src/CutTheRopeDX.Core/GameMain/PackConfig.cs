@@ -7,7 +7,10 @@ using System.Text.Json;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -643,7 +646,7 @@ namespace CutTheRopeDX.GameMain
             }
             catch (Exception exception)
             {
-                Console.Error.WriteLine($"Failed to load '{fileName}': {exception}");
+                PackConfigLog.LoadFailed(Log.For(LogCategories.ContentPacks), fileName, exception);
                 return false;
             }
         }
@@ -976,5 +979,12 @@ namespace CutTheRopeDX.GameMain
                 throw new InvalidDataException($"{packsConfigFile} contains unknown resource name '{resourceName}' in '{context}'.");
             }
         }
+    }
+
+    /// <summary>Log messages for pack configuration loading.</summary>
+    internal static partial class PackConfigLog
+    {
+        [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load '{FileName}'")]
+        public static partial void LoadFailed(ILogger logger, string fileName, Exception exception);
     }
 }

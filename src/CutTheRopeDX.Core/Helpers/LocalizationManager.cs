@@ -5,6 +5,9 @@ using System.Text.Json;
 using System.Threading;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Helpers
 {
@@ -190,7 +193,8 @@ namespace CutTheRopeDX.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load localization strings for '{languageCode}': {ex.Message}");
+                LocalizationManagerLog.LoadFailed(
+                    Log.For(LogCategories.Localization), languageCode, ex.Message);
             }
 
             return result;
@@ -212,5 +216,14 @@ namespace CutTheRopeDX.Helpers
                 return null;
             }
         }
+    }
+
+    /// <summary>Log messages for localization loading.</summary>
+    internal static partial class LocalizationManagerLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Failed to load localization strings for '{LanguageCode}': {Reason}")]
+        public static partial void LoadFailed(ILogger logger, string languageCode, string reason);
     }
 }

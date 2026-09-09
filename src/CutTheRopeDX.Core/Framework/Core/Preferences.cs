@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 
 using Microsoft.Extensions.Logging;
@@ -885,8 +886,7 @@ namespace CutTheRopeDX.Framework.Core
                     // the rest of the session. The dirty marks are deliberately left standing:
                     // whatever asks for the next save picks this change up again, which is what
                     // makes giving up here a pause rather than a loss.
-                    Console.WriteLine(
-                        $"Error saving preferences, giving up after {_saveAttempts} attempts: {ex}");
+                    PreferencesLog.SaveGaveUp(Log.For(LogCategories.Preferences), _saveAttempts, ex);
                     GameSaveRequested = false;
                     _saveAttempts = 0;
                     return;
@@ -894,9 +894,8 @@ namespace CutTheRopeDX.Framework.Core
 
                 _retryAfterTicks =
                     Environment.TickCount64 + (FirstRetryDelayMs << (_saveAttempts - 1));
-                Console.WriteLine(
-                    $"Error saving preferences (attempt {_saveAttempts} of {MaxSaveAttempts}), "
-                    + $"retrying shortly: {ex}");
+                PreferencesLog.SaveRetrying(
+                    Log.For(LogCategories.Preferences), _saveAttempts, MaxSaveAttempts, ex);
             }
         }
 
@@ -915,7 +914,7 @@ namespace CutTheRopeDX.Framework.Core
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: cannot save, {ex}");
+                PreferencesLog.SaveToStreamFailed(Log.For(LogCategories.Preferences), ex);
                 return false;
             }
         }
@@ -940,7 +939,7 @@ namespace CutTheRopeDX.Framework.Core
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: cannot load, {ex}");
+                PreferencesLog.LoadFromStreamFailed(Log.For(LogCategories.Preferences), ex);
                 return false;
             }
         }
@@ -975,7 +974,7 @@ namespace CutTheRopeDX.Framework.Core
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading global JSON preferences: {ex}");
+                    PreferencesLog.GlobalLoadFailed(Log.For(LogCategories.Preferences), ex);
                 }
             }
 
@@ -995,7 +994,7 @@ namespace CutTheRopeDX.Framework.Core
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading {fileName}: {ex}");
+                    PreferencesLog.SlotLoadFailed(Log.For(LogCategories.Preferences), fileName, ex);
                 }
             }
 
@@ -1010,10 +1009,39 @@ namespace CutTheRopeDX.Framework.Core
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error writing migrated preference files: {ex}");
+                    PreferencesLog.MigratedWriteFailed(Log.For(LogCategories.Preferences), ex);
                     RequestSave();
                 }
             }
         }
+    }
+
+    /// <summary>Log messages for preference storage.</summary>
+    internal static partial class PreferencesLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Error,
+            Message = "Cannot save preferences, giving up after {Attempts} attempts")]
+        public static partial void SaveGaveUp(ILogger logger, int attempts, Exception exception);
+
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Cannot save preferences (attempt {Attempt} of {MaxAttempts}), retrying shortly")]
+        public static partial void SaveRetrying(ILogger logger, int attempt, int maxAttempts, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Cannot save preferences to the stream")]
+        public static partial void SaveToStreamFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Cannot load preferences from the stream")]
+        public static partial void LoadFromStreamFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Cannot load the global preferences file")]
+        public static partial void GlobalLoadFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Cannot load preference file {FileName}")]
+        public static partial void SlotLoadFailed(ILogger logger, string fileName, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Cannot write the migrated preference files")]
+        public static partial void MigratedWriteFailed(ILogger logger, Exception exception);
     }
 }
