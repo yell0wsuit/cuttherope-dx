@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 "windows" =>
                 [
                     GraphicsBackendKind.Vulkan,
-                    GraphicsBackendKind.OpenGL,
                     GraphicsBackendKind.Angle,
+                    GraphicsBackendKind.OpenGL,
                 ],
                 "linux" => [GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL],
                 "macos" => [GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL],

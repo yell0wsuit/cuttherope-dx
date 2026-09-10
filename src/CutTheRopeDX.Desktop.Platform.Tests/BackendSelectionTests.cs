@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
     public sealed class BackendSelectionTests
     {
         [Theory]
-        [InlineData("windows", GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL)]
+        [InlineData("windows", GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle, GraphicsBackendKind.OpenGL)]
         [InlineData("linux", GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL)]
         [InlineData("macos", GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL)]
         public void RejectsFailedFramesInPlatformOrder(string platform, params GraphicsBackendKind[] expected)
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Fact]
-        public void WindowsFallsBackToAngleWhenEveryEarlierBackendFails()
+        public void WindowsPrefersAngleOverTheNativeGlDriver()
         {
             List<GraphicsBackendKind> attempts = [];
             List<string> events = [];
@@ -106,14 +106,9 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                     throw new InvalidOperationException(resource.Name);
                 }
             });
-            Assert.Equal(
-                [
-                    GraphicsBackendKind.Vulkan,
-                    GraphicsBackendKind.OpenGL,
-                    GraphicsBackendKind.Angle,
-                ],
-                attempts);
+            Assert.Equal([GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle], attempts);
             Assert.Equal(GraphicsBackendKind.Angle, selected.Kind);
+            Assert.DoesNotContain(GraphicsBackendKind.OpenGL, attempts);
         }
 
         [Theory]
