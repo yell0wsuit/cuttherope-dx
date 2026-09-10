@@ -544,7 +544,7 @@ namespace CutTheRopeDX.Desktop
                     metal.Initialize();
                     return metal;
                 case GraphicsBackendKind.OpenGL:
-                    SdlGlDevice gl = lifetime.Own(new SdlGlDevice(static fault => { }));
+                    SdlGlDevice gl = lifetime.Own(new SdlGlDevice(static fault => { }, GlContextProfile.DesktopCore));
                     gl.Initialize();
                     return gl;
                 case GraphicsBackendKind.Vulkan:

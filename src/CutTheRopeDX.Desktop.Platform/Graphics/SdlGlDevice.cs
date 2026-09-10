@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 {
     /// <summary>SDL OpenGL context with a Skia surface over the actual default framebuffer.</summary>
     /// <remarks>Creates an uninitialized candidate so partial initialization has an owner.</remarks>
-    public sealed class SdlGlDevice(Action<string> fault) : SdlGraphicsDevice
+    public sealed class SdlGlDevice(Action<string> fault, GlContextProfile profile) : SdlGraphicsDevice
     {
         private nint gl;
 
@@ -21,13 +21,15 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
         private readonly Action<string> fault = fault;
 
+        private readonly GlContextProfile profile = profile;
+
         /// <summary>Creates the window, context and first drawable.</summary>
         public unsafe void Initialize()
         {
             SDL.GLResetAttributes();
-            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMajorVersion, 3));
-            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMinorVersion, 2));
-            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextProfileMask, 1));
+            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMajorVersion, profile.Major));
+            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMinorVersion, profile.Minor));
+            Check(SDL.GLSetAttribute(SDL.GLAttr.ContextProfileMask, profile.ProfileMask));
             Check(SDL.GLSetAttribute(SDL.GLAttr.DoubleBuffer, 1));
             Check(SDL.GLSetAttribute(SDL.GLAttr.RedSize, 8));
             Check(SDL.GLSetAttribute(SDL.GLAttr.GreenSize, 8));
