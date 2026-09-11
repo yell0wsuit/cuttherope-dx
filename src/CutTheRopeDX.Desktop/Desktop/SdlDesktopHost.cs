@@ -608,6 +608,12 @@ namespace CutTheRopeDX.Desktop
                 }
             }
 
+            // What is presented here is what the window shows when it is revealed, because the
+            // probe runs against a hidden window and nothing else draws until the game's first
+            // frame. Putting the target back means the swap is still exercised without the check
+            // itself flashing up at the probe size.
+            device.Canvas.Clear(DrawCheck.Background);
+            device.Flush();
             device.Present();
         }
 
