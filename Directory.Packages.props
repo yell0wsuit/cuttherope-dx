@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <SkiaSharpVersion>4.151.2</SkiaSharpVersion>
+    <SkiaSharpVersion>4.152.0</SkiaSharpVersion>
     <SDL3Version>3.4.16</SDL3Version>
     <SDL3MixerVersion>3.2.4.11</SDL3MixerVersion>
     <MELVersion>10.0.11</MELVersion>
