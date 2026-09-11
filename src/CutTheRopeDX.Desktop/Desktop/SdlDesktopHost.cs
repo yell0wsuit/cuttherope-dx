@@ -564,8 +564,18 @@ namespace CutTheRopeDX.Desktop
                 throw new InvalidOperationException("No startup drawable.");
             }
 
-            device.Canvas.Clear(SKColors.Black);
+            DrawCheck.Draw(device.Canvas, device.Width, device.Height);
             device.Flush();
+            SKPointI at = DrawCheck.Sample(device.Width, device.Height);
+            using (SKBitmap frame = device.ReadPixels())
+            {
+                if (!DrawCheck.Drew(frame.GetPixel(at.X, at.Y)))
+                {
+                    throw new InvalidOperationException(
+                        "The renderer accepted a shaded draw but its target stayed at the clear color.");
+                }
+            }
+
             device.Present();
         }
 
