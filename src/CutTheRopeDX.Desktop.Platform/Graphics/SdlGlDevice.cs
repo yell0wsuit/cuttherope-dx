@@ -23,19 +23,85 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
         private readonly GlContextProfile profile = profile;
 
+        /// <summary>Points SDL at the profile's own GL libraries for the rest of the scope.</summary>
+        /// <param name="profile">An ANGLE profile, naming the libraries to load from.</param>
+        /// <param name="hints">The scope the hints belong to.</param>
+        /// <remarks>
+        /// Forcing EGL is what does the work. Windows has two loaders behind the same request,
+        /// and the one it picks by default opens the named library as though it were the system
+        /// <c>opengl32</c> and looks for <c>wgl</c> entry points that an ES library does not
+        /// export, so the attempt dies before any of the rest of this matters. The driver hint
+        /// is the older half of the same decision, kept because it is what SDL consults when
+        /// choosing between the two. The libraries are named separately because each loader
+        /// reads its own: one opens EGL, the other the client GL it dispatches through.
+        /// </remarks>
+        internal static void ApplyAngleHints(GlContextProfile profile, GlHintScope hints)
+        {
+            hints.Set(SDL.Hints.VideoForceEGL, "1");
+            hints.Set(SDL.Hints.OpenGLESDriver, "1");
+            hints.Set(SDL.Hints.EGLLibrary, profile.EglLibrary);
+            hints.Set(SDL.Hints.OpenGLLibrary, profile.GlesLibrary);
+        }
+
+        /// <summary>Rebuilds the video subsystem so hints read while it comes up can take effect.</summary>
+        /// <param name="apply">What to change while there is no video device to ignore it.</param>
+        /// <remarks>
+        /// The hints that choose between the two Windows GL loaders are read once, when the video
+        /// device is built. Setting them against a subsystem that is already up changes nothing at
+        /// all — the loader has been chosen and its entry points bound — so the subsystem is taken
+        /// down and brought back around the change, which is what gives them somewhere to land.
+        /// <para>
+        /// Nothing may hold a window across this. Candidates are built one at a time and the one
+        /// before has already been released by the time the next starts, so nothing does.
+        /// </para>
+        /// </remarks>
+        private static void RecycleVideo(Action apply)
+        {
+            SDL.QuitSubSystem(SDL.InitFlags.Video);
+            apply?.Invoke();
+            if (!SDL.InitSubSystem(SDL.InitFlags.Video))
+            {
+                throw new InvalidOperationException(
+                    $"SDL could not restart its video subsystem: {SDL.GetError()}");
+            }
+        }
+
         /// <summary>Creates the window, context and first drawable.</summary>
-        public unsafe void Initialize()
+        public void Initialize()
         {
             using GlHintScope hints = new();
-            if (profile.UsesAngle)
+            if (!profile.UsesAngle)
             {
-                // Without this SDL is free to answer an ES profile request with the system driver's
-                // own ES support, which is the driver this renderer exists to avoid.
-                hints.Set(SDL.Hints.OpenGLESDriver, "1");
-                hints.Set(SDL.Hints.EGLLibrary, profile.EglLibrary);
-                hints.Set(SDL.Hints.OpenGLLibrary, profile.GlesLibrary);
+                CreateContext();
+                return;
             }
 
+            RecycleVideo(() => ApplyAngleHints(profile, hints));
+            try
+            {
+                CreateContext();
+            }
+            catch
+            {
+                // Whatever is tried next has to find the video device it would have had, so the
+                // hints go back before the subsystem is rebuilt around them.
+                hints.Dispose();
+                try
+                {
+                    RecycleVideo(null);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Why this candidate was rejected is the useful half; a subsystem that will
+                    // not come back will say so again, loudly, on the next one.
+                }
+
+                throw;
+            }
+        }
+
+        private unsafe void CreateContext()
+        {
             SDL.GLResetAttributes();
             Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMajorVersion, profile.Major));
             Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMinorVersion, profile.Minor));
