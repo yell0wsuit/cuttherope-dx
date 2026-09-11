@@ -552,9 +552,40 @@ namespace CutTheRopeDX.Desktop
                     vulkan.Initialize();
                     return vulkan;
                 case GraphicsBackendKind.Angle:
+                    return CreateAngleDevice(lifetime);
                 default:
                     throw new PlatformNotSupportedException($"{kind} device is not implemented.");
             }
+        }
+
+        /// <summary>Brings up ANGLE, asking for ES 3.0 and settling for ES 2.0 if that is refused.</summary>
+        /// <remarks>
+        /// ANGLE reports ES 2.0 on Direct3D feature level 10_0, which is old enough hardware to be
+        /// exactly what this renderer is for, so a refused ES 3.0 context is worth one more attempt.
+        /// The refused candidate is released before the retry builds its own window.
+        /// </remarks>
+        private static SdlGlDevice CreateAngleDevice(CandidateLifetime lifetime)
+        {
+            if (!AngleRuntime.TryLocate(AppContext.BaseDirectory, out string egl, out string gles))
+            {
+                throw new PlatformNotSupportedException("The ANGLE libraries are not installed beside the game.");
+            }
+
+            GlContextProfile profile = GlContextProfile.Angle(egl, gles);
+            SdlGlDevice preferred = lifetime.Own(new SdlGlDevice(static fault => { }, profile));
+            try
+            {
+                preferred.Initialize();
+                return preferred;
+            }
+            catch (InvalidOperationException) when (profile.Retry != null)
+            {
+                preferred.Dispose();
+            }
+
+            SdlGlDevice retry = lifetime.Own(new SdlGlDevice(static fault => { }, profile.Retry));
+            retry.Initialize();
+            return retry;
         }
 
         private static void ValidateDevice(SdlGraphicsDevice device)

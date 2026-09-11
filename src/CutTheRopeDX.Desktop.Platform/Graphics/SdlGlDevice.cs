@@ -26,6 +26,16 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <summary>Creates the window, context and first drawable.</summary>
         public unsafe void Initialize()
         {
+            using GlHintScope hints = new();
+            if (profile.UsesAngle)
+            {
+                // Without this SDL is free to answer an ES profile request with the system driver's
+                // own ES support, which is the driver this renderer exists to avoid.
+                hints.Set(SDL.Hints.OpenGLESDriver, "1");
+                hints.Set(SDL.Hints.EGLLibrary, profile.EglLibrary);
+                hints.Set(SDL.Hints.OpenGLLibrary, profile.GlesLibrary);
+            }
+
             SDL.GLResetAttributes();
             Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMajorVersion, profile.Major));
             Check(SDL.GLSetAttribute(SDL.GLAttr.ContextMinorVersion, profile.Minor));
