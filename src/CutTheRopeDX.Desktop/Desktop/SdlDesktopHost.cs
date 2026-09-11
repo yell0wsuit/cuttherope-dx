@@ -194,7 +194,8 @@ namespace CutTheRopeDX.Desktop
             selection = BackendSelector.Attempt(
                 rendererMemory.Filter(BackendSelector.PreferenceOrder(platform, forced)),
                 (kind, lifetime) => { rendererMemory.BeginAttempt(kind); return CreateDevice(kind, lifetime); },
-                ValidateDevice);
+                ValidateDevice,
+                rendererMemory.Absolve);
             rendererMemory.RecordSuccess();
             SdlGraphicsDevice device = selection.Device;
             _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));

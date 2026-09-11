@@ -76,6 +76,20 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Write(string.Empty);
         }
 
+        /// <summary>Clears the marker for a candidate that failed but came back.</summary>
+        /// <remarks>
+        /// The marker exists to catch a renderer that never returns at all, and a caught failure is
+        /// not that: the catch block only runs because the driver handed control back. Clearing it
+        /// here — once the candidate's resources have finished being released, so a fault during
+        /// cleanup is still covered — keeps that protection and stops a renderer being skipped on the
+        /// next launch over a failure it has since recovered from.
+        /// </remarks>
+        public void Absolve()
+        {
+            Blamed = null;
+            Write(string.Empty);
+        }
+
         private void Write(string value)
         {
             try

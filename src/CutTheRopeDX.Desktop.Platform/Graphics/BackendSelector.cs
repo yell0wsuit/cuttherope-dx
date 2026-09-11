@@ -37,8 +37,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <param name="order">Renderers to try, best first.</param>
         /// <param name="create">Builds one candidate, registering what it acquires as it goes.</param>
         /// <param name="validate">Draws and presents a frame, throwing if the candidate cannot.</param>
+        /// <param name="absolve">
+        /// Called once a rejected candidate has finished being released, to note that it failed in
+        /// a way that returned rather than one that took the process with it.
+        /// </param>
         internal static GraphicsSelection<T> Attempt<T>(IReadOnlyList<GraphicsBackendKind> order,
-            Func<GraphicsBackendKind, CandidateLifetime, T> create, Action<T> validate)
+            Func<GraphicsBackendKind, CandidateLifetime, T> create, Action<T> validate,
+            Action absolve = null)
             where T : IDisposable
         {
             ArgumentNullException.ThrowIfNull(order);
@@ -65,6 +70,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                     {
                         failures.Add(cleanupFailure);
                     }
+
+                    absolve?.Invoke();
                 }
             }
             throw new AggregateException("No desktop renderer completed its validation frame.", failures);

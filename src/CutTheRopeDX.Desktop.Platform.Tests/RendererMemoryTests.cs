@@ -109,7 +109,18 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Fact]
-        public void EveryCandidateFailingLeavesTheLastOneBlamedForTheNextLaunch()
+        public void ACandidateThatFailedAndCleanedUpIsNotBlamedForTheNextLaunch()
+        {
+            RendererMemory memory = new(StatePath);
+            memory.BeginAttempt(GraphicsBackendKind.OpenGL);
+
+            memory.Absolve();
+
+            Assert.Null(new RendererMemory(StatePath).Blamed);
+        }
+
+        [Fact]
+        public void EveryCandidateFailingCleanlyLeavesTheNextLaunchTheFullOrder()
         {
             RendererMemory memory = new(StatePath);
             GraphicsBackendKind[] order = BackendSelector.PreferenceOrder("windows", null);
@@ -121,32 +132,12 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                     memory.BeginAttempt(kind);
                     throw new InvalidOperationException(kind.ToString());
                 },
-                _ => { }));
+                _ => { },
+                memory.Absolve));
 
-            // Nothing drew a frame, so the marker was never torn up and still names the last attempt.
             RendererMemory next = new(StatePath);
-            Assert.Equal(GraphicsBackendKind.OpenGL, next.Blamed);
-            Assert.Equal(
-                [GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle],
-                next.Filter(order));
-        }
-
-        [Fact]
-        public void TheBlameRotatesSoAWorkingRendererIsReachedAgain()
-        {
-            RendererMemory first = new(StatePath);
-            first.BeginAttempt(GraphicsBackendKind.OpenGL);
-            GraphicsBackendKind[] order = BackendSelector.PreferenceOrder("windows", null);
-
-            // The launch after a total failure skips OpenGL and blames whatever it tried last instead,
-            // which is what lets the launch after that reach OpenGL again.
-            RendererMemory second = new(StatePath);
-            Assert.Equal([GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle], second.Filter(order));
-            second.BeginAttempt(GraphicsBackendKind.Angle);
-
-            RendererMemory third = new(StatePath);
-            Assert.Equal(GraphicsBackendKind.Angle, third.Blamed);
-            Assert.Contains(GraphicsBackendKind.OpenGL, third.Filter(order));
+            Assert.Null(next.Blamed);
+            Assert.Equal(order, next.Filter(order));
         }
 
         private sealed class Blank : IDisposable
