@@ -2,12 +2,21 @@
 // thread. The runtime proxies [JSImport] to the browser thread, so managed
 // interop cannot reach the owner thread's own scope, and the owner thread is
 // where the WebGL context and the animation frame have to live.
+//
+// This is C++ rather than C only because of the emcc command line. SkiaSharp's
+// WebAssembly native assets link Dawn's emdawnwebgpu port, which adds its own
+// webgpu.cpp and -std=c++20 to the same emcc invocation that compiles this
+// file, and that dialect flag applies to every input. Hence extern "C" below,
+// the exported names have to stay unmangled for DirectPInvoke to bind them.
 
 #include <emscripten.h>
 #include <emscripten/threading.h>
 #include <pthread.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+extern "C"
+{
 
 static void (*frame_callback)(double) = NULL;
 static void *event_buffer = NULL;
@@ -166,3 +175,5 @@ void *ctrdx_event_buffer(int bytes)
     }
     return event_buffer;
 }
+
+} // extern "C"

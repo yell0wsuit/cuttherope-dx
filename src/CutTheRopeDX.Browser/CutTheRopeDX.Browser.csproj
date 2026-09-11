@@ -38,7 +38,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <EmccExportedRuntimeMethod Include="GL" />
     <EmccExportedRuntimeMethod Include="PThread" />
-    <NativeFileReference Include="Native/ctrdxhost.c" />
+    <NativeFileReference Include="Native/ctrdxhost.cpp" />
   </ItemGroup>
 
   <ItemGroup>
