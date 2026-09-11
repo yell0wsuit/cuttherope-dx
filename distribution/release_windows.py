@@ -2,11 +2,11 @@
 """Build a Windows release package for Cut the Rope DX.
 
 Windows ships one build. The graphics backend is chosen when the game starts:
-the SDL host tries Vulkan, then OpenGL, then ANGLE, and keeps
+the SDL host tries Vulkan, then ANGLE, then OpenGL, and keeps
 the first that presents a frame.
 
     CutTheRope-DX.exe   the game        + SDL3.dll, SDL3_mixer.dll, libSkiaSharp.dll, ...
-    ffmpeg/  content/    beside it
+    ffmpeg/  angle/  content/    beside it
 
 The publish is single-file, so the managed assemblies live inside the executable.
 What stays loose is native: SDL, its mixer codecs, and Skia. macOS and Linux ship
@@ -36,8 +36,8 @@ CSPROJ = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "CutTheRopeDX.Desktop.c
 RELEASE_DIR = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "release_github"
 
 ARCHITECTURES = {
-    "x64": {"rid": "win-x64", "btbn": "win64", "label": "x64"},
-    "arm64": {"rid": "win-arm64", "btbn": "winarm64", "label": "ARM64"},
+    "x64": {"rid": "win-x64", "btbn": "win64", "electron": "x64", "label": "x64"},
+    "arm64": {"rid": "win-arm64", "btbn": "winarm64", "electron": "arm64", "label": "ARM64"},
 }
 
 # The name the game publishes under, from the project's AssemblyName.
@@ -47,6 +47,17 @@ CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
 FFMPEG_DOWNLOAD_ATTEMPTS = 5
+ANGLE_DIRECTORY = "angle"
+ANGLE_DOWNLOAD_ATTEMPTS = 5
+# ANGLE ships no standalone desktop build, so this takes the libraries from an Electron
+# release: both architectures are published, versions stay archived, and every artifact is
+# covered by a checksum file that can be verified in the same step.
+ANGLE_ELECTRON_VERSION = "v44.3.0"
+ANGLE_DLL_NAMES = ("libEGL.dll", "libGLESv2.dll")
+# Kept as .html because that is what it is: renaming markup to .txt gives players a file their
+# text editor renders as tag soup.
+ANGLE_NOTICE_SOURCE = "LICENSES.chromium.html"
+ANGLE_NOTICE_NAME = "ANGLE-LICENSE.html"
 FFMPEG_DLL_GLOBS = (
     "avcodec-*.dll",
     "avdevice-*.dll",
@@ -184,6 +195,83 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
     print(f"FFmpeg shared libraries copied to {destination}")
 
 
+def download_angle(output_dir: Path, electron_arch: str) -> None:
+    """Download the ANGLE libraries for one Windows architecture.
+
+    ANGLE maps OpenGL ES onto Direct3D 11, which is the GL implementation the game
+    prefers on Windows over whatever the machine's own driver provides. Google publishes
+    no standalone desktop build, so these come out of an Electron release.
+    """
+    release_url = f"https://github.com/electron/electron/releases/download/{ANGLE_ELECTRON_VERSION}"
+    archive_name = f"electron-{ANGLE_ELECTRON_VERSION}-win32-{electron_arch}.zip"
+    angle_url = f"{release_url}/{archive_name}"
+    checksums_url = f"{release_url}/SHASUMS256.txt"
+    destination = output_dir / ANGLE_DIRECTORY
+    installed = (*ANGLE_DLL_NAMES, ANGLE_NOTICE_NAME)
+    if destination.is_dir() and all((destination / name).is_file() for name in installed):
+        print(f"ANGLE libraries already present in {destination}")
+        return
+
+    print("\n=== ANGLE ===")
+    print(f"Downloading {angle_url}")
+
+    with tempfile.TemporaryDirectory() as temp_dir_name:
+        temp_dir = Path(temp_dir_name)
+        archive_path = temp_dir / archive_name
+        checksums_path = temp_dir / "SHASUMS256.txt"
+
+        for attempt in range(1, ANGLE_DOWNLOAD_ATTEMPTS + 1):
+            try:
+                urllib.request.urlretrieve(angle_url, archive_path)
+                urllib.request.urlretrieve(checksums_url, checksums_path)
+
+                expected_checksum = None
+                for line in checksums_path.read_text(encoding="utf-8").splitlines():
+                    parts = line.split(maxsplit=1)
+                    if len(parts) == 2 and parts[1].lstrip("*") == archive_name:
+                        expected_checksum = parts[0].lower()
+                        break
+
+                if expected_checksum is None:
+                    raise ValueError(f"No checksum found for {archive_name}")
+                if sha256_of(archive_path) != expected_checksum:
+                    raise ValueError(f"Checksum mismatch for {archive_name}")
+            except (OSError, HTTPException, ValueError) as error:
+                if attempt == ANGLE_DOWNLOAD_ATTEMPTS:
+                    print(
+                        f"ANGLE download or verification failed after "
+                        f"{ANGLE_DOWNLOAD_ATTEMPTS} attempts: {error}",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                print(
+                    f"ANGLE download or verification failed: {error}; "
+                    f"retrying ({attempt + 1}/{ANGLE_DOWNLOAD_ATTEMPTS})..."
+                )
+            else:
+                break
+
+        destination.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(archive_path) as archive:
+            members = {Path(name).name: name for name in archive.namelist()}
+            for dll in ANGLE_DLL_NAMES:
+                if dll not in members:
+                    print(f"{dll} not found in {archive_name}", file=sys.stderr)
+                    sys.exit(1)
+                with archive.open(members[dll]) as source:
+                    (destination / dll).write_bytes(source.read())
+
+            # ANGLE is BSD-3-Clause, so the notice is a condition of shipping the libraries at
+            # all, not a nicety. An archive without it is not one we can redistribute from.
+            if ANGLE_NOTICE_SOURCE not in members:
+                print(f"{ANGLE_NOTICE_SOURCE} not found in {archive_name}", file=sys.stderr)
+                sys.exit(1)
+            with archive.open(members[ANGLE_NOTICE_SOURCE]) as source:
+                (destination / ANGLE_NOTICE_NAME).write_bytes(source.read())
+
+    print(f"ANGLE libraries copied to {destination}")
+
+
 def is_shipped(output_dir: Path, path: Path) -> bool:
     """Whether a published file belongs in the archive players download."""
     return not any(
@@ -285,6 +373,7 @@ def main():
         sys.exit(1)
 
     download_ffmpeg(output_dir, btbn_arch)
+    download_angle(output_dir, config["electron"])
     package(output_dir, version, arch_label)
 
 
