@@ -107,5 +107,53 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             memory.BeginAttempt(GraphicsBackendKind.Metal);
             memory.RecordSuccess();
         }
+
+        [Fact]
+        public void EveryCandidateFailingLeavesTheLastOneBlamedForTheNextLaunch()
+        {
+            RendererMemory memory = new(StatePath);
+            GraphicsBackendKind[] order = BackendSelector.PreferenceOrder("windows", null);
+
+            _ = Assert.Throws<AggregateException>(() => BackendSelector.Attempt<Blank>(
+                memory.Filter(order),
+                (kind, _) =>
+                {
+                    memory.BeginAttempt(kind);
+                    throw new InvalidOperationException(kind.ToString());
+                },
+                _ => { }));
+
+            // Nothing drew a frame, so the marker was never torn up and still names the last attempt.
+            RendererMemory next = new(StatePath);
+            Assert.Equal(GraphicsBackendKind.OpenGL, next.Blamed);
+            Assert.Equal(
+                [GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle],
+                next.Filter(order));
+        }
+
+        [Fact]
+        public void TheBlameRotatesSoAWorkingRendererIsReachedAgain()
+        {
+            RendererMemory first = new(StatePath);
+            first.BeginAttempt(GraphicsBackendKind.OpenGL);
+            GraphicsBackendKind[] order = BackendSelector.PreferenceOrder("windows", null);
+
+            // The launch after a total failure skips OpenGL and blames whatever it tried last instead,
+            // which is what lets the launch after that reach OpenGL again.
+            RendererMemory second = new(StatePath);
+            Assert.Equal([GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle], second.Filter(order));
+            second.BeginAttempt(GraphicsBackendKind.Angle);
+
+            RendererMemory third = new(StatePath);
+            Assert.Equal(GraphicsBackendKind.Angle, third.Blamed);
+            Assert.Contains(GraphicsBackendKind.OpenGL, third.Filter(order));
+        }
+
+        private sealed class Blank : IDisposable
+        {
+            public void Dispose()
+            {
+            }
+        }
     }
 }
