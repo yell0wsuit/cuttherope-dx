@@ -52,7 +52,13 @@ ANGLE_DOWNLOAD_ATTEMPTS = 5
 # ANGLE ships no standalone desktop build, so this takes the libraries from an Electron
 # release: both architectures are published, versions stay archived, and every artifact is
 # covered by a checksum file that can be verified in the same step.
-ANGLE_ELECTRON_VERSION = "v44.3.0"
+#
+# Pinned to the 43 series because 44.0.0 stopped shipping these as separate files and links
+# ANGLE into electron.exe instead, where nothing else can load it. Verified against the
+# published archives: 43.7.0 carries both DLLs for x64 and arm64, 44.0.0 carries neither.
+# Moving this pin forward means checking the archive still contains them, not just that the
+# tag exists.
+ANGLE_ELECTRON_VERSION = "v43.7.0"
 ANGLE_DLL_NAMES = ("libEGL.dll", "libGLESv2.dll")
 # Kept as .html because that is what it is: renaming markup to .txt gives players a file their
 # text editor renders as tag soup.
