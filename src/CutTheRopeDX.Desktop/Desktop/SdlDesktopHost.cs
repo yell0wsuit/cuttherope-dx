@@ -207,9 +207,9 @@ namespace CutTheRopeDX.Desktop
             audio = SdlAudioBackend.TryOpen(root);
             ILogger hostLogger = Log.For(LogCategories.SdlHost);
             SdlDesktopHostLog.Renderer(hostLogger, selection.Kind, audio == null ? "unavailable" : "on");
-            foreach (Exception failure in selection.Failures)
+            foreach (RendererFailure failure in selection.Failures)
             {
-                SdlDesktopHostLog.RejectedRenderer(hostLogger, failure.Message);
+                SdlDesktopHostLog.RejectedRenderer(hostLogger, failure.Kind, failure.Failure.Message);
             }
 
             Preferences.LoadPreferences();
@@ -601,10 +601,15 @@ namespace CutTheRopeDX.Desktop
             SKPointI at = DrawCheck.Sample(device.Width, device.Height);
             using (SKBitmap frame = device.ReadPixels())
             {
-                if (!DrawCheck.Drew(frame.GetPixel(at.X, at.Y)))
+                SKColor sample = frame.GetPixel(at.X, at.Y);
+                if (!DrawCheck.Drew(sample))
                 {
+                    // The color is worth saying out loud: the check only asks whether the pixel
+                    // moved off the background, so what it actually read is the difference between
+                    // a driver that drew nothing and one whose readback is not to be trusted.
                     throw new InvalidOperationException(
-                        "The renderer accepted a shaded draw but its target stayed at the clear color.");
+                        $"The renderer accepted a shaded draw but its target read back {sample} "
+                        + $"at {at.X},{at.Y}, which is the color it was cleared to.");
                 }
             }
 
@@ -802,8 +807,8 @@ namespace CutTheRopeDX.Desktop
         [LoggerMessage(Level = LogLevel.Information, Message = "Renderer {Renderer}, audio {AudioState}")]
         public static partial void Renderer(ILogger logger, GraphicsBackendKind renderer, string audioState);
 
-        [LoggerMessage(Level = LogLevel.Error, Message = "Rejected renderer: {Reason}")]
-        public static partial void RejectedRenderer(ILogger logger, string reason);
+        [LoggerMessage(Level = LogLevel.Error, Message = "Rejected {Renderer}: {Reason}")]
+        public static partial void RejectedRenderer(ILogger logger, GraphicsBackendKind renderer, string reason);
 
         [LoggerMessage(Level = LogLevel.Error, Message = "Device lost: {Reason}")]
         public static partial void DeviceLost(ILogger logger, string reason);

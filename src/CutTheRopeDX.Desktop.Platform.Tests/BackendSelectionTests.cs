@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using CutTheRopeDX.Desktop.Platform.Graphics;
 
@@ -56,6 +57,48 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                 return lifetime.Own(new Resource("GL", events));
             }, _ => { });
             Assert.Equal("GL", selected.Device.Name);
+        }
+
+        [Fact]
+        public void EachFailureIsRecordedAgainstTheCandidateThatProducedIt()
+        {
+            List<string> events = [];
+            using GraphicsSelection<Resource> selected = BackendSelector.Select("windows", null,
+                (kind, lifetime) => lifetime.Own(new Resource(kind.ToString(), events)), resource =>
+                {
+                    if (resource.Name != "OpenGL")
+                    {
+                        throw new InvalidOperationException(resource.Name);
+                    }
+                });
+
+            // A log that cannot say which renderer was rejected cannot be read back by anyone
+            // trying to work out why a machine ended up on the renderer it did.
+            Assert.Equal(
+                [GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle],
+                selected.Failures.Select(failure => failure.Kind));
+            Assert.Equal("Vulkan", selected.Failures[0].Failure.Message);
+            Assert.Equal("Angle", selected.Failures[1].Failure.Message);
+        }
+
+        [Fact]
+        public void ACleanupFailureIsBlamedOnTheCandidateBeingCleanedUp()
+        {
+            List<string> events = [];
+            InvalidOperationException cleanup = new("context cleanup failed");
+            using GraphicsSelection<Resource> selected = BackendSelector.Select("windows", null,
+                (kind, lifetime) => kind == GraphicsBackendKind.Vulkan
+                    ? lifetime.Own(new Resource(kind.ToString(), events, cleanup))
+                    : lifetime.Own(new Resource(kind.ToString(), events)), resource =>
+                {
+                    if (resource.Name == "Vulkan")
+                    {
+                        throw new InvalidOperationException(resource.Name);
+                    }
+                });
+
+            Assert.All(selected.Failures, failure => Assert.Equal(GraphicsBackendKind.Vulkan, failure.Kind));
+            Assert.Contains(selected.Failures, failure => failure.Failure is AggregateException);
         }
 
         [Fact]

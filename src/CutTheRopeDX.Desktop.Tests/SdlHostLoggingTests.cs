@@ -1,3 +1,4 @@
+using CutTheRopeDX.Desktop.Platform.Graphics;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Tests;
 
@@ -19,12 +20,14 @@ namespace CutTheRopeDX.Desktop.Tests
             {
                 ILogger logger = Log.For(LogCategories.SdlHost);
 
-                SdlDesktopHostLog.RejectedRenderer(logger, "no drawable");
+                SdlDesktopHostLog.RejectedRenderer(logger, GraphicsBackendKind.Angle, "no drawable");
 
                 LogRecord entry = Assert.Single(recorder.Records);
                 Assert.Equal(LogCategories.SdlHost, entry.Category);
                 Assert.Equal(LogLevel.Error, entry.Level);
                 Assert.Contains("no drawable", entry.Message);
+                // Which renderer was passed over is the half that makes the line usable.
+                Assert.Contains("Angle", entry.Message);
             }
             finally
             {

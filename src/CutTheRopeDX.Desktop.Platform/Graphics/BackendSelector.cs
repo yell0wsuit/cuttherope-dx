@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CutTheRopeDX.Desktop.Platform.Graphics
 {
@@ -49,7 +50,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             ArgumentNullException.ThrowIfNull(order);
             ArgumentNullException.ThrowIfNull(create);
             ArgumentNullException.ThrowIfNull(validate);
-            List<Exception> failures = [];
+            List<RendererFailure> failures = [];
             foreach (GraphicsBackendKind kind in order)
             {
                 CandidateLifetime lifetime = new();
@@ -61,20 +62,21 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 }
                 catch (Exception failure)
                 {
-                    failures.Add(failure);
+                    failures.Add(new RendererFailure(kind, failure));
                     try
                     {
                         lifetime.Dispose();
                     }
                     catch (Exception cleanupFailure)
                     {
-                        failures.Add(cleanupFailure);
+                        failures.Add(new RendererFailure(kind, cleanupFailure));
                     }
 
                     absolve?.Invoke();
                 }
             }
-            throw new AggregateException("No desktop renderer completed its validation frame.", failures);
+            throw new AggregateException("No desktop renderer completed its validation frame.",
+                failures.Select(failure => failure.Failure));
         }
     }
 
@@ -120,13 +122,18 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         }
     }
 
+    /// <summary>Why one renderer was passed over, and which one it was.</summary>
+    /// <param name="Kind">The renderer that was being brought up.</param>
+    /// <param name="Failure">What went wrong, whether starting it or releasing it again.</param>
+    public readonly record struct RendererFailure(GraphicsBackendKind Kind, Exception Failure);
+
     /// <summary>A validated device and every dependency acquired with it.</summary>
     public sealed class GraphicsSelection<T> : IDisposable where T : IDisposable
     {
         private readonly CandidateLifetime lifetime;
 
         internal GraphicsSelection(GraphicsBackendKind kind, T device, CandidateLifetime lifetime,
-            IReadOnlyList<Exception> failures)
+            IReadOnlyList<RendererFailure> failures)
         {
             Kind = kind;
             Device = device;
@@ -139,7 +146,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <summary>The selected device. Its dependencies belong to this selection.</summary>
         public T Device { get; }
         /// <summary>Failures from earlier candidates, in attempt order.</summary>
-        public IReadOnlyList<Exception> Failures { get; }
+        public IReadOnlyList<RendererFailure> Failures { get; }
         /// <inheritdoc />
         public void Dispose()
         {
