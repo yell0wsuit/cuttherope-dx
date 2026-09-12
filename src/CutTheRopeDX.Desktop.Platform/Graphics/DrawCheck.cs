@@ -47,10 +47,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         /// <param name="sample">The pixel read back from the render target.</param>
         /// <remarks>
         /// The gradient runs red to blue, so no point along it can land on the background color.
+        /// It is also opaque everywhere, drawn over an opaque clear, so a transparent sample is
+        /// not something the check can produce: it is a readback that reported success without
+        /// writing anything, which leaves the caller's zeroed buffer exactly as it allocated it.
         /// </remarks>
         public static bool Drew(SKColor sample)
         {
-            return sample != Background;
+            return sample.Alpha != 0 && sample != Background;
         }
     }
 }

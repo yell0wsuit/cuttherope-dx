@@ -50,6 +50,16 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Fact]
+        public void AReadbackThatWasNeverWrittenIsNotAccepted()
+        {
+            // ReadPixels hands back a zeroed bitmap and only reports failure through its return
+            // value, so a driver that claims a successful readback without touching the buffer
+            // arrives here as transparent black. The gradient is drawn over an opaque clear and
+            // is opaque everywhere, so nothing it can produce is mistaken for this.
+            Assert.False(DrawCheck.Drew(new SKColor(0, 0, 0, 0)));
+        }
+
+        [Fact]
         public void TheSampleSitsInsideTheTarget()
         {
             SKPointI at = DrawCheck.Sample(Width, Height);
