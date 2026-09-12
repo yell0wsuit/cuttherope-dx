@@ -102,6 +102,61 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             Own(DestroyImage);
         }
 
+        /// <summary>
+        /// The Khronos validation layer, in a development build on a machine that has it.
+        /// </summary>
+        /// <param name="vk">The resolved Vulkan entry points.</param>
+        /// <returns>The layer name to enable, or zero to enable none.</returns>
+        /// <remarks>
+        /// This is here for one assumption in particular. The offscreen image is handed to Skia
+        /// as a render target and taken back for the blit in <see cref="BlitAndPresent"/>, and the
+        /// layout that blit names as the image's current one is the layout this device last set.
+        /// Skia owns the image in between and nothing in SkiaSharp can be asked what it left:
+        /// there is no managed accessor, and <c>libSkiaSharp</c> exports none either, so the
+        /// barrier states a layout it cannot verify.
+        /// <para>
+        /// It holds in practice, because Skia leaves a render target in the layout it renders
+        /// into. What it is not is checked, and a barrier whose old layout is wrong is undefined
+        /// behaviour rather than an error - the frame would simply be wrong, on some drivers,
+        /// sometimes. The validation layer is what turns that into a message naming the mismatch,
+        /// so a future Skia that transitions on its way out is caught while someone is developing
+        /// rather than after it ships.
+        /// </para>
+        /// <para>
+        /// Release builds enable nothing, and a development machine without the Vulkan SDK
+        /// installed reports no layers and carries on unchecked.
+        /// </para>
+        /// </remarks>
+        private static nint ValidationLayerName(VulkanApi vk)
+        {
+#if DEBUG
+            const string Validation = "VK_LAYER_KHRONOS_validation";
+            uint count = 0;
+            if (vk.EnumerateInstanceLayerProperties(&count, null) != 0 || count == 0)
+            {
+                return 0;
+            }
+
+            VkLayerProperties[] layers = new VkLayerProperties[count];
+            fixed (VkLayerProperties* reported = layers)
+            {
+                if (vk.EnumerateInstanceLayerProperties(&count, reported) != 0)
+                {
+                    return 0;
+                }
+
+                for (uint index = 0; index < count; index++)
+                {
+                    if (Marshal.PtrToStringUTF8((nint)reported[index].LayerName) == Validation)
+                    {
+                        return Marshal.StringToCoTaskMemUTF8(Validation);
+                    }
+                }
+            }
+#endif
+            return 0;
+        }
+
         /// <summary>Creates the instance with the surface extensions SDL requires.</summary>
         private void CreateInstance()
         {
@@ -124,18 +179,28 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                     EngineName = (byte*)applicationName,
                     ApiVersion = Vk.ApiVersion11,
                 };
+                nint validationName = ValidationLayerName(vk);
+                nint[] layerNames = validationName == 0 ? [] : [validationName];
                 fixed (nint* extensions = extensionNames)
+                fixed (nint* layers = layerNames)
                 {
                     VkInstanceCreateInfo create = new()
                     {
                         Type = Vk.StructureInstanceCreateInfo,
                         ApplicationInfo = &application,
+                        EnabledLayerCount = (uint)layerNames.Length,
+                        EnabledLayerNames = (byte**)layers,
                         EnabledExtensionCount = (uint)extensionNames.Length,
                         EnabledExtensionNames = (byte**)extensions,
                     };
                     nint created;
                     VulkanApi.Check(vk.CreateInstance(&create, 0, &created), "vkCreateInstance");
                     instance = created;
+                }
+
+                if (validationName != 0)
+                {
+                    Marshal.FreeCoTaskMem(validationName);
                 }
 
                 Own(() => vk.DestroyInstance(instance, 0));

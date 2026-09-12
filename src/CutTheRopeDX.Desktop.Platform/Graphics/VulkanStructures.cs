@@ -120,6 +120,16 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         internal uint SpecVersion;
     }
 
+    /// <summary>One reported instance layer, matching <c>VkLayerProperties</c>.</summary>
+    [StructLayout(LayoutKind.Sequential)]
+    internal unsafe struct VkLayerProperties
+    {
+        internal fixed byte LayerName[256];
+        internal uint SpecVersion;
+        internal uint ImplementationVersion;
+        internal fixed byte Description[256];
+    }
+
     /// <summary>One memory type, matching <c>VkMemoryType</c>.</summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct VkMemoryType

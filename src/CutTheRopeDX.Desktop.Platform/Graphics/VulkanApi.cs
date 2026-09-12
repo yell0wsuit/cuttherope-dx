@@ -18,6 +18,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             (delegate* unmanaged<nint, byte*, nint>)getInstanceProcAddress;
 
         internal delegate* unmanaged<VkInstanceCreateInfo*, nint, nint*, int> CreateInstance;
+        internal delegate* unmanaged<uint*, VkLayerProperties*, int> EnumerateInstanceLayerProperties;
         internal delegate* unmanaged<nint, nint, void> DestroyInstance;
         internal delegate* unmanaged<nint, uint*, nint*, int> EnumeratePhysicalDevices;
         internal delegate* unmanaged<nint, VkPhysicalDeviceProperties*, void> GetPhysicalDeviceProperties;
@@ -64,6 +65,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         internal void LoadGlobal()
         {
             CreateInstance = (delegate* unmanaged<VkInstanceCreateInfo*, nint, nint*, int>)Resolve(0, "vkCreateInstance");
+            EnumerateInstanceLayerProperties =
+                (delegate* unmanaged<uint*, VkLayerProperties*, int>)Resolve(0, "vkEnumerateInstanceLayerProperties");
         }
 
         /// <summary>Resolves instance-scoped entry points, including the surface queries.</summary>
