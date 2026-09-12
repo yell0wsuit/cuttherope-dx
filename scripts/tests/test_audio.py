@@ -19,7 +19,7 @@ def test_music_command_is_stereo_192k_libopus():
     command = audio.ogg_command(
         Path("/ff"), Path("in.wav"), Path("out.ogg"), 192, mono=False
     )
-    assert command[0] == "/ff"
+    assert command[0] == str(Path("/ff"))
     assert "-c:a" in command and command[command.index("-c:a") + 1] == "libopus"
     assert "-b:a" in command and command[command.index("-b:a") + 1] == "192k"
     assert "-ac" not in command
