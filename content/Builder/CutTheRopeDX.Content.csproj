@@ -6,25 +6,8 @@
     <Nullable>enable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <RootNamespace>CutTheRopeDX.Content</RootNamespace>
-
-    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.Jit" />
-    <PackageReference Include="MonoGame.Framework.Content.Pipeline" />
-    <PackageReference Include="MonoGame.Framework.Native">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Tool.Basisu" />
-    <PackageReference Include="MonoGame.Tool.Crunch" />
-    <PackageReference Include="MonoGame.Tool.Dxc" />
-    <PackageReference Include="MonoGame.Tool.FFmpeg" />
-    <PackageReference Include="MonoGame.Tool.FFprobe" />
-  </ItemGroup>
-  <ItemGroup>
-    <!-- MonoGame's build-only SharpDX dependency pulls legacy .NET Core runtime packages. -->
-    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-7mfr-774f-w5r9" />
-    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8884-xcr4-r68p" />
-    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-xcvr-qv8h-m7xw" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Content.Tests" />
   </ItemGroup>
 </Project>

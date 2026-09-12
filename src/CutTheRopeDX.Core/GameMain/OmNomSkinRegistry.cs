@@ -5,7 +5,10 @@ using System.IO;
 using System.Text.Json;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -114,10 +117,12 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            catch
+            catch (Exception failure)
             {
-                // If manifest is missing or invalid, return empty list.
-                // Classic skin (slot 0) is always available.
+                // A manifest that is missing or will not parse leaves only the classic skin in
+                // slot 0, which looks like the custom skins were never authored.
+                ILogger logger = Log.For(LogCategories.ContentPacks);
+                OmNomSkinRegistryLog.ManifestUnavailable(logger, failure);
             }
 
             return skins;
@@ -258,5 +263,14 @@ namespace CutTheRopeDX.GameMain
                 ? value.GetString()?.Trim()
                 : null;
         }
+    }
+
+    /// <summary>Log messages for the Om Nom skin manifest.</summary>
+    internal static partial class OmNomSkinRegistryLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Could not read the Om Nom skin manifest; only the classic skin is available.")]
+        public static partial void ManifestUnavailable(ILogger logger, Exception exception);
     }
 }

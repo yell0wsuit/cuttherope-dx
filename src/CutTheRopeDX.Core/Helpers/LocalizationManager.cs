@@ -5,6 +5,9 @@ using System.Text.Json;
 using System.Threading;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Helpers
 {
@@ -190,7 +193,8 @@ namespace CutTheRopeDX.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load localization strings for '{languageCode}': {ex.Message}");
+                LocalizationManagerLog.LoadFailed(
+                    Log.For(LogCategories.Localization), languageCode, ex.Message);
             }
 
             return result;
@@ -207,10 +211,26 @@ namespace CutTheRopeDX.Helpers
             {
                 return ContentPaths.OpenStream(fileName);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                // A language with no file of its own is ordinary, so this is a debug note. A file
+                // that exists but will not parse is reported at warning by the caller's catch.
+                ILogger logger = Log.For(LogCategories.Localization);
+                LocalizationManagerLog.StringsUnavailable(logger, fileName, failure);
                 return null;
             }
         }
+    }
+
+    /// <summary>Log messages for localization loading.</summary>
+    internal static partial class LocalizationManagerLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Failed to load localization strings for '{LanguageCode}': {Reason}")]
+        public static partial void LoadFailed(ILogger logger, string languageCode, string reason);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "No localization file '{FileName}'")]
+        public static partial void StringsUnavailable(ILogger logger, string fileName, Exception exception);
     }
 }

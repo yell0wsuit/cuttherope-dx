@@ -4,10 +4,13 @@ using System.Diagnostics;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Commons
 {
@@ -202,7 +205,8 @@ namespace CutTheRopeDX.Commons
         {
             if (gApp != null)
             {
-                LOG();
+                ILogger logger = Log.For(LogCategories.Application);
+                CtrRendererLog.AlreadyInitialized(logger);
                 return;
             }
             LanguageHelper.Current = language;
@@ -218,7 +222,8 @@ namespace CutTheRopeDX.Commons
         {
             if (gApp == null)
             {
-                LOG();
+                ILogger logger = Log.For(LogCategories.Application);
+                CtrRendererLog.NotInitialized(logger);
                 return;
             }
             Application.SharedSoundMgr().StopAllSounds();
@@ -403,5 +408,19 @@ namespace CutTheRopeDX.Commons
         /// Tracks the insertion index within <see cref="fpsDeltas"/>.
         /// </summary>
         private static int fpsDeltasPos;
+    }
+
+    /// <summary>Log messages for the shared runtime's lifecycle.</summary>
+    internal static partial class CtrRendererLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Init requested while the runtime is already running; ignored.")]
+        public static partial void AlreadyInitialized(ILogger logger);
+
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Destroy requested while no runtime is running; ignored.")]
+        public static partial void NotInitialized(ILogger logger);
     }
 }

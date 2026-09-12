@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
+    <PackageReference Include="SDL3-CS" />
+    <PackageReference Include="SDL3-CS.Windows" />
+    <PackageReference Include="SDL3-CS.Linux" />
+    <PackageReference Include="SDL3-CS.MacOS" />
+    <PackageReference Include="SDL3-CS.Windows.Mixer" />
+    <PackageReference Include="SDL3-CS.Linux.Mixer" />
+    <PackageReference Include="SDL3-CS.MacOS.Mixer" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+    <InternalsVisibleTo Include="CutTheRope-DX" />
+    <InternalsVisibleTo Include="CutTheRopeDX.Desktop.Platform.Tests" />
+  </ItemGroup>
+</Project>

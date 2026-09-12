@@ -30,6 +30,11 @@ namespace CutTheRopeDX.Tests
             return null;
         }
 
+        public IVideoFrameTexture CreateVideoFrameTexture(int width, int height)
+        {
+            return null;
+        }
+
         public void ResetRenderTarget() { }
 
         public void CopyFromRenderTargetToScreen() { }

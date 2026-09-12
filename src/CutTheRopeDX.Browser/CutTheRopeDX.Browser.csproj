@@ -38,11 +38,12 @@
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <EmccExportedRuntimeMethod Include="GL" />
     <EmccExportedRuntimeMethod Include="PThread" />
-    <NativeFileReference Include="Native/ctrdxhost.c" />
+    <NativeFileReference Include="Native/ctrdxhost.cpp" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+    <ProjectReference Include="../CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
   </ItemGroup>
 
   <!--
@@ -66,8 +67,7 @@
 
   <!-- Development serves coi-sw directly; publish swaps in the cache-aware variant. -->
   <ItemGroup>
-    <ServiceWorker Include="wwwroot/coi-sw.js"
-                   PublishedContent="wwwroot/service-worker.published.js" />
+    <ServiceWorker Include="wwwroot/coi-sw.js" PublishedContent="wwwroot/service-worker.published.js" />
   </ItemGroup>
 
 </Project>

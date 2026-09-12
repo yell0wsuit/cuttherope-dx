@@ -617,6 +617,18 @@ namespace CutTheRopeDX.Framework.Core
         {
             if (disposing)
             {
+                // A disposed controller must not stay the routed one. Its views are about to
+                // become null, and every override that routes through it - input, and the pause
+                // that recovery asks for - dereferences them without asking whether it is still
+                // alive. Clearing the reference here keeps that from depending on the order in
+                // which callers happen to tear things down.
+                RootController root = Application.SharedRootController();
+                if (root != null && !ReferenceEquals(root, this)
+                    && ReferenceEquals(root.GetCurrentController(), this))
+                {
+                    root.SetCurrentController(null);
+                }
+
                 if (views != null)
                 {
                     foreach (View view in views.Values)
@@ -659,6 +671,21 @@ namespace CutTheRopeDX.Framework.Core
         /// Present as a platform-compatibility hook. The base implementation does not handle the input.
         /// </remarks>
         public virtual bool MenuButtonPressed()
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// Puts this controller into its paused state if it has one and is not already in it.
+        /// </summary>
+        /// <returns><see langword="true" /> if this call is what paused it.</returns>
+        /// <remarks>
+        /// This is deliberately not the menu button. A button press toggles, which is right for a
+        /// player and wrong for anything the game does to itself: asking twice, or asking a screen
+        /// that is already paused, would resume it. Most screens have no paused state and answer
+        /// <see langword="false" />.
+        /// </remarks>
+        public virtual bool EnsurePaused()
         {
             return false;
         }

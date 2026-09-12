@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
+  </ItemGroup>
+
+  <!--
+    The font layout tests render real glyphs, so they read the shipping typefaces directly.
+    Fonts are fetched assets rather than tracked files, so this is a glob: naming them
+    explicitly fails the build on a checkout that has not fetched content yet. The tests
+    skip themselves when the typeface they need did not arrive.
+  -->
+  <ItemGroup>
+    <None Include="../../content/fonts/*.ttf;../../content/fonts/*.otf" Link="fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

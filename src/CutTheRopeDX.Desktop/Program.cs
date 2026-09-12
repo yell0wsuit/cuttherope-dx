@@ -1,12 +1,20 @@
 using System;
-using System.IO;
 using System.Xml.Linq;
 
 using CutTheRopeDX;
+using CutTheRopeDX.Desktop;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
 
+using Microsoft.Extensions.Logging;
+
 CommandLineResult cli = CommandLine.Parse(args);
+
+// Held rather than logged where it happens: the factory is built further down, after the headless
+// branch has had its chance to return without one.
+string handshake = null;
 
 if (cli.IsCustomLevel)
 {
@@ -26,7 +34,7 @@ if (cli.IsCustomLevel)
 
     // Tell the launcher, before the run loop blocks, that this build understood --level and loaded the
     // level. A build too old for the switch never reaches here, so the line's absence is the signal.
-    PlaytestHandshake.Announce(Console.Out);
+    handshake = PlaytestHandshake.Announce(Console.Out);
 }
 
 if (cli.IsHeadless)
@@ -45,35 +53,47 @@ if (cli.IsHeadless)
     return CustomLevelSession.IsActive && !HeadlessHost.IsInGameplay() ? 1 : 0;
 }
 
-InstallAlsoftConfig();
+LogLevel? requestedLevel;
+try
+{
+    requestedLevel = LoggingSetup.ParseLevel(args);
+}
+catch (ArgumentException error)
+{
+    Console.Error.WriteLine(error.Message);
+    return 1;
+}
 
-using Game1 game = new();
-game.Run();
+// Resolve the save directory before constructing its file sink, then replay the diagnostics
+// collected during resolution now that a logger can receive them.
+using ILoggerFactory loggerFactory = LoggingSetup.Create(Preferences.SaveDirectory, requestedLevel);
+Log.Factory = loggerFactory;
+CrashHandlers.Install(loggerFactory, LoggingSetup.DirectoryFor(Preferences.SaveDirectory));
+
+// A frame-limited run is a smoke test with nobody at the keyboard, and a modal window there
+// would hold the job open until something else killed it.
+CrashDialog.Enabled = Array.IndexOf(args, "--sdl-frames") < 0;
+
+if (CustomLevelSession.IsActive)
+{
+    ILogger playtestLogger = Log.For(LogCategories.Playtest);
+    PlaytestLog.SessionActive(playtestLogger, CustomLevelSession.LevelPath);
+    PlaytestLog.Handshake(playtestLogger, handshake);
+}
+
+ILogger startupLogger = Log.For(LogCategories.Preferences);
+foreach (Preferences.StartupDiagnostic diagnostic in Preferences.DrainStartupDiagnostics())
+{
+    StartupLog.Diagnostic(startupLogger, diagnostic.Level, diagnostic.Message);
+}
+
+using SdlDesktopHost host = new();
+host.Run(args);
 return 0;
 
-// OpenAL Soft's own config-file discovery depends on the process's current working
-// directory, which is unreliable across launch methods - Windows/Linux launchers set it
-// to the executable's own folder, but macOS Finder/LaunchServices does not, and does not
-// set it to any predictable directory at all. Resolve the bundled alsoft.ini explicitly and
-// point OpenAL Soft at it via ALSOFT_CONF, which takes priority over every other config-file
-// search path, so playback settings apply the same way regardless of how the game was launched.
-static void InstallAlsoftConfig()
+/// <summary>Log messages collected before the desktop factory exists.</summary>
+internal static partial class StartupLog
 {
-    string baseDir = AppContext.BaseDirectory;
-    string[] candidates =
-    [
-        Path.Combine(baseDir, "alsoft.ini"),
-        // net10.0-macos app bundle: the managed assembly runs from Contents/MonoBundle,
-        // but alsoft.ini ships as a BundleResource under the sibling Contents/Resources.
-        Path.Combine(baseDir, "..", "Resources", "alsoft.ini"),
-    ];
-
-    foreach (string candidate in candidates)
-    {
-        if (File.Exists(candidate))
-        {
-            Environment.SetEnvironmentVariable("ALSOFT_CONF", Path.GetFullPath(candidate));
-            return;
-        }
-    }
+    [LoggerMessage(Message = "{Message}")]
+    internal static partial void Diagnostic(ILogger logger, LogLevel level, string message);
 }

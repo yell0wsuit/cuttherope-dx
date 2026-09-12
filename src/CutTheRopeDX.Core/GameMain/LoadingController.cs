@@ -1,6 +1,11 @@
+using System.Diagnostics;
+
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -65,6 +70,7 @@ namespace CutTheRopeDX.GameMain
             base.Activate();
             resourcesLoaded = false; // Reset flag when activating
             shownSeconds = 0f;
+            loadStartedTicks = Stopwatch.GetTimestamp();
             ((LoadingView)GetView(0)).game = nextController == 0;
             ShowView(0);
         }
@@ -83,6 +89,16 @@ namespace CutTheRopeDX.GameMain
         {
             // Just set flag - Update() will handle transition after animation completes
             resourcesLoaded = true;
+
+            // The screen stays up for its minimum display time after this, so this is when the
+            // level was actually ready rather than when the player saw it.
+            if (nextController == 0)
+            {
+                double elapsedMs = Stopwatch.GetElapsedTime(loadStartedTicks).TotalMilliseconds;
+                ILogger logger = Log.For(LogCategories.ContentXml);
+                string memory = MemoryReport.Describe();
+                LoadingControllerLog.LevelReady(logger, elapsedMs, memory);
+            }
         }
 
         /// <inheritdoc />
@@ -104,6 +120,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Controller ID to activate after the loading screen completes.</summary>
         public int nextController;
 
+        /// <summary>When the loading screen came up, for the level-ready report.</summary>
+        private long loadStartedTicks = Stopwatch.GetTimestamp();
+
         /// <summary>Whether the resource manager has finished loading the requested resources.</summary>
         private bool resourcesLoaded;
 
@@ -118,5 +137,12 @@ namespace CutTheRopeDX.GameMain
             /// <summary>Loading view identifier.</summary>
             VIEW_LOADING
         }
+    }
+
+    /// <summary>Log messages for the loading screen.</summary>
+    internal static partial class LoadingControllerLog
+    {
+        [LoggerMessage(Level = LogLevel.Information, Message = "Level ready in {ElapsedMs:F1} ms; {Memory}")]
+        public static partial void LevelReady(ILogger logger, double elapsedMs, string memory);
     }
 }

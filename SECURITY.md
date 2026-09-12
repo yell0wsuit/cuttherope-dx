@@ -6,7 +6,7 @@ Only the latest version of *Cut the Rope: DX* is supported. All users should upd
 
 ## Scope
 
-This policy covers the *Cut the Rope: DX* repository only. Vulnerabilities in upstream dependencies (such as MonoGame) are out of scope—please report those to their respective projects. If an upstream fix is relevant to this project, it will be incorporated in a future update.
+This policy covers the *Cut the Rope: DX* repository only. Vulnerabilities in upstream dependencies (such as SDL, SkiaSharp or FFmpeg) are out of scope—please report those to their respective projects. If an upstream fix is relevant to this project, it will be incorporated in a future update.
 
 ## Reporting a Vulnerability
 

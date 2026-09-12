@@ -9,13 +9,13 @@ using CoreMedia;
 
 using CoreVideo;
 
-using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using Foundation;
 
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Framework.Media
     /// </summary>
     /// <remarks>
     /// Uses <see cref="AVPlayer"/> for playback and <see cref="AVPlayerItemVideoOutput"/>
-    /// for extracting video frames as pixel buffers, which are then converted to
-    /// MonoGame textures. Requires macOS 26 or later.
+    /// for extracting video frames as pixel buffers, which are then converted into the
+    /// renderer's frame texture. Requires macOS 26 or later.
     /// </remarks>
     internal sealed class VideoPlayerAVFoundation : IVideoPlayer
     {
@@ -38,7 +38,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
-            Console.WriteLine($"[AVFoundation] Play requested: {moviePath}, mute={mute}");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.PlayRequested(logger, moviePath, mute);
 
             Cleanup();
             HasPlaybackFinished = false;
@@ -52,7 +53,7 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!File.Exists(fullPath))
             {
-                Console.WriteLine($"[AVFoundation] Missing video: {fullPath}");
+                VideoPlayerLog.MissingVideo(logger, fullPath);
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -94,21 +95,23 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (player == null || videoOutput == null || HasPlaybackFinished)
             {
-                Console.WriteLine($"[AVFoundation] GetTexture early return: player={player != null}, videoOutput={videoOutput != null}, playbackFinished={HasPlaybackFinished}, videoTexture={videoTexture != null}");
-                return videoTextureHandle;
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.GetTextureEarlyReturn(
+                    logger, player != null, videoOutput != null, HasPlaybackFinished, videoTexture != null);
+                return videoTexture;
             }
 
             CMTime itemTime = player.CurrentTime;
             if (!videoOutput.HasNewPixelBufferForItemTime(itemTime))
             {
-                return videoTextureHandle;
+                return videoTexture;
             }
 
             CMTime displayTime = default;
             using CVPixelBuffer pixelBuffer = videoOutput.CopyPixelBuffer(itemTime, ref displayTime);
             if (pixelBuffer == null)
             {
-                return videoTextureHandle;
+                return videoTexture;
             }
 
             _ = pixelBuffer.Lock(CVPixelBufferLock.ReadOnly);
@@ -127,17 +130,18 @@ namespace CutTheRopeDX.Framework.Media
 
             if (videoTexture != null && videoBuffer != null)
             {
-                videoTexture.SetData(videoBuffer);
+                videoTexture.Update(videoBuffer);
             }
 
             if (!loggedFirstFrame && videoTexture != null)
             {
                 loggedFirstFrame = true;
-                Console.WriteLine($"[AVFoundation] First frame: {videoWidth}x{videoHeight}");
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.FirstFrame(logger, videoWidth, videoHeight);
             }
 
             frameCount++;
-            return videoTextureHandle;
+            return videoTexture;
         }
 
         /// <inheritdoc/>
@@ -174,7 +178,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Stop");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Stop(logger);
             HasPlaybackFinished = true;
             player.Pause();
         }
@@ -187,7 +192,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Pause");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Pause(logger);
             IsPaused = true;
             player.Pause();
         }
@@ -200,7 +206,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Resume");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Resume(logger);
             IsPaused = false;
             player.Play();
         }
@@ -213,7 +220,8 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            Console.WriteLine("[AVFoundation] Start");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Start(logger);
             waitForStart = false;
             playStartTime = DateTime.UtcNow;
             player.Play();
@@ -224,10 +232,11 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (!waitForStart && HasPlaybackFinished)
             {
-                Console.WriteLine($"[AVFoundation] Update: triggering cleanup, videoTexture={videoTexture != null}");
+                ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+                VideoPlayerLog.UpdateCleanup(logger, videoTexture != null);
                 Cleanup();
                 IsPaused = false;
-                Console.WriteLine("[AVFoundation] Update: invoking PlaybackFinished");
+                VideoPlayerLog.UpdateFinishing(logger);
                 PlaybackFinished?.Invoke();
             }
         }
@@ -235,7 +244,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Dispose()
         {
-            Console.WriteLine("[AVFoundation] Dispose");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.Disposing(logger);
             Cleanup();
             IsPaused = false;
         }
@@ -253,8 +263,7 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             videoTexture?.Dispose();
-            videoTexture = new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            videoTextureHandle = new MonoGameTexture(videoTexture);
+            videoTexture = PlatformServices.Render?.CreateVideoFrameTexture(width, height);
             videoWidth = width;
             videoHeight = height;
 
@@ -272,7 +281,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="width">Frame width in pixels.</param>
         /// <param name="height">Frame height in pixels.</param>
         /// <remarks>
-        /// Converts BGRA pixel format to RGBA for MonoGame texture compatibility.
+        /// Converts BGRA pixel format to the RGBA the frame texture expects.
         /// </remarks>
         private unsafe void CopyPixelBuffer(CVPixelBuffer pixelBuffer, int width, int height)
         {
@@ -324,7 +333,8 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private void OnPlaybackFinished()
         {
-            Console.WriteLine($"[AVFoundation] Playback finished, videoTexture={videoTexture != null}");
+            ILogger logger = Log.For(LogCategories.MediaAVFoundation);
+            VideoPlayerLog.PlaybackFinished(logger, videoTexture != null);
             HasPlaybackFinished = true;
         }
 
@@ -355,7 +365,6 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = null;
-            videoTextureHandle = null;
             videoBuffer = null;
             videoWidth = 0;
             videoHeight = 0;
@@ -377,11 +386,10 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Observer for playback finished notifications.</summary>
         private NSObject playbackObserver;
 
-        /// <summary>MonoGame texture for rendering video frames.</summary>
-        private Texture2D videoTexture;
+        /// <summary>The texture each decoded frame is written into.</summary>
+        private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
-        private MonoGameTexture videoTextureHandle;
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;

@@ -15,7 +15,7 @@ def _arg_after(command: list[str], flag: str) -> str:
 
 def test_command_encodes_vp9_and_opus():
     command = video.webm_command(Path("/ff"), Path("in.mp4"), Path("out.webm"))
-    assert command[0] == "/ff"
+    assert command[0] == str(Path("/ff"))
     assert _arg_after(command, "-c:v") == "libvpx-vp9"
     assert _arg_after(command, "-c:a") == "libopus"
     assert _arg_after(command, "-b:a") == "96k"

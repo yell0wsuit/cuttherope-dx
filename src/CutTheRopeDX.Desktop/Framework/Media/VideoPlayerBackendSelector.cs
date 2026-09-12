@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Framework.Media
         Ffmpeg,
 
         /// <summary>Stub implementation that skips video playback.</summary>
-        MonoGame
+        None
     }
 
     /// <summary>
@@ -29,14 +29,14 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="hasFfmpeg">Whether FFmpeg support is compiled in.</param>
         /// <returns>The selected <see cref="VideoPlayerBackend"/> to use.</returns>
         /// <remarks>
-        /// Selection priority on macOS 26+: AVFoundation → FFmpeg → MonoGame stub.
-        /// Selection priority on other platforms: FFmpeg → MonoGame stub.
+        /// Selection priority on macOS 26+: AVFoundation → FFmpeg → no-op stub.
+        /// Selection priority on other platforms: FFmpeg → no-op stub.
         /// </remarks>
         public static VideoPlayerBackend Select(bool isMac, bool isMac26OrLater, bool hasAvFoundation, bool hasFfmpeg)
         {
             return isMac && isMac26OrLater && hasAvFoundation
                 ? VideoPlayerBackend.AVFoundation
-                : hasFfmpeg ? VideoPlayerBackend.Ffmpeg : VideoPlayerBackend.MonoGame;
+                : hasFfmpeg ? VideoPlayerBackend.Ffmpeg : VideoPlayerBackend.None;
         }
     }
 }

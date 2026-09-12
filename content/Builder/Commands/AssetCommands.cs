@@ -1,9 +1,5 @@
 using CutTheRopeDX.Content.Assets;
 
-using Microsoft.Xna.Framework.Content.Pipeline;
-
-using MonoGame.Framework.Content.Pipeline.Builder;
-
 namespace CutTheRopeDX.Content.Commands
 {
     /// <summary>
@@ -26,7 +22,7 @@ namespace CutTheRopeDX.Content.Commands
             {
                 return commandLine.Command switch
                 {
-                    ContentCommand.Build => RunBuild(commandLine.BuilderArguments),
+                    ContentCommand.Build => RunBuild(commandLine),
                     ContentCommand.Fetch => await RunFetchAsync(
                         ResolveSourceDirectory(commandLine.SourceDirectory)),
                     ContentCommand.Verify => RunVerify(
@@ -39,6 +35,7 @@ namespace CutTheRopeDX.Content.Commands
             }
             catch (Exception exception) when (
                 exception is ArgumentException or
+                    ContentBuildException or
                     HttpRequestException or
                     TaskCanceledException or
                     IOException or
@@ -49,72 +46,31 @@ namespace CutTheRopeDX.Content.Commands
             }
         }
 
-        private static int RunBuild(IReadOnlyList<string> arguments)
+        private static int RunBuild(ContentCommandLine commandLine)
         {
-            GameContentBuilder builder = new();
-
-            if (arguments.Count > 0)
+            string source = ResolveSourceDirectory(commandLine.SourceDirectory);
+            if (commandLine.OutputDirectory is null)
             {
-                builder.Run([.. arguments]);
-            }
-            else
-            {
-                _ = builder.Run(new ContentBuilderParams
-                {
-                    Mode = ContentBuilderMode.Builder,
-                    WorkingDirectory = $"{AppContext.BaseDirectory}../../",
-                    SourceDirectory = "content",
-                    Platform = TargetPlatform.DesktopVK,
-                    CompressContent = true,
-                });
+                throw new ArgumentException("The build command requires an output directory.");
             }
 
-            if (builder.FailedToBuild > 0)
+            ContentBuildResult result = GameContentBuilder.Build(
+                source, Path.GetFullPath(commandLine.OutputDirectory));
+            Console.WriteLine($"Content build: {result.Files} assets listed in {result.ListPath}.");
+            if (result.Unmatched.Count > 0)
             {
-                return -1;
-            }
-
-            EmitImageDimensionsManifest(arguments);
-            return 0;
-        }
-
-        /// <summary>
-        /// Emits the headless image-dimensions manifest next to the built image assets.
-        /// Only the argument-driven build (the one MSBuild runs) carries explicit source and
-        /// output directories; a bare invocation resolves them itself and is skipped with a note.
-        /// </summary>
-        /// <param name="arguments">Arguments forwarded to the MonoGame builder.</param>
-        private static void EmitImageDimensionsManifest(IReadOnlyList<string> arguments)
-        {
-            string? sourceDirectory = FindOptionValue(arguments, "-s", "--source");
-            string? outputDirectory = FindOptionValue(arguments, "-o", "--output");
-
-            if (sourceDirectory is null || outputDirectory is null)
-            {
+                // Not a failure: an unmatched file is as likely to be a note left in the tree as a
+                // new asset nobody taught the rules about. Saying so is what turns the second case
+                // from a missing asset on a player's machine into a line in the build log.
                 Console.WriteLine(
-                    "[I] Skipping image_dimensions.json: build was invoked without -s/-o.");
-                return;
-            }
-
-            GameContentBuilder.EmitImageDimensionsManifest(
-                Path.Combine(sourceDirectory, "images"),
-                Path.Combine(outputDirectory, "images"));
-        }
-
-        private static string? FindOptionValue(
-            IReadOnlyList<string> arguments,
-            string shortName,
-            string longName)
-        {
-            for (int index = 0; index < arguments.Count - 1; index++)
-            {
-                if (arguments[index] == shortName || arguments[index] == longName)
+                    $"Content build: {result.Unmatched.Count} source file(s) matched no rule and "
+                    + "will not ship:");
+                foreach (string path in result.Unmatched)
                 {
-                    return arguments[index + 1];
+                    Console.WriteLine($"  {path}");
                 }
             }
-
-            return null;
+            return 0;
         }
 
         private static async Task<int> RunFetchAsync(string contentDirectory)

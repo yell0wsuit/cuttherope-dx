@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Rendering.Skia;
 
 using SkiaSharp;
 
@@ -27,13 +29,35 @@ namespace CutTheRopeDX.Browser
 
             byte[] encoded = PlatformServices.Content.Read(contentPath + ImageExtension);
             using SKData data = SKData.CreateCopy(encoded);
-            using SKImage decoded = SKImage.FromEncodedData(data);
+            SKImage decoded = SKImage.FromEncodedData(data);
             if (decoded is null)
             {
                 return null;
             }
 
-            SkiaTexture texture = new(decoded.ToTextureImage(surface.Context));
+            SKImage image;
+            try
+            {
+                image = decoded.ToTextureImage(surface.Context)
+                    ?? throw new InvalidOperationException($"Could not upload image '{contentPath}'.");
+            }
+            catch
+            {
+                decoded.Dispose();
+                throw;
+            }
+
+            // The same two guards the desktop loader carries, for the same reasons: an upload that
+            // hands back nothing would otherwise make a texture whose every measurement throws, and
+            // the conversion returns the source itself when it already satisfies the request, where
+            // SkiaSharp maps one native handle to one managed instance - so disposing the decoded
+            // image unconditionally would free the one the texture now owns.
+            if (!ReferenceEquals(image, decoded))
+            {
+                decoded.Dispose();
+            }
+
+            SkiaTexture texture = new(image);
             _textures[contentPath] = texture;
             return texture;
         }

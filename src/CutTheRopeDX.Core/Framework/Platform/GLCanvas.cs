@@ -138,7 +138,7 @@ namespace CutTheRopeDX.Framework.Platform
 
         /// <summary>
         /// Swaps the back buffer.
-        /// Retained as a no-op because MonoGame handles presentation.
+        /// Retained as a no-op because the host owns presentation.
         /// </summary>
         public static void SwapBuffers()
         {

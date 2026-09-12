@@ -6,8 +6,11 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Helpers
 {
@@ -42,14 +45,22 @@ namespace CutTheRopeDX.Helpers
                 try
                 {
                     UpdateInfo info = await FetchLatestReleaseAsync(currentVersion, cts.Token).ConfigureAwait(false);
+                    ILogger logger = Log.For(LogCategories.UpdateCheck);
                     if (info != null)
                     {
                         _ = Interlocked.Exchange(ref updateInfo, info);
+                        UpdateCheckerLog.UpdateAvailable(logger, currentVersion, info.LatestVersion);
+                    }
+                    else
+                    {
+                        UpdateCheckerLog.UpToDate(logger, currentVersion);
                     }
                 }
-                catch (Exception)
+                catch (Exception failure)
                 {
-                    // Ignore network, cancellation, or parsing failures.
+                    // Being offline is ordinary, so this is a debug note rather than a warning.
+                    ILogger logger = Log.For(LogCategories.UpdateCheck);
+                    UpdateCheckerLog.CheckFailed(logger, failure);
                 }
             });
         }
@@ -272,5 +283,18 @@ namespace CutTheRopeDX.Helpers
         /// Latest update info fetched from the server.
         /// </summary>
         private static UpdateInfo updateInfo;
+    }
+
+    /// <summary>Log messages for the release check.</summary>
+    internal static partial class UpdateCheckerLog
+    {
+        [LoggerMessage(Level = LogLevel.Information, Message = "Update check did not complete.")]
+        public static partial void CheckFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Update available: {Current} -> {Latest}")]
+        public static partial void UpdateAvailable(ILogger logger, string current, string latest);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Up to date on {Current}.")]
+        public static partial void UpToDate(ILogger logger, string current);
     }
 }

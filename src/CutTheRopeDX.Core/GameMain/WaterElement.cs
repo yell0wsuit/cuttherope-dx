@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -106,8 +109,12 @@ namespace CutTheRopeDX.GameMain
             {
                 return new WaterElement().InitWithWidthHeight(w, h);
             }
-            catch
+            catch (Exception failure)
             {
+                // The caller checks IsWaterTextureAvailable first, so reaching here means
+                // something other than a missing texture went wrong.
+                ILogger logger = Log.For(LogCategories.ContentResources);
+                WaterElementLog.CreateFailed(logger, failure);
                 return null;
             }
         }
@@ -464,5 +471,12 @@ namespace CutTheRopeDX.GameMain
             }
             base.Dispose(disposing);
         }
+    }
+
+    /// <summary>Log messages for the water element.</summary>
+    internal static partial class WaterElementLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not create the water element.")]
+        public static partial void CreateFailed(ILogger logger, Exception exception);
     }
 }

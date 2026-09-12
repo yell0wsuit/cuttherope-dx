@@ -17,6 +17,13 @@ ARCHITECTURE="amd64"
 MAINTAINER="yell0wsuit"
 DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope."
 
+# What the shipped natives link against, read off their ELF DT_NEEDED entries rather than
+# guessed: libSkiaSharp.so needs libfontconfig.so.1 and libstdc++.so.6, and a missing one
+# fails the load outright instead of degrading. SDL is not listed because it links only
+# libc and libm and dlopens everything else -- X11, Wayland, ALSA, PulseAudio -- so a host
+# without one of those loses that driver rather than the game.
+DEPENDS="libc6, libstdc++6, libfontconfig1"
+
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -81,6 +88,7 @@ sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
     -e "s/{{ARCHITECTURE}}/$ARCHITECTURE/g" \
     -e "s/{{MAINTAINER}}/$MAINTAINER/g" \
     -e "s/{{DESCRIPTION}}/$DESCRIPTION/g" \
+    -e "s/{{DEPENDS}}/$DEPENDS/g" \
     "$TEMPLATES_DIR/deb.control" > "$DEB_ROOT/DEBIAN/control"
 
 # Desktop entry

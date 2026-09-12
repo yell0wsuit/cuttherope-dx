@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 
 using CutTheRopeDX.Browser;
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Rendering.Skia;
 
 [assembly: SupportedOSPlatform("browser")]
 
@@ -13,13 +15,19 @@ await FetchInterop.ImportAsync();
 await AudioInterop.ImportAsync();
 await StorageInterop.ImportAsync();
 await HostEventInterop.ImportAsync();
+await LogInterop.ImportAsync();
 await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
 
+// Installed before anything else can fail, so a boot that never reaches the game still leaves a
+// record the player can export. The banner goes first for the same reason it does on desktop:
+// whoever reads the report needs to know which build produced it.
+Log.Factory = new BrowserLogStore();
+_ = LogInterop.Begin(BrowserBuild.ComposeHeader());
+
 // Announced before the content bundle starts downloading, so the level transfer overlaps a ~56 MB
 // load rather than following it. A normal launch returns immediately.
-bool playtest = await PlaytestSession.BeginAsync();
-Console.WriteLine($"playtest: {(playtest ? "active" : "inactive")}");
+_ = await PlaytestSession.BeginAsync();
 
 // The canvas moves to this thread before Skia exists, and never moves back: the
 // released SkiaSharp archive calls GL on whichever thread it is running on, so the

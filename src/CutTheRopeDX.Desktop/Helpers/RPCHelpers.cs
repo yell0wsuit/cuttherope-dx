@@ -4,9 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers.Discord;
+
+using Microsoft.Extensions.Logging;
 
 
 namespace CutTheRopeDX.Helpers
@@ -53,10 +56,14 @@ namespace CutTheRopeDX.Helpers
                 return;
             }
 
+            string details = "Browsing Menu";
+            string state = $"⭐ Total: {CTRPreferences.GetTotalStars()}";
             client.SetActivity(
-                details: "Browsing Menu",
-                state: $"⭐ Total: {CTRPreferences.GetTotalStars()}",
+                details: details,
+                state: state,
                 startTimestamp: GetOrCreateEpochSeconds());
+            ILogger logger = Log.For(LogCategories.RichPresence);
+            RPCHelpersLog.ActivitySet(logger, details, state);
         }
 
         /// <summary>
@@ -73,19 +80,24 @@ namespace CutTheRopeDX.Helpers
             {
                 try
                 {
+                    ILogger logger = Log.For(LogCategories.RichPresence);
                     DiscordIpcClient client = new(DISCORD_APP_ID);
                     if (!client.TryConnect())
                     {
                         client.Dispose();
+                        RPCHelpersLog.Unavailable(logger);
                         return;
                     }
 
                     client.SetActivity(startTimestamp: GetOrCreateEpochSeconds());
                     Volatile.Write(ref _client, client);
+                    RPCHelpersLog.Connected(logger);
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Ignore connection failures
+                    // Discord not running is the common case, so this stays a debug note.
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    RPCHelpersLog.ConnectFailed(logger, failure);
                 }
             });
         }
@@ -110,9 +122,10 @@ namespace CutTheRopeDX.Helpers
                 {
                     client.ClearActivity();
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Best effort
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    RPCHelpersLog.ClearFailed(logger, failure);
                 }
 
                 client.Dispose();
@@ -163,13 +176,35 @@ namespace CutTheRopeDX.Helpers
             }
 
             bool useCustomLevelName = !string.IsNullOrWhiteSpace(levelName);
+            string details = useCustomLevelName ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}";
 
             client.SetActivity(
-                details: useCustomLevelName ? $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString(levelName, forceEnglish: true)}" : $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}: {Application.GetString($"LEVEL", forceEnglish: true)} {pack + 1}-{level + 1}",
+                details: details,
                 state: state,
                 startTimestamp: GetOrCreateEpochSeconds(),
                 smallImageKey: $"pack_{pack + 1}",
                 smallImageText: $"{Application.GetString($"BOX{pack + 1}_LABEL", forceEnglish: true)}");
+            ILogger logger = Log.For(LogCategories.RichPresence);
+            RPCHelpersLog.ActivitySet(logger, details, state);
         }
+    }
+
+    /// <summary>Log messages for rich presence.</summary>
+    internal static partial class RPCHelpersLog
+    {
+        [LoggerMessage(Level = LogLevel.Information, Message = "Rich presence connected.")]
+        public static partial void Connected(ILogger logger);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Rich presence unavailable; Discord did not answer.")]
+        public static partial void Unavailable(ILogger logger);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not connect to Discord.")]
+        public static partial void ConnectFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not clear the Discord activity.")]
+        public static partial void ClearFailed(ILogger logger, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Rich presence: {Details} / {State}")]
+        public static partial void ActivitySet(ILogger logger, string details, string state);
     }
 }

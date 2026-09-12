@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -44,13 +47,19 @@ namespace CutTheRopeDX.GameMain
         {
             if (!CustomLevelFile.TryLoad(CustomLevelSession.LevelPath, out System.Xml.Linq.XElement map, out string error))
             {
+                // Undecorated, and first: this is the only thing the editor reads. The log copy
+                // below is for whoever reads the report afterwards.
                 Console.Error.WriteLine(error);
+                ILogger rejectedLogger = Log.For(LogCategories.Playtest);
+                PlaytestLog.LevelRejected(rejectedLogger, error);
                 return;
             }
 
             CTRRootController root = (CTRRootController)Application.SharedRootController();
             string[] required = LevelResourceScanner.GetRequiredResources(map);
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.GetSessionResources());
+            ILogger logger = Log.For(LogCategories.Playtest);
+            PlaytestLog.LevelChanged(logger, kind, required.Length);
 
             if (kind == CustomLevelReloadKind.Instant)
             {
@@ -914,6 +923,24 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// The resolver already knows when the menu key opens the pause overlay rather than
+        /// closing it, so only that answer is acted on. From the paused overlay it says Resume and
+        /// from a result screen it says Ignore, which is what makes asking twice harmless.
+        /// </remarks>
+        public override bool EnsurePaused()
+        {
+            GameControllerInputCommand command = ResolveInput(GameControllerInputKind.Menu);
+            if (command != GameControllerInputCommand.OpenPause)
+            {
+                return false;
+            }
+
+            ExecuteInputCommand(command);
+            return true;
+        }
+
         /// <summary>
         /// Advances to the next level or deactivates the controller at the end of a non-picker pack.
         /// </summary>
@@ -1173,14 +1200,15 @@ namespace CutTheRopeDX.GameMain
                         }
                         else
                         {
-                            Console.WriteLine($"[Game music] missing either musicPack or musicList for pack {cTRRootController.GetPack()}.");
+                            GameControllerLog.MissingMusicList(
+                                Log.For(LogCategories.GameMusic), cTRRootController.GetPack());
                         }
                         break;
                     case var p when p == MusicPackNames.CtROriginal:
                         CTRSoundMgr.PlayRandomMusic(MusicPacks.CtROriginal);
                         break;
                     default:
-                        Console.WriteLine($"[Game music] Unknown musicPack '{musicPack}'");
+                        GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);
                         break;
                 }
             }
@@ -1288,5 +1316,17 @@ namespace CutTheRopeDX.GameMain
                     "com.zeptolab.ctr.spookyboxcompleted",
                     "com.zeptolab.ctr.steamboxcompleted"
                 ];
+    }
+
+    /// <summary>Log messages for music pack resolution.</summary>
+    internal static partial class GameControllerLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Missing either musicPack or musicList for pack {Pack}.")]
+        public static partial void MissingMusicList(ILogger logger, int pack);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Unknown musicPack '{MusicPack}'")]
+        public static partial void UnknownMusicPack(ILogger logger, string musicPack);
     }
 }

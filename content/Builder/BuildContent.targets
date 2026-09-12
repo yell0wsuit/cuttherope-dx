@@ -1,66 +1,79 @@
 <Project>
   <PropertyGroup>
     <ContentBuilderProject>$(MSBuildThisFileDirectory)CutTheRopeDX.Content.csproj</ContentBuilderProject>
-    <ContentSourceDir>$(MSBuildThisFileDirectory)..</ContentSourceDir>
+    <ContentSourceDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..'))</ContentSourceDir>
 
     <!--
-      Content is built for one platform and read by every graphics backend, rather than once per
-      backend. Building it per backend would double a build of over a thousand assets, and the audio
-      re-encoding in it is the slowest part of the whole build, to produce two trees that differ in a
-      single byte: the platform identifier in each XNB header, which MonoGame does not enforce.
+      The same directory, without the trailing separator, for passing on a command line. On
+      Windows a quoted path that ends in a backslash escapes the closing quote, so the argument
+      arrives with a stray quote in it and the builder rejects it as an illegal path. The two
+      forms are kept apart because MakeRelative below wants the separator that breaks Exec.
     -->
-    <ContentPlatform Condition="'$(ContentPlatform)' == ''">DesktopVK</ContentPlatform>
-
-    <ContentBuildOutput>$(MSBuildThisFileDirectory)bin/$(ContentPlatform)/content</ContentBuildOutput>
-    <ContentBuildTemp>$(MSBuildThisFileDirectory)obj/$(ContentPlatform)</ContentBuildTemp>
-    <CompressContent Condition="'$(CompressContent)' == ''">true</CompressContent>
-    <ContentCompressionArgument Condition="'$(CompressContent)' == 'true'">--compress</ContentCompressionArgument>
+    <ContentSourcePath>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..'))</ContentSourcePath>
+    <ContentIntermediateDir>$(MSBuildThisFileDirectory)obj/content</ContentIntermediateDir>
+    <ContentFileList>$(ContentIntermediateDir)/content_files.txt</ContentFileList>
 
     <!--
-      Whether this build carries a copy of the content to its output. Normally it must: a build has to be
-      runnable on its own. The Windows release is the exception, where two backends are published into one
-      directory and share a single copy, so the second is told to skip both the content build and the
-      deploy. That saves copying roughly 350MB of it twice, once into the build output and again into the
-      publish directory, only to delete it while assembling the package.
+      Whether this build works out what to ship. Jobs handed a prepared source tree and file list
+      set this false, which is why the condition sits on the tasks rather than on the target: the
+      deploy below still has to run.
+    -->
+    <BuildContent Condition="'$(BuildContent)' == ''">true</BuildContent>
+
+    <!--
+      Whether this build carries a copy of the content to its output. Normally it must: a build has
+      to be runnable on its own. The Windows release is the exception, where two backends are
+      published into one directory and share a single copy, so the second is told to skip the
+      deploy. That saves copying roughly 340MB of it twice, once into the build output and again
+      into the publish directory, only to delete it while assembling the package.
     -->
     <DeployContent Condition="'$(DeployContent)' == ''">true</DeployContent>
   </PropertyGroup>
 
-  <!--
-    The RunMGCB condition sits on the tasks rather than the target so that
-    AddBuiltContent's AfterTargets hook fires either way. CI jobs that receive
-    prebuilt content leave RunMGCB false and still get it packaged.
-  -->
-  <Target Name="BuildGameContent"
-          BeforeTargets="BeforeBuild">
+  <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Restore"
-             Condition="'$(RunMGCB)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
+             Condition="'$(BuildContent)' == 'true'"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
-             Condition="'$(RunMGCB)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;MonoGamePlatform;SelfContained;PublishSingleFile" />
-    <Exec Condition="'$(RunMGCB)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourceDir)&quot;" />
-    <Exec Condition="'$(RunMGCB)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -p $(ContentPlatform) -s &quot;$(ContentSourceDir)&quot; -o &quot;$(ContentBuildOutput)&quot; -i &quot;$(ContentBuildTemp)&quot; $(ContentCompressionArgument)"
-          CustomErrorRegularExpression="\[E\] .+" CustomWarningRegularExpression="\[W\] .+" />
+             Condition="'$(BuildContent)' == 'true'"
+             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
+    <Exec Condition="'$(BuildContent)' == 'true'"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
+    <Exec Condition="'$(BuildContent)' == 'true'"
+          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
   </Target>
 
-  <Target Name="AddBuiltContent" AfterTargets="BuildGameContent"
-          Condition="Exists('$(ContentBuildOutput)') AND '$(DeployContent)' == 'true'">
-    <ItemGroup>
-      <_BuiltContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
-      <None Include="@(_BuiltContent)" Condition="'$(TargetFramework)' != 'net10.0-macos'">
+  <!--
+    The assets are deployed from where they already are. They need no conversion, so staging them
+    into a build directory first would copy roughly 340MB to no end and leave a second tree to keep
+    in step. The builder decides which files those are; this reads that answer and lets MSBuild do
+    what it already does well.
+  -->
+  <Target Name="CollectGameContent" AfterTargets="BuildGameContent"
+          Condition="Exists('$(ContentFileList)') AND '$(DeployContent)' == 'true'">
+    <ReadLinesFromFile File="$(ContentFileList)">
+      <Output TaskParameter="Lines" ItemName="_GameContentFile" />
+    </ReadLinesFromFile>
+    <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
+      <None Include="@(_GameContentFile)">
+        <Link>content/$([MSBuild]::MakeRelative('$(ContentSourceDir)', '%(FullPath)'))</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </None>
+
+      <!-- The one file the build generates. It has no source path to derive a link from. -->
+      <None Include="$(ContentIntermediateDir)/images/image_dimensions.json">
+        <Link>content/images/image_dimensions.json</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </None>
     </ItemGroup>
   </Target>
 
   <!--
-    macOS: the .app bundle takes the same built content, but as BundleResource.
+    macOS: the .app bundle takes the same assets, but as BundleResource.
     _CollectBundleResources runs outside the normal BeforeBuild ordering, so items
-    added by AddBuiltContent never reach it. The Apple SDK's documented extension
+    added by CollectGameContent never reach it. The Apple SDK's documented extension
     point is CollectBundleResourcesDependsOn; the SDK prepends its own targets to
     whatever this property already holds, so setting it here survives.
   -->
@@ -72,11 +85,16 @@
   </PropertyGroup>
 
   <Target Name="AddMacOSBundleContent" DependsOnTargets="BuildGameContent"
-          Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(DeployContent)' == 'true'">
+          Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(DeployContent)' == 'true' AND Exists('$(ContentFileList)')">
+    <ReadLinesFromFile File="$(ContentFileList)">
+      <Output TaskParameter="Lines" ItemName="_MacContentFile" />
+    </ReadLinesFromFile>
     <ItemGroup>
-      <_MacBundleContent Include="$(ContentBuildOutput)/**/*" Exclude="$(ContentBuildOutput)/**/.DS_Store" />
-      <BundleResource Include="@(_MacBundleContent)">
-        <Link>content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <BundleResource Include="@(_MacContentFile)">
+        <Link>content/$([MSBuild]::MakeRelative('$(ContentSourceDir)', '%(FullPath)'))</Link>
+      </BundleResource>
+      <BundleResource Include="$(ContentIntermediateDir)/images/image_dimensions.json">
+        <Link>content/images/image_dimensions.json</Link>
       </BundleResource>
     </ItemGroup>
   </Target>

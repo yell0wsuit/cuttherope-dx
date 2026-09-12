@@ -93,13 +93,6 @@ namespace CutTheRopeDX.Tests
                 ResumeMusicCalls++;
                 MusicState = AudioPlaybackState.Playing;
             }
-
-            public bool TryInstallSongCompletionCallback(
-                IMusicTrack track,
-                EventHandler<EventArgs> onDecoderFinished)
-            {
-                return false;
-            }
         }
 
         private sealed class RecordingMusicTrack : IMusicTrack

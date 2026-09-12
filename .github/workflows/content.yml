@@ -1,9 +1,9 @@
 name: Fetch Content
 
 # Reusable: fetches the raw asset tree into content/ and leaves it in the Actions cache.
-# Both the release and the Pages deploy start from these assets — release converts them for
-# the desktop with the MonoGame builder, Pages converts them for the browser with
-# scripts/build_web_content.py — so the download itself lives here rather than in each.
+# Both the release and the Pages deploy start from these assets — the desktop ships the PNGs
+# and WAVs as they are, Pages converts them for the browser with scripts/build_web_content.py
+# — so the download itself lives here rather than in each.
 #
 # The assets are ~336MB, far past what is sensible to pass around as an artifact on every run,
 # so callers restore the cache this job populates instead. The key is returned as an output so
@@ -39,7 +39,7 @@ jobs:
             - name: Compute cache key
               id: key
               run: |
-                  echo "value=raw-content-${{ hashFiles('content/file_manifest.json', 'content/Builder/Commands/**/*.cs') }}" >> "$GITHUB_OUTPUT"
+                  echo "value=raw-content-${{ hashFiles('content/file_manifest.json', 'content/Builder/Assets/**/*.cs', 'content/Builder/Commands/**/*.cs') }}" >> "$GITHUB_OUTPUT"
 
             - uses: actions/cache@v6
               id: cache
@@ -52,9 +52,40 @@ jobs:
                   key: ${{ steps.key.outputs.value }}
 
             - name: Fetch and verify assets
-              if: steps.cache.outputs.cache-hit != 'true'
               run: |
                   BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
                   dotnet build content/Builder/CutTheRopeDX.Content.csproj
                   dotnet "$BUILDER" fetch -s content
                   dotnet "$BUILDER" verify -s content
+
+            # The headless tests read the checked-in copy of this manifest rather than
+            # measuring the images, so a resized or added PNG would leave them sizing sprites
+            # from stale numbers. Every job that needs the images starts here, so this is the
+            # one place that can see them.
+            #
+            # Only the images file_manifest.json ships are compared. A working tree can hold
+            # PNGs that are staged for later work and not published yet, and those are not
+            # content this manifest is meant to describe -- measuring the directory instead
+            # would pass here and fail on the machine that has them.
+            - name: Check the checked-in image dimensions are current
+              run: |
+                  BUILDER=content/Builder/bin/Debug/CutTheRopeDX.Content.dll
+                  dotnet "$BUILDER" build -s content -o "$RUNNER_TEMP/content-check"
+                  python3 - <<'PY'
+                  import json, os, sys
+                  built = json.load(open(
+                      os.path.join(os.environ["RUNNER_TEMP"],
+                                   "content-check/images/image_dimensions.json")))["images"]
+                  tracked = json.load(open("content/images/image_dimensions.json"))["images"]
+                  published = json.load(open("content/file_manifest.json"))["files"]
+                  shipped = {name[len("images/"):-len(".png")] for name in published
+                             if name.startswith("images/") and name.endswith(".png")}
+                  measured = {k: v for k, v in built.items() if k in shipped}
+                  if measured != tracked:
+                      names = set(measured) ^ set(tracked)
+                      resized = {k for k in set(measured) & set(tracked)
+                                 if measured[k] != tracked[k]}
+                      sys.exit("content/images/image_dimensions.json is stale. "
+                               f"Added/removed: {sorted(names)}. Resized: {sorted(resized)}. "
+                               "Regenerate it from the shipped images and commit.")
+                  PY

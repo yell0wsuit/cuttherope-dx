@@ -1,12 +1,25 @@
-"""Locates ffmpeg binaries and verifies they can encode what we need.
+"""Locates an ffmpeg to build web content with, and verifies it can encode what we need.
 
-Audio uses the NuGet-pinned ffmpeg because builds in the wild routinely lack libvorbis.
-Video uses the system ffmpeg only after its required encoders have been verified because
-the pinned build is audio-only.
+There is no ffmpeg in this repository's dependency graph, so one has to be found on the
+machine running the build. Whichever one is found, it is never used until `require_encoders`
+has confirmed it can produce the formats the pipeline asks for: an ffmpeg missing an encoder
+the pipeline needs is common in the wild, and using one silently produces content that is
+broken in a way nothing downstream notices.
+
+Resolution order, most explicit first:
+
+1. `CTRDX_FFMPEG`, an absolute path. This is how a build pins an exact binary -- CI points it
+   at the FFmpeg 9 build the release scripts already download and checksum. Setting
+   `CTRDX_FFMPEG_SHA256` alongside it makes the pin integrity-checked as well.
+2. The Homebrew `ffmpeg@9` keg on macOS, which is the same one `bundle_ffmpeg_macos.sh` pins
+   for the shipped runtime libraries.
+3. Whatever is on PATH.
 """
 
 from __future__ import annotations
 
+import hashlib
+import os
 import platform
 import re
 import shutil
@@ -14,66 +27,104 @@ import subprocess
 from collections.abc import Iterable
 from pathlib import Path
 
-PACKAGE_ID = "monogame.tool.ffmpeg"
+#: The FFmpeg major this project pins everywhere: the runtime libraries the desktop build
+#: bundles, the Homebrew formula CI installs, and the build tool resolved here.
+FFMPEG_MAJOR = 9
+
+#: Environment variable naming an exact ffmpeg binary to use.
+BINARY_ENV = "CTRDX_FFMPEG"
+
+#: Environment variable carrying the expected SHA-256 of that binary.
+CHECKSUM_ENV = "CTRDX_FFMPEG_SHA256"
+
+_HOMEBREW_PREFIXES = ("/opt/homebrew/opt", "/usr/local/opt")
 
 
 class FfmpegNotFoundError(Exception):
-    """The pinned ffmpeg package is not present in the NuGet cache."""
+    """No ffmpeg could be located."""
 
 
 class MissingEncoderError(Exception):
-    """The pinned ffmpeg lacks an encoder this pipeline requires."""
+    """The located ffmpeg lacks an encoder this pipeline requires."""
+
+
+class ChecksumMismatchError(Exception):
+    """The pinned ffmpeg is not the binary it was pinned to."""
 
 
 def rid_for_platform() -> str:
-    """Returns the runtime identifier naming this platform's binaries directory."""
+    """Returns a short identifier for this platform, used in diagnostics."""
     system = platform.system()
-    if system == "Darwin":
-        return "osx"
     arch = "arm64" if platform.machine().lower() in {"arm64", "aarch64"} else "x64"
+    if system == "Darwin":
+        return f"osx-{arch}"
     if system == "Windows":
         return f"windows-{arch}"
     return f"linux-{arch}"
 
 
-def _version_key(path: Path) -> tuple[int, ...]:
-    return tuple(int(p) for p in re.findall(r"\d+", path.name))
+def sha256_of(path: Path) -> str:
+    """Returns the lowercase hex SHA-256 of a file."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
 
 
-def find_pinned_ffmpeg(nuget_root: Path | None = None) -> Path:
-    """Returns the highest-versioned pinned ffmpeg binary for this platform."""
-    root = nuget_root or (Path.home() / ".nuget" / "packages")
-    package = root / PACKAGE_ID
-    candidates = []
-    if package.is_dir():
-        for version in package.iterdir():
-            binary = version / "binaries" / rid_for_platform() / "ffmpeg"
-            if not binary.exists():
-                binary = binary.with_suffix(".exe")
-            if binary.exists():
-                candidates.append((_version_key(version), binary))
-    if not candidates:
+def _pinned_from_environment(environ: dict[str, str]) -> Path | None:
+    """Returns the explicitly pinned binary, verifying it when a checksum is given."""
+    configured = environ.get(BINARY_ENV)
+    if not configured:
+        return None
+
+    binary = Path(configured)
+    if not binary.is_file():
         raise FfmpegNotFoundError(
-            f"MonoGame.Tool.FFmpeg not found under {package}. "
-            "Restore the solution first; the ffmpeg on PATH must not be used."
+            f"{BINARY_ENV} points at {binary}, which is not a file."
         )
-    return max(candidates)[1]
+
+    expected = environ.get(CHECKSUM_ENV)
+    if expected:
+        actual = sha256_of(binary)
+        if actual.lower() != expected.strip().lower():
+            raise ChecksumMismatchError(
+                f"{binary} has SHA-256 {actual}, but {CHECKSUM_ENV} pins {expected.strip()}."
+            )
+    return binary
 
 
-def find_system_ffmpeg() -> Path:
-    """Returns the ffmpeg on PATH.
+def _homebrew_ffmpeg() -> Path | None:
+    """Returns the pinned Homebrew keg's ffmpeg on macOS, if it is installed."""
+    if platform.system() != "Darwin":
+        return None
+    for prefix in _HOMEBREW_PREFIXES:
+        binary = Path(prefix) / f"ffmpeg@{FFMPEG_MAJOR}" / "bin" / "ffmpeg"
+        if binary.is_file():
+            return binary
+    return None
 
-    Only the video step may use this. The pinned build is audio-only -- no VP9, no VP8,
-    no Opus, no WebM muxer -- so for video there is nothing to pin against. Audio must
-    keep using `find_pinned_ffmpeg`, because the silent-substitution hazard this module
-    exists to prevent is real; for video it is headed off instead by calling
-    `require_encoders` before any conversion runs.
+
+def find_ffmpeg(environ: dict[str, str] | None = None) -> Path:
+    """Returns the ffmpeg this build should use.
+
+    The result is not yet known to be usable. Every caller must pass it through
+    `require_encoders` before converting anything.
     """
+    resolved = environ if environ is not None else dict(os.environ)
+    pinned = _pinned_from_environment(resolved)
+    if pinned is not None:
+        return pinned
+
+    brewed = _homebrew_ffmpeg()
+    if brewed is not None:
+        return brewed
+
     found = shutil.which("ffmpeg")
     if found is None:
         raise FfmpegNotFoundError(
-            "No ffmpeg on PATH. Converting the cutscenes needs one that can encode "
-            "VP9 and Opus."
+            "No ffmpeg found. Install one that can encode the web pipeline's formats, "
+            f"or point {BINARY_ENV} at a pinned build."
         )
     return Path(found)
 
@@ -95,11 +146,16 @@ def available_encoders(ffmpeg: Path) -> set[str]:
 
 
 def require_encoders(ffmpeg: Path, required: Iterable[str]) -> None:
-    """Raises MissingEncoderError unless every required encoder is available."""
+    """Raises MissingEncoderError unless every required encoder is available.
+
+    This is the check that makes the resolution order above safe. Without it, an ffmpeg
+    that merely exists is assumed to be the right one, which is how a build silently
+    produces audio nothing can play.
+    """
     present = available_encoders(ffmpeg)
     missing = sorted(set(required) - present)
     if missing:
         raise MissingEncoderError(
             f"{ffmpeg} cannot encode: {', '.join(missing)}. "
-            "This build of ffmpeg is unusable for the web content pipeline."
+            f"Install an ffmpeg build that can, or point {BINARY_ENV} at one."
         )

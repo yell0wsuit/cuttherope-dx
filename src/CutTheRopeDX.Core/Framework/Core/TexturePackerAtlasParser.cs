@@ -4,6 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 namespace CutTheRopeDX.Framework.Core
 {
     /// <summary>
@@ -199,7 +203,7 @@ namespace CutTheRopeDX.Framework.Core
             bool rotated = entry.Data.TryGetProperty("rotated", out JsonElement rotatedElement) && rotatedElement.ValueKind == JsonValueKind.True;
             if (rotated)
             {
-                Console.WriteLine($"TexturePacker frame \"{entry.Name}\" is rotated — rotation is not supported.");
+                TexturePackerAtlasParserLog.RotatedFrame(Log.For(LogCategories.ContentAtlas), entry.Name);
             }
 
             Vector offset = new(0f, 0f);
@@ -307,5 +311,14 @@ namespace CutTheRopeDX.Framework.Core
             /// </summary>
             public JsonElement Data { get; } = data;
         }
+    }
+
+    /// <summary>Log messages for TexturePacker atlas parsing.</summary>
+    internal static partial class TexturePackerAtlasParserLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "TexturePacker frame \"{FrameName}\" is rotated - rotation is not supported.")]
+        public static partial void RotatedFrame(ILogger logger, string frameName);
     }
 }

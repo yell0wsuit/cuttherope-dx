@@ -1,68 +1,57 @@
 using System.Text.Json;
 
-using Microsoft.Xna.Framework.Content.Pipeline.Audio;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-
-using MonoGame.Framework.Content.Pipeline.Builder;
-
 namespace CutTheRopeDX.Content
 {
+    /// <summary>What one content build decided.</summary>
+    /// <param name="Files">How many source assets the game will ship.</param>
+    /// <param name="ListPath">The file list MSBuild deploys from.</param>
+    /// <param name="Unmatched">Source files no rule ships, which is worth saying out loud.</param>
+    public sealed record ContentBuildResult(
+        int Files, string ListPath, IReadOnlyList<string> Unmatched);
+
     /// <summary>
-    /// Declares the assets processed by the Cut the Rope DX content build.
+    /// Works out what the game ships and writes the two small files a build needs.
     /// </summary>
-    public sealed class GameContentBuilder : ContentBuilder
+    /// <remarks>
+    /// Neither output is content. One is the list of source assets for MSBuild to copy, the other
+    /// is the image dimensions manifest, and together they are a few hundred kilobytes: the assets
+    /// themselves are never duplicated into a staging tree on the way to the application.
+    /// </remarks>
+    public static class GameContentBuilder
     {
-        /// <inheritdoc />
-        public override IContentCollection GetContentCollection()
+        /// <summary>Name of the file list the MSBuild targets read.</summary>
+        public const string FileListName = "content_files.txt";
+
+        /// <summary>Works out what to ship and writes the build's own outputs.</summary>
+        /// <param name="sourceDirectory">Root of the content source tree.</param>
+        /// <param name="intermediateDirectory">Directory the build writes its own outputs to.</param>
+        /// <returns>What the build decided.</returns>
+        public static ContentBuildResult Build(string sourceDirectory, string intermediateDirectory)
         {
-            ContentCollection content = new();
-            content.SetContentRoot(string.Empty);
+            SortedDictionary<string, string> selected =
+                ContentSelection.Select(sourceDirectory, ContentSelection.DesktopRules);
 
-            // Build every asset the default importer/processor understands
-            // (textures, sounds, songs). Non-buildable file types are handled
-            // in later tasks via IncludeCopy / Exclude.
-            content.Include<WildcardRule>("**/*.png");
+            _ = Directory.CreateDirectory(intermediateDirectory);
+            string listPath = Path.Combine(intermediateDirectory, FileListName);
+            File.WriteAllLines(listPath, selected.Values);
 
-            // Non-premultiplied cursors (the first assets the game loads).
-            content.Exclude<WildcardRule>("images/cursor.png");
-            content.Exclude<WildcardRule>("images/cursor_active.png");
-            content.Include(
-                "images/cursor.png",
-                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
-            content.Include(
-                "images/cursor_active.png",
-                contentProcessor: new TextureProcessor { PremultiplyAlpha = false });
+            EmitImageDimensionsManifest(
+                Path.Combine(sourceDirectory, "images"),
+                Path.Combine(intermediateDirectory, "images"));
 
-            content.Include<WildcardRule>(
-                "sounds/*.wav",
-                contentProcessor: new SongProcessor { Quality = ConversionQuality.Best });
-            content.Include<WildcardRule>(
-                "sounds/sfx/*.wav",
-                contentProcessor: new SoundEffectProcessor { Quality = ConversionQuality.Best });
-
-            // Copy (do not build) content the game reads as raw files.
-            content.IncludeCopy<WildcardRule>("maps/*.*");
-            content.IncludeCopy<WildcardRule>("locales/*.*");
-            content.IncludeCopy<WildcardRule>("fonts/*.*");
-            content.IncludeCopy<WildcardRule>("video_hd/*.*");
-            content.IncludeCopy<WildcardRule>("*.xml");
-            content.IncludeCopy<WildcardRule>("*.json");
-            content.IncludeCopy<WildcardRule>("*.cur");
-
-            // Exclude legacy pipeline artifacts and prebuilt outputs.
-            content.Exclude<WildcardRule>("bin/**/*");
-            content.Exclude<WildcardRule>("obj/**/*");
-            content.Exclude<WildcardRule>("Builder/**/*");
-            content.Exclude<WildcardRule>("sounds/*.xnb");
-
-            return content;
+            return new ContentBuildResult(
+                selected.Count, listPath, ContentSelection.Unmatched(sourceDirectory, selected));
         }
 
         /// <summary>
         /// Writes pixel dimensions for every source image so headless runs can size textures
-        /// without a GraphicsDevice. Source PNGs are not copied to the output and the built
-        /// XNBs are LZ4-compressed, so this manifest is the only runtime dimension source.
+        /// without a graphics device.
         /// </summary>
+        /// <remarks>
+        /// The PNGs themselves ship, so the sizes could be read back from them, but that means
+        /// opening every one of a few hundred files to reach the twenty-fourth byte. Reading them
+        /// once at build time and shipping the answer keeps a headless run's startup to one file.
+        /// </remarks>
         /// <param name="imagesSourceDir">Directory holding the source PNGs.</param>
         /// <param name="imagesOutputDir">Directory the manifest is written to.</param>
         public static void EmitImageDimensionsManifest(string imagesSourceDir, string imagesOutputDir)

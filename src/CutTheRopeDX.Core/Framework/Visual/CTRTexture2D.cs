@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -272,6 +275,23 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Every texture in the global list, oldest first.
+        /// </summary>
+        /// <remarks>
+        /// Recovery needs the list itself, not the bulk operations over it: it treats a texture
+        /// loaded from a file and a capture of a frame quite differently, and only the individual
+        /// entries say which is which.
+        /// </remarks>
+        /// <returns>The registered textures.</returns>
+        public static IEnumerable<CTRTexture2D> Registered()
+        {
+            for (CTRTexture2D texture = root; texture != null; texture = texture.next)
+            {
+                yield return texture;
+            }
+        }
+
+        /// <summary>
         /// Suspends all registered textures in the global linked list.
         /// </summary>
         public static void SuspendAll()
@@ -383,6 +403,21 @@ namespace CutTheRopeDX.Framework.Visual
         /// Resource name/path used to load this texture.
         /// </summary>
         public string _resName;
+
+        /// <summary>
+        /// Builds this texture's handle again after a device loss, or <see langword="null"/> when
+        /// nothing can.
+        /// </summary>
+        /// <remarks>
+        /// Only a texture with no content path has any use for this: one loaded from a file is
+        /// loaded again from the path it remembers. What is left over are the textures built from
+        /// pixels rather than read from disk, and they are not all alike. A captured frame is
+        /// gone with the device that took it. A recolored atlas frame is not: its owner is still
+        /// holding the recipe and the atlas it came from is itself reloaded. Carrying the rebuild
+        /// on the texture is what lets recovery tell those two apart, because nothing else about
+        /// them differs.
+        /// </remarks>
+        public Func<ITextureHandle> Regenerate;
 
         /// <summary>
         /// Precomputed texture coordinate quads for each sprite region.

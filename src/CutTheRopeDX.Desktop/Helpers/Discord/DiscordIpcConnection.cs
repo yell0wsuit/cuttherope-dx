@@ -4,6 +4,10 @@ using System.IO;
 using System.IO.Pipes;
 using System.Net.Sockets;
 
+using CutTheRopeDX.Framework.Diagnostics;
+
+using Microsoft.Extensions.Logging;
+
 namespace CutTheRopeDX.Helpers.Discord
 {
     /// <summary>
@@ -51,10 +55,12 @@ namespace CutTheRopeDX.Helpers.Discord
                         return true;
                     }
                 }
-                catch (Exception) when (
+                catch (Exception failure) when (
                     !Debugger.IsAttached)
                 {
-                    // Try next pipe index
+                    // Try next pipe index.
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    DiscordIpcLog.PipeUnavailable(logger, i, failure);
                 }
             }
 
@@ -78,7 +84,7 @@ namespace CutTheRopeDX.Helpers.Discord
                 Stream = pipe;
                 return true;
             }
-            catch
+            catch (Exception failure)
             {
                 pipe.Dispose();
                 if (Debugger.IsAttached)
@@ -86,6 +92,8 @@ namespace CutTheRopeDX.Helpers.Discord
                     throw;
                 }
 
+                ILogger logger = Log.For(LogCategories.RichPresence);
+                DiscordIpcLog.HandshakeFailed(logger, failure);
                 return false;
             }
         }
@@ -129,8 +137,10 @@ namespace CutTheRopeDX.Helpers.Discord
                     Stream = _networkStream;
                     return true;
                 }
-                catch
+                catch (Exception failure)
                 {
+                    ILogger logger = Log.For(LogCategories.RichPresence);
+                    DiscordIpcLog.HandshakeFailed(logger, failure);
                     socket.Dispose();
                 }
             }

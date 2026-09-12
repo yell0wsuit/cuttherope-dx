@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// Creates the video player backend to use for the current platform build. The choice
         /// depends on compile-time constants (<c>MACOS_AVFOUNDATION</c>, <c>FFMPEG_BACKEND</c>) that
         /// only the desktop host's build defines, so the desktop host installs this at boot; when
-        /// absent (headless), <see cref="VideoPlayerMonoGame"/> — a Core-owned no-op stub — is used.
+        /// absent (headless), <see cref="VideoPlayerNone"/> — a Core-owned no-op stub — is used.
         /// </summary>
         public static Func<IVideoPlayer> VideoPlayerFactory { get; set; }
     }

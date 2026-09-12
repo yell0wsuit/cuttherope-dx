@@ -1,5 +1,7 @@
 using System;
 
+using CutTheRopeDX.Rendering.Skia;
+
 using SkiaSharp;
 
 namespace CutTheRopeDX.Browser
@@ -8,7 +10,7 @@ namespace CutTheRopeDX.Browser
     /// Owns the Skia GPU context and the surface wrapping the WebGL2 default framebuffer.
     /// Rebuilds the surface when the canvas resizes; the GRContext outlives that.
     /// </summary>
-    internal sealed class SkiaSurface : IDisposable
+    internal sealed class SkiaSurface : ISkiaSurface, IDisposable
     {
         private const int ResourceCacheBytes = 128 * 1024 * 1024;
 

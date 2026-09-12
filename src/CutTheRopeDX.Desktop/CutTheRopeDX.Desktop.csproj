@@ -26,12 +26,6 @@
     <IncludeSourceRevisionInInformationalVersion Condition="'$(VersionSuffix)' != ''">true</IncludeSourceRevisionInInformationalVersion>
     <IncludeSourceRevisionInInformationalVersion Condition="'$(VersionSuffix)' == ''">false</IncludeSourceRevisionInInformationalVersion>
 
-    <!-- Default: build content -->
-    <RunMGCB>true</RunMGCB>
-
-    <!-- Auto-disable in CI (GitHub Actions, GitLab, Azure, etc. set CI=true) -->
-    <RunMGCB Condition="'$(CI)' == 'true'">false</RunMGCB>
-
   </PropertyGroup>
 
   <!-- Output type -->
@@ -74,32 +68,13 @@
     </BundleResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FontStashSharp.MonoGame" />
-  </ItemGroup>
 
-  <!--
-    Vulkan through MonoGame's native runtime. The framework assembly is backend-agnostic; the
-    MonoGame.Runtime.* packages each contribute the mgruntime native library for one platform.
-  -->
-  <ItemGroup Condition="'$(GraphicsBackend)' == 'VK'">
-    <PackageReference Include="MonoGame.Framework.Native" />
-    <PackageReference Include="MonoGame.Runtime.Windows.Vulkan" />
-    <PackageReference Include="MonoGame.Runtime.Mac.Vulkan" />
-    <PackageReference Include="MonoGame.Runtime.Linux.Vulkan" />
-  </ItemGroup>
 
-  <!--
-    OpenGL, for machines with no usable Vulkan driver. Covers GPUs far older than Vulkan reaches
-    (Vulkan on Intel starts at Skylake; DesktopGL runs on HD 4000 and older) and keeps the Vorbis audio
-    the Vulkan build already uses, so the built content is shared rather than duplicated.
-  -->
-  <ItemGroup Condition="'$(GraphicsBackend)' == 'GL'">
-    <PackageReference Include="MonoGame.Framework.DesktopGL" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
+    <ProjectReference Include="../CutTheRopeDX.Desktop.Platform/CutTheRopeDX.Desktop.Platform.csproj" />
+    <ProjectReference Include="../CutTheRopeDX.Rendering.Skia/CutTheRopeDX.Rendering.Skia.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -109,16 +84,6 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="FFmpeg.AutoGen" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(GraphicsBackend)' == 'VK'">
-    <MonoGamePlatform>DesktopVK</MonoGamePlatform>
-    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPVK</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GraphicsBackend)' == 'GL'">
-    <MonoGamePlatform>DesktopGL</MonoGamePlatform>
-    <DefineConstants>$(DefineConstants);MONOGAME_DESKTOPGL</DefineConstants>
-  </PropertyGroup>
 
   <!-- AVFoundation for macOS Tahoe (26) -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
@@ -150,18 +115,7 @@
     without it. Every other TFM keeps the ordinary CopyToOutputDirectory/CopyToPublishDirectory
     behavior, which already places it next to the executable.
   -->
-  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0-macos'">
-    <None Include="../../alsoft.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
-    <BundleResource Include="../../alsoft.ini">
-      <Link>alsoft.ini</Link>
-    </BundleResource>
-  </ItemGroup>
 
   <!--
     macOS: codesign dylibs and the app bundle after build.
@@ -205,4 +159,9 @@
   </Target>
 
   <Import Project="../../content/Builder/BuildContent.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="NReco.Logging.File" />
+  </ItemGroup>
 </Project>

@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -32,6 +36,7 @@ namespace CutTheRopeDX.GameMain
                 return [];
             }
 
+            long startedTicks = Stopwatch.GetTimestamp();
             HashSet<string> resources = [];
 
             AddAlwaysLoadedLevelResources(resources);
@@ -276,7 +281,11 @@ namespace CutTheRopeDX.GameMain
                 _ = resources.Add(Resources.Snd.XmasBell);
             }
 
-            return [.. resources.Where(static resourceName => !string.IsNullOrWhiteSpace(resourceName))];
+            string[] required = [.. resources.Where(static resourceName => !string.IsNullOrWhiteSpace(resourceName))];
+            ILogger logger = Log.For(LogCategories.ContentResources);
+            double elapsedMs = Stopwatch.GetElapsedTime(startedTicks).TotalMilliseconds;
+            LevelResourceScannerLog.Scanned(logger, required.Length, elapsedMs);
+            return required;
         }
 
         /// <summary>
@@ -494,5 +503,14 @@ namespace CutTheRopeDX.GameMain
         {
             return bool.TryParse(value, out bool parsed) && parsed;
         }
+    }
+
+    /// <summary>Log messages for the level resource scan.</summary>
+    internal static partial class LevelResourceScannerLog
+    {
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Level scan: {ResourceCount} resources required in {ElapsedMs:F1} ms")]
+        public static partial void Scanned(ILogger logger, int resourceCount, double elapsedMs);
     }
 }

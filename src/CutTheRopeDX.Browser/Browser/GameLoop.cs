@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 
 namespace CutTheRopeDX.Browser
@@ -121,7 +120,6 @@ namespace CutTheRopeDX.Browser
             int steps = 0;
             while (_accumulator >= StepSeconds && steps < MaxCatchUpSteps)
             {
-                SoundMgr.Update(TimeSpan.FromSeconds(StepSeconds));
                 // Every key read happens inside a step, and the step ends by clearing the
                 // presses it consumed. Core asks "was this pressed since I last looked" once per
                 // Update, which is once per step, so a frame that runs two catch-up steps would

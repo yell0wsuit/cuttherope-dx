@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Framework.Media
 {
     /// <summary>
-    /// Manages sound effects and music playback using MonoGame's audio framework.
+    /// Manages sound effects and music playback through the host's audio backend.
     /// Handles loading, caching, and playing of sound effects and background music.
     /// </summary>
     internal sealed class SoundMgr : FrameworkTypes
@@ -93,8 +96,16 @@ namespace CutTheRopeDX.Framework.Media
                 loadedSounds.Add(localizedName, loaded);
                 return loaded;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                // Reported once per name: a sound whose file is missing is asked for again on
+                // every play, and a warning each time would bury the rest of the log.
+                if (reportedLoadFailures.Add(localizedName))
+                {
+                    ILogger logger = Log.For(LogCategories.MediaSound);
+                    SoundMgrLog.LoadFailed(logger, localizedName, failure);
+                }
+
                 return null;
             }
         }
@@ -104,7 +115,49 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static void ClearStopped(List<ActiveSound> list)
         {
-            _ = list.RemoveAll(static entry => entry.Instance == null || entry.Instance.State == AudioPlaybackState.Stopped);
+            _ = list.RemoveAll(static entry =>
+            {
+                if (entry.Instance != null && entry.Instance.State != AudioPlaybackState.Stopped)
+                {
+                    return false;
+                }
+
+                Release(entry.Instance);
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Stops <paramref name="instance"/> if it is still going, and releases it.
+        /// </summary>
+        /// <param name="instance">The voice to release; ignored when <see langword="null"/>.</param>
+        /// <remarks>
+        /// A voice is built per play and handed out once, so the list tracking it is the last
+        /// owner it has. The backend puts a native mixer track behind each one and has nothing
+        /// that would collect it later, so an entry dropped without this is leaked for the rest
+        /// of the process, and the mixer walks every leaked voice on each callback.
+        /// </remarks>
+        private static void Release(ISoundInstance instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (instance.State != AudioPlaybackState.Stopped)
+                {
+                    instance.Stop();
+                }
+
+                instance.Dispose();
+            }
+            catch (Exception failure)
+            {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "release", failure);
+            }
         }
 
         /// <summary>
@@ -160,64 +213,15 @@ namespace CutTheRopeDX.Framework.Media
 
             StopMusic();
             string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
-            IMusicTrack track = _backend.LoadMusic(musicPath);
-            activeSong = track;
             try
             {
-                _backend.PlayMusic(track, true);
-                usesSongCompletionWorkaround =
-                    _backend.TryInstallSongCompletionCallback(track, OnSongDecoderFinished);
+                _backend.PlayMusic(_backend.LoadMusic(musicPath), true);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
-                activeSong = null;
-                usesSongCompletionWorkaround = false;
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.MusicFailed(logger, musicPath, failure);
             }
-        }
-
-        /// <summary>
-        /// Advances a pending music-loop restart after MonoGame's queued decoded tail
-        /// has had time to reach the audio device.
-        /// </summary>
-        /// <param name="elapsed">Elapsed game time since the previous update.</param>
-        public static void Update(TimeSpan elapsed)
-        {
-            if (_backend == null ||
-                !usesSongCompletionWorkaround ||
-                !songLoopScheduler.Advance(
-                    elapsed,
-                    _backend.MusicState == AudioPlaybackState.Playing))
-            {
-                return;
-            }
-
-            IMusicTrack track = activeSong;
-            if (track == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _backend.PlayMusic(track, true);
-            }
-            catch (Exception)
-            {
-                StopMusic();
-            }
-        }
-
-        /// <summary>
-        /// Records how much audio remains queued when MonoGame reports decoder EOF.
-        /// </summary>
-        private static void OnSongDecoderFinished(object sender, EventArgs args)
-        {
-            if (!usesSongCompletionWorkaround || !ReferenceEquals(sender, activeSong))
-            {
-                return;
-            }
-
-            songLoopScheduler.Schedule(activeSong.Duration);
         }
 
         /// <summary>
@@ -264,17 +268,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            try
-            {
-                if (instance.State != AudioPlaybackState.Stopped)
-                {
-                    instance.Stop();
-                }
-            }
-            catch (Exception)
-            {
-            }
-
+            Release(instance);
             _ = list.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
         }
 
@@ -304,21 +298,7 @@ namespace CutTheRopeDX.Framework.Media
                 {
                     return false;
                 }
-                ISoundInstance instance = entry.Instance;
-                if (instance != null)
-                {
-                    try
-                    {
-                        if (instance.State != AudioPlaybackState.Stopped)
-                        {
-                            instance.Stop();
-                        }
-                        instance.Dispose();
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
+                Release(entry.Instance);
                 return true;
             });
         }
@@ -328,15 +308,14 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
-            usesSongCompletionWorkaround = false;
-            activeSong = null;
-            songLoopScheduler.Cancel();
             try
             {
                 _backend?.StopMusic();
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "stop music", failure);
             }
         }
 
@@ -363,8 +342,10 @@ namespace CutTheRopeDX.Framework.Media
                 musicPauseTickets.Push(pausedMusic);
                 pauseDepth++;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "pause", failure);
             }
         }
 
@@ -399,8 +380,10 @@ namespace CutTheRopeDX.Framework.Media
                     _backend.ResumeMusic();
                 }
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "resume", failure);
             }
         }
 
@@ -416,8 +399,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 ChangeListState(activeLoopedSounds, AudioPlaybackState.Playing, AudioPlaybackState.Paused);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "suspend effects", failure);
             }
         }
 
@@ -438,8 +423,10 @@ namespace CutTheRopeDX.Framework.Media
             {
                 ChangeListState(activeLoopedSounds, AudioPlaybackState.Paused, AudioPlaybackState.Playing);
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "resume effects", failure);
             }
         }
 
@@ -466,8 +453,10 @@ namespace CutTheRopeDX.Framework.Media
                 instance.IsLooped = loop;
                 instance.Play();
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.PlayFailed(logger, resourceName, failure);
                 return null;
             }
 
@@ -479,11 +468,15 @@ namespace CutTheRopeDX.Framework.Media
         /// Stops all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
         /// <param name="list">The list of active sound entries to stop.</param>
+        /// <remarks>
+        /// Every caller clears the list straight after, so this is the last these voices are seen
+        /// and they are released rather than only silenced.
+        /// </remarks>
         private static void StopList(List<ActiveSound> list)
         {
             foreach (ActiveSound entry in list)
             {
-                entry.Instance?.Stop();
+                Release(entry.Instance);
             }
         }
 
@@ -523,20 +516,6 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static IAudioBackend _backend;
 
-        /// <summary>
-        /// Music track currently owned by the media player.
-        /// </summary>
-        private static IMusicTrack activeSong;
-
-        /// <summary>
-        /// Waits for the native voice's queued tail before restarting <see cref="activeSong"/>.
-        /// </summary>
-        private static readonly SongLoopScheduler songLoopScheduler = new();
-
-        /// <summary>
-        /// Whether MonoGame's premature completion callback was replaced successfully.
-        /// </summary>
-        private static bool usesSongCompletionWorkaround;
 
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.
@@ -569,5 +548,24 @@ namespace CutTheRopeDX.Framework.Media
         /// Independent of <see cref="pauseDepth"/> so transient pauses don't reactivate loops.
         /// </summary>
         private bool sfxSuspended;
+
+        /// <summary>Names already reported as unloadable, so each is logged once.</summary>
+        private readonly HashSet<string> reportedLoadFailures = [];
+    }
+
+    /// <summary>Log messages for sound effect and music playback.</summary>
+    internal static partial class SoundMgrLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not load sound '{ResourceName}'")]
+        public static partial void LoadFailed(ILogger logger, string resourceName, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Could not play music '{MusicPath}'")]
+        public static partial void MusicFailed(ILogger logger, string musicPath, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not play sound '{ResourceName}'")]
+        public static partial void PlayFailed(ILogger logger, string resourceName, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Audio backend refused to {Operation}")]
+        public static partial void BackendCallFailed(ILogger logger, string operation, Exception exception);
     }
 }

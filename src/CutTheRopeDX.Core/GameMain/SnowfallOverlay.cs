@@ -3,8 +3,11 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -283,9 +286,12 @@ namespace CutTheRopeDX.GameMain
                 texture = Application.GetTexture(Resources.Img.Snowflakes);
                 return texture != null;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                // Latched, so this reports the loss once rather than on every frame that draws.
                 textureUnavailable = true;
+                ILogger logger = Log.For(LogCategories.ContentResources);
+                SnowfallOverlayLog.TextureUnavailable(logger, failure);
                 return false;
             }
         }
@@ -501,5 +507,12 @@ namespace CutTheRopeDX.GameMain
             /// <summary>Current vertical position.</summary>
             public float Y;
         }
+    }
+
+    /// <summary>Log messages for the snowfall overlay.</summary>
+    internal static partial class SnowfallOverlayLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Snowflake texture unavailable; snowfall is off.")]
+        public static partial void TextureUnavailable(ILogger logger, Exception exception);
     }
 }

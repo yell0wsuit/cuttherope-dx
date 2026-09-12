@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+
+using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
+
+using SkiaSharp;
+
+namespace CutTheRopeDX.Rendering.Skia
+{
+    /// <summary>Loads and caches the subset typefaces the game renders text with.</summary>
+    internal static class SkiaFontCache
+    {
+        private static readonly Dictionary<string, SKTypeface> Typefaces = [];
+        private static readonly Dictionary<string, SkiaFont> Fonts = [];
+
+        /// <summary>
+        /// Content-relative path of a font file. Every host ships each face under the name the
+        /// configuration gives it, extension included, so there is nothing per-host to decide.
+        /// Skia reads the sfnt version tag rather than the file name, and loads TrueType and
+        /// PostScript outlines alike.
+        /// </summary>
+        /// <param name="fontFile">Font file name from <see cref="FontConfiguration.FontFile"/>.</param>
+        public static string PathFor(string fontFile)
+        {
+            return $"fonts/{fontFile}";
+        }
+
+        /// <summary>Returns the font for a configuration, building it on first use.</summary>
+        /// <param name="config">Resolved font configuration for the current language.</param>
+        public static FontGeneric Load(FontConfiguration config)
+        {
+
+            // Colour and effects are part of what a font is here - both are baked into the paints
+            // the instance owns - so two configurations differing only by one of them are two
+            // fonts, not one. No pair collides today; the key is what keeps that true.
+            string key = $"{config.FontFile}|{config.Size}|{config.LineSpacing}|{config.TopSpacing}"
+                + $"|{config.Color}|{Describe(config.Effects)}";
+            if (Fonts.TryGetValue(key, out SkiaFont cached))
+            {
+                // Rebuild the font if the cached instance was disposed by FreePack/FreeResource.
+                if (cached.IsAlive)
+                {
+                    return cached;
+                }
+
+                _ = Fonts.Remove(key);
+            }
+
+            SkiaFont font = new(GetTypeface(PathFor(config.FontFile)), config);
+            Fonts[key] = font;
+            return font;
+        }
+
+        /// <summary>Drops every cached font and typeface.</summary>
+        public static void Clear()
+        {
+            foreach (SkiaFont font in Fonts.Values)
+            {
+                font.Dispose();
+            }
+            Fonts.Clear();
+
+            foreach (SKTypeface typeface in Typefaces.Values)
+            {
+                typeface.Dispose();
+            }
+            Typefaces.Clear();
+        }
+
+        private static SKTypeface GetTypeface(string contentPath)
+        {
+            if (Typefaces.TryGetValue(contentPath, out SKTypeface cached))
+            {
+                return cached;
+            }
+
+            byte[] bytes = PlatformServices.Content.Read(contentPath);
+            using SKData data = SKData.CreateCopy(bytes);
+            SKTypeface typeface = SKTypeface.FromData(data)
+                ?? throw new InvalidOperationException($"Skia could not decode font '{contentPath}'.");
+            Typefaces[contentPath] = typeface;
+            return typeface;
+        }
+
+        /// <summary>Names an effect configuration for the cache key, or says there is none.</summary>
+        /// <param name="effects">The effect settings, which may be absent.</param>
+        /// <returns>A stable description.</returns>
+        private static string Describe(FontEffectSettings effects)
+        {
+            return effects is null
+                ? "none"
+                : $"{effects.HasStroke}:{effects.StrokeAmount}:{effects.StrokeColor}"
+                    + $":{effects.HasShadow}:{effects.ShadowOffsetX}:{effects.ShadowOffsetY}:{effects.ShadowColor}";
+        }
+    }
+}

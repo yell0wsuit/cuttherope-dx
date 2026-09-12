@@ -1,26 +1,16 @@
 #!/usr/bin/env python3
 """Build a Windows release package for Cut the Rope DX.
 
-Windows ships two builds of the game and a launcher that chooses between them.
-The graphics backend is fixed when the game is compiled, so the Vulkan and
-OpenGL builds reference different MonoGame assemblies exporting the same types.
-One process cannot hold both. The OpenGL build exists for machines whose Vulkan
-is missing, which on Intel means anything before Skylake.
+Windows ships one build. The graphics backend is chosen when the game starts:
+the SDL host tries Vulkan, then ANGLE, then OpenGL, and keeps
+the first that presents a frame.
 
-Both builds nonetheless share one directory. Every publish here is single-file,
-so the managed assemblies live inside each executable rather than beside it,
-whether or not it was compiled ahead of time. What stays loose is native and
-named differently per backend. The only name the two would have fought over is
-the executable's, and each is renamed as it is folded in:
+    CutTheRope-DX.exe   the game        + SDL3.dll, SDL3_mixer.dll, libSkiaSharp.dll, ...
+    ffmpeg/  angle/  content/    beside it
 
-    CutTheRope-DX.exe     launcher: probes Vulkan, runs one of the builds below
-    ctrdx-vk.exe   Vulkan build      + mgruntime.dll
-    ctrdx-gl.exe   OpenGL build      + SDL2.dll, openal.dll, ...
-    ffmpeg/  content/     one copy, shared
-
-macOS and Linux ship the game executable on its own, with content beside it,
-and are built by their own scripts. Only Windows has hardware old enough to
-need the fallback.
+The publish is single-file, so the managed assemblies live inside the executable.
+What stays loose is native: SDL, its mixer codecs, and Skia. macOS and Linux ship
+the same shape and are built by their own scripts.
 """
 
 import hashlib
@@ -33,39 +23,50 @@ import zipfile
 from http.client import HTTPException
 from pathlib import Path
 
-try:
-    import py7zr
-    from tqdm import tqdm
-except ImportError:
-    print("Required: pip install py7zr tqdm", file=sys.stderr)
-    sys.exit(1)
-
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.resolve()
 CSPROJ = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "CutTheRopeDX.Desktop.csproj"
-LAUNCHER_CSPROJ = (
-    PROJECT_ROOT / "src" / "CutTheRopeDX.Launcher" / "CutTheRopeDX.Launcher.csproj"
-)
 RELEASE_DIR = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "release_github"
 
 ARCHITECTURES = {
-    "x64": {"rid": "win-x64", "btbn": "win64", "label": "x64"},
-    "arm64": {"rid": "win-arm64", "btbn": "winarm64", "label": "ARM64"},
+    "x64": {"rid": "win-x64", "btbn": "win64", "electron": "x64", "label": "x64"},
+    "arm64": {"rid": "win-arm64", "btbn": "winarm64", "electron": "arm64", "label": "ARM64"},
 }
 
-# Executable names the launcher looks for; must match BackendSelection.
-BACKEND_EXECUTABLES = {"VK": "ctrdx-vk", "GL": "ctrdx-gl"}
-
-# Name the game publishes under before it is renamed per backend.
+# The name the game publishes under, from the project's AssemblyName.
 GAME_ASSEMBLY = "CutTheRope-DX"
-
-LAUNCHER_ASSEMBLY = "CutTheRopeDX.Launcher"
-LAUNCHER_EXECUTABLE = "CutTheRope-DX"
 
 CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
 FFMPEG_DOWNLOAD_ATTEMPTS = 5
+# BtbN also publishes a "latest" tag, whose assets are deleted and re-uploaded under the same
+# names on every build, with the checksum file regenerated alongside them. Verifying against that
+# proves the download arrived intact and nothing more: two runs of this script for the same game
+# version would ship different FFmpeg binaries. A dated tag is written once and keeps its
+# assets, so the checksum becomes a statement about a particular build rather than about
+# whichever one is current.
+#
+# The archive name carries the exact build, so moving this pin forward means moving both lines.
+FFMPEG_BUILD_TAG = "autobuild-2026-09-11-13-20"
+FFMPEG_BUILD_VERSION = "n9.0.1-29-gad500d59cb"
+ANGLE_DIRECTORY = "angle"
+ANGLE_DOWNLOAD_ATTEMPTS = 5
+# ANGLE ships no standalone desktop build, so this takes the libraries from an Electron
+# release: both architectures are published, versions stay archived, and every artifact is
+# covered by a checksum file that can be verified in the same step.
+#
+# Pinned to the 43 series because 44.0.0 stopped shipping these as separate files and links
+# ANGLE into electron.exe instead, where nothing else can load it. Verified against the
+# published archives: 43.7.0 carries both DLLs for x64 and arm64, 44.0.0 carries neither.
+# Moving this pin forward means checking the archive still contains them, not just that the
+# tag exists.
+ANGLE_ELECTRON_VERSION = "v43.7.0"
+ANGLE_DLL_NAMES = ("libEGL.dll", "libGLESv2.dll")
+# Kept as .html because that is what it is: renaming markup to .txt gives players a file their
+# text editor renders as tag soup.
+ANGLE_NOTICE_SOURCE = "LICENSES.chromium.html"
+ANGLE_NOTICE_NAME = "ANGLE-LICENSE.html"
 FFMPEG_DLL_GLOBS = (
     "avcodec-*.dll",
     "avdevice-*.dll",
@@ -78,18 +79,21 @@ FFMPEG_DLL_GLOBS = (
 )
 
 
-def publish(
-    csproj: Path,
-    out_dir: Path,
-    build_options: tuple[str, bool, str],
-    extra: tuple[str, ...] = (),
-):
-    """Publish one project into out_dir, failing the script if the build fails."""
-    version, use_aot, runtime_id = build_options
+def sha256_of(path: Path) -> str:
+    """Returns the lowercase hex SHA-256 of a file, read in chunks."""
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def publish(out_dir: Path, version: str, use_aot: bool, runtime_id: str) -> None:
+    """Publish the game into out_dir, failing the script if the build fails."""
     cmd = [
         "dotnet",
         "publish",
-        str(csproj),
+        str(CSPROJ),
         "-c",
         "Release",
         "-f",
@@ -101,7 +105,6 @@ def publish(
         f"-p:PublishAot={str(use_aot).lower()}",
         "-o",
         str(out_dir),
-        *extra,
     ]
     print(f"\n> {' '.join(cmd)}\n")
     result = subprocess.run(cmd, check=False)
@@ -110,9 +113,16 @@ def publish(
 
 
 def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
-    """Download BtbN FFmpeg LGPL shared libraries for one Windows architecture."""
-    release_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
-    archive_name = f"ffmpeg-n8.1-latest-{btbn_arch}-lgpl-shared-8.1.zip"
+    """Download BtbN FFmpeg LGPL shared libraries for one Windows architecture.
+
+    The major version has to match the one FFmpeg.AutoGen binds against, because it
+    resolves each function from a library named for its own soname; a mismatch loads
+    nothing and leaves the game with no video decoder.
+    """
+    release_url = (
+        f"https://github.com/BtbN/FFmpeg-Builds/releases/download/{FFMPEG_BUILD_TAG}"
+    )
+    archive_name = f"ffmpeg-{FFMPEG_BUILD_VERSION}-{btbn_arch}-lgpl-shared-9.0.zip"
     ffmpeg_url = f"{release_url}/{archive_name}"
     checksums_url = f"{release_url}/checksums.sha256"
     destination = output_dir / FFMPEG_DIRECTORY
@@ -140,11 +150,7 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
                         expected_checksum = parts[0].lower()
                         break
 
-                digest = hashlib.sha256()
-                with archive_path.open("rb") as archive_file:
-                    for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
-                        digest.update(chunk)
-                actual_checksum = digest.hexdigest()
+                actual_checksum = sha256_of(archive_path)
 
                 if expected_checksum is None:
                     raise ValueError(f"No checksum found for {archive_name}")
@@ -200,63 +206,81 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
     print(f"FFmpeg shared libraries copied to {destination}")
 
 
-def take_shared_directory(output_dir: Path, staged: Path, name: str) -> None:
-    """Copy a staged shared directory into the output root, then remove it.
+def download_angle(output_dir: Path, electron_arch: str) -> None:
+    """Download the ANGLE libraries for one Windows architecture.
 
-    Windows can reject a directory rename when the destination already exists
-    or a build step briefly holds the directory. Copying also safely merges an
-    existing shared tree without duplicating it in the final package.
+    ANGLE maps OpenGL ES onto Direct3D 11, which is the GL implementation the game
+    prefers on Windows over whatever the machine's own driver provides. Google publishes
+    no standalone desktop build, so these come out of an Electron release.
     """
-    if not staged.is_dir():
+    release_url = f"https://github.com/electron/electron/releases/download/{ANGLE_ELECTRON_VERSION}"
+    archive_name = f"electron-{ANGLE_ELECTRON_VERSION}-win32-{electron_arch}.zip"
+    angle_url = f"{release_url}/{archive_name}"
+    checksums_url = f"{release_url}/SHASUMS256.txt"
+    destination = output_dir / ANGLE_DIRECTORY
+    installed = (*ANGLE_DLL_NAMES, ANGLE_NOTICE_NAME)
+    if destination.is_dir() and all((destination / name).is_file() for name in installed):
+        print(f"ANGLE libraries already present in {destination}")
         return
 
-    shared = output_dir / name
-    shutil.copytree(staged, shared, dirs_exist_ok=True)
-    shutil.rmtree(staged)
+    print("\n=== ANGLE ===")
+    print(f"Downloading {angle_url}")
 
+    with tempfile.TemporaryDirectory() as temp_dir_name:
+        temp_dir = Path(temp_dir_name)
+        archive_path = temp_dir / archive_name
+        checksums_path = temp_dir / "SHASUMS256.txt"
 
-def fold_in(output_dir: Path, backend: str, staged: Path):
-    """Fold one build into the output root, renaming its executable.
+        for attempt in range(1, ANGLE_DOWNLOAD_ATTEMPTS + 1):
+            try:
+                urllib.request.urlretrieve(angle_url, archive_path)
+                urllib.request.urlretrieve(checksums_url, checksums_path)
 
-    Safe to rename: a single-file executable finds the assemblies bundled
-    inside it. An ahead-of-time one is an ordinary native binary. Neither
-    refers to its own file name.
-    """
-    for name in (CONTENT_DIRECTORY, FFMPEG_DIRECTORY):
-        take_shared_directory(output_dir, staged / name, name)
+                expected_checksum = None
+                for line in checksums_path.read_text(encoding="utf-8").splitlines():
+                    parts = line.split(maxsplit=1)
+                    if len(parts) == 2 and parts[1].lstrip("*") == archive_name:
+                        expected_checksum = parts[0].lower()
+                        break
 
-    produced = staged / f"{GAME_ASSEMBLY}.exe"
-    if not produced.is_file():
-        print(f"No {backend} executable at {produced}", file=sys.stderr)
-        sys.exit(1)
-    produced.rename(output_dir / f"{BACKEND_EXECUTABLES[backend]}.exe")
-
-    # Everything left is native libraries, which the two backends do not share names for.
-    for leftover in staged.iterdir():
-        destination = output_dir / leftover.name
-        if destination.exists():
-            if leftover.is_file():
-                leftover.unlink()
+                if expected_checksum is None:
+                    raise ValueError(f"No checksum found for {archive_name}")
+                if sha256_of(archive_path) != expected_checksum:
+                    raise ValueError(f"Checksum mismatch for {archive_name}")
+            except (OSError, HTTPException, ValueError) as error:
+                if attempt == ANGLE_DOWNLOAD_ATTEMPTS:
+                    print(
+                        f"ANGLE download or verification failed after "
+                        f"{ANGLE_DOWNLOAD_ATTEMPTS} attempts: {error}",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                print(
+                    f"ANGLE download or verification failed: {error}; "
+                    f"retrying ({attempt + 1}/{ANGLE_DOWNLOAD_ATTEMPTS})..."
+                )
             else:
-                shutil.rmtree(leftover)
-        else:
-            leftover.rename(destination)
-    staged.rmdir()
-    print(f"{backend} build placed as {BACKEND_EXECUTABLES[backend]}.exe")
+                break
 
+        destination.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(archive_path) as archive:
+            members = {Path(name).name: name for name in archive.namelist()}
+            for dll in ANGLE_DLL_NAMES:
+                if dll not in members:
+                    print(f"{dll} not found in {archive_name}", file=sys.stderr)
+                    sys.exit(1)
+                with archive.open(members[dll]) as source:
+                    (destination / dll).write_bytes(source.read())
 
-def rename_launcher(output_dir: Path):
-    """Give the launcher the name players start.
+            # ANGLE is BSD-3-Clause, so the notice is a condition of shipping the libraries at
+            # all, not a nicety. An archive without it is not one we can redistribute from.
+            if ANGLE_NOTICE_SOURCE not in members:
+                print(f"{ANGLE_NOTICE_SOURCE} not found in {archive_name}", file=sys.stderr)
+                sys.exit(1)
+            with archive.open(members[ANGLE_NOTICE_SOURCE]) as source:
+                (destination / ANGLE_NOTICE_NAME).write_bytes(source.read())
 
-    Renaming the apphost is safe: it finds its managed assembly by a name
-    recorded inside the binary, not by the executable file name.
-    """
-    published = output_dir / f"{LAUNCHER_ASSEMBLY}.exe"
-    if not published.is_file():
-        print(f"Launcher not found at {published}", file=sys.stderr)
-        sys.exit(1)
-    published.replace(output_dir / f"{LAUNCHER_EXECUTABLE}.exe")
-    print(f"Launcher published as {LAUNCHER_EXECUTABLE}.exe")
+    print(f"ANGLE libraries copied to {destination}")
 
 
 def is_shipped(output_dir: Path, path: Path) -> bool:
@@ -266,8 +290,24 @@ def is_shipped(output_dir: Path, path: Path) -> bool:
     )
 
 
+def packaging_tools():
+    """The archiver and the progress bar, which only the packaging step needs.
+
+    They are imported here rather than at the top of the file so that importing this
+    module - to build another platform, or to test it - does not need them installed.
+    """
+    try:
+        import py7zr
+        from tqdm import tqdm
+    except ImportError:
+        print("Required: pip install py7zr tqdm", file=sys.stderr)
+        sys.exit(1)
+    return py7zr, tqdm
+
+
 def package(output_dir: Path, version: str, arch_label: str):
     """Compress the build output into a .7z archive."""
+    py7zr, tqdm = packaging_tools()
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     archive_name = f"CutTheRopeDX-v{version}-Windows-{arch_label}.7z"
     archive_path = RELEASE_DIR / archive_name
@@ -339,32 +379,31 @@ def resolve_options() -> tuple[str, bool, str]:
 def main():
     """Build and package the selected Windows architecture."""
     version, use_aot, arch = resolve_options()
+    # Ask for the archiver before the build rather than after it, so a missing
+    # dependency costs a second instead of a full publish and two downloads.
+    packaging_tools()
     config = ARCHITECTURES[arch]
     runtime_id = config["rid"]
     btbn_arch = config["btbn"]
     arch_label = config["label"]
-    output_dir = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "Publish" / runtime_id
-    build_options = (version, use_aot, runtime_id)
+    output_dir = (
+        PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "Publish" / runtime_id
+    )
 
     print(f"\nBuilding v{version} for {runtime_id} " f"(NativeAOT: {use_aot})...")
 
     if output_dir.exists():
         shutil.rmtree(output_dir)
 
-    for position, backend in enumerate(BACKEND_EXECUTABLES):
-        print(f"\n=== {backend} build ===")
-        staged = output_dir / f"staging-{backend}"
-        options = (f"-p:GraphicsBackend={backend}",)
-        if position > 0:
-            options += ("-p:DeployContent=false", "-p:RunMGCB=false")
-        publish(CSPROJ, staged, build_options, options)
-        fold_in(output_dir, backend, staged)
+    publish(output_dir, version, use_aot, runtime_id)
 
-    print("\n=== launcher ===")
-    publish(LAUNCHER_CSPROJ, output_dir, build_options)
+    produced = output_dir / f"{GAME_ASSEMBLY}.exe"
+    if not produced.is_file():
+        print(f"No game executable at {produced}", file=sys.stderr)
+        sys.exit(1)
 
-    rename_launcher(output_dir)
     download_ffmpeg(output_dir, btbn_arch)
+    download_angle(output_dir, config["electron"])
     package(output_dir, version, arch_label)
 
 

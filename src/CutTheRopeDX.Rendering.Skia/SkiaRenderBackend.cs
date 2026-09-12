@@ -1,0 +1,840 @@
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+
+using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Visual;
+
+using SkiaSharp;
+
+namespace CutTheRopeDX.Rendering.Skia
+{
+    /// <summary>
+    /// The GL-ES-1 style rendering surface, implemented over Skia's GPU canvas.
+    /// </summary>
+    /// <remarks>
+    /// Vertices are baked on the CPU by <see cref="QuadBaking"/> before Skia ever sees
+    /// them, so the matrix stack and skew behave exactly as they do on desktop and Skia only
+    /// ever receives finished triangles. Quads accumulate into a batch that flushes when the
+    /// texture or blend mode changes, mirroring the desktop backend's one-draw-per-batch
+    /// behavior.
+    /// <para>
+    /// Skia takes straight-alpha <see cref="SKColor"/> values and premultiplies them internally.
+    /// Ordinary sprite tints and the source-alpha blend paths are already straight. Explicit
+    /// vertex colors submitted with One/InverseSourceAlpha are premultiplied for the desktop
+    /// fixed-function pipeline, so this backend converts those colors back to straight exactly
+    /// once before giving them to Skia.
+    /// </para>
+    /// <para>
+    /// A <c>GL_SRC_ALPHA</c> source factor needs more than a blend mode: it multiplies the
+    /// premultiplied fragment by its own alpha again, which no Skia blend mode reproduces. Those
+    /// batches therefore fold the factor into the source itself, weighting the texture by its
+    /// alpha through <see cref="SkiaTexture.Shader"/> and the tint through
+    /// <see cref="VertexColorEncoding.ForRendererTint"/>.
+    /// </para>
+    /// </remarks>
+    /// <param name="surface">The Skia surface wrapping the host's framebuffer.</param>
+    /// <param name="registry">
+    /// Tracks which device generation uploaded resources belong to, so images left over from a
+    /// device that has gone are refused rather than sampled. Null where the device is never
+    /// replaced, which is every host but the desktop one.
+    /// </param>
+    internal sealed class SkiaRenderBackend(ISkiaSurface surface, SkiaResourceRegistry registry = null)
+        : IRenderBackend, IDisposable
+    {
+        private const int GL_BLEND = 1;
+        private const int GL_SCISSOR_TEST = 4;
+        private const int MODE_PROJECTION = 15;
+
+        private readonly MatrixStack _matrices = new();
+        private readonly List<SKPoint> _positions = [];
+        private readonly List<SKPoint> _texCoords = [];
+        private readonly List<SKColor> _colors = [];
+
+        /// <summary>
+        /// The paint every batch draws through. Only its blend mode and shader vary, and both are
+        /// plain setters, so one paint is reused rather than a native Skia object being created
+        /// and destroyed for each of the batches a frame flushes.
+        /// </summary>
+        private readonly SKPaint _batchPaint = new() { Color = SKColors.White };
+
+        /// <summary>The paint line strips stroke through, kept for the same reason.</summary>
+        private SKPaint _linePaint;
+
+        /// <summary>
+        /// Scratch space the sprite path bakes into. Core hands the same four-vertex quad down
+        /// hundreds of times a frame, so the baked copy is grown once and then reused.
+        /// </summary>
+        private VertexPositionColorTexture[] _bakedVertices = new VertexPositionColorTexture[4];
+
+        private SKSurface _renderTarget;
+        private int _renderTargetWidth;
+        private int _renderTargetHeight;
+        private SkiaTexture _boundTexture;
+        private bool _boundTextureRejected;
+        private SkiaTexture _batchTexture;
+        private float _batchTextureWidth = 1f;
+        private float _batchTextureHeight = 1f;
+        private SKBlendMode _batchBlendMode = SKBlendMode.SrcOver;
+        private bool _batchWeightsSourceByAlpha;
+        private Color _drawColor = new(255, 255, 255, 255);
+        private SKColor _clearColor = SKColors.Black;
+        private bool _blendEnabled = true;
+        private bool _projectionMode;
+        private bool _scissorSaved;
+        private BlendingFactor _requestedSourceFactor = BlendingFactor.GLONE;
+        private BlendingFactor _requestedDestinationFactor = BlendingFactor.GLONEMINUSSRCALPHA;
+
+        /// <summary>The canvas currently targeted by draw calls.</summary>
+        internal SKCanvas Target => _renderTarget?.Canvas ?? surface.Canvas;
+
+        /// <summary>The blend mode most recently requested by <see cref="SetBlendFunc"/>.</summary>
+        private SKBlendMode RequestedBlendMode { get; set; } = SKBlendMode.SrcOver;
+
+        /// <summary>
+        /// The blend mode a draw issued right now would use, with blending disabled folded in.
+        /// Disabling blending is <c>Src</c>, which ignores the destination the way the desktop
+        /// backend's opaque blend state does. Batches capture this when geometry is appended,
+        /// never when they flush: Core brackets each view as enable, draw, disable, so reading it
+        /// at flush time would blend every batch as though blending were off.
+        /// </summary>
+        private SKBlendMode EffectiveBlendMode =>
+            _blendEnabled ? RequestedBlendMode : SKBlendMode.Src;
+
+        /// <summary>
+        /// The source blend factor a draw issued right now would use. Disabling blending leaves
+        /// the fragment untouched, which is the <c>GL_ONE</c> source factor.
+        /// </summary>
+        private BlendingFactor EffectiveSourceFactor =>
+            _blendEnabled ? _requestedSourceFactor : BlendingFactor.GLONE;
+
+        /// <summary>Whether a draw issued right now consumes a source weighted by its own alpha.</summary>
+        private bool WeightsSourceByAlpha =>
+            VertexColorEncoding.ScalesSourceByAlpha(EffectiveSourceFactor);
+
+        /// <inheritdoc />
+        public bool IsAvailable => true;
+
+        /// <inheritdoc />
+        public void Enable(int cap)
+        {
+            if (cap == GL_BLEND)
+            {
+                _blendEnabled = true;
+            }
+        }
+
+        /// <inheritdoc />
+        public void Disable(int cap)
+        {
+            if (cap == GL_BLEND)
+            {
+                _blendEnabled = false;
+            }
+            else if (cap == GL_SCISSOR_TEST)
+            {
+                FlushQuads();
+                EndScissor();
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetViewport(int x, int y, int width, int height)
+        {
+            if (width <= 0 || height <= 0)
+            {
+                return;
+            }
+
+            FlushQuads();
+            if (width != _renderTargetWidth || height != _renderTargetHeight)
+            {
+                DropScissor();
+                _renderTarget?.Dispose();
+                _renderTarget = SKSurface.Create(
+                    surface.Context,
+                    budgeted: true,
+                    new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                    ?? throw new InvalidOperationException("Could not create the Skia render target.");
+                _renderTargetWidth = width;
+                _renderTargetHeight = height;
+            }
+
+            ApplyViewTransform();
+        }
+
+        /// <summary>
+        /// Puts the logical-to-surface step on the canvas itself, so every draw carries it without
+        /// knowing about it: geometry, text and clip rectangles all arrive in logical units and
+        /// Skia maps them the same way.
+        /// </summary>
+        /// <remarks>
+        /// The target is sized in surface pixels while drawing is authored in logical ones. Without
+        /// this the two are treated as the same unit, which fills the target only as far as the
+        /// logical extent reaches and leaves the rest of it blank - correct-looking only while the
+        /// viewport happens to expose exactly as many logical units as it has pixels.
+        /// </remarks>
+        private void ApplyViewTransform()
+        {
+            SKCanvas target = Target;
+            if (target == null)
+            {
+                return;
+            }
+
+            float scale = ScreenPresentation.Instance.Snapshot.Scale;
+            target.SetMatrix(SKMatrix.CreateScale(scale, scale));
+        }
+
+        /// <inheritdoc />
+        public void SetMatrixMode(int mode)
+        {
+            _projectionMode = mode == MODE_PROJECTION;
+        }
+
+        /// <inheritdoc />
+        public void LoadIdentity()
+        {
+            _matrices.LoadIdentity(_projectionMode);
+        }
+
+        /// <inheritdoc />
+        public void SetOrthographic(
+            float left, float right, float bottom, float top, float near, float far)
+        {
+            _matrices.SetOrthographic(left, right, bottom, top, near, far);
+        }
+
+        /// <inheritdoc />
+        public void PushMatrix()
+        {
+            _matrices.Push();
+        }
+
+        /// <inheritdoc />
+        public void PopMatrix()
+        {
+            _matrices.Pop();
+        }
+
+        /// <inheritdoc />
+        public void Scale(float x, float y, float z)
+        {
+            _matrices.Scale(x, y);
+        }
+
+        /// <inheritdoc />
+        public void Rotate(float angle, float x, float y, float z)
+        {
+            _matrices.RotateDegrees(angle);
+        }
+
+        /// <inheritdoc />
+        public void Skew(float skewXDegrees, float skewYDegrees)
+        {
+            _matrices.Skew(skewXDegrees, skewYDegrees);
+        }
+
+        /// <inheritdoc />
+        public void Translate(float x, float y, float z)
+        {
+            _matrices.Translate(x, y);
+        }
+
+        /// <inheritdoc />
+        public Matrix4x4 GetModelViewMatrix()
+        {
+            return _matrices.ModelView;
+        }
+
+        /// <inheritdoc />
+        public void SetColor(Color c)
+        {
+            _drawColor = c;
+        }
+
+        /// <inheritdoc />
+        public Color GetCurrentColor()
+        {
+            return _drawColor;
+        }
+
+        /// <inheritdoc />
+        public void SetClearColor(Color c)
+        {
+            _clearColor = new SKColor(c.R, c.G, c.B, c.A);
+        }
+
+        /// <inheritdoc />
+        public void Clear(int mask)
+        {
+            FlushQuads();
+            Target.Clear(_clearColor);
+        }
+
+        /// <inheritdoc />
+        public void SetBlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+        {
+            _requestedSourceFactor = sfactor;
+            _requestedDestinationFactor = dfactor;
+            // Both additive pairs land on Plus. They differ in whether the source is weighted by
+            // its own alpha first, and that is not this decision: the fragment reaching Skia is
+            // premultiplied either way, and WeightsSourceByAlpha is what folds in the second
+            // factor GL_SRC_ALPHA asks for. Leaving GL_ONE/GL_ONE to the default composited a
+            // bomb's fragments over the scene rather than lighting it.
+            RequestedBlendMode = (sfactor, dfactor) switch
+            {
+                (BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE) => SKBlendMode.Plus,
+                (BlendingFactor.GLONE, BlendingFactor.GLONE) => SKBlendMode.Plus,
+                _ => SKBlendMode.SrcOver,
+            };
+        }
+
+        /// <inheritdoc />
+        /// <remarks>
+        /// An image uploaded by a device that has since gone away is refused here rather than
+        /// drawn. Sampling it would read native memory the driver has already reclaimed, and the
+        /// draws that would have used it are dropped until recovery has loaded the asset again.
+        /// </remarks>
+        public void BindTexture(CTRTexture2D t)
+        {
+            SkiaTexture texture = t?.textureHandle_ as SkiaTexture;
+            bool rejected = texture != null && registry?.IsCurrent(texture.Generation) == false;
+            if (rejected)
+            {
+                RejectedBinds++;
+                texture = null;
+            }
+
+            if (!ReferenceEquals(texture, _boundTexture) || rejected != _boundTextureRejected)
+            {
+                FlushQuads();
+                _boundTexture = texture;
+                _boundTextureRejected = rejected;
+            }
+        }
+
+        /// <summary>How many binds have been refused because their device generation is retired.</summary>
+        internal int RejectedBinds { get; private set; }
+
+        /// <summary>
+        /// Whether the batch paint still holds the shader it last sampled a device's image
+        /// through, which is a reference <see cref="DiscardDeviceResources"/> has to drop.
+        /// </summary>
+        internal bool RetainsDeviceShader { get; private set; }
+
+        /// <inheritdoc />
+        public void SetScissor(float x, float y, float width, float height)
+        {
+            FlushQuads();
+            // GL's scissor is one absolute rectangle that each call replaces, and Core relies on
+            // that: the pack selector narrows the scissor to reveal Om Nom, then sets it straight
+            // back to the scrolling container's rectangle. Skia's ClipRect only ever intersects,
+            // so the previous clip is popped first or the two rectangles would compound into a
+            // sliver, and each successive draw would clip smaller than the last.
+            EndScissor();
+            _ = Target.Save();
+            Target.ClipRect(SKRect.Create(x, y, width, height));
+            _scissorSaved = true;
+        }
+
+        /// <summary>Pops the clip <see cref="SetScissor"/> pushed, if one is outstanding.</summary>
+        private void EndScissor()
+        {
+            if (_scissorSaved)
+            {
+                Target.Restore();
+                _scissorSaved = false;
+            }
+        }
+
+        /// <summary>
+        /// Forgets an outstanding scissor without popping it, for when the canvas holding it is
+        /// about to be replaced and restoring would unbalance whichever canvas comes next.
+        /// </summary>
+        private void DropScissor()
+        {
+            _scissorSaved = false;
+        }
+
+        /// <inheritdoc />
+        public void DrawTriangleStrip(VertexPositionColor[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            BindTexture(null);
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            for (int i = 0; i + 2 < vertexCount; i++)
+            {
+                AppendColorOnly(vertices[i]);
+                AppendColorOnly(vertices[i + 1]);
+                AppendColorOnly(vertices[i + 2]);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawTriangleStrip(VertexPositionNormalTexture[] vertices, int vertexCount)
+        {
+            Color tint = _drawColor;
+            // A fully transparent tint contributes nothing under either blend mode this backend
+            // uses, and the desktop backend drops the draw outright rather than submitting it.
+            if (QuadBaking.IsInvisible(tint))
+            {
+                return;
+            }
+            if (_bakedVertices.Length < vertexCount)
+            {
+                _bakedVertices = new VertexPositionColorTexture[vertexCount];
+            }
+            VertexPositionColorTexture[] baked = _bakedVertices;
+            for (int i = 0; i < vertexCount; i++)
+            {
+                baked[i] = QuadBaking.Bake(vertices[i], _matrices.ModelView, tint);
+            }
+            DrawBakedTriangleStrip(baked, vertexCount);
+        }
+
+        /// <inheritdoc />
+        public void DrawTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            for (int i = 0; i + 2 < vertexCount; i++)
+            {
+                AppendTransformed(vertices[i]);
+                AppendTransformed(vertices[i + 1]);
+                AppendTransformed(vertices[i + 2]);
+            }
+        }
+
+        /// <summary>
+        /// Appends a strip whose positions <see cref="QuadBaking"/> has already transformed.
+        /// </summary>
+        /// <param name="vertices">Vertices already in view space.</param>
+        /// <param name="vertexCount">Number of vertices to submit.</param>
+        private void DrawBakedTriangleStrip(VertexPositionColorTexture[] vertices, int vertexCount)
+        {
+            if (vertexCount < 3)
+            {
+                return;
+            }
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            for (int i = 0; i + 2 < vertexCount; i++)
+            {
+                AppendRendererTint(vertices[i]);
+                AppendRendererTint(vertices[i + 1]);
+                AppendRendererTint(vertices[i + 2]);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawTriangleList(
+            VertexPositionNormalTexture[] vertices, short[] indices, int indexCount)
+        {
+            Color tint = _drawColor;
+            if (QuadBaking.IsInvisible(tint))
+            {
+                return;
+            }
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            for (int i = 0; i < indexCount; i++)
+            {
+                AppendRendererTint(
+                    QuadBaking.Bake(vertices[indices[i]], _matrices.ModelView, tint));
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawTriangleList(
+            VertexPositionColorTexture[] vertices, short[] indices, int indexCount)
+        {
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            for (int i = 0; i < indexCount; i++)
+            {
+                AppendTransformed(vertices[indices[i]]);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
+        {
+            FlushQuads();
+
+            // Reused for the same reason the batch paint is: only the blend mode and the colour
+            // vary, and both are setters, so a native paint per call would be created and
+            // destroyed on the frame path for nothing.
+            _linePaint ??= new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = 1f,
+                IsAntialias = true,
+            };
+            SKPaint paint = _linePaint;
+            paint.BlendMode = EffectiveBlendMode;
+            for (int i = 0; i + 1 < vertexCount; i++)
+            {
+                paint.Color = ToSkiaExplicitColor(vertices[i].Color);
+                SKPoint from = ToViewSpace(vertices[i].Position);
+                SKPoint to = ToViewSpace(vertices[i + 1].Position);
+                Target.DrawLine(from.X, from.Y, to.X, to.Y, paint);
+            }
+        }
+
+        /// <inheritdoc />
+        public IVideoFrameTexture CreateVideoFrameTexture(int width, int height)
+        {
+            return new SkiaVideoFrameTexture(width, height);
+        }
+
+        /// <inheritdoc />
+        public ITextureHandle DetachRenderTarget()
+        {
+            if (_renderTarget is null)
+            {
+                return null;
+            }
+
+            FlushQuads();
+            DropScissor();
+            SKImage snapshot = _renderTarget.Snapshot();
+            _renderTarget.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
+            return new SkiaTexture(
+                snapshot, registry?.TrackTransient() ?? SkiaResourceRegistry.DeviceIndependent);
+        }
+
+        /// <inheritdoc />
+        public void ResetRenderTarget()
+        {
+            FlushQuads();
+            DropScissor();
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
+        }
+
+        /// <inheritdoc />
+        public void CopyFromRenderTargetToScreen()
+        {
+            FlushQuads();
+            if (_renderTarget is null)
+            {
+                return;
+            }
+            using SKImage snapshot = _renderTarget.Snapshot();
+            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            SKRect destination = SKRect.Create(bounds.x, bounds.y, bounds.w, bounds.h);
+            surface.Canvas.Clear(SKColors.Black);
+            surface.Canvas.DrawImage(
+                snapshot, destination, SkiaTexture.LinearSampling, paint: null);
+        }
+
+        /// <inheritdoc />
+        /// <remarks>
+        /// This renderer keeps no vertex readback, and says so with <c>null</c> rather than with
+        /// an empty array. The multi-drawer latches the first non-null answer it gets and then
+        /// takes its optimized path forever after, so an empty array would tell it there is a
+        /// cache and then hand it nothing to draw. Nothing reaches this today - every live font
+        /// draws its own text - but the sprite-font path is one flag away from returning.
+        /// </remarks>
+        public VertexPositionColor[] GetLastVertices_PositionColor()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        /// <remarks>See <see cref="GetLastVertices_PositionColor"/> for why this is not empty.</remarks>
+        public VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
+        {
+            return null;
+        }
+
+        /// <summary>The three arrays one batch of a given size hands to Skia.</summary>
+        /// <param name="Positions">Vertex positions.</param>
+        /// <param name="TexCoords">Texture coordinates, used only by a textured batch.</param>
+        /// <param name="Colors">Per-vertex colors.</param>
+        private readonly record struct VertexBuffers(
+            SKPoint[] Positions, SKPoint[] TexCoords, SKColor[] Colors);
+
+        /// <summary>
+        /// How many distinct batch sizes are worth keeping buffers for.
+        /// </summary>
+        /// <remarks>
+        /// A bound rather than an expectation. Batches settle on a handful of sizes, but nothing
+        /// in the drawing code promises that, and a level that found a new size every batch would
+        /// otherwise grow this without limit. Past the bound the batch allocates, which is what
+        /// every batch did before.
+        /// </remarks>
+        private const int MaximumCachedBatchSizes = 64;
+
+        private readonly Dictionary<int, VertexBuffers> _vertexBuffers = [];
+
+        /// <summary>Returns reusable arrays of exactly <paramref name="count"/> vertices.</summary>
+        /// <param name="count">Vertices in the batch about to be drawn.</param>
+        private VertexBuffers BuffersFor(int count)
+        {
+            if (_vertexBuffers.TryGetValue(count, out VertexBuffers cached))
+            {
+                return cached;
+            }
+
+            VertexBuffers buffers = new(new SKPoint[count], new SKPoint[count], new SKColor[count]);
+            if (_vertexBuffers.Count < MaximumCachedBatchSizes)
+            {
+                _vertexBuffers[count] = buffers;
+            }
+
+            return buffers;
+        }
+
+        /// <inheritdoc />
+        public void FlushQuads()
+        {
+            if (_positions.Count == 0)
+            {
+                return;
+            }
+
+            _batchPaint.BlendMode = _batchBlendMode;
+            _batchPaint.Shader = _batchTexture?.Shader(_batchWeightsSourceByAlpha);
+            RetainsDeviceShader = _batchTexture is not null;
+
+            // Skia reads the whole length of each array as the vertex count, so a buffer can only
+            // be reused by a batch of exactly its size - an oversized one would draw whatever is
+            // left in its tail. Kept per size rather than per flush: Skia copies what it is given,
+            // so a buffer is free again the moment the call returns, and a frame's batches take
+            // few enough distinct sizes that after a few frames these are all hits.
+            VertexBuffers buffers = BuffersFor(_positions.Count);
+            _positions.CopyTo(buffers.Positions);
+            _colors.CopyTo(buffers.Colors);
+
+            SKPoint[] texCoords = null;
+            if (_batchTexture is not null)
+            {
+                // A textured batch appends a coordinate with every vertex, so these are the same
+                // length. Checked rather than assumed: the untextured append adds no coordinate,
+                // and a reused buffer that was not filled to its end would hand Skia the tail of
+                // whatever batch used it last.
+                if (_texCoords.Count == buffers.TexCoords.Length)
+                {
+                    _texCoords.CopyTo(buffers.TexCoords);
+                    texCoords = buffers.TexCoords;
+                }
+                else
+                {
+                    texCoords = [.. _texCoords];
+                }
+            }
+
+            using SKVertices vertices = SKVertices.CreateCopy(
+                SKVertexMode.Triangles, buffers.Positions, texCoords, buffers.Colors);
+
+            Target.DrawVertices(vertices, SKBlendMode.Modulate, _batchPaint);
+
+            _positions.Clear();
+            _texCoords.Clear();
+            _colors.Clear();
+        }
+
+        /// <inheritdoc />
+        public void BeginFrame()
+        {
+            _positions.Clear();
+            _texCoords.Clear();
+            _colors.Clear();
+            surface.Canvas.ResetMatrix();
+        }
+
+        /// <inheritdoc />
+        public void EndFrame()
+        {
+            FlushQuads();
+            // Core leaves the pack selector's scissor set when its draw ends, so the clip is
+            // released here rather than leaking a canvas save into the next frame.
+            EndScissor();
+            surface.Flush();
+        }
+
+        /// <summary>
+        /// Releases everything the current device owns and drops the work queued against it.
+        /// </summary>
+        /// <remarks>
+        /// This has to run while the device is still alive. Skia frees a surface through the
+        /// context that made it, so releasing the render target after the context has gone leaves
+        /// the release with nothing to talk to. Queued quads and an outstanding clip go with it:
+        /// both name a canvas that is about to stop existing, and replaying them onto the next
+        /// one would draw a fragment of the lost frame and leave the new canvas unbalanced.
+        /// </remarks>
+        internal void DiscardDeviceResources()
+        {
+            _positions.Clear();
+            _texCoords.Clear();
+            _colors.Clear();
+            DropScissor();
+
+            // The paint holds a reference to the shader it last drew through, and that shader
+            // holds the device's image. Nothing else here still points at the lost device by the
+            // time it is destroyed, so a paint left holding one would be the image's last owner,
+            // and freeing it would reach for a context that had gone. Skia defers that release to
+            // whenever the shader is next replaced, which is why the crash landed in the first
+            // flush the replacement device drew rather than anywhere near the loss.
+            _batchPaint.Shader = null;
+            RetainsDeviceShader = false;
+            _boundTexture = null;
+            _boundTextureRejected = false;
+            _batchTexture = null;
+            _batchTextureWidth = 1f;
+            _batchTextureHeight = 1f;
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+            _renderTargetWidth = 0;
+            _renderTargetHeight = 0;
+        }
+
+        /// <summary>Points the backend at a replacement device's surface.</summary>
+        /// <param name="replacement">The new surface to draw into.</param>
+        /// <remarks>
+        /// The render target is not rebuilt here. Core sets the viewport at the start of every
+        /// frame, and that is what sizes and creates it, so recreating one now would only be
+        /// replaced unused.
+        /// </remarks>
+        internal void Rebind(ISkiaSurface replacement)
+        {
+            ArgumentNullException.ThrowIfNull(replacement);
+            DiscardDeviceResources();
+            surface = replacement;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _batchPaint.Dispose();
+            _linePaint?.Dispose();
+            _linePaint = null;
+            _renderTarget?.Dispose();
+            _renderTarget = null;
+        }
+
+        /// <summary>
+        /// Makes the batch match the current texture and blend state, flushing it first when they
+        /// have changed.
+        /// </summary>
+        /// <returns>
+        /// <see langword="false"/> when the bound texture was refused, which is the caller's
+        /// signal to submit nothing at all.
+        /// </returns>
+        private bool EnsureBatchCompatible()
+        {
+            // Source weighting is tracked alongside the blend mode rather than derived from it:
+            // SourceAlpha/InverseSourceAlpha and One/InverseSourceAlpha both draw as SrcOver and
+            // differ only in the weighting, so a batch that ignored it would render one pair with
+            // the other's shader.
+            if (!ReferenceEquals(_batchTexture, _boundTexture)
+                || _batchBlendMode != EffectiveBlendMode
+                || _batchWeightsSourceByAlpha != WeightsSourceByAlpha)
+            {
+                FlushQuads();
+                _batchTexture = _boundTexture;
+                _batchTextureWidth = _boundTexture?.Width ?? 1f;
+                _batchTextureHeight = _boundTexture?.Height ?? 1f;
+                _batchBlendMode = EffectiveBlendMode;
+                _batchWeightsSourceByAlpha = WeightsSourceByAlpha;
+            }
+
+            return !_boundTextureRejected;
+        }
+
+        private void AppendRendererTint(in VertexPositionColorTexture vertex)
+        {
+            Append(
+                vertex,
+                VertexColorEncoding.ForRendererTint(vertex.Color, EffectiveSourceFactor));
+        }
+
+        private void AppendExplicitVertex(in VertexPositionColorTexture vertex)
+        {
+            Append(vertex, DecodeExplicitColor(vertex.Color));
+        }
+
+        private void Append(in VertexPositionColorTexture vertex, Color straightColor)
+        {
+            _positions.Add(new SKPoint(vertex.Position.X, vertex.Position.Y));
+            _colors.Add(ToSkiaColor(straightColor));
+
+            _texCoords.Add(new SKPoint(
+                vertex.TextureCoordinate.X * _batchTextureWidth,
+                vertex.TextureCoordinate.Y * _batchTextureHeight));
+        }
+
+        /// <summary>
+        /// Appends a vertex Core handed over untransformed, applying the matrix stack on the way
+        /// in. Only the sprite paths arrive pre-baked; every other draw reaches the backend in
+        /// model space and would otherwise ignore the camera and any enclosing transform.
+        /// </summary>
+        /// <param name="vertex">The untransformed vertex.</param>
+        private void AppendTransformed(in VertexPositionColorTexture vertex)
+        {
+            AppendExplicitVertex(new VertexPositionColorTexture(
+                Vector3.Transform(vertex.Position, _matrices.ModelView),
+                vertex.Color,
+                vertex.TextureCoordinate));
+        }
+
+        private void AppendColorOnly(in VertexPositionColor vertex)
+        {
+            _positions.Add(ToViewSpace(vertex.Position));
+            _colors.Add(ToSkiaExplicitColor(vertex.Color));
+        }
+
+        private SKColor ToSkiaExplicitColor(Color color)
+        {
+            return ToSkiaColor(DecodeExplicitColor(color));
+        }
+
+        private Color DecodeExplicitColor(Color color)
+        {
+            return VertexColorEncoding.ForExplicitVertex(
+                color,
+                _requestedSourceFactor,
+                _requestedDestinationFactor);
+        }
+
+        private static SKColor ToSkiaColor(Color straight)
+        {
+            return new SKColor(straight.R, straight.G, straight.B, straight.A);
+        }
+
+        /// <summary>Transforms a model-space position by the current matrix stack.</summary>
+        /// <param name="position">The untransformed position.</param>
+        private SKPoint ToViewSpace(in Vector3 position)
+        {
+            Vector3 transformed = Vector3.Transform(position, _matrices.ModelView);
+            return new SKPoint(transformed.X, transformed.Y);
+        }
+    }
+}

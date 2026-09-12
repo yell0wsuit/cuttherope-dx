@@ -52,6 +52,11 @@ namespace CutTheRopeDX.Tests
             throw new NotSupportedException(Message);
         }
 
+        public IVideoFrameTexture CreateVideoFrameTexture(int width, int height)
+        {
+            throw new NotSupportedException(Message);
+        }
+
         public void ResetRenderTarget()
         {
             throw new NotSupportedException(Message);

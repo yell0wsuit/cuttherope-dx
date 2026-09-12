@@ -3,7 +3,12 @@
 The full typefaces total 13.4 MB, most of it CJK coverage the game never renders.
 Subsetting to the characters actually present in the locale files takes that to ~678 KB.
 
-Output stays TTF rather than WOFF2. WOFF2 would halve it again, but SkiaSharp's
+Output keeps each source file's own name and extension. Subsetting preserves the outline
+flavor -- a subsetted .otf is still CFF -- so renaming everything to .ttf only made the
+file describe itself wrongly, and the game's shared font loader had to encode that rename
+to find anything.
+
+Output stays sfnt rather than WOFF2. WOFF2 would halve it again, but SkiaSharp's
 WebAssembly build (4.151.1) compiles FreeType without FT_CONFIG_OPTION_USE_BROTLI -- its
 archive has zero woff2 and zero Brotli symbols -- so SKTypeface.FromData cannot decode it.
 Setting font.flavor = "woff2" here is the one-line change if that ever returns.
@@ -24,7 +29,7 @@ from fontTools.ttLib import TTFont
 
 from . import pipeline, progress
 
-SETTINGS = "ttf:subset:v1"
+SETTINGS = "sfnt:subset:v2"
 
 # fontTools warns once per table it has no subsetter for (meta, FFTM, webf). Dropping
 # them is the intended outcome -- none holds glyph or layout data the game reads -- so
@@ -111,7 +116,7 @@ def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
         source = content_root / "fonts" / font_file
         if not source.exists():
             continue
-        relative = Path("fonts") / f"{Path(font_file).stem}.ttf"
+        relative = Path("fonts") / font_file
         charset = collect_charset(locales_dir, languages)
         yield pipeline.Job(
             source,

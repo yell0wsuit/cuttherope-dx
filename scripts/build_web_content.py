@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Converts the desktop content tree into the browser payload.
 
-Five jobs: PNG to WebP, WAV to Ogg Vorbis, MP4 to WebM, font subsetting, and the
+Five jobs: PNG to WebP, WAV to Ogg Opus, MP4 to WebM, font subsetting, and the
 tier-0 metadata bundle. Every job is incremental, so a rerun after changing one asset
 reconverts only that asset.
 
@@ -43,7 +43,7 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-audio",
         action="store_true",
-        help="Skip WAV conversion; useful when the pinned ffmpeg is unavailable.",
+        help="Skip WAV conversion; useful when no ffmpeg with libopus is available.",
     )
     parser.add_argument(
         "--skip-video",
@@ -97,11 +97,12 @@ def main(argv: list[str] | None = None) -> int:
         _say("audio: skipped")
     else:
         try:
-            ffmpeg = ffmpeg_tool.find_pinned_ffmpeg()
+            ffmpeg = ffmpeg_tool.find_ffmpeg()
             ffmpeg_tool.require_encoders(ffmpeg, audio.REQUIRED_ENCODERS)
         except (
             ffmpeg_tool.FfmpegNotFoundError,
             ffmpeg_tool.MissingEncoderError,
+            ffmpeg_tool.ChecksumMismatchError,
         ) as error:
             print(f"error: {error}", file=sys.stderr)
             return 2
@@ -112,11 +113,12 @@ def main(argv: list[str] | None = None) -> int:
         _say("video: skipped")
     else:
         try:
-            system_ffmpeg = ffmpeg_tool.find_system_ffmpeg()
+            system_ffmpeg = ffmpeg_tool.find_ffmpeg()
             ffmpeg_tool.require_encoders(system_ffmpeg, video.REQUIRED_ENCODERS)
         except (
             ffmpeg_tool.FfmpegNotFoundError,
             ffmpeg_tool.MissingEncoderError,
+            ffmpeg_tool.ChecksumMismatchError,
         ) as error:
             # Unlike audio, this warns instead of failing: the browser player reports a
             # missing video as a finished playback, so the build stays usable and simply

@@ -1,3 +1,6 @@
+using System.IO;
+using System.Reflection;
+
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -6,6 +9,23 @@ namespace CutTheRopeDX.Tests
 {
     public class PlaytestHandshakeTests
     {
+        [Fact]
+        public void AnnounceWritesOnlyTheHandshakeLine()
+        {
+            using StringWriter writer = new();
+            Assembly assembly = typeof(PlaytestHandshake).Assembly;
+            string version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                ?? assembly.GetName().Version?.ToString() ?? "";
+
+            string announced = PlaytestHandshake.Announce(writer);
+
+            Assert.Equal(PlaytestHandshake.FormatLine(version) + writer.NewLine, writer.ToString());
+
+            // What is returned has to be what was written: the caller logs it, and a version
+            // resolved a second time from a different assembly would not match.
+            Assert.Equal(PlaytestHandshake.FormatLine(version), announced);
+        }
+
         [Fact]
         public void FormatLineIncludesSignatureProtocolAndVersion()
         {

@@ -4,10 +4,13 @@ using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -671,9 +674,12 @@ namespace CutTheRopeDX.GameMain
                 {
                     PreparseOmNomXmlDefinitions();
                 }
-                catch
+                catch (Exception failure)
                 {
-                    // Warmup failures should not block on-demand Om Nom creation.
+                    // Warmup failures do not block on-demand Om Nom creation; they only cost the
+                    // time the prewarm was meant to save.
+                    ILogger logger = Log.For(LogCategories.ContentResources);
+                    CandySelectionViewLog.WarmupFailed(logger, failure);
                 }
             });
         }
@@ -1368,5 +1374,12 @@ namespace CutTheRopeDX.GameMain
 
             return menuView;
         }
+    }
+
+    /// <summary>Log messages for the candy selection view.</summary>
+    internal static partial class CandySelectionViewLog
+    {
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Om Nom warmup failed; falling back to on-demand creation.")]
+        public static partial void WarmupFailed(ILogger logger, Exception exception);
     }
 }

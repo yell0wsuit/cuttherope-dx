@@ -42,10 +42,16 @@ namespace CutTheRopeDX.GameMain
         /// line could sit in the buffer for the whole session and the launcher would time out waiting.
         /// </remarks>
         /// <param name="output">Destination writer, normally <see cref="Console.Out"/>.</param>
-        public static void Announce(TextWriter output)
+        /// <returns>
+        /// The line exactly as it was written, so a caller can record what the launcher was told
+        /// rather than working the version out a second time and getting a different answer.
+        /// </returns>
+        public static string Announce(TextWriter output)
         {
-            output.WriteLine(FormatLine(ResolveVersion()));
+            string line = FormatLine(ResolveVersion());
+            output.WriteLine(line);
             output.Flush();
+            return line;
         }
 
         // The informational version carries the most detail - it includes the source revision when the

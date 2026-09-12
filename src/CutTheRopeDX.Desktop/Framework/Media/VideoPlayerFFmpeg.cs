@@ -3,17 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using CutTheRopeDX.Desktop;
+using CutTheRopeDX.Desktop.Platform.Audio;
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Helpers;
 
 using FFmpeg.AutoGen;
 
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Extensions.Logging;
+
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -21,10 +23,10 @@ namespace CutTheRopeDX.Framework.Media
     /// Video player implementation using FFmpeg for decoding and playback.
     /// </summary>
     /// <remarks>
-    /// This player uses FFmpeg libraries for video/audio decoding and converts frames
-    /// to RGBA format for MonoGame texture rendering. Decoding runs on a background
-    /// thread to keep the main game loop responsive. Audio is played through
-    /// <see cref="DynamicSoundEffectInstance"/> with resampling handled by libswresample.
+    /// This player uses FFmpeg libraries for video/audio decoding and converts frames to RGBA for
+    /// the renderer's frame texture. Decoding runs on a background thread to keep the main game
+    /// loop responsive. Audio is played through an <see cref="SdlPcmStream"/> with resampling
+    /// handled by libswresample.
     /// </remarks>
     internal sealed unsafe class VideoPlayerFFmpeg : IVideoPlayer
     {
@@ -32,7 +34,12 @@ namespace CutTheRopeDX.Framework.Media
         private const int TextureReadyTimeoutMs = 500;
 
         /// <summary>Maximum number of audio buffers to queue for playback.</summary>
-        private const int MaxQueuedAudioBuffers = 8;
+        /// <summary>
+        /// How far ahead of the device decoded audio is allowed to run. Bounding the queue by time
+        /// rather than by a count of decoded packets keeps the lead the same whatever packet size
+        /// the source happens to use.
+        /// </summary>
+        private static readonly TimeSpan MaxQueuedAudio = TimeSpan.FromMilliseconds(200);
 
         /// <summary>Bytes per audio sample (16-bit audio = 2 bytes).</summary>
         private const int BytesPerSample = 2;
@@ -90,7 +97,8 @@ namespace CutTheRopeDX.Framework.Media
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to initialize FFmpeg: {ex.Message}");
+                    ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                    VideoPlayerLog.FfmpegInitializationFailed(logger, ex);
                 }
             }
         }
@@ -108,16 +116,70 @@ namespace CutTheRopeDX.Framework.Media
             set => Volatile.Write(ref field, value);
         }
 
+        /// <summary>
+        /// Whether a decode thread was left running inside resources this could not release.
+        /// </summary>
+        private bool abandoned;
+
         /// <summary>Thread-safe accessor for the stop-requested flag.</summary>
+        /// <remarks>
+        /// Mirrored into <see cref="interrupted"/>, which is the copy FFmpeg can see. The managed
+        /// flag is only read between calls, so on its own it cannot end a read already blocked.
+        /// </remarks>
         private bool HasStopRequested
         {
             get => Volatile.Read(ref field);
-            set => Volatile.Write(ref field, value);
+            set
+            {
+                Volatile.Write(ref field, value);
+                if (interrupted != null)
+                {
+                    Volatile.Write(ref *interrupted, value ? 1 : 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The stop flag FFmpeg reads, in memory it can reach from its own thread.
+        /// </summary>
+        /// <remarks>
+        /// Unmanaged because the callback below runs with no managed context to speak of, and
+        /// because FFmpeg keeps the pointer for as long as the format context lives. One int,
+        /// allocated with the player and released with it.
+        /// </remarks>
+        private int* interrupted = (int*)NativeMemory.AllocZeroed(sizeof(int));
+
+        /// <summary>
+        /// Tells FFmpeg to give up a blocking read.
+        /// </summary>
+        /// <param name="opaque">The player's stop flag.</param>
+        /// <returns>Non-zero once the player has been asked to stop.</returns>
+        /// <remarks>
+        /// FFmpeg polls this from inside the calls that wait on I/O, which is the only way to end
+        /// one early. Without it a read that does not return leaves the decode thread inside the
+        /// contexts teardown is about to free, and no amount of waiting on this side changes that:
+        /// the thread has to be told, not waited for.
+        /// </remarks>
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+        private static int Interrupt(void* opaque)
+        {
+            return opaque == null ? 0 : Volatile.Read(ref *(int*)opaque);
         }
 
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
+            if (abandoned)
+            {
+                // A previous cutscene left its decode thread running inside resources this never
+                // got to release. Starting another would build a second set beside them, so the
+                // rest of the session goes without cutscenes instead.
+                ILogger abandonedLogger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.SkippingMovie(abandonedLogger, moviePath, fileExists: true, librariesLoaded: false);
+                PlaybackFinished?.Invoke();
+                return;
+            }
+
             Cleanup();
             HasPlaybackFinished = false;
             HasStopRequested = false;
@@ -129,6 +191,8 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!fileExists(fullPath) || !librariesLoaded)
             {
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.SkippingMovie(logger, moviePath, fileExists(fullPath), librariesLoaded);
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -161,12 +225,12 @@ namespace CutTheRopeDX.Framework.Media
                     if (frameReady)
                     {
                         frameReady = false;
-                        videoTexture.SetData(videoBuffer);
+                        videoTexture.Update(videoBuffer);
                     }
                 }
             }
 
-            return videoTextureHandle;
+            return videoTexture;
         }
 
         /// <inheritdoc/>
@@ -280,6 +344,14 @@ namespace CutTheRopeDX.Framework.Media
             disposed = true;
             Cleanup();
             pauseGate.Dispose();
+
+            // Only once nothing can poll it any more. An abandoned player still has a thread
+            // holding this pointer, so the one int it costs is left behind with the rest.
+            if (!abandoned)
+            {
+                NativeMemory.Free(interrupted);
+                interrupted = null;
+            }
         }
 
         /// <summary>
@@ -307,7 +379,8 @@ namespace CutTheRopeDX.Framework.Media
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[FFmpeg] Decode thread exception: {ex}");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.DecodeThreadFailed(logger, ex);
                 HasPlaybackFinished = true;
             }
         }
@@ -327,7 +400,8 @@ namespace CutTheRopeDX.Framework.Media
             {
                 // A native FFmpeg load or decode failure here (e.g. a missing
                 // bundled dependency) must not crash the game — skip the video.
-                Console.WriteLine($"[FFmpeg] Video initialization failed: {ex.Message}");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.VideoInitializationFailed(logger, ex);
                 return false;
             }
         }
@@ -342,7 +416,23 @@ namespace CutTheRopeDX.Framework.Media
         /// <returns><see langword="true" /> if initialization succeeded; otherwise, <see langword="false" />.</returns>
         private bool InitializeFfmpegCore(string filePath)
         {
-            AVFormatContext* openedContext = null;
+            // Allocated here rather than by the open, so the interrupt is already installed when
+            // the open itself starts waiting. Opening reads the file to find the streams, so it
+            // is one of the calls that can block.
+            AVFormatContext* openedContext = ffmpeg.avformat_alloc_context();
+            if (openedContext == null)
+            {
+                return false;
+            }
+
+            openedContext->interrupt_callback.callback = new AVIOInterruptCB_callback_func
+            {
+                Pointer = (nint)(delegate* unmanaged[Cdecl]<void*, int>)&Interrupt,
+            };
+            openedContext->interrupt_callback.opaque = interrupted;
+
+            // Frees and nulls the context itself when it fails, so there is nothing left to
+            // release here.
             if (ffmpeg.avformat_open_input(&openedContext, filePath, null, null) != 0)
             {
                 return false;
@@ -451,7 +541,8 @@ namespace CutTheRopeDX.Framework.Media
             if (!mute && !InitializeAudio())
             {
                 CleanupAudio();
-                Console.WriteLine("[FFmpeg] Audio init failed; continuing without audio.");
+                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.AudioInitializationFailed(logger);
             }
 
             return true;
@@ -666,8 +757,8 @@ namespace CutTheRopeDX.Framework.Media
                 return false;
             }
 
-            AudioChannels channels = audioChannels == 1 ? AudioChannels.Mono : AudioChannels.Stereo;
-            audioInstance = new DynamicSoundEffectInstance(audioSampleRate, channels);
+            // A machine with no audio device still plays the movie; the soundtrack is what is lost.
+            audioInstance = SdlPcmStream.TryOpen(audioSampleRate, audioChannels);
 
             return true;
         }
@@ -807,7 +898,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            while (audioInstance.PendingBufferCount < MaxQueuedAudioBuffers)
+            while (audioInstance.HasRoomFor(MaxQueuedAudio))
             {
                 byte[] buffer;
                 lock (audioLock)
@@ -820,7 +911,7 @@ namespace CutTheRopeDX.Framework.Media
                     buffer = pendingAudioQueue.Dequeue();
                 }
 
-                audioInstance.SubmitBuffer(buffer, 0, buffer.Length);
+                audioInstance.Submit(buffer);
                 audioBytesDrained += buffer.Length;
                 audioBuffersSubmitted++;
             }
@@ -850,7 +941,7 @@ namespace CutTheRopeDX.Framework.Media
 
             lock (audioLock)
             {
-                return pendingAudioQueue.Count == 0 && audioInstance.PendingBufferCount == 0;
+                return pendingAudioQueue.Count == 0 && audioInstance.IsPlayedOut;
             }
         }
 
@@ -867,8 +958,10 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             videoTexture?.Dispose();
-            videoTexture = new Texture2D(Global.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            videoTextureHandle = new MonoGameTexture(videoTexture);
+
+            // The renderer owns the graphics device, so it makes the frame surface; this player
+            // decodes on its own thread and never learns which graphics API is running.
+            videoTexture = PlatformServices.Render?.CreateVideoFrameTexture(width, height);
             textureWidth = width;
             textureHeight = height;
         }
@@ -890,12 +983,36 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Releases all FFmpeg and video resources.
         /// </summary>
+        /// <summary>How long a decode thread is given to notice it was asked to stop.</summary>
+        /// <remarks>
+        /// Generous rather than tight. Setting the stop flag now interrupts the blocking calls
+        /// themselves, so a thread that has not returned within this has not merely been slow to
+        /// be scheduled - it is somewhere the interrupt does not reach.
+        /// </remarks>
+        private const int DecodeThreadStopTimeoutMs = 5000;
+
         private void Cleanup()
         {
             HasStopRequested = true;
             pauseGate.Set();
-            _ = decodeThread?.Join(2000);
+
+            // Everything below belongs to the decode thread while it is still running, so none of
+            // it may be released until that thread is out. Asking is what does the work: the stop
+            // flag is the one FFmpeg polls from inside its own blocking reads, so a thread waiting
+            // on I/O returns from it rather than sitting there until the wait below gives up.
+            bool stopped = decodeThread == null || decodeThread.Join(DecodeThreadStopTimeoutMs);
             decodeThread = null;
+            if (!stopped)
+            {
+                // Nothing is released. A thread still inside these contexts would be reading
+                // memory this was about to hand back, and the frames of one cutscene are a far
+                // smaller price than that. The player is left alone rather than reset, because
+                // the thread is still reading the fields a reset would clear.
+                abandoned = true;
+                VideoPlayerLog.DecodeThreadDidNotStop(
+                    Log.For(LogCategories.MediaFFmpeg), DecodeThreadStopTimeoutMs);
+                return;
+            }
 
             if (packet != null)
             {
@@ -948,7 +1065,6 @@ namespace CutTheRopeDX.Framework.Media
 
             videoTexture?.Dispose();
             videoTexture = null;
-            videoTextureHandle = null;
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
@@ -1069,11 +1185,10 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Presentation timestamp of the next frame to display.</summary>
         private double nextFramePts;
 
-        /// <summary>MonoGame texture for rendering video frames.</summary>
-        private Texture2D videoTexture;
+        /// <summary>The texture each decoded frame is written into.</summary>
+        private IVideoFrameTexture videoTexture;
 
         /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
-        private MonoGameTexture videoTextureHandle;
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;
@@ -1096,8 +1211,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Audio sample rate in Hz.</summary>
         private int audioSampleRate;
 
-        /// <summary>MonoGame dynamic sound effect for audio playback.</summary>
-        private DynamicSoundEffectInstance audioInstance;
+        /// <summary>The PCM sink the decoded soundtrack is pushed into.</summary>
+        private SdlPcmStream audioInstance;
 
         /// <summary>Native buffer for resampled audio data.</summary>
         private byte* audioBuffer;

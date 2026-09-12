@@ -186,12 +186,5 @@ namespace CutTheRopeDX.Browser
             _musicHandle == 0 || !AudioInterop.IsPlaying(_musicHandle)
                 ? AudioPlaybackState.Stopped
                 : _musicPaused ? AudioPlaybackState.Paused : AudioPlaybackState.Playing;
-
-        /// <inheritdoc />
-        public bool TryInstallSongCompletionCallback(
-            IMusicTrack track, EventHandler<EventArgs> onDecoderFinished)
-        {
-            return false;
-        }
     }
 }

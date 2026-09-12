@@ -256,7 +256,7 @@ namespace CutTheRopeDX.GameMain
             {
                 // Not fitted: ScrollableContainer clips with a scissor rect computed from
                 // drawX/width and the render backend's single global scale
-                // (MonoGameRenderBackend.SetScissor), with no way to fold in an ancestor's
+                // (the renderer's SetScissor), with no way to fold in an ancestor's
                 // FittedScale on top of that. Nesting it under a scaled FittedGroup would clip at
                 // the pre-scale size while the content draws at the larger, scaled one.
                 levelsBox.width = (int)visible.w;
