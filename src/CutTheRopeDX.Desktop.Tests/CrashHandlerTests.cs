@@ -114,7 +114,17 @@ namespace CutTheRopeDX.Desktop.Tests
                 // has logged to yet, which is the case that has to build a logger from the
                 // factory the flush just closed.
                 ILogger later = Log.For("ctrdx.test.category.not.used.before");
-                later.LogError("reported from another thread while the dialog is up");
+                Assert.NotNull(later);
+
+                // And writing through it must not throw either. The interface method rather than
+                // the extension, so this does not read as a logging site the analyzer should be
+                // steering towards a source-generated message.
+                later.Log(
+                    LogLevel.Error,
+                    default,
+                    "reported from another thread while the dialog is up",
+                    null,
+                    static (state, _) => state);
             }
             finally
             {
@@ -157,7 +167,10 @@ namespace CutTheRopeDX.Desktop.Tests
 
             public IReadOnlyList<LogRecord> Records => [.. records];
 
-            public ILogger CreateLogger(string categoryName) => new ReentrantLogger(this, categoryName);
+            public ILogger CreateLogger(string categoryName)
+            {
+                return new ReentrantLogger(this, categoryName);
+            }
 
             public void Dispose()
             {
@@ -165,9 +178,15 @@ namespace CutTheRopeDX.Desktop.Tests
 
             private sealed class ReentrantLogger(ReentrantLoggerProvider owner, string category) : ILogger
             {
-                public IDisposable BeginScope<TState>(TState state) where TState : notnull => null;
+                public IDisposable BeginScope<TState>(TState state) where TState : notnull
+                {
+                    return null;
+                }
 
-                public bool IsEnabled(LogLevel logLevel) => true;
+                public bool IsEnabled(LogLevel logLevel)
+                {
+                    return true;
+                }
 
                 public void Log<TState>(
                     LogLevel logLevel,

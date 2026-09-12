@@ -5,6 +5,7 @@ using System.Threading;
 
 using CutTheRopeDX.Framework.Diagnostics;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 
@@ -70,21 +71,18 @@ namespace CutTheRopeDX.Desktop
                 value = joined?[(LevelSwitch.Length + 1)..];
             }
 
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            return value.ToLowerInvariant() switch
-            {
-                "trace" => LogLevel.Trace,
-                "debug" => LogLevel.Debug,
-                "info" => LogLevel.Information,
-                "warn" => LogLevel.Warning,
-                "error" => LogLevel.Error,
-                _ => throw new ArgumentException(
-                    $"Unknown {LevelSwitch} '{value}'. Expected trace, debug, info, warn or error."),
-            };
+            return string.IsNullOrEmpty(value)
+                ? null
+                : value.ToLowerInvariant() switch
+                {
+                    "trace" => LogLevel.Trace,
+                    "debug" => LogLevel.Debug,
+                    "info" => LogLevel.Information,
+                    "warn" => LogLevel.Warning,
+                    "error" => LogLevel.Error,
+                    _ => throw new ArgumentException(
+                        $"Unknown {LevelSwitch} '{value}'. Expected trace, debug, info, warn or error."),
+                };
         }
 
         /// <summary>
@@ -216,7 +214,12 @@ namespace CutTheRopeDX.Desktop
                         options.LogToStandardErrorThreshold = LogLevel.Error;
                         options.FormatterName = RedactingConsoleFormatter.FormatterName;
                     });
-                    _ = builder.AddConsoleFormatter<RedactingConsoleFormatter, ConsoleFormatterOptions>();
+
+                    // Registered straight into the container rather than through
+                    // AddConsoleFormatter, which binds an options type out of configuration and
+                    // so is annotated as unsafe to trim and to compile ahead of time. The release
+                    // publishes with NativeAOT, and this formatter has nothing to bind.
+                    _ = builder.Services.AddSingleton<ConsoleFormatter, RedactingConsoleFormatter>();
                 });
             }
         }

@@ -106,20 +106,20 @@ namespace CutTheRopeDX.Browser
             }
         }
 
-    /// <summary>A scope that records nothing and can still be disposed.</summary>
-    internal sealed class NullScope : IDisposable
-    {
-        /// <summary>The only instance needed, since it carries no state.</summary>
-        public static NullScope Instance { get; } = new();
-
-        private NullScope()
+        /// <summary>A scope that records nothing and can still be disposed.</summary>
+        internal sealed class NullScope : IDisposable
         {
-        }
+            /// <summary>The only instance needed, since it carries no state.</summary>
+            public static NullScope Instance { get; } = new();
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
+            private NullScope()
+            {
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+            }
         }
-    }
     }
 }

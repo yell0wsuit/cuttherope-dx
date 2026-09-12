@@ -316,7 +316,7 @@ namespace CutTheRopeDX.Content.Tests
             public void Write(string relativePath, string contents)
             {
                 string full = Path.Combine(Root, relativePath.Replace('/', Path.DirectorySeparatorChar));
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(full));
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(full) ?? Root);
                 File.WriteAllText(full, contents);
             }
 

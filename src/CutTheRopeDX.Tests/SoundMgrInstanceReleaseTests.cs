@@ -144,7 +144,10 @@ namespace CutTheRopeDX.Tests
                 return new TrackedEffect(created);
             }
 
-            public IMusicTrack LoadMusic(string contentPath) => throw new NotSupportedException();
+            public IMusicTrack LoadMusic(string contentPath)
+            {
+                throw new NotSupportedException();
+            }
 
             public void PlayMusic(IMusicTrack track, bool repeating)
             {
@@ -195,15 +198,30 @@ namespace CutTheRopeDX.Tests
                 State = AudioPlaybackState.Stopped;
             }
 
-            public void Play() => State = AudioPlaybackState.Playing;
+            public void Play()
+            {
+                State = AudioPlaybackState.Playing;
+            }
 
-            public void Stop() => State = AudioPlaybackState.Stopped;
+            public void Stop()
+            {
+                State = AudioPlaybackState.Stopped;
+            }
 
-            public void Pause() => State = AudioPlaybackState.Paused;
+            public void Pause()
+            {
+                State = AudioPlaybackState.Paused;
+            }
 
-            public void Resume() => State = AudioPlaybackState.Playing;
+            public void Resume()
+            {
+                State = AudioPlaybackState.Playing;
+            }
 
-            public void Dispose() => Disposed = true;
+            public void Dispose()
+            {
+                Disposed = true;
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 using System;
 
 using CutTheRopeDX.Framework;
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
-using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -104,9 +102,15 @@ namespace CutTheRopeDX.Tests
 
             public int TintCalls { get; private set; }
 
-            public (int W, int H)? ImageDimensions(string path) => inner.ImageDimensions(path);
+            public (int W, int H)? ImageDimensions(string path)
+            {
+                return inner.ImageDimensions(path);
+            }
 
-            public ITextureHandle ImageTexture(string path) => inner.ImageTexture(path);
+            public ITextureHandle ImageTexture(string path)
+            {
+                return inner.ImageTexture(path);
+            }
 
             public ITextureHandle TintedRegion(
                 ITextureHandle source, int x, int y, int width, int height, RGBAColor tint)
@@ -115,11 +119,20 @@ namespace CutTheRopeDX.Tests
                 return new Handle(width, height);
             }
 
-            public void FreeImage(string path) => inner.FreeImage(path);
+            public void FreeImage(string path)
+            {
+                inner.FreeImage(path);
+            }
 
-            public FontGeneric Font(string name) => inner.Font(name);
+            public FontGeneric Font(string name)
+            {
+                return inner.Font(name);
+            }
 
-            public void ClearFontCache() => inner.ClearFontCache();
+            public void ClearFontCache()
+            {
+                inner.ClearFontCache();
+            }
 
             public void Dispose()
             {
@@ -137,7 +150,10 @@ namespace CutTheRopeDX.Tests
 
             public bool Disposed { get; private set; }
 
-            public void Dispose() => Disposed = true;
+            public void Dispose()
+            {
+                Disposed = true;
+            }
         }
     }
 }
