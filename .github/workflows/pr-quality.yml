@@ -47,7 +47,7 @@ jobs:
               run: dotnet format --verify-no-changes --verbosity diagnostic
 
             - name: Build
-              run: dotnet build --no-restore -c Release
+              run: dotnet build --no-restore -c Release -p:BuildContent=false -p:DeployContent=false
 
             - name: Test
               run: dotnet test --solution CutTheRopeDX.slnx --no-build -c Release
