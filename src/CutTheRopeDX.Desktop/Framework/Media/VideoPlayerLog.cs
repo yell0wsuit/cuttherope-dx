@@ -128,5 +128,21 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="logger">Destination logger.</param>
         [LoggerMessage(Level = LogLevel.Warning, Message = "Audio init failed; continuing without audio.")]
         public static partial void AudioInitializationFailed(ILogger logger);
+
+        /// <summary>
+        /// Records a decode thread that did not stop when it was asked to.
+        /// </summary>
+        /// <remarks>
+        /// Everything released after the join belongs to that thread while it is still running,
+        /// so this is the one warning that says a teardown went ahead over resources something
+        /// else may still be reading. It has never been seen on a bundled cutscene, which reads
+        /// from a local file, and this is here so that stays a claim with evidence behind it.
+        /// </remarks>
+        /// <param name="logger">Logger to write to.</param>
+        /// <param name="waitedMs">How long the thread was given to return.</param>
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Decode thread did not stop within {WaitedMs} ms; releasing anyway")]
+        public static partial void DecodeThreadDidNotStop(ILogger logger, int waitedMs);
     }
 }

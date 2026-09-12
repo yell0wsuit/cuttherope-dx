@@ -862,7 +862,7 @@ namespace CutTheRopeDX.Framework.Media
 
             lock (audioLock)
             {
-                return pendingAudioQueue.Count == 0 && audioInstance.IsDrained;
+                return pendingAudioQueue.Count == 0 && audioInstance.IsPlayedOut;
             }
         }
 
@@ -904,11 +904,25 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>
         /// Releases all FFmpeg and video resources.
         /// </summary>
+        /// <summary>How long a decode thread is given to notice it was asked to stop.</summary>
+        private const int DecodeThreadStopTimeoutMs = 2000;
+
         private void Cleanup()
         {
             HasStopRequested = true;
             pauseGate.Set();
-            _ = decodeThread?.Join(2000);
+
+            // Everything below belongs to the decode thread while it is still running. The wait is
+            // bounded because a thread parked inside a blocking read cannot be made to return, and
+            // hanging the game on the way out of a cutscene would be worse than the race. A thread
+            // that does not come back is the one case where this releases resources still in use,
+            // so it says so rather than passing in silence.
+            if (decodeThread != null && !decodeThread.Join(DecodeThreadStopTimeoutMs))
+            {
+                VideoPlayerLog.DecodeThreadDidNotStop(
+                    Log.For(LogCategories.MediaFFmpeg), DecodeThreadStopTimeoutMs);
+            }
+
             decodeThread = null;
 
             if (packet != null)

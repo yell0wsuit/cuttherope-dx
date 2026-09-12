@@ -134,5 +134,29 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         {
             stream.Dispose();
         }
+
+        [Fact]
+        public void AnEmptyQueueIsNotYetPlayedOutWhileTheDeviceStillHoldsABuffer()
+        {
+            // Stopping a stream clears whatever the device has not played yet, so a caller that
+            // stops the moment the queue empties cuts the tail off the soundtrack - which for a
+            // cutscene is its last words.
+            using SdlPcmStream stream = SdlPcmStream.CreateForTesting(
+                48000, 2, TimeSpan.FromMilliseconds(200));
+            Assert.NotNull(stream);
+
+            Assert.True(stream.IsDrained);
+            Assert.False(stream.IsPlayedOut);
+        }
+
+        [Fact]
+        public void ADeviceThatBuffersNothingIsPlayedOutAsSoonAsItIsDrained()
+        {
+            using SdlPcmStream stream = SdlPcmStream.CreateForTesting(48000, 2);
+            Assert.NotNull(stream);
+
+            Assert.True(stream.IsDrained);
+            Assert.True(stream.IsPlayedOut);
+        }
     }
 }

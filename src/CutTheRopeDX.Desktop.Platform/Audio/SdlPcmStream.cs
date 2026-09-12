@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 using SDL3;
 
@@ -14,8 +15,8 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
     /// decoded packet varies with the source and says nothing about how long it lasts.
     /// <para>
     /// An empty queue means everything submitted has been handed to the device. It does not mean
-    /// the last sample has been heard, so callers that must not cut a soundtrack short still gate
-    /// on their own playback clock.
+    /// the last sample has been heard, so a caller that must not cut a soundtrack short waits for
+    /// the device's own buffer to play out as well.
     /// </para>
     /// </remarks>
     internal sealed class SdlPcmStream : IDisposable
@@ -24,14 +25,27 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
 
         private readonly int frequency;
         private nint stream;
+        private long emptiedAt = -1;
 
-        private SdlPcmStream(nint stream, int frequency, int channels, bool boundToDevice)
+        private SdlPcmStream(nint stream, int frequency, int channels, bool boundToDevice,
+            TimeSpan deviceBuffer)
         {
             this.stream = stream;
             this.frequency = frequency;
             BoundToDevice = boundToDevice;
             BytesPerFrame = channels * BytesPerSample;
+            DeviceBuffer = deviceBuffer;
         }
+
+        /// <summary>
+        /// How long the device can still be holding audio after the queue has emptied.
+        /// </summary>
+        /// <remarks>
+        /// The device takes whole buffers and plays them at its leisure, so the moment the queue
+        /// empties is one buffer before the last sample is heard. Read from the device rather
+        /// than guessed, and zero for a stream with no device behind it.
+        /// </remarks>
+        public TimeSpan DeviceBuffer { get; }
 
         /// <summary>
         /// Opens an output stream on the default playback device, or reports that there is none.
@@ -55,7 +69,26 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
                 return null;
             }
 
-            return new SdlPcmStream(stream, frequency, channels, boundToDevice: true);
+            return new SdlPcmStream(stream, frequency, channels, boundToDevice: true,
+                DeviceBufferOf(stream, frequency));
+        }
+
+        /// <summary>Asks the device how much it buffers, in the time that audio lasts.</summary>
+        /// <param name="stream">The opened device stream.</param>
+        /// <param name="fallbackFrequency">Rate to use if the device does not answer.</param>
+        /// <returns>The buffer duration, or zero when the device will not say.</returns>
+        private static TimeSpan DeviceBufferOf(nint stream, int fallbackFrequency)
+        {
+            uint device = SDL.GetAudioStreamDevice(stream);
+            if (device == 0
+                || !SDL.GetAudioDeviceFormat(device, out SDL.AudioSpec spec, out int sampleFrames)
+                || sampleFrames <= 0)
+            {
+                return TimeSpan.Zero;
+            }
+
+            int rate = spec.Freq > 0 ? spec.Freq : fallbackFrequency;
+            return rate > 0 ? TimeSpan.FromSeconds((double)sampleFrames / rate) : TimeSpan.Zero;
         }
 
         /// <summary>
@@ -67,9 +100,24 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
         /// <returns>The stream, or <see langword="null"/> when it could not be created.</returns>
         internal static SdlPcmStream CreateForTesting(int frequency, int channels)
         {
+            return CreateForTesting(frequency, channels, TimeSpan.Zero);
+        }
+
+        /// <summary>
+        /// Creates a device-less stream that reports a device buffer, so the settle a soundtrack
+        /// waits out can be exercised without audio hardware.
+        /// </summary>
+        /// <param name="frequency">Sample rate of the audio that will be submitted.</param>
+        /// <param name="channels">Channel count of the audio that will be submitted.</param>
+        /// <param name="deviceBuffer">What to report as the device's own buffering.</param>
+        /// <returns>The stream, or <see langword="null"/> when it could not be created.</returns>
+        internal static SdlPcmStream CreateForTesting(int frequency, int channels, TimeSpan deviceBuffer)
+        {
             SDL.AudioSpec spec = new() { Format = SDL.AudioFormat.AudioS16LE, Channels = channels, Freq = frequency };
             nint stream = SDL.CreateAudioStream(in spec, in spec);
-            return stream == 0 ? null : new SdlPcmStream(stream, frequency, channels, boundToDevice: false);
+            return stream == 0
+                ? null
+                : new SdlPcmStream(stream, frequency, channels, boundToDevice: false, deviceBuffer);
         }
 
         /// <summary>Bytes one interleaved frame occupies, which is what turns queued bytes into frames.</summary>
@@ -89,6 +137,34 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
 
         /// <summary>Whether everything submitted has been handed to the device.</summary>
         public bool IsDrained => QueuedFrames == 0;
+
+        /// <summary>
+        /// Whether everything submitted has not only reached the device but had time to be heard.
+        /// </summary>
+        /// <remarks>
+        /// This is the one to gate on before stopping a stream, because stopping clears whatever
+        /// the device is still holding. An empty queue is one device buffer short of the end, so
+        /// a caller that stops on <see cref="IsDrained"/> cuts the tail off every soundtrack it
+        /// plays. The wait restarts if more audio arrives.
+        /// </remarks>
+        public bool IsPlayedOut
+        {
+            get
+            {
+                if (!IsDrained)
+                {
+                    emptiedAt = -1;
+                    return false;
+                }
+
+                if (emptiedAt < 0)
+                {
+                    emptiedAt = Stopwatch.GetTimestamp();
+                }
+
+                return Stopwatch.GetElapsedTime(emptiedAt) >= DeviceBuffer;
+            }
+        }
 
         /// <summary>
         /// Whether the queue is shallow enough to accept more without running ahead of playback.
