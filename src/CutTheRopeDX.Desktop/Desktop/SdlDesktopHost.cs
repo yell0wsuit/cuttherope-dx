@@ -793,7 +793,18 @@ namespace CutTheRopeDX.Desktop
             audio?.Dispose();
             render?.Dispose();
             assets?.Dispose();
-            selection?.Dispose();
+            try
+            {
+                selection?.Dispose();
+            }
+            catch (Exception failure)
+            {
+                // Releasing a context is the one teardown step that reports a result, and a driver
+                // that refuses must not take SDL's own shutdown with it: the process is leaving
+                // either way, and skipping Quit turns a clean exit into a crash dialog.
+                SdlDesktopHostLog.ShutdownReleaseFailed(Log.For(LogCategories.SdlHost), failure);
+            }
+
             if (initialized) { SDL.Quit(); initialized = false; }
         }
     }
@@ -803,6 +814,9 @@ namespace CutTheRopeDX.Desktop
     {
         [LoggerMessage(Level = LogLevel.Error, Message = "Could not open URL {Url}")]
         public static partial void OpenUrlFailed(ILogger logger, string url, Exception exception);
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "Could not release the renderer on the way out")]
+        public static partial void ShutdownReleaseFailed(ILogger logger, Exception exception);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Renderer {Renderer}, audio {AudioState}")]
         public static partial void Renderer(ILogger logger, GraphicsBackendKind renderer, string audioState);
