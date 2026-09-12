@@ -23,10 +23,12 @@ namespace CutTheRopeDX.Tests
     {
         private static readonly RGBAColor Red = RGBAColor.MakeRGBA(1f, 0f, 0f, 1f);
 
-        [Fact]
-        public void ARecoloredFrameIsBuiltAgainRatherThanLeftBlank()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ARecoloredFrameIsBuiltAgainRatherThanLeftBlank(bool unrelatedTexture)
         {
-            using Probe probe = new();
+            using Probe probe = new(unrelatedTexture);
             using TutorialSignTints tints = new();
 
             CTRTexture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
@@ -44,10 +46,12 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(2, probe.TintCalls);
         }
 
-        [Fact]
-        public void TheCacheKeepsHandingOutTheSameTextureAcrossARecovery()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TheCacheKeepsHandingOutTheSameTextureAcrossARecovery(bool unrelatedTexture)
         {
-            using Probe probe = new();
+            using Probe probe = new(unrelatedTexture);
             using TutorialSignTints tints = new();
 
             CTRTexture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
@@ -86,16 +90,28 @@ namespace CutTheRopeDX.Tests
         /// <summary>Stands in for the platform, counting what it is asked to build.</summary>
         private sealed class Probe : IAssetPlatform, IDisposable
         {
+            private const string AtlasPath = "graphics-recovery-test-atlas";
             private readonly IAssetPlatform inner;
+            private readonly CTRTexture2D unrelated;
+            private Handle atlasHandle;
 
-            public Probe()
+            public Probe(bool unrelatedTexture = false)
             {
                 _ = HeadlessGame.Boot();
                 inner = AssetPlatform.Current;
                 AssetPlatform.Current = this;
-                Atlas = new CTRTexture2D().InitWithHandle(new Handle(256, 956), 256, 956);
+                atlasHandle = new Handle(256, 956);
+                Atlas = new CTRTexture2D().InitWithHandle(atlasHandle, 256, 956);
+                Atlas._resName = AtlasPath;
                 Atlas.SetQuadsCapacity(11);
                 Atlas.SetQuadAt(new CTRRectangle(1f, 243f, 246f, 235f), 4);
+                if (unrelatedTexture)
+                {
+                    // Global recovery also rebuilds textures owned by other scenes or tests.
+                    unrelated = new CTRTexture2D().InitWithHandle(new Handle(8, 8), 8, 8);
+                    unrelated.Regenerate = () => AssetPlatform.Current.TintedRegion(
+                        null, 0, 0, 8, 8, Red);
+                }
             }
 
             public CTRTexture2D Atlas { get; }
@@ -109,14 +125,29 @@ namespace CutTheRopeDX.Tests
 
             public ITextureHandle ImageTexture(string path)
             {
+                if (path == AtlasPath)
+                {
+                    // Model the asset cache releasing the old device's image and reloading it.
+                    atlasHandle.Dispose();
+                    atlasHandle = new Handle(256, 956);
+                    return atlasHandle;
+                }
+
                 return inner.ImageTexture(path);
             }
 
             public ITextureHandle TintedRegion(
                 ITextureHandle source, int x, int y, int width, int height, RGBAColor tint)
             {
-                TintCalls++;
-                return new Handle(width, height);
+                // Recovery visits the process-wide registry, not just this test's texture.
+                if (source != null && ReferenceEquals(source, Atlas.textureHandle_))
+                {
+                    Assert.False(Assert.IsType<Handle>(source).Disposed);
+                    TintCalls++;
+                    return new Handle(width, height);
+                }
+
+                return inner.TintedRegion(source, x, y, width, height, tint);
             }
 
             public void FreeImage(string path)
@@ -137,6 +168,9 @@ namespace CutTheRopeDX.Tests
             public void Dispose()
             {
                 AssetPlatform.Current = inner;
+                unrelated?.Unreg();
+                unrelated?.Dispose();
+                atlasHandle.Dispose();
                 Atlas.Unreg();
                 Atlas.Dispose();
             }
