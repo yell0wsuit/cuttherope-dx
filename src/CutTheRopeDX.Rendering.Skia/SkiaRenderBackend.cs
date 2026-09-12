@@ -276,9 +276,15 @@ namespace CutTheRopeDX.Rendering.Skia
         {
             _requestedSourceFactor = sfactor;
             _requestedDestinationFactor = dfactor;
+            // Both additive pairs land on Plus. They differ in whether the source is weighted by
+            // its own alpha first, and that is not this decision: the fragment reaching Skia is
+            // premultiplied either way, and WeightsSourceByAlpha is what folds in the second
+            // factor GL_SRC_ALPHA asks for. Leaving GL_ONE/GL_ONE to the default composited a
+            // bomb's fragments over the scene rather than lighting it.
             RequestedBlendMode = (sfactor, dfactor) switch
             {
                 (BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE) => SKBlendMode.Plus,
+                (BlendingFactor.GLONE, BlendingFactor.GLONE) => SKBlendMode.Plus,
                 _ => SKBlendMode.SrcOver,
             };
         }

@@ -26,6 +26,41 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using SKBitmap pixels = surface.Pixels();
             Near(new SKColor((byte)red, (byte)green, (byte)blue), pixels.GetPixel(8, 16));
         }
+        [Theory]
+        [InlineData((int)BlendingFactor.GLONE)]
+        [InlineData((int)BlendingFactor.GLSRCALPHA)]
+        public void AdditiveBlendingAddsToWhatIsAlreadyThere(int source)
+        {
+            // Both pairs the game asks for additively: blending mode 2 weights the source by its
+            // own alpha and mode 3 does not, and at full alpha the two agree. Mode 3 is what a
+            // bomb's fragments use to read as hot, so a pair that falls through to source-over
+            // composites the explosion flat over the scene instead of lighting it.
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface);
+            surface.Canvas.Clear(new SKColor(40, 40, 40));
+            renderer.SetBlendFunc((BlendingFactor)source, BlendingFactor.GLONE);
+            DrawRect(renderer, new Color(100, 0, 0, 255));
+            renderer.EndFrame();
+            using SKBitmap pixels = surface.Pixels();
+            Near(new SKColor(140, 40, 40), pixels.GetPixel(8, 16));
+        }
+
+        [Fact]
+        public void DisablingBlendingReplacesTheDestinationRatherThanCompositingOverIt()
+        {
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface);
+            surface.Canvas.Clear(SKColors.Blue);
+            renderer.Disable(1);
+            DrawRect(renderer, new Color(255, 0, 0, 128));
+            renderer.EndFrame();
+            using SKBitmap pixels = surface.Pixels();
+
+            // The opaque blend state the fixed-function pipeline used: the half-transparent
+            // source lands as written, with none of the blue underneath showing through.
+            Near(new SKColor(255, 0, 0, 128), pixels.GetPixel(8, 16));
+        }
+
         [Fact]
         public void ScissorReplacementAndMatrixStackAffectPixels()
         {
