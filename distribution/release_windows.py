@@ -47,6 +47,16 @@ CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
 FFMPEG_DOWNLOAD_ATTEMPTS = 5
+# BtbN also publishes a "latest" tag, whose assets are deleted and re-uploaded under the same
+# names on every build, with the checksum file regenerated alongside them. Verifying against that
+# proves the download arrived intact and nothing more: two runs of this script for the same game
+# version would ship different FFmpeg binaries. A dated tag is written once and keeps its
+# assets, so the checksum becomes a statement about a particular build rather than about
+# whichever one is current.
+#
+# The archive name carries the exact build, so moving this pin forward means moving both lines.
+FFMPEG_BUILD_TAG = "autobuild-2026-09-11-13-20"
+FFMPEG_BUILD_VERSION = "n9.0.1-29-gad500d59cb"
 ANGLE_DIRECTORY = "angle"
 ANGLE_DOWNLOAD_ATTEMPTS = 5
 # ANGLE ships no standalone desktop build, so this takes the libraries from an Electron
@@ -116,8 +126,10 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
     resolves each function from a library named for its own soname; a mismatch loads
     nothing and leaves the game with no video decoder.
     """
-    release_url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
-    archive_name = f"ffmpeg-n9.0-latest-{btbn_arch}-lgpl-shared-9.0.zip"
+    release_url = (
+        f"https://github.com/BtbN/FFmpeg-Builds/releases/download/{FFMPEG_BUILD_TAG}"
+    )
+    archive_name = f"ffmpeg-{FFMPEG_BUILD_VERSION}-{btbn_arch}-lgpl-shared-9.0.zip"
     ffmpeg_url = f"{release_url}/{archive_name}"
     checksums_url = f"{release_url}/checksums.sha256"
     destination = output_dir / FFMPEG_DIRECTORY

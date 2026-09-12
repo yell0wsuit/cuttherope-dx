@@ -18,8 +18,18 @@ if [ -z "$OUTPUT_DIR" ]; then
     exit 1
 fi
 
-RELEASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/latest"
-ARCHIVE_NAME="ffmpeg-n9.0-latest-linux64-lgpl-shared-9.0.tar.xz"
+# A dated tag rather than "latest", whose assets are deleted and re-uploaded under the same names
+# on every build with the checksum file regenerated alongside them. Verified against that, a
+# download proves only that it arrived intact: two runs for the same game version would ship
+# different binaries. A dated tag keeps its assets, so the checksum describes one build.
+#
+# The archive name carries the exact build, so moving this pin forward means moving both lines.
+# Kept in step with FFMPEG_BUILD_TAG in release_windows.py: one FFmpeg across the platforms.
+FFMPEG_BUILD_TAG="autobuild-2026-09-11-13-20"
+FFMPEG_BUILD_VERSION="n9.0.1-29-gad500d59cb"
+
+RELEASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/$FFMPEG_BUILD_TAG"
+ARCHIVE_NAME="ffmpeg-$FFMPEG_BUILD_VERSION-linux64-lgpl-shared-9.0.tar.xz"
 FFMPEG_URL="$RELEASE_URL/$ARCHIVE_NAME"
 CHECKSUMS_URL="$RELEASE_URL/checksums.sha256"
 FFMPEG_SUBDIR="$OUTPUT_DIR/ffmpeg"
