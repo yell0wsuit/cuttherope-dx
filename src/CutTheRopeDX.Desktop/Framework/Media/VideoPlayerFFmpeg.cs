@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -115,16 +116,70 @@ namespace CutTheRopeDX.Framework.Media
             set => Volatile.Write(ref field, value);
         }
 
+        /// <summary>
+        /// Whether a decode thread was left running inside resources this could not release.
+        /// </summary>
+        private bool abandoned;
+
         /// <summary>Thread-safe accessor for the stop-requested flag.</summary>
+        /// <remarks>
+        /// Mirrored into <see cref="interrupted"/>, which is the copy FFmpeg can see. The managed
+        /// flag is only read between calls, so on its own it cannot end a read already blocked.
+        /// </remarks>
         private bool HasStopRequested
         {
             get => Volatile.Read(ref field);
-            set => Volatile.Write(ref field, value);
+            set
+            {
+                Volatile.Write(ref field, value);
+                if (interrupted != null)
+                {
+                    Volatile.Write(ref *interrupted, value ? 1 : 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The stop flag FFmpeg reads, in memory it can reach from its own thread.
+        /// </summary>
+        /// <remarks>
+        /// Unmanaged because the callback below runs with no managed context to speak of, and
+        /// because FFmpeg keeps the pointer for as long as the format context lives. One int,
+        /// allocated with the player and released with it.
+        /// </remarks>
+        private int* interrupted = (int*)NativeMemory.AllocZeroed(sizeof(int));
+
+        /// <summary>
+        /// Tells FFmpeg to give up a blocking read.
+        /// </summary>
+        /// <param name="opaque">The player's stop flag.</param>
+        /// <returns>Non-zero once the player has been asked to stop.</returns>
+        /// <remarks>
+        /// FFmpeg polls this from inside the calls that wait on I/O, which is the only way to end
+        /// one early. Without it a read that does not return leaves the decode thread inside the
+        /// contexts teardown is about to free, and no amount of waiting on this side changes that:
+        /// the thread has to be told, not waited for.
+        /// </remarks>
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+        private static int Interrupt(void* opaque)
+        {
+            return opaque == null ? 0 : Volatile.Read(ref *(int*)opaque);
         }
 
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
+            if (abandoned)
+            {
+                // A previous cutscene left its decode thread running inside resources this never
+                // got to release. Starting another would build a second set beside them, so the
+                // rest of the session goes without cutscenes instead.
+                ILogger abandonedLogger = Log.For(LogCategories.MediaFFmpeg);
+                VideoPlayerLog.SkippingMovie(abandonedLogger, moviePath, fileExists: true, librariesLoaded: false);
+                PlaybackFinished?.Invoke();
+                return;
+            }
+
             Cleanup();
             HasPlaybackFinished = false;
             HasStopRequested = false;
@@ -289,6 +344,14 @@ namespace CutTheRopeDX.Framework.Media
             disposed = true;
             Cleanup();
             pauseGate.Dispose();
+
+            // Only once nothing can poll it any more. An abandoned player still has a thread
+            // holding this pointer, so the one int it costs is left behind with the rest.
+            if (!abandoned)
+            {
+                NativeMemory.Free(interrupted);
+                interrupted = null;
+            }
         }
 
         /// <summary>
@@ -353,7 +416,23 @@ namespace CutTheRopeDX.Framework.Media
         /// <returns><see langword="true" /> if initialization succeeded; otherwise, <see langword="false" />.</returns>
         private bool InitializeFfmpegCore(string filePath)
         {
-            AVFormatContext* openedContext = null;
+            // Allocated here rather than by the open, so the interrupt is already installed when
+            // the open itself starts waiting. Opening reads the file to find the streams, so it
+            // is one of the calls that can block.
+            AVFormatContext* openedContext = ffmpeg.avformat_alloc_context();
+            if (openedContext == null)
+            {
+                return false;
+            }
+
+            openedContext->interrupt_callback.callback = new AVIOInterruptCB_callback_func
+            {
+                Pointer = (nint)(delegate* unmanaged[Cdecl]<void*, int>)&Interrupt,
+            };
+            openedContext->interrupt_callback.opaque = interrupted;
+
+            // Frees and nulls the context itself when it fails, so there is nothing left to
+            // release here.
             if (ffmpeg.avformat_open_input(&openedContext, filePath, null, null) != 0)
             {
                 return false;
@@ -905,25 +984,35 @@ namespace CutTheRopeDX.Framework.Media
         /// Releases all FFmpeg and video resources.
         /// </summary>
         /// <summary>How long a decode thread is given to notice it was asked to stop.</summary>
-        private const int DecodeThreadStopTimeoutMs = 2000;
+        /// <remarks>
+        /// Generous rather than tight. Setting the stop flag now interrupts the blocking calls
+        /// themselves, so a thread that has not returned within this has not merely been slow to
+        /// be scheduled - it is somewhere the interrupt does not reach.
+        /// </remarks>
+        private const int DecodeThreadStopTimeoutMs = 5000;
 
         private void Cleanup()
         {
             HasStopRequested = true;
             pauseGate.Set();
 
-            // Everything below belongs to the decode thread while it is still running. The wait is
-            // bounded because a thread parked inside a blocking read cannot be made to return, and
-            // hanging the game on the way out of a cutscene would be worse than the race. A thread
-            // that does not come back is the one case where this releases resources still in use,
-            // so it says so rather than passing in silence.
-            if (decodeThread != null && !decodeThread.Join(DecodeThreadStopTimeoutMs))
+            // Everything below belongs to the decode thread while it is still running, so none of
+            // it may be released until that thread is out. Asking is what does the work: the stop
+            // flag is the one FFmpeg polls from inside its own blocking reads, so a thread waiting
+            // on I/O returns from it rather than sitting there until the wait below gives up.
+            bool stopped = decodeThread == null || decodeThread.Join(DecodeThreadStopTimeoutMs);
+            decodeThread = null;
+            if (!stopped)
             {
+                // Nothing is released. A thread still inside these contexts would be reading
+                // memory this was about to hand back, and the frames of one cutscene are a far
+                // smaller price than that. The player is left alone rather than reset, because
+                // the thread is still reading the fields a reset would clear.
+                abandoned = true;
                 VideoPlayerLog.DecodeThreadDidNotStop(
                     Log.For(LogCategories.MediaFFmpeg), DecodeThreadStopTimeoutMs);
+                return;
             }
-
-            decodeThread = null;
 
             if (packet != null)
             {
