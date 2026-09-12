@@ -277,6 +277,9 @@ namespace CutTheRopeDX.Desktop.Platform
                 case SDL.EventType.GamepadAdded:
                     break;
                 case SDL.EventType.GamepadRemoved:
+                    // A pad unplugged with Back held never sends the matching release, and the
+                    // entry left behind would refuse the button on whatever takes its id next.
+                    _ = gamepadBack.Remove(e.GDevice.Which);
                     break;
                 case SDL.EventType.GamepadRemapped:
                     break;

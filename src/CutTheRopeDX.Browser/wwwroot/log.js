@@ -162,9 +162,11 @@ async function prune() {
     try {
         const db = await openDatabase();
         const ids = await request(transaction(db, "readonly").getAllKeys());
+        // The run that just started is not stored yet, so it is counted here rather than
+        // waited for: without it this keeps MAX_SESSIONS and then adds one more.
         const doomed = ids
             .sort()
-            .slice(0, Math.max(0, ids.length - MAX_SESSIONS));
+            .slice(0, Math.max(0, ids.length + 1 - MAX_SESSIONS));
         for (const id of doomed) {
             await request(transaction(db, "readwrite").delete(id));
         }

@@ -198,7 +198,7 @@ namespace CutTheRopeDX.Helpers
         [LoggerMessage(Level = LogLevel.Information, Message = "Rich presence unavailable; Discord did not answer.")]
         public static partial void Unavailable(ILogger logger);
 
-        [LoggerMessage(Level = LogLevel.Information, Message = "Could not connect to Discord.")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Could not connect to Discord.")]
         public static partial void ConnectFailed(ILogger logger, Exception exception);
 
         [LoggerMessage(Level = LogLevel.Debug, Message = "Could not clear the Discord activity.")]

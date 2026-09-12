@@ -68,7 +68,9 @@ namespace CutTheRopeDX.Browser
             public IDisposable BeginScope<TState>(TState state)
                 where TState : notnull
             {
-                return null;
+                // Nothing here reads scopes, but the contract says a disposable, and a scope
+                // provider added later would dereference whatever this hands back.
+                return NullScope.Instance;
             }
 
             public bool IsEnabled(LogLevel logLevel)
@@ -103,5 +105,21 @@ namespace CutTheRopeDX.Browser
                 }
             }
         }
+
+    /// <summary>A scope that records nothing and can still be disposed.</summary>
+    internal sealed class NullScope : IDisposable
+    {
+        /// <summary>The only instance needed, since it carries no state.</summary>
+        public static NullScope Instance { get; } = new();
+
+        private NullScope()
+        {
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+        }
+    }
     }
 }

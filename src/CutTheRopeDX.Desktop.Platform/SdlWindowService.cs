@@ -58,11 +58,37 @@ namespace CutTheRopeDX.Desktop.Platform
             ILogger logger = Log.For(LogCategories.SdlHost);
             SdlWindowServiceLog.FullScreenChanged(logger, IsFullScreen, WindowWidth, WindowHeight);
         }
+        /// <summary>Smallest window the game is playable in, on each axis.</summary>
+        internal const int MinimumWidth = 320;
+        internal const int MinimumHeight = 480;
+
+        /// <summary>Largest window asked for, whatever a saved preference says.</summary>
+        internal const int MaximumSide = 4096;
+
+        /// <summary>
+        /// Fits a requested window size to a display, on one axis.
+        /// </summary>
+        /// <param name="requested">The saved or requested size, or zero to ask for a default.</param>
+        /// <param name="usable">The display's usable extent on this axis.</param>
+        /// <param name="minimum">Smallest size the game is playable at on this axis.</param>
+        /// <returns>The size to ask SDL for.</returns>
+        /// <remarks>
+        /// Pure, and separate from the window, because this is the part worth testing: it decides
+        /// what a preference file carrying a size from another machine - or a hand-edited one -
+        /// turns into here. The display bound is applied last so a screen smaller than the minimum
+        /// wins over it, there being no use in asking for a window that cannot be shown.
+        /// </remarks>
+        internal static int ClampWindowSide(int requested, int usable, int minimum)
+        {
+            int wanted = requested > 0 ? requested : usable - 100;
+            return Math.Min(usable, Math.Clamp(wanted, minimum, MaximumSide));
+        }
+
         public void ApplyWindowSize(int width, int height)
         {
             Check(SDL.GetDisplayUsableBounds(SDL.GetDisplayForWindow(window), out SDL.Rect bounds));
-            width = Math.Min(bounds.W, Math.Clamp(width > 0 ? width : bounds.W - 100, 320, 4096));
-            height = Math.Min(bounds.H, Math.Clamp(height > 0 ? height : bounds.H - 100, 480, 4096));
+            width = ClampWindowSide(width, bounds.W, MinimumWidth);
+            height = ClampWindowSide(height, bounds.H, MinimumHeight);
             windowedWidth = width; windowedHeight = height;
             if (!IsFullScreen) { Check(SDL.SetWindowSize(window, width, height)); Check(SDL.SyncWindow(window)); }
             RefreshSurface(); SavePreferences();

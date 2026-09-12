@@ -63,7 +63,8 @@ namespace CutTheRopeDX.Desktop.Platform
             using SKBitmap scaled = new(new SKImageInfo(Width, Height, SKColorType.Bgra8888, SKAlphaType.Unpremul));
             using (SKCanvas canvas = new(scaled))
             {
-                canvas.DrawImage(SKImage.FromBitmap(bitmap), new SKRect(0, 0, Width, Height), new SKSamplingOptions(SKFilterMode.Linear));
+                using SKImage image = SKImage.FromBitmap(bitmap);
+                canvas.DrawImage(image, new SKRect(0, 0, Width, Height), new SKSamplingOptions(SKFilterMode.Linear));
             }
 
             nint surface = SDL.CreateSurfaceFrom(Width, Height, SDL.PixelFormat.ARGB8888, scaled.GetPixels(), scaled.RowBytes);

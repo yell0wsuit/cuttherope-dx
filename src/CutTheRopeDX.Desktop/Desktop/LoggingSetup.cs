@@ -55,13 +55,26 @@ namespace CutTheRopeDX.Desktop
         /// <exception cref="ArgumentException">The value is not a level name.</exception>
         public static LogLevel? ParseLevel(string[] args)
         {
+            string value = null;
             int index = Array.IndexOf(args, LevelSwitch);
-            if (index < 0 || index + 1 >= args.Length)
+            if (index >= 0 && index + 1 < args.Length)
+            {
+                value = args[index + 1];
+            }
+            else
+            {
+                // Both spellings, because a switch that takes a value is written either way and
+                // the joined one used to fall through to the default without saying anything.
+                string joined = Array.Find(args, argument =>
+                    argument.StartsWith(LevelSwitch + "=", StringComparison.Ordinal));
+                value = joined?[(LevelSwitch.Length + 1)..];
+            }
+
+            if (string.IsNullOrEmpty(value))
             {
                 return null;
             }
 
-            string value = args[index + 1];
             return value.ToLowerInvariant() switch
             {
                 "trace" => LogLevel.Trace,

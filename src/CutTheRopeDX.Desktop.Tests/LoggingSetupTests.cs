@@ -340,5 +340,20 @@ namespace CutTheRopeDX.Desktop.Tests
             Assert.DoesNotContain(account, line, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("Using save directory", line, StringComparison.Ordinal);
         }
+
+        [Fact]
+        public void TheLevelSwitchIsReadInBothItsSpellings()
+        {
+            // The joined spelling used to match nothing and fall through to the default, so
+            // asking for more detail silently gave the same log as not asking at all.
+            Assert.Equal(LogLevel.Debug, LoggingSetup.ParseLevel(["--log-level", "debug"]));
+            Assert.Equal(LogLevel.Debug, LoggingSetup.ParseLevel(["--log-level=debug"]));
+        }
+
+        [Fact]
+        public void NoLevelSwitchLeavesTheDefaultAlone()
+        {
+            Assert.Null(LoggingSetup.ParseLevel(["--renderer", "vulkan"]));
+        }
     }
 }
