@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Commons;
@@ -402,6 +403,21 @@ namespace CutTheRopeDX.Framework.Visual
         /// Resource name/path used to load this texture.
         /// </summary>
         public string _resName;
+
+        /// <summary>
+        /// Builds this texture's handle again after a device loss, or <see langword="null"/> when
+        /// nothing can.
+        /// </summary>
+        /// <remarks>
+        /// Only a texture with no content path has any use for this: one loaded from a file is
+        /// loaded again from the path it remembers. What is left over are the textures built from
+        /// pixels rather than read from disk, and they are not all alike. A captured frame is
+        /// gone with the device that took it. A recolored atlas frame is not: its owner is still
+        /// holding the recipe and the atlas it came from is itself reloaded. Carrying the rebuild
+        /// on the texture is what lets recovery tell those two apart, because nothing else about
+        /// them differs.
+        /// </remarks>
+        public Func<ITextureHandle> Regenerate;
 
         /// <summary>
         /// Precomputed texture coordinate quads for each sprite region.

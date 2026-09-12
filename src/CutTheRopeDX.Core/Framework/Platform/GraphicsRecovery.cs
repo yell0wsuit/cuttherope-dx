@@ -41,8 +41,10 @@ namespace CutTheRopeDX.Framework.Platform
 
     /// <summary>What one recovery had to rebuild.</summary>
     /// <param name="ReloadedAssets">Textures loaded again from their content path.</param>
+    /// <param name="RebuiltTextures">Built textures whose owner could produce them again.</param>
     /// <param name="DroppedCaptures">Captured frames that nothing could rebuild.</param>
-    internal readonly record struct GraphicsRecoveryReport(int ReloadedAssets, int DroppedCaptures);
+    internal readonly record struct GraphicsRecoveryReport(
+        int ReloadedAssets, int RebuiltTextures, int DroppedCaptures);
 
     /// <summary>
     /// The application half of recovering from a lost graphics device: what to tear down before
@@ -109,7 +111,10 @@ namespace CutTheRopeDX.Framework.Platform
                 {
                     texture.textureHandle_.Dispose();
                     texture.textureHandle_ = null;
-                    dropped++;
+                    if (texture.Regenerate == null)
+                    {
+                        dropped++;
+                    }
                 }
             }
 
@@ -129,6 +134,7 @@ namespace CutTheRopeDX.Framework.Platform
         public static GraphicsRecoveryReport Complete(GraphicsRecoveryPlan plan)
         {
             int reloaded = 0;
+            int rebuilt = 0;
             foreach (CTRTexture2D texture in CTRTexture2D.Registered())
             {
                 if (texture._resName == null)
@@ -138,6 +144,21 @@ namespace CutTheRopeDX.Framework.Platform
 
                 texture.textureHandle_ = AssetPlatform.Current.ImageTexture(texture._resName);
                 reloaded++;
+            }
+
+            // Second pass, because a built texture derives its pixels from a loaded one: the
+            // recolored sign frames read the sign atlas, which the loop above is what puts back.
+            // Rebuilding happens inside the texture the scene is already holding, so whoever is
+            // drawing it keeps the reference it was handed.
+            foreach (CTRTexture2D texture in CTRTexture2D.Registered())
+            {
+                if (texture._resName != null || texture.Regenerate == null)
+                {
+                    continue;
+                }
+
+                texture.textureHandle_ = texture.Regenerate();
+                rebuilt++;
             }
 
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
@@ -155,7 +176,7 @@ namespace CutTheRopeDX.Framework.Platform
                 _ = Application.SharedRootController().EnsurePaused();
             }
 
-            return new GraphicsRecoveryReport(reloaded, plan.DroppedCaptures);
+            return new GraphicsRecoveryReport(reloaded, rebuilt, plan.DroppedCaptures);
         }
     }
 }

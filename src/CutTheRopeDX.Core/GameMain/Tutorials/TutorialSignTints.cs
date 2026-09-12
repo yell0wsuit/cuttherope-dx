@@ -33,15 +33,24 @@ namespace CutTheRopeDX.GameMain.Tutorials
             CTRRectangle frame = atlas.quadRects[quad];
             int width = (int)frame.w;
             int height = (int)frame.h;
-            ITextureHandle handle = AssetPlatform.Current.TintedRegion(
-                atlas.textureHandle_,
-                (int)frame.x,
-                (int)frame.y,
-                width,
-                height,
-                color);
+            ITextureHandle Build()
+            {
+                return AssetPlatform.Current.TintedRegion(
+                    atlas.textureHandle_,
+                    (int)frame.x,
+                    (int)frame.y,
+                    width,
+                    height,
+                    color);
+            }
 
-            CTRTexture2D texture = new CTRTexture2D().InitWithHandle(handle, width, height);
+            CTRTexture2D texture = new CTRTexture2D().InitWithHandle(Build(), width, height);
+
+            // The copy has no content path, so recovery cannot reload it the way it reloads the
+            // atlas. It can still be made again from exactly what made it the first time, and
+            // saying so is what keeps a device loss from leaving the sign with nothing to sample
+            // for the rest of the level.
+            texture.Regenerate = Build;
             texture.SetQuadsCapacity(1);
             texture.SetQuadAt(new CTRRectangle(0f, 0f, width, height), 0);
             if (atlas.quadOffsets is not null)
