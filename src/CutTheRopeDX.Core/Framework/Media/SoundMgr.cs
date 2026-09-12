@@ -115,7 +115,49 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static void ClearStopped(List<ActiveSound> list)
         {
-            _ = list.RemoveAll(static entry => entry.Instance == null || entry.Instance.State == AudioPlaybackState.Stopped);
+            _ = list.RemoveAll(static entry =>
+            {
+                if (entry.Instance != null && entry.Instance.State != AudioPlaybackState.Stopped)
+                {
+                    return false;
+                }
+
+                Release(entry.Instance);
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Stops <paramref name="instance"/> if it is still going, and releases it.
+        /// </summary>
+        /// <param name="instance">The voice to release; ignored when <see langword="null"/>.</param>
+        /// <remarks>
+        /// A voice is built per play and handed out once, so the list tracking it is the last
+        /// owner it has. The backend puts a native mixer track behind each one and has nothing
+        /// that would collect it later, so an entry dropped without this is leaked for the rest
+        /// of the process, and the mixer walks every leaked voice on each callback.
+        /// </remarks>
+        private static void Release(ISoundInstance instance)
+        {
+            if (instance == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (instance.State != AudioPlaybackState.Stopped)
+                {
+                    instance.Stop();
+                }
+
+                instance.Dispose();
+            }
+            catch (Exception failure)
+            {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "release", failure);
+            }
         }
 
         /// <summary>
@@ -226,19 +268,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            try
-            {
-                if (instance.State != AudioPlaybackState.Stopped)
-                {
-                    instance.Stop();
-                }
-            }
-            catch (Exception failure)
-            {
-                ILogger logger = Log.For(LogCategories.MediaSound);
-                SoundMgrLog.BackendCallFailed(logger, "stop", failure);
-            }
-
+            Release(instance);
             _ = list.RemoveAll(entry => ReferenceEquals(entry.Instance, instance));
         }
 
@@ -268,23 +298,7 @@ namespace CutTheRopeDX.Framework.Media
                 {
                     return false;
                 }
-                ISoundInstance instance = entry.Instance;
-                if (instance != null)
-                {
-                    try
-                    {
-                        if (instance.State != AudioPlaybackState.Stopped)
-                        {
-                            instance.Stop();
-                        }
-                        instance.Dispose();
-                    }
-                    catch (Exception failure)
-                    {
-                        ILogger logger = Log.For(LogCategories.MediaSound);
-                        SoundMgrLog.BackendCallFailed(logger, "release", failure);
-                    }
-                }
+                Release(entry.Instance);
                 return true;
             });
         }
@@ -454,11 +468,15 @@ namespace CutTheRopeDX.Framework.Media
         /// Stops all sound effect instances in the specified <paramref name="list"/>.
         /// </summary>
         /// <param name="list">The list of active sound entries to stop.</param>
+        /// <remarks>
+        /// Every caller clears the list straight after, so this is the last these voices are seen
+        /// and they are released rather than only silenced.
+        /// </remarks>
         private static void StopList(List<ActiveSound> list)
         {
             foreach (ActiveSound entry in list)
             {
-                entry.Instance?.Stop();
+                Release(entry.Instance);
             }
         }
 
