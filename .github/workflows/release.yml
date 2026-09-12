@@ -154,14 +154,11 @@ jobs:
                   key: ${{ needs.assets.outputs.cache-key }}
 
             - run: ./distribution/build_appimage.sh "${{ needs.version.outputs.version }}"
-            - run: ./distribution/build_deb.sh "${{ needs.version.outputs.version }}"
 
             - uses: actions/upload-artifact@v7
               with:
                   name: bundle-linux
-                  path: |
-                      src/CutTheRopeDX.Desktop/bin/release_github/*.AppImage
-                      src/CutTheRopeDX.Desktop/bin/release_github/*.deb
+                  path: src/CutTheRopeDX.Desktop/bin/release_github/*.AppImage
                   compression-level: 0
                   retention-days: 7
 
