@@ -547,15 +547,23 @@ namespace CutTheRopeDX.Rendering.Skia
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// This renderer keeps no vertex readback, and says so with <c>null</c> rather than with
+        /// an empty array. The multi-drawer latches the first non-null answer it gets and then
+        /// takes its optimized path forever after, so an empty array would tell it there is a
+        /// cache and then hand it nothing to draw. Nothing reaches this today - every live font
+        /// draws its own text - but the sprite-font path is one flag away from returning.
+        /// </remarks>
         public VertexPositionColor[] GetLastVertices_PositionColor()
         {
-            return [];
+            return null;
         }
 
         /// <inheritdoc />
+        /// <remarks>See <see cref="GetLastVertices_PositionColor"/> for why this is not empty.</remarks>
         public VertexPositionNormalTexture[] GetLastVertices_PositionNormalTexture()
         {
-            return [];
+            return null;
         }
 
         /// <inheritdoc />

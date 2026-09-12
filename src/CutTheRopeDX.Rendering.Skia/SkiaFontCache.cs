@@ -32,7 +32,11 @@ namespace CutTheRopeDX.Rendering.Skia
         public static FontGeneric Load(FontConfiguration config)
         {
 
-            string key = $"{config.FontFile}|{config.Size}|{config.LineSpacing}|{config.TopSpacing}";
+            // Colour and effects are part of what a font is here - both are baked into the paints
+            // the instance owns - so two configurations differing only by one of them are two
+            // fonts, not one. No pair collides today; the key is what keeps that true.
+            string key = $"{config.FontFile}|{config.Size}|{config.LineSpacing}|{config.TopSpacing}"
+                + $"|{config.Color}|{Describe(config.Effects)}";
             if (Fonts.TryGetValue(key, out SkiaFont cached))
             {
                 // Rebuild the font if the cached instance was disposed by FreePack/FreeResource.
@@ -78,6 +82,17 @@ namespace CutTheRopeDX.Rendering.Skia
                 ?? throw new InvalidOperationException($"Skia could not decode font '{contentPath}'.");
             Typefaces[contentPath] = typeface;
             return typeface;
+        }
+
+        /// <summary>Names an effect configuration for the cache key, or says there is none.</summary>
+        /// <param name="effects">The effect settings, which may be absent.</param>
+        /// <returns>A stable description.</returns>
+        private static string Describe(FontEffectSettings effects)
+        {
+            return effects is null
+                ? "none"
+                : $"{effects.HasStroke}:{effects.StrokeAmount}:{effects.StrokeColor}"
+                    + $":{effects.HasShadow}:{effects.ShadowOffsetX}:{effects.ShadowOffsetY}:{effects.ShadowColor}";
         }
     }
 }

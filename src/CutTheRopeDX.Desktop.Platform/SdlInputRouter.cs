@@ -15,6 +15,11 @@ namespace CutTheRopeDX.Desktop.Platform
         private readonly HashSet<SDL.Keycode> held = [];
         private readonly HashSet<KeyCode> pressed = [];
         private readonly HashSet<uint> gamepadBack = [];
+
+        // Gamepad events carry no window, so the window filter every other event goes through
+        // cannot reach them. Without this a pad press behind an unfocused window still reaches
+        // the game, and Back also stops a cutscene.
+        private bool focused = true;
         private int nextFinger = 1;
         private double wheelRemainder;
         public uint WindowId { get; set; }
@@ -76,11 +81,12 @@ namespace CutTheRopeDX.Desktop.Platform
                 case SDL.EventType.WindowCloseRequested: if (Matches(e.Window.WindowID)) { Quit(); } break;
                 case SDL.EventType.WindowFocusLost:
                 case SDL.EventType.WindowMinimized:
-                    if (Matches(e.Window.WindowID)) { ClearInput(); FocusChanged(false); }
+                    if (Matches(e.Window.WindowID)) { focused = false; ClearInput(); FocusChanged(false); }
                     break;
                 case SDL.EventType.WindowFocusGained:
                     if (Matches(e.Window.WindowID))
                     {
+                        focused = true;
                         FocusChanged(true);
                     }
 
@@ -147,7 +153,9 @@ namespace CutTheRopeDX.Desktop.Platform
                     }
                     break;
                 case SDL.EventType.GamepadButtonDown:
-                    if (e.GButton.Button == (byte)SDL.GamepadButton.Back && gamepadBack.Add(e.GButton.Which))
+                    if (focused
+                        && e.GButton.Button == (byte)SDL.GamepadButton.Back
+                        && gamepadBack.Add(e.GButton.Which))
                     {
                         Back();
                     }
