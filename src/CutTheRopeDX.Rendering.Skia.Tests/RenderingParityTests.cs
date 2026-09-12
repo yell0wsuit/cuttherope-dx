@@ -108,5 +108,60 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             Assert.InRange(Math.Abs(actual.Blue - expected.Blue), 0, 2);
             Assert.InRange(Math.Abs(actual.Alpha - expected.Alpha), 0, 2);
         }
+
+        [Fact]
+        public void BatchesOfTheSameSizeShareTheirVertexBuffers()
+        {
+            // The buffers are kept per batch size and handed back to Skia, which copies them, so
+            // a second batch of the same size allocates nothing. Observed through the pixels
+            // rather than the arrays: what matters is that reuse does not leak one batch into
+            // the next.
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface);
+            surface.Canvas.Clear(SKColors.Black);
+
+            DrawRect(renderer, new Color(255, 0, 0, 255));
+            renderer.FlushQuads();
+            renderer.PushMatrix();
+            renderer.Translate(0, 0, 0);
+            DrawRect(renderer, new Color(0, 255, 0, 255));
+            renderer.PopMatrix();
+            renderer.EndFrame();
+
+            using SKBitmap pixels = surface.Pixels();
+            Near(new SKColor(0, 255, 0), pixels.GetPixel(8, 16));
+        }
+
+        [Fact]
+        public void AnUntexturedBatchAfterATexturedOneOfTheSameSizeDrawsItsOwnGeometry()
+        {
+            // The untextured path appends no texture coordinate, so the coordinate buffer for
+            // this size is still holding the textured batch's. Reusing it blindly would sample
+            // the atlas through last batch's coordinates instead of drawing a flat colour.
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface);
+            using SKBitmap bitmap = new(2, 2);
+            bitmap.Erase(new SKColor(0, 0, 255));
+            using SkiaTexture texture = new(SKImage.FromBitmap(bitmap));
+            CTRTexture2D wrapper = new() { textureHandle_ = texture };
+            surface.Canvas.Clear(SKColors.Black);
+
+            renderer.BindTexture(wrapper);
+            VertexPositionNormalTexture[] textured =
+            [
+                new(new Vector3(0, 0, 0), Vector3.Zero, Vector2.Zero),
+                new(new Vector3(32, 0, 0), Vector3.Zero, Vector2.UnitX),
+                new(new Vector3(0, 32, 0), Vector3.Zero, Vector2.UnitY),
+                new(new Vector3(32, 32, 0), Vector3.Zero, Vector2.One),
+            ];
+            renderer.DrawTriangleStrip(textured, 4);
+
+            renderer.BindTexture(null);
+            DrawRect(renderer, new Color(255, 0, 0, 255));
+            renderer.EndFrame();
+
+            using SKBitmap pixels = surface.Pixels();
+            Near(SKColors.Red, pixels.GetPixel(8, 16));
+        }
     }
 }

@@ -574,6 +574,44 @@ namespace CutTheRopeDX.Rendering.Skia
             return null;
         }
 
+        /// <summary>The three arrays one batch of a given size hands to Skia.</summary>
+        /// <param name="Positions">Vertex positions.</param>
+        /// <param name="TexCoords">Texture coordinates, used only by a textured batch.</param>
+        /// <param name="Colors">Per-vertex colors.</param>
+        private readonly record struct VertexBuffers(
+            SKPoint[] Positions, SKPoint[] TexCoords, SKColor[] Colors);
+
+        /// <summary>
+        /// How many distinct batch sizes are worth keeping buffers for.
+        /// </summary>
+        /// <remarks>
+        /// A bound rather than an expectation. Batches settle on a handful of sizes, but nothing
+        /// in the drawing code promises that, and a level that found a new size every batch would
+        /// otherwise grow this without limit. Past the bound the batch allocates, which is what
+        /// every batch did before.
+        /// </remarks>
+        private const int MaximumCachedBatchSizes = 64;
+
+        private readonly Dictionary<int, VertexBuffers> _vertexBuffers = [];
+
+        /// <summary>Returns reusable arrays of exactly <paramref name="count"/> vertices.</summary>
+        /// <param name="count">Vertices in the batch about to be drawn.</param>
+        private VertexBuffers BuffersFor(int count)
+        {
+            if (_vertexBuffers.TryGetValue(count, out VertexBuffers cached))
+            {
+                return cached;
+            }
+
+            VertexBuffers buffers = new(new SKPoint[count], new SKPoint[count], new SKColor[count]);
+            if (_vertexBuffers.Count < MaximumCachedBatchSizes)
+            {
+                _vertexBuffers[count] = buffers;
+            }
+
+            return buffers;
+        }
+
         /// <inheritdoc />
         public void FlushQuads()
         {
@@ -586,16 +624,35 @@ namespace CutTheRopeDX.Rendering.Skia
             _batchPaint.Shader = _batchTexture?.Shader(_batchWeightsSourceByAlpha);
             RetainsDeviceShader = _batchTexture is not null;
 
-            // One array per list per flush, which is a real cost on the frame path and is not
-            // avoidable here: SkiaSharp's CreateCopy takes arrays and reads their whole length as
-            // the vertex count, so there is no overload to hand a span or a reused buffer with a
-            // count to. Pooling by exact size would mean a pool per batch size, and batch sizes
-            // vary every frame. Skia copies what it is given either way.
+            // Skia reads the whole length of each array as the vertex count, so a buffer can only
+            // be reused by a batch of exactly its size - an oversized one would draw whatever is
+            // left in its tail. Kept per size rather than per flush: Skia copies what it is given,
+            // so a buffer is free again the moment the call returns, and a frame's batches take
+            // few enough distinct sizes that after a few frames these are all hits.
+            VertexBuffers buffers = BuffersFor(_positions.Count);
+            _positions.CopyTo(buffers.Positions);
+            _colors.CopyTo(buffers.Colors);
+
+            SKPoint[] texCoords = null;
+            if (_batchTexture is not null)
+            {
+                // A textured batch appends a coordinate with every vertex, so these are the same
+                // length. Checked rather than assumed: the untextured append adds no coordinate,
+                // and a reused buffer that was not filled to its end would hand Skia the tail of
+                // whatever batch used it last.
+                if (_texCoords.Count == buffers.TexCoords.Length)
+                {
+                    _texCoords.CopyTo(buffers.TexCoords);
+                    texCoords = buffers.TexCoords;
+                }
+                else
+                {
+                    texCoords = [.. _texCoords];
+                }
+            }
+
             using SKVertices vertices = SKVertices.CreateCopy(
-                SKVertexMode.Triangles,
-                [.. _positions],
-                _batchTexture is null ? null : [.. _texCoords],
-                [.. _colors]);
+                SKVertexMode.Triangles, buffers.Positions, texCoords, buffers.Colors);
 
             Target.DrawVertices(vertices, SKBlendMode.Modulate, _batchPaint);
 
