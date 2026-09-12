@@ -297,10 +297,14 @@ export async function buildZip(files) {
 /**
  * Writes every stored run into a zip and hands it to the browser to save.
  *
+ * This runs on the page, whose module instance has never appended anything, so it cannot reach
+ * the buffer the worker is filling: up to one batch delay of the running session's unflushed
+ * entries is not in the archive. Only Information and below can be missing, because a warning or
+ * worse is written through when it is logged rather than waiting for the batch.
+ *
  * @returns {Promise<number>} How many runs the archive holds.
  */
 export async function exportZip() {
-    await flush();
     const sessions = await readAll();
     if (sessions.length === 0) {
         return 0;

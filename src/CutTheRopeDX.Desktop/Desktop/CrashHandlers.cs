@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CutTheRopeDX.Framework.Diagnostics;
@@ -18,6 +19,7 @@ namespace CutTheRopeDX.Desktop
     internal static partial class CrashHandlers
     {
         private static ILoggerFactory owner;
+        private static int reporting;
         private static string logDirectory;
 
         /// <summary>
@@ -45,6 +47,15 @@ namespace CutTheRopeDX.Desktop
         /// </remarks>
         internal static void OnUnhandled(object sender, UnhandledExceptionEventArgs args)
         {
+            if (Interlocked.CompareExchange(ref reporting, 1, 0) != 0)
+            {
+                // A second failure while the first is still being reported, which is what the
+                // threads still running behind the modal window produce. Running this again would
+                // stack another window behind one that has to be dismissed first, and the log has
+                // already been flushed and closed by the report in progress.
+                return;
+            }
+
             try
             {
                 ILogger logger = Log.For(LogCategories.SdlHost);
@@ -62,6 +73,11 @@ namespace CutTheRopeDX.Desktop
                 }
 
                 // The file provider buffers, and nothing else gets to run before the abort.
+                // Retired first: the factory is about to stop accepting new loggers, and the
+                // threads still running behind the window below ask for one whenever they report
+                // a category nothing has logged to yet. Left in place, that hands them a disposed
+                // factory and turns their report into a second unhandled exception.
+                Log.Factory = null;
                 owner?.Dispose();
 
                 // After the flush, so the log the player is invited to open is already complete.
@@ -72,6 +88,13 @@ namespace CutTheRopeDX.Desktop
             }
             catch (Exception)
             {
+            }
+            finally
+            {
+                // Released rather than latched: the process aborts as soon as this returns, so
+                // nothing sequential follows it in a real run, and leaving it set would make the
+                // handler untestable past its first call.
+                _ = Interlocked.Exchange(ref reporting, 0);
             }
         }
 
