@@ -185,6 +185,21 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         [Fact]
+        public void ExhaustedCandidatesSayWhichRenderersWerePassedOver()
+        {
+            // The failures themselves need not name the renderer they came from - an SDL error
+            // string says nothing about who asked - so the aggregate has to carry the attribution
+            // that RendererFailure already holds. This is the one path the player cannot get past.
+            AggregateException error = Assert.Throws<AggregateException>(() =>
+                BackendSelector.Select<Resource>("windows", null,
+                    (_, _) => throw new InvalidOperationException("the driver said no"), _ => { }));
+
+            Assert.Contains(nameof(GraphicsBackendKind.Vulkan), error.Message);
+            Assert.Contains(nameof(GraphicsBackendKind.Angle), error.Message);
+            Assert.Contains(nameof(GraphicsBackendKind.OpenGL), error.Message);
+        }
+
+        [Fact]
         public void LifetimeDisposalIsIdempotent()
         {
             List<string> events = [];

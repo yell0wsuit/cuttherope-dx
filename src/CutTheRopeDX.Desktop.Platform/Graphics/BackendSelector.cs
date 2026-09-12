@@ -75,7 +75,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                     absolve?.Invoke();
                 }
             }
-            throw new AggregateException("No desktop renderer completed its validation frame.",
+            // Which renderer each failure belongs to lives in RendererFailure and nowhere in the
+            // exceptions themselves, so it is spelled into the message here. Nothing downstream of
+            // this gets another chance to say it: the selection has no device to report against.
+            throw new AggregateException(
+                "No desktop renderer completed its validation frame. Passed over: "
+                    + string.Join(", ", failures.Select(
+                        failure => $"{failure.Kind} ({failure.Failure.Message})")),
                 failures.Select(failure => failure.Failure));
         }
     }
