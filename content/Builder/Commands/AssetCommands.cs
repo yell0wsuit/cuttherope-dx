@@ -57,6 +57,19 @@ namespace CutTheRopeDX.Content.Commands
             ContentBuildResult result = GameContentBuilder.Build(
                 source, Path.GetFullPath(commandLine.OutputDirectory));
             Console.WriteLine($"Content build: {result.Files} assets listed in {result.ListPath}.");
+            if (result.Unmatched.Count > 0)
+            {
+                // Not a failure: an unmatched file is as likely to be a note left in the tree as a
+                // new asset nobody taught the rules about. Saying so is what turns the second case
+                // from a missing asset on a player's machine into a line in the build log.
+                Console.WriteLine(
+                    $"Content build: {result.Unmatched.Count} source file(s) matched no rule and "
+                    + "will not ship:");
+                foreach (string path in result.Unmatched)
+                {
+                    Console.WriteLine($"  {path}");
+                }
+            }
             return 0;
         }
 

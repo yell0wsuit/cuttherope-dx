@@ -254,5 +254,76 @@ namespace CutTheRopeDX.Content.Tests
             buffer[offset + 2] = (byte)(value >> 8);
             buffer[offset + 3] = (byte)value;
         }
+
+        [Fact]
+        public void ASourceFileNoRuleShipsIsReported()
+        {
+            // A required rule only catches a glob that matched nothing; nothing caught a file that
+            // matched no glob, so a new kind of asset was dropped in silence and first noticed as
+            // a missing texture on somebody else's machine.
+            using TempTree tree = new();
+            tree.Write("images/frame.png", "x");
+            tree.Write("images/frame.webp", "x");
+            tree.Write("maps/deeper/level.xml", "x");
+
+            SortedDictionary<string, string> selected = ContentSelection.Select(
+                tree.Root, [new ContentRule("images/**/*.png")]);
+
+            IReadOnlyList<string> unmatched = ContentSelection.Unmatched(tree.Root, selected);
+
+            Assert.Contains("images/frame.webp", unmatched);
+            Assert.Contains("maps/deeper/level.xml", unmatched);
+            Assert.DoesNotContain("images/frame.png", unmatched);
+        }
+
+        [Fact]
+        public void ATreeTheRulesFullyCoverReportsNothing()
+        {
+            using TempTree tree = new();
+            tree.Write("images/frame.png", "x");
+
+            SortedDictionary<string, string> selected = ContentSelection.Select(
+                tree.Root, [new ContentRule("images/**/*.png")]);
+
+            Assert.Empty(ContentSelection.Unmatched(tree.Root, selected));
+        }
+
+        [Fact]
+        public void TheBuildsOwnOutputIsNotReportedAsUnshipped()
+        {
+            // The manifest is generated into the intermediate directory, and a previous build's
+            // copy left in the source tree is deliberately not shipped rather than overlooked.
+            using TempTree tree = new();
+            tree.Write("images/frame.png", "x");
+            tree.Write("images/image_dimensions.json", "{}");
+
+            SortedDictionary<string, string> selected = ContentSelection.Select(
+                tree.Root, [new ContentRule("images/**/*.png")]);
+
+            Assert.Empty(ContentSelection.Unmatched(tree.Root, selected));
+        }
+
+        private sealed class TempTree : IDisposable
+        {
+            public TempTree()
+            {
+                Root = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                _ = Directory.CreateDirectory(Root);
+            }
+
+            public string Root { get; }
+
+            public void Write(string relativePath, string contents)
+            {
+                string full = Path.Combine(Root, relativePath.Replace('/', Path.DirectorySeparatorChar));
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(full));
+                File.WriteAllText(full, contents);
+            }
+
+            public void Dispose()
+            {
+                Directory.Delete(Root, recursive: true);
+            }
+        }
     }
 }

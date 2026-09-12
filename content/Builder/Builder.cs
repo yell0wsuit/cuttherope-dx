@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace CutTheRopeDX.Content
@@ -5,7 +6,9 @@ namespace CutTheRopeDX.Content
     /// <summary>What one content build decided.</summary>
     /// <param name="Files">How many source assets the game will ship.</param>
     /// <param name="ListPath">The file list MSBuild deploys from.</param>
-    public sealed record ContentBuildResult(int Files, string ListPath);
+    /// <param name="Unmatched">Source files no rule ships, which is worth saying out loud.</param>
+    public sealed record ContentBuildResult(
+        int Files, string ListPath, IReadOnlyList<string> Unmatched);
 
     /// <summary>
     /// Works out what the game ships and writes the two small files a build needs.
@@ -37,7 +40,8 @@ namespace CutTheRopeDX.Content
                 Path.Combine(sourceDirectory, "images"),
                 Path.Combine(intermediateDirectory, "images"));
 
-            return new ContentBuildResult(selected.Count, listPath);
+            return new ContentBuildResult(
+                selected.Count, listPath, ContentSelection.Unmatched(sourceDirectory, selected));
         }
 
         /// <summary>

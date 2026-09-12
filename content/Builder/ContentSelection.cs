@@ -115,6 +115,49 @@ namespace CutTheRopeDX.Content
             return selected;
         }
 
+        /// <summary>
+        /// Finds source files no rule ships, so a new kind of asset cannot go missing quietly.
+        /// </summary>
+        /// <param name="sourceDirectory">Root of the content source tree.</param>
+        /// <param name="selected">What <see cref="Select"/> decided to ship.</param>
+        /// <returns>Content-relative paths of files in the tree that nothing selected.</returns>
+        /// <remarks>
+        /// The rules name extensions and directories, so a file of a kind nobody anticipated -
+        /// a <c>.webp</c>, or anything under a new subdirectory of one that is matched shallowly
+        /// - matches no rule and is dropped. Nothing fails: a required rule only catches a glob
+        /// that matched <em>nothing</em>, never a file that matched no glob. The first sign would
+        /// be a missing asset on a player's machine, so the build says so instead.
+        /// </remarks>
+        public static IReadOnlyList<string> Unmatched(
+            string sourceDirectory,
+            SortedDictionary<string, string> selected)
+        {
+            ArgumentNullException.ThrowIfNull(selected);
+            string source = Path.GetFullPath(sourceDirectory);
+            if (!Directory.Exists(source))
+            {
+                return [];
+            }
+
+            List<string> unmatched = [];
+            foreach (string path in Directory.EnumerateFiles(source, "*", SearchOption.AllDirectories))
+            {
+                if (IsExcluded(source, path))
+                {
+                    continue;
+                }
+
+                string relativePath = ToPosix(Path.GetRelativePath(source, path));
+                if (!selected.ContainsKey(relativePath) && !GeneratedFiles.Contains(relativePath))
+                {
+                    unmatched.Add(relativePath);
+                }
+            }
+
+            unmatched.Sort(StringComparer.Ordinal);
+            return unmatched;
+        }
+
         /// <summary>Expands one glob against the source tree.</summary>
         /// <param name="source">Root of the content source tree, already absolute.</param>
         /// <param name="pattern">Glob relative to that root, in POSIX form.</param>
