@@ -1,5 +1,6 @@
 import hashlib
 import importlib.util
+import sys
 import zipfile
 from pathlib import Path
 
@@ -123,3 +124,20 @@ def test_a_partial_installation_is_completed_rather_than_skipped(tmp_path, elect
     assert (installed / "libGLESv2.dll").is_file()
     assert (installed / rw.ANGLE_NOTICE_NAME).is_file()
     assert (installed / "libEGL.dll").read_text() != "half an install"
+
+
+def test_the_module_imports_without_the_packaging_extras(monkeypatch):
+    """py7zr and tqdm are needed to build a release, not to import the script."""
+    monkeypatch.setitem(sys.modules, "py7zr", None)
+    monkeypatch.setitem(sys.modules, "tqdm", None)
+
+    load_release_windows()
+
+
+def test_packaging_asks_for_the_extras_it_needs(monkeypatch, tmp_path):
+    """The build still stops with the install line when the archiver is absent."""
+    monkeypatch.setitem(sys.modules, "py7zr", None)
+    monkeypatch.setitem(sys.modules, "tqdm", None)
+
+    with pytest.raises(SystemExit):
+        rw.package(tmp_path, "1.0.0.0", "x64")

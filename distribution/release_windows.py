@@ -23,13 +23,6 @@ import zipfile
 from http.client import HTTPException
 from pathlib import Path
 
-try:
-    import py7zr
-    from tqdm import tqdm
-except ImportError:
-    print("Required: pip install py7zr tqdm", file=sys.stderr)
-    sys.exit(1)
-
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent.resolve()
 CSPROJ = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "CutTheRopeDX.Desktop.csproj"
@@ -297,8 +290,24 @@ def is_shipped(output_dir: Path, path: Path) -> bool:
     )
 
 
+def packaging_tools():
+    """The archiver and the progress bar, which only the packaging step needs.
+
+    They are imported here rather than at the top of the file so that importing this
+    module - to build another platform, or to test it - does not need them installed.
+    """
+    try:
+        import py7zr
+        from tqdm import tqdm
+    except ImportError:
+        print("Required: pip install py7zr tqdm", file=sys.stderr)
+        sys.exit(1)
+    return py7zr, tqdm
+
+
 def package(output_dir: Path, version: str, arch_label: str):
     """Compress the build output into a .7z archive."""
+    py7zr, tqdm = packaging_tools()
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     archive_name = f"CutTheRopeDX-v{version}-Windows-{arch_label}.7z"
     archive_path = RELEASE_DIR / archive_name
@@ -370,6 +379,9 @@ def resolve_options() -> tuple[str, bool, str]:
 def main():
     """Build and package the selected Windows architecture."""
     version, use_aot, arch = resolve_options()
+    # Ask for the archiver before the build rather than after it, so a missing
+    # dependency costs a second instead of a full publish and two downloads.
+    packaging_tools()
     config = ARCHITECTURES[arch]
     runtime_id = config["rid"]
     btbn_arch = config["btbn"]
