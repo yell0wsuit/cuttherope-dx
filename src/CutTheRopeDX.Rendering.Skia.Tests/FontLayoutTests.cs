@@ -154,5 +154,29 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             }
             finally { PlatformServices.Render = previous; }
         }
+
+        [Fact]
+        public void AnOutlineAndItsShadowScaleWithTheTextTheyDecorate()
+        {
+            // Scaled text draws from a face built at the scaled size, and the outline has to
+            // travel with it: the same stroke width around doubled glyphs is half the weight the
+            // font asked for, and a shadow that stays put slides out from under the letters.
+            // Only the big font carries effects today and nothing scales it yet, so this is the
+            // only thing holding the two together.
+            using SKTypeface typeface = SKTypeface.CreateDefault();
+            using SkiaFont font = new(typeface, new FontConfiguration
+            {
+                FontFile = "effects.ttf",
+                Size = 20,
+                Color = Color.White,
+                Effects = FontEffectSettings.CreateStrokeAndShadow(2, 2, 3),
+            });
+
+            float single = font.EffectPaint(SKColors.Black, SKColors.Gray, 1f).StrokeWidth;
+            float doubled = font.EffectPaint(SKColors.Black, SKColors.Gray, 2f).StrokeWidth;
+
+            Assert.True(single > 0f, "a stroked font should stroke at its own size");
+            Assert.Equal(single * 2f, doubled, 3);
+        }
     }
 }

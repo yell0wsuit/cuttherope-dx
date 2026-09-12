@@ -19,6 +19,7 @@ namespace CutTheRopeDX.Rendering.Skia
         // filter is immutable - so the paint is mutated in place and the filter is rebuilt only
         // when the shadow color actually changes, which for a given font it usually does not.
         private SKPaint _effectPaint;
+        private float _dropShadowScale = 1f;
         private SKPaint _layerPaint;
         private SKImageFilter _dropShadow;
         private SKColor _dropShadowColor;
@@ -183,7 +184,8 @@ namespace CutTheRopeDX.Rendering.Skia
         /// </summary>
         /// <param name="color">The color the pass draws with, already modulated.</param>
         /// <param name="shadowColor">The shadow color, already modulated.</param>
-        internal SKPaint EffectPaint(SKColor color, SKColor shadowColor)
+        /// <param name="sizeScale">The factor the glyphs themselves are being drawn at.</param>
+        internal SKPaint EffectPaint(SKColor color, SKColor shadowColor, float sizeScale)
         {
             FontEffectSettings effects = Config.Effects;
             bool hasStroke = effects?.HasStroke == true;
@@ -200,11 +202,17 @@ namespace CutTheRopeDX.Rendering.Skia
                 IsAntialias = true,
                 Style = hasStroke ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill,
                 StrokeJoin = SKStrokeJoin.Round,
-                StrokeWidth = hasStroke ? effects.StrokeAmount * 3f : 0f,
             };
             _effectPaint.Color = color;
 
-            if (effects.HasShadow && (_dropShadow is null || _dropShadowColor != shadowColor))
+            // Both decorations are in the glyphs' own units, and scaled text is drawn from a face
+            // built at the scaled size, so they scale with it. Left alone, an outline around
+            // doubled glyphs carries half the weight the font asked for and the shadow slides out
+            // from under the letters it belongs to.
+            _effectPaint.StrokeWidth = hasStroke ? effects.StrokeAmount * 3f * sizeScale : 0f;
+
+            if (effects.HasShadow
+                && (_dropShadow is null || _dropShadowColor != shadowColor || _dropShadowScale != sizeScale))
             {
                 // Skia strokes and shadows glyphs itself, so neither effect needs the offset
                 // redraws the desktop font performs -- FontStashSharp has no such primitives, and
@@ -215,10 +223,13 @@ namespace CutTheRopeDX.Rendering.Skia
                 SKImageFilter replaced = _dropShadow;
                 _dropShadow = hasStroke
                     ? SKImageFilter.CreateDropShadow(
-                        effects.ShadowOffsetX, effects.ShadowOffsetY, 0f, 0f, shadowColor)
+                        effects.ShadowOffsetX * sizeScale, effects.ShadowOffsetY * sizeScale,
+                        0f, 0f, shadowColor)
                     : SKImageFilter.CreateDropShadowOnly(
-                        effects.ShadowOffsetX, effects.ShadowOffsetY, 0f, 0f, shadowColor);
+                        effects.ShadowOffsetX * sizeScale, effects.ShadowOffsetY * sizeScale,
+                        0f, 0f, shadowColor);
                 _dropShadowColor = shadowColor;
+                _dropShadowScale = sizeScale;
                 // The paint takes its own reference before the previous filter is released.
                 _effectPaint.ImageFilter = _dropShadow;
                 replaced?.Dispose();
@@ -335,7 +346,8 @@ namespace CutTheRopeDX.Rendering.Skia
                         : textColor,
                     effects.HasShadow
                         ? Modulate(effects.ShadowColor, inherited, layerAlpha)
-                        : default);
+                        : default,
+                    sizeScale);
 
             foreach (FormattedString line in call.Lines)
             {
