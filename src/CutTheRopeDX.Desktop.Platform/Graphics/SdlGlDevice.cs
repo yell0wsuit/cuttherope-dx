@@ -58,7 +58,18 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         private static void RecycleVideo(Action apply)
         {
             SDL.QuitSubSystem(SDL.InitFlags.Video);
-            apply?.Invoke();
+            try
+            {
+                apply?.Invoke();
+            }
+            catch
+            {
+                // A refused hint rejects this candidate, which is the useful half to report, but
+                // the subsystem still has to come back for whatever is tried next.
+                _ = SDL.InitSubSystem(SDL.InitFlags.Video);
+                throw;
+            }
+
             if (!SDL.InitSubSystem(SDL.InitFlags.Video))
             {
                 throw new InvalidOperationException(
@@ -67,16 +78,17 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         }
 
         /// <summary>Creates the window, context and first drawable.</summary>
+        /// <remarks>
+        /// Every candidate rebuilds the subsystem, not only the ANGLE one, because a candidate
+        /// cannot trust the loader the device it inherits was built around. An ANGLE attempt that
+        /// comes up and is then rejected by its validation frame leaves the device bound to EGL,
+        /// and the native driver tried next would open ANGLE's libraries as its own; asking for
+        /// the device it wants is the only thing that does not depend on how the one before ended.
+        /// </remarks>
         public void Initialize()
         {
             using GlHintScope hints = new();
-            if (!profile.UsesAngle)
-            {
-                CreateContext();
-                return;
-            }
-
-            RecycleVideo(() => ApplyAngleHints(profile, hints));
+            RecycleVideo(profile.UsesAngle ? () => ApplyAngleHints(profile, hints) : null);
             try
             {
                 CreateContext();
