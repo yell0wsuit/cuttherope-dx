@@ -60,6 +60,9 @@ namespace CutTheRopeDX.Rendering.Skia
         /// </summary>
         private readonly SKPaint _batchPaint = new() { Color = SKColors.White };
 
+        /// <summary>The paint line strips stroke through, kept for the same reason.</summary>
+        private SKPaint _linePaint;
+
         /// <summary>
         /// Scratch space the sprite path bakes into. Core hands the same four-vertex quad down
         /// hundreds of times a frame, so the baked copy is grown once and then reused.
@@ -478,13 +481,18 @@ namespace CutTheRopeDX.Rendering.Skia
         public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
             FlushQuads();
-            using SKPaint paint = new()
+
+            // Reused for the same reason the batch paint is: only the blend mode and the colour
+            // vary, and both are setters, so a native paint per call would be created and
+            // destroyed on the frame path for nothing.
+            _linePaint ??= new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
                 StrokeWidth = 1f,
                 IsAntialias = true,
-                BlendMode = EffectiveBlendMode,
             };
+            SKPaint paint = _linePaint;
+            paint.BlendMode = EffectiveBlendMode;
             for (int i = 0; i + 1 < vertexCount; i++)
             {
                 paint.Color = ToSkiaExplicitColor(vertices[i].Color);
@@ -578,6 +586,11 @@ namespace CutTheRopeDX.Rendering.Skia
             _batchPaint.Shader = _batchTexture?.Shader(_batchWeightsSourceByAlpha);
             RetainsDeviceShader = _batchTexture is not null;
 
+            // One array per list per flush, which is a real cost on the frame path and is not
+            // avoidable here: SkiaSharp's CreateCopy takes arrays and reads their whole length as
+            // the vertex count, so there is no overload to hand a span or a reused buffer with a
+            // count to. Pooling by exact size would mean a pool per batch size, and batch sizes
+            // vary every frame. Skia copies what it is given either way.
             using SKVertices vertices = SKVertices.CreateCopy(
                 SKVertexMode.Triangles,
                 [.. _positions],
@@ -664,6 +677,8 @@ namespace CutTheRopeDX.Rendering.Skia
         public void Dispose()
         {
             _batchPaint.Dispose();
+            _linePaint?.Dispose();
+            _linePaint = null;
             _renderTarget?.Dispose();
             _renderTarget = null;
         }
