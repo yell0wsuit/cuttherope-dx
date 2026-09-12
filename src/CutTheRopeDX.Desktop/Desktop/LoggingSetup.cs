@@ -195,7 +195,15 @@ namespace CutTheRopeDX.Desktop
 
                     // Error and worse keep going to stderr, which is where the sites this replaces
                     // already wrote. The default sends every level to stdout.
-                    _ = builder.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Error);
+                    //
+                    // The formatter is the file's, so the console does not print a path the file
+                    // was careful to redact: a bug report is usually a paste of the terminal.
+                    _ = builder.AddConsole(options =>
+                    {
+                        options.LogToStandardErrorThreshold = LogLevel.Error;
+                        options.FormatterName = RedactingConsoleFormatter.FormatterName;
+                    });
+                    _ = builder.AddConsoleFormatter<RedactingConsoleFormatter, ConsoleFormatterOptions>();
                 });
             }
         }

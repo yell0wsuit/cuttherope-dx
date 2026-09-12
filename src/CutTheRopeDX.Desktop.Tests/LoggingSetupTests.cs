@@ -2,6 +2,7 @@ using System;
 using System.IO;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using Xunit;
 
@@ -312,6 +313,32 @@ namespace CutTheRopeDX.Desktop.Tests
                 Console.SetOut(previous);
                 Directory.Delete(root, recursive: true);
             }
+        }
+
+        [Fact]
+        public void TheConsoleWritesTheSameRedactedLineTheFileDoes()
+        {
+            // The file sink was given a formatter that strips the account name and the console was
+            // left on the default one, so a player pasting their terminal output into a bug report
+            // handed over exactly what the file had been careful to hide. The save directory is
+            // reported at Information, and it is a full path through the home directory.
+            string account = Environment.UserName;
+            StringWriter written = new();
+
+            new RedactingConsoleFormatter().Write(
+                new LogEntry<string>(
+                    LogLevel.Information,
+                    "ctrdx.preferences",
+                    default,
+                    "state",
+                    null,
+                    (_, _) => @"Using save directory: C:\Users\" + account + @"\Saved Games\ctrdx"),
+                null,
+                written);
+
+            string line = written.ToString();
+            Assert.DoesNotContain(account, line, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Using save directory", line, StringComparison.Ordinal);
         }
     }
 }
