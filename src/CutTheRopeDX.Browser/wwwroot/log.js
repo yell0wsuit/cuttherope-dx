@@ -21,6 +21,7 @@ let sessionId = null;
 let pending = [];
 let flushTimer = null;
 let dbPromise = null;
+let flushChain = Promise.resolve();
 
 function openDatabase() {
     if (dbPromise === null) {
@@ -110,8 +111,21 @@ export function append(line, urgent) {
     }
 }
 
-/** Writes whatever is buffered. A storage failure drops the batch rather than the run. */
-export async function flush() {
+/**
+ * Writes whatever is buffered. A storage failure drops the batch rather than the run.
+ *
+ * Appending is a read followed by a write, so two of these in flight both read the same stored
+ * text and whichever puts last erases the other's batch. Every urgent entry starts its own
+ * flush, and every warning and error is urgent, so two warnings in one frame is enough to lose
+ * the first - the entries the log exists to keep. Writes are chained so only one runs at a time.
+ * The session record has a single writer, so ordering them here is enough to make the append safe.
+ */
+export function flush() {
+    flushChain = flushChain.then(writeBatch, writeBatch);
+    return flushChain;
+}
+
+async function writeBatch() {
     if (pending.length === 0 || sessionId === null) {
         return;
     }
