@@ -454,11 +454,13 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            GraphicsRecoveryPlan plan = GraphicsRecovery.Begin();
-
             // A press that was down when the device went is not a press the player is still
-            // making by the time one comes back.
+            // making by the time one comes back. Cancelled before Begin, not after: Begin pauses
+            // through to the root controller, and a suspended root drops every touch it is handed
+            // rather than routing it, so the release would go nowhere and leave the button latched
+            // down for the rest of the session. The focus-loss path cancels in this same order.
             input.ClearInput();
+            GraphicsRecoveryPlan plan = GraphicsRecovery.Begin();
             render.DiscardDeviceResources();
             assets.DiscardDeviceResources();
             _ = registry.Invalidate();
@@ -480,12 +482,25 @@ namespace CutTheRopeDX.Desktop
                 return;
             }
 
-            _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));
-            AttachWindow(device);
-            window.Initialize(width, height, fullscreen);
-            render.Rebind(device);
-            assets.Rebind(device.Context);
-            GraphicsRecoveryReport report = GraphicsRecovery.Complete(plan);
+            GraphicsRecoveryReport report;
+            try
+            {
+                _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));
+                AttachWindow(device);
+                window.Initialize(width, height, fullscreen);
+                render.Rebind(device);
+                assets.Rebind(device.Context);
+                report = GraphicsRecovery.Complete(plan);
+            }
+            catch (Exception failure)
+            {
+                // Sizing and placing the window reports through SDL rather than by losing the
+                // device, so a refusal here is not the exception the draw guard is catching and
+                // would leave the loop as an unhandled one. This is already inside that guard's
+                // catch, so there is nothing further up to turn it into a clean shutdown.
+                Abandon($"The replacement renderer could not be brought up: {failure.Message}");
+                return;
+            }
 
             // Building a device takes real time, and the loop would otherwise treat all of it as
             // gameplay owed and replay it as one batch of catch-up updates. Nothing happened
@@ -497,6 +512,7 @@ namespace CutTheRopeDX.Desktop
                 selection.Kind,
                 frameCount,
                 report.ReloadedAssets,
+                report.RebuiltTextures,
                 report.DroppedCaptures);
         }
 
@@ -830,12 +846,13 @@ namespace CutTheRopeDX.Desktop
         [LoggerMessage(
             Level = LogLevel.Information,
             Message = "Recovered on {Renderer} at frame {Frame}: {ReloadedAssets} assets reloaded, "
-                + "{DroppedCaptures} captures dropped")]
+                + "{RebuiltTextures} textures rebuilt, {DroppedCaptures} captures dropped")]
         public static partial void Recovered(
             ILogger logger,
             GraphicsBackendKind renderer,
             int frame,
             int reloadedAssets,
+            int rebuiltTextures,
             int droppedCaptures);
 
         [LoggerMessage(Level = LogLevel.Error, Message = "{Reason}")]
