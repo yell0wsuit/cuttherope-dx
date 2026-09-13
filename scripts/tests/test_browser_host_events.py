@@ -77,7 +77,7 @@ def test_key_ids_agree_across_the_boundary():
         ("ArrowLeft", 5, "Left"),
         ("ArrowRight", 6, "Right"),
     ):
-        assert f'"{code}": {key_id}' in writer
+        assert re.search(rf'(?:"{code}"|\b{code})\s*:\s*{key_id}\b', writer)
         assert f"HostKey.{managed} => KeyCode.{managed}" in router
 
 

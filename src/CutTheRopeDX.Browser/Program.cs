@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
 
 using CutTheRopeDX.Browser;
 using CutTheRopeDX.Framework;
@@ -29,10 +28,14 @@ _ = LogInterop.Begin(BrowserBuild.ComposeHeader());
 // load rather than following it. A normal launch returns immediately.
 _ = await PlaytestSession.BeginAsync();
 
-// The canvas moves to this thread before Skia exists, and never moves back: the
-// released SkiaSharp archive calls GL on whichever thread it is running on, so the
-// thread that renders has to be the thread that owns the context.
-_ = HostShim.InstallCanvasListener();
+// Whichever thread this is, it has to be the one that owns the GL context before Skia
+// exists: the released SkiaSharp archive calls GL on whichever thread it is running on
+// and consults no proxy.
+#if WASM_THREADS
+// This thread is a worker, so the canvas has to come to it, and the move is permanent -
+// the page can never draw to that element again. Everything that could rule the threaded
+// runtime out was checked by runtime-mode.js before this build was even fetched.
+_ = HostShim.AcquireCanvas();
 int[] canvas = GLContextInterop.TransferCanvasToThread("game", HostShim.ThreadId());
 if (canvas.Length != 4)
 {
@@ -43,14 +46,28 @@ int deliveryAttempts = 0;
 while (HostShim.CanvasReceived() == 0 && deliveryAttempts < 200)
 {
     deliveryAttempts++;
-    await Task.Delay(25);
+    await System.Threading.Tasks.Task.Delay(25);
 }
 if (HostShim.CanvasReceived() == 0)
 {
     throw new InvalidOperationException("The transferred canvas never arrived.");
 }
+#else
+// This thread is the page's own, so the canvas is already here and nothing is handed
+// over. Measuring it is all the arrangement the single-threaded runtime needs.
+int[] canvas = GLContextInterop.MeasureCanvas("game");
+if (canvas.Length != 4)
+{
+    throw new InvalidOperationException("The page has no canvas to draw to.");
+}
 
-if (HostShim.CreateWorkerContext(canvas[2], canvas[3]) == 0)
+if (HostShim.AcquireCanvas() == 0)
+{
+    throw new InvalidOperationException("Could not take the page's canvas.");
+}
+#endif
+
+if (HostShim.CreateContext(canvas[2], canvas[3]) == 0)
 {
     throw new InvalidOperationException("Could not create the game thread's WebGL context.");
 }

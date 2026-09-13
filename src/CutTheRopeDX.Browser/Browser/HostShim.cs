@@ -4,13 +4,19 @@ namespace CutTheRopeDX.Browser
 {
     /// <summary>
     /// Native boundary that executes in the calling thread's own JavaScript scope,
-    /// which managed interop cannot reach because it is proxied to the browser thread.
+    /// which managed interop cannot reach in the threaded build because it is proxied to
+    /// the browser thread. The single-threaded build already runs there, and calls the
+    /// same entry points: which canvas they find is the only difference, and the native
+    /// side settles that.
     /// </summary>
     internal static unsafe partial class HostShim
     {
         private const string Library = "ctrdxhost";
 
-        /// <summary>Returns the calling thread's pthread pointer.</summary>
+        /// <summary>
+        /// Returns the calling thread's pthread pointer, or zero in the single-threaded
+        /// build, where nothing needs to address the thread the game runs on.
+        /// </summary>
         [LibraryImport(Library, EntryPoint = "ctrdx_thread_id")]
         internal static partial int ThreadId();
 
@@ -27,17 +33,20 @@ namespace CutTheRopeDX.Browser
         [LibraryImport(Library, EntryPoint = "ctrdx_request_frame")]
         internal static partial void RequestFrame();
 
-        /// <summary>Starts listening for the transferred canvas on this thread.</summary>
-        [LibraryImport(Library, EntryPoint = "ctrdx_install_canvas_listener")]
-        internal static partial int InstallCanvasListener();
+        /// <summary>
+        /// Takes ownership of the canvas this thread draws to: the page's own element in
+        /// the single-threaded build, or whatever the browser thread transfers here.
+        /// </summary>
+        [LibraryImport(Library, EntryPoint = "ctrdx_acquire_canvas")]
+        internal static partial int AcquireCanvas();
 
         /// <summary>Returns whether the transferred canvas has arrived.</summary>
         [LibraryImport(Library, EntryPoint = "ctrdx_canvas_received")]
         internal static partial int CanvasReceived();
 
         /// <summary>Registers and makes current a WebGL2 context this thread owns.</summary>
-        [LibraryImport(Library, EntryPoint = "ctrdx_create_worker_context")]
-        internal static partial int CreateWorkerContext(int width, int height);
+        [LibraryImport(Library, EntryPoint = "ctrdx_create_context")]
+        internal static partial int CreateContext(int width, int height);
 
         /// <summary>Resizes the transferred canvas backing store.</summary>
         [LibraryImport(Library, EntryPoint = "ctrdx_resize_canvas")]

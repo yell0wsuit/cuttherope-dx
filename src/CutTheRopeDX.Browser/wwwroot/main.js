@@ -1,5 +1,6 @@
 import * as hostEvents from "./host-events.js";
 import { setLoadingProgress } from "./loading-progress.js";
+import { probeEnvironment, selectRuntime } from "./runtime-mode.js";
 
 // The failure seam is installed by the inline module in index.html rather than here, because
 // this module's static imports are fetched and evaluated before its first statement runs: an
@@ -7,84 +8,31 @@ import { setLoadingProgress } from "./loading-progress.js";
 // is only the local alias; index.html owns the handlers and the report-once guard.
 const fail = (id, detail) => globalThis.ctrdxFail?.(id, detail);
 
-/**
- * Reports why this browser cannot run the game, or null when it can.
- *
- * The build renders from a worker through a transferred OffscreenCanvas and has no
- * browser-thread path to degrade to. Safari grew OffscreenCanvas at 16.4 but only added a
- * WebGL2 context on one at 17, so a 16.x iPhone gets all the way through the canvas
- * transfer and only then meets a null context - several seconds into a 56MB download, from
- * managed code, where nothing surfaces it. Probing first turns that into a sentence the
- * player can act on.
- *
- * Capability probes only, no user agent matching: what a runtime reports about itself is a
- * poorer answer to "can this run" than asking the runtime to do the thing.
- *
- * Support data: https://github.com/mdn/browser-compat-data
- */
-function unsupportedReason() {
-    if (typeof SharedArrayBuffer !== "function") {
-        return "This browser does not support the shared memory the game needs.";
-    }
-    if (
-        typeof OffscreenCanvas !== "function" ||
-        typeof HTMLCanvasElement.prototype.transferControlToOffscreen !==
-            "function"
-    ) {
-        return (
-            "This browser cannot hand a canvas to a background thread. " +
-            "iOS and iPadOS need version 17 or newer."
-        );
-    }
-
-    try {
-        const probe = new OffscreenCanvas(1, 1);
-        const context = probe.getContext("webgl2");
-        if (context === null) {
-            return (
-                "This browser cannot draw 3D graphics from a background thread. " +
-                "iOS and iPadOS need version 17 or newer."
-            );
-        }
-        // The probe holds a real GL context and a browser caps how many may exist at once,
-        // so it is handed back rather than left for the collector to get to eventually.
-        context.getExtension("WEBGL_lose_context")?.loseContext();
-    } catch (error) {
-        return `This browser cannot start the graphics the game needs: ${error}`;
-    }
-
-    return null;
-}
-
 await globalThis.ctrdxIsolationReady;
-const isolated = globalThis.crossOriginIsolated === true;
-console.info(`ctrdx-wasm-env: crossOriginIsolated=${isolated}`);
-if (!isolated) {
-    // Threaded-only: there is no browser-thread rendering path to degrade to, and
-    // the canvas transfer this build depends on cannot be undone once it happens.
-    console.error(
-        "ctrdx-isolation-error: refusing to start without shared memory",
-    );
-    fail("isolation-error");
-    throw new Error("Cross-origin isolation is required.");
-}
 
-const unsupported = unsupportedReason();
-if (unsupported !== null) {
+// Both runtimes are published; this picks the one this browser can actually run, before
+// either is fetched and before anything irreversible happens to the canvas.
+const choice = selectRuntime(probeEnvironment());
+console.info(
+    `ctrdx-wasm-env: crossOriginIsolated=${globalThis.crossOriginIsolated === true} runtime=${choice.mode}`,
+);
+
+if (choice.mode === "unsupported") {
     // The probe knows more about which capability was missing than the markup's fallback
     // wording does, so it replaces it.
     const element = document.getElementById("unsupported-error");
     if (element !== null) {
-        element.textContent = unsupported;
+        element.textContent = choice.reason;
     }
-    fail("unsupported-error", unsupported);
-    throw new Error(unsupported);
+    fail("unsupported-error", choice.reason);
+    throw new Error(choice.reason);
 }
 
 try {
-    // Importing the threaded runtime itself requires SharedArrayBuffer, so the
-    // isolation guard must run before this module is evaluated.
-    const { dotnet } = await import("./_framework/dotnet.js");
+    // The specifier is the choice, not a constant: importing the threaded runtime
+    // evaluates code that requires SharedArrayBuffer, so a page without it must never
+    // reach that module at all.
+    const { dotnet } = await import(choice.runtime);
     const reportDownloadProgress = (loaded, total) => {
         setLoadingProgress("runtime", loaded, total);
     };

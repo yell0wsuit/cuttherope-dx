@@ -8,10 +8,19 @@
     const RELOAD_FLAG = "ctrdx-coi-reloaded";
     const CONTROLLER_TIMEOUT_MS = 15 * 1000;
 
-    let finishReady;
+    let settle;
     globalThis.ctrdxIsolationReady = new Promise((resolve) => {
-        finishReady = resolve;
+        settle = resolve;
     });
+
+    // Once the answer is out, boot moves on: main.js picks a runtime and starts fetching
+    // it. A worker that takes control after that is too late to be worth a reload, so the
+    // bootstrap records that it has answered and stops acting on anything that follows.
+    let settled = false;
+    const finishReady = (isolated) => {
+        settled = true;
+        settle(isolated);
+    };
 
     // A browser set to block all site data throws on any sessionStorage access rather than
     // answering null, and main.js waits on ctrdxIsolationReady before it does anything at
@@ -71,9 +80,11 @@
             // requests straddling two worlds. Deferring keeps the offline cache without
             // putting a controller swap in the middle of startup.
             let deliverRegistration;
-            globalThis.ctrdxServiceWorkerRegistration = new Promise((resolve) => {
-                deliverRegistration = resolve;
-            });
+            globalThis.ctrdxServiceWorkerRegistration = new Promise(
+                (resolve) => {
+                    deliverRegistration = resolve;
+                },
+            );
             globalThis.ctrdxInstallWorker = () => {
                 globalThis.ctrdxInstallWorker = () => {};
                 if (!("serviceWorker" in navigator)) {
@@ -109,7 +120,7 @@
 
         let reloadRequested = false;
         const reloadForIsolation = () => {
-            if (reloadRequested) {
+            if (reloadRequested || settled) {
                 return;
             }
 

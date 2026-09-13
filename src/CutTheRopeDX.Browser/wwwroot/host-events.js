@@ -1,6 +1,11 @@
-// The browser thread's write side of the event ring. Wasm linear memory is a
-// SharedArrayBuffer in a threaded build, so events reach the game thread without
-// a message, a structured clone, or an allocation per pointer move.
+// The page's write side of the event ring. Wasm linear memory is a SharedArrayBuffer in
+// the threaded build, so events reach the game thread without a message, a structured
+// clone, or an allocation per pointer move.
+//
+// The single-threaded build reuses this rather than reaching into managed code directly.
+// Atomics.load, .store and .add accept an ordinary ArrayBuffer - only Atomics.wait insists
+// on a shared one, and nothing here waits - so the same writer serves both runtimes and
+// only the wake differs.
 
 const HEADER_BYTES = 16;
 const RECORD_BYTES = 24;
@@ -23,12 +28,12 @@ const KIND_START = 6;
 const KEY_IDS = {
     // Q and R stand in for Escape and F5: a browser keeps both of those for
     // itself, and neither can be reliably taken back from it.
-    "KeyQ": 1,
-    "KeyR": 2,
-    "Space": 3,
-    "Enter": 4,
-    "ArrowLeft": 5,
-    "ArrowRight": 6,
+    KeyQ: 1,
+    KeyR: 2,
+    Space: 3,
+    Enter: 4,
+    ArrowLeft: 5,
+    ArrowRight: 6,
 };
 
 let baseWord = 0;
@@ -40,10 +45,13 @@ let ownerWorker = null;
 // view is rebuilt whenever the buffer identity changes. The ring's address does
 // not move, only the window onto it.
 function heap() {
-    const memory = globalThis.ctrdxWasmModule.wasmMemory;
-    if (memory.buffer !== viewBuffer) {
-        viewBuffer = memory.buffer;
-        view = new Int32Array(memory.buffer);
+    const module = globalThis.ctrdxWasmModule;
+    // The single-threaded runtime exports heap views but not wasmMemory. Read
+    // the current view each time: Emscripten replaces it when memory grows.
+    const buffer = module.wasmMemory?.buffer ?? module.HEAPU8.buffer;
+    if (buffer !== viewBuffer) {
+        viewBuffer = buffer;
+        view = new Int32Array(buffer);
     }
     return view;
 }
@@ -86,8 +94,24 @@ function bits(value) {
 
 export function attach(address, threadId) {
     baseWord = address / 4;
-    ownerWorker =
-        globalThis.ctrdxWasmModule?.PThread?.pthreads?.[threadId] ?? null;
+    // Zero in the single-threaded build, where the loop runs on this thread and there is
+    // no worker to reach.
+    ownerWorker = threadId
+        ? (globalThis.ctrdxWasmModule?.PThread?.pthreads?.[threadId] ?? null)
+        : null;
+}
+
+// A hidden page stops being given animation frames, so the loop that would have noticed
+// the change is the loop the change put to sleep. Waking it is what lets a pause be
+// acted on and a resume re-arm the frame.
+function wake() {
+    if (ownerWorker !== null) {
+        ownerWorker.postMessage({ ctrdxWake: 1 });
+        return;
+    }
+    // Same entry point the worker's message handler calls, reached directly because
+    // this thread is the one that would receive the message.
+    globalThis.ctrdxWasmModule?._ctrdx_wake?.();
 }
 
 export function pointer(phase, offsetX, offsetY, rectWidth, rectHeight) {
@@ -124,7 +148,7 @@ export function active(isActive, isHidden) {
     // and nothing else re-arms the loop. A wake on a running loop costs one extra frame entry,
     // which is cheaper than a session that never resumes.
     if (write(KIND_ACTIVE, isActive ? 1 : 0, isHidden ? 1 : 0, 0, 0, 0)) {
-        ownerWorker?.postMessage({ ctrdxWake: 1 });
+        wake();
     }
 }
 
@@ -144,7 +168,7 @@ export function resize(cssWidth, cssHeight, devicePixelRatio) {
 // hidden and put it back to sleep in between.
 export function start() {
     if (write(KIND_START, 0, 0, 0, 0, 0)) {
-        ownerWorker?.postMessage({ ctrdxWake: 1 });
+        wake();
     }
 }
 

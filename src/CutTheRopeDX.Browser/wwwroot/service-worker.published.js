@@ -11,6 +11,8 @@
 //                   replaced wholesale when it changes. The runtime files are fingerprinted, so
 //                   a new build requests new URLs for those regardless; index.html and the loose
 //                   .js files are not, and the version in the cache name is what retires them.
+//                   Two runtimes are published and a visit runs one, so the framework trees are
+//                   filled by the fetch path as the page asks for them rather than at install.
 //   Content cache — the ~36MB under content/, kept across versions. These URLs are stable, so
 //                   a cached entry stays valid until its bytes actually change. Each entry
 //                   records the manifest hash it was stored from, and activation drops only
@@ -34,9 +36,8 @@ const hashHeader = "x-ctrdx-asset-hash";
 // Relative to the worker, so the app works from a domain root or a project subpath alike.
 const scopeUrl = new URL("./", self.location.href);
 
-// The runtime and page shell are fetched once at startup and needed before anything can run,
-// so they are pulled in at install. Content is not: the game requests all of it during its own
-// loading screen, and precaching would download it a second time in parallel with that.
+// What the shell cache may hold. Content is not here: the game requests all of it during its
+// own loading screen, and precaching would download it a second time in parallel with that.
 const shellExclude = [
     /^content\//,
     /^service-worker(-assets)?\.js$/,
@@ -55,6 +56,16 @@ const shellAssets = self.assetsManifest.assets.filter(
 );
 const shellHashes = new Map(
     shellAssets.map((asset) => [new URL(asset.url, scopeUrl).href, asset.hash]),
+);
+
+// Both runtimes are published and a visit runs exactly one of them - which one is settled by
+// runtime-mode.js, in the page, after this worker has installed. Precaching the pair would
+// download two whole runtimes to use half of that, so they are left to the fetch path, which
+// stores what it serves: the page asks for its runtime immediately, so the offline copy is
+// complete by the time the first boot is.
+const runtimeTree = /^_framework(-single)?\//;
+const installAssets = shellAssets.filter(
+    (asset) => !runtimeTree.test(asset.url),
 );
 const contentHashes = new Map(
     self.assetsManifest.assets
@@ -122,17 +133,20 @@ async function onInstall() {
     // Each worker takes the next asset rather than a fixed slice, so a slow file does not
     // leave its share of the list waiting behind it.
     async function run() {
-        for (let index = next++; index < shellAssets.length; index = next++) {
+        for (let index = next++; index < installAssets.length; index = next++) {
             try {
-                await addShellAsset(cache, shellAssets[index]);
+                await addShellAsset(cache, installAssets[index]);
             } catch {
-                failed.push(shellAssets[index].url);
+                failed.push(installAssets[index].url);
             }
         }
     }
 
     await Promise.all(
-        Array.from({ length: Math.min(SHELL_CONCURRENCY, shellAssets.length) }, run),
+        Array.from(
+            { length: Math.min(SHELL_CONCURRENCY, installAssets.length) },
+            run,
+        ),
     );
 
     if (failed.length !== 0) {
@@ -367,8 +381,9 @@ function rangeNotSatisfiable(length) {
 }
 
 /**
- * Serves a shell asset. Install normally has these already; the fetch path covers a failed
- * install, which is all-or-nothing and would otherwise leave the cache empty for good.
+ * Serves a shell asset, storing it if it was not already held. The runtime trees arrive
+ * this way by design, and everything else covers a failed install, which is all-or-nothing
+ * and would otherwise leave the cache empty for good.
  *
  * @param {Request} request
  * @param {string} hash Manifest hash the response has to match.

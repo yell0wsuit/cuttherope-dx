@@ -80,12 +80,16 @@ jobs:
             - name: Convert content for the browser
               run: python3 scripts/build_web_content.py --require-video
 
-            # CI=true switches AOT off for PR builds, which must not follow the payload people
-            # actually play: the physics loop is unusable on the interpreter.
+            # Two runtimes go out: the threaded one for pages that get cross-origin isolation
+            # and the single-threaded fallback for the ones that cannot, such as a Discord
+            # activity or an Android WebView. The script publishes both and merges them into
+            # one site; the page picks between them at boot.
+            #
+            # AOT is forced on because CI=true switches it off for PR builds, and the payload
+            # people actually play must not follow that: the physics loop is unusable on the
+            # interpreter.
             - name: Publish Browser
-              run: >
-                  dotnet publish src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
-                  -c Release -o dist -p:RunAOTCompilation=true
+              run: python3 scripts/publish_browser.py --output dist
 
             # Without this, GitHub Pages (Jekyll) drops the _framework/ runtime folder.
             - name: Disable Jekyll

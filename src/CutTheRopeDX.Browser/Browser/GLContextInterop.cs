@@ -24,6 +24,13 @@ namespace CutTheRopeDX.Browser
         [JSImport("transferCanvasToThread", "glcontext")]
         public static partial int[] TransferCanvasToThread(string canvasId, int threadId);
 
+        /// <summary>
+        /// Returns the same four measurements without giving the canvas away, for the
+        /// single-threaded build, which draws to the element where it stands.
+        /// </summary>
+        [JSImport("measureCanvas", "glcontext")]
+        public static partial int[] MeasureCanvas(string canvasId);
+
         /// <summary>Starts reporting canvas shape changes through the host event ring.</summary>
         [JSImport("watchCanvas", "glcontext")]
         public static partial void WatchCanvas(string canvasId);

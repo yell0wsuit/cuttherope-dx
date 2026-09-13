@@ -15,13 +15,22 @@
     <RunAOTCompilation Condition="'$(CI)' == 'true'">false</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <!--
-      The managed owner thread is a worker, so it has to own the WebGL context outright:
-      SkiaSharp's WebAssembly archive binds the raw emscripten_gl* layer, which always runs
-      on the calling thread and consults no proxy. Cross-origin isolation comes from the
-      service worker, and the canvas reaches the owner thread as a transferred
-      OffscreenCanvas.
+      Two runtimes are published from this one project and wwwroot, and this is what tells
+      them apart. Set it to publish the fallback; scripts/publish_browser.py builds both and
+      lays the fallback's framework tree down beside the threaded one.
+
+      Threaded is the better build where it can run: the managed owner thread is a worker, so
+      it owns the WebGL context outright - SkiaSharp's WebAssembly archive binds the raw
+      emscripten_gl* layer, which always runs on the calling thread and consults no proxy -
+      and the canvas reaches it as a transferred OffscreenCanvas. What it cannot do is run
+      without cross-origin isolation, which a Discord activity and an Android WebView do not
+      have and cannot be given: the service worker that supplies it elsewhere needs headers
+      of its own. The fallback runs the same game on the browser thread against the page's
+      own canvas and asks the server for nothing.
     -->
     <WasmEnableThreads>true</WasmEnableThreads>
+    <WasmEnableThreads Condition="'$(CtrdxSingleThreaded)' == 'true'">false</WasmEnableThreads>
+    <DefineConstants Condition="'$(WasmEnableThreads)' == 'true'">$(DefineConstants);WASM_THREADS</DefineConstants>
     <!-- The game ships its own locale JSON; ICU would add ~1MB for nothing. -->
     <InvariantGlobalization>true</InvariantGlobalization>
     <!--
@@ -37,7 +46,9 @@
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
     <EmccExportedRuntimeMethod Include="GL" />
-    <EmccExportedRuntimeMethod Include="PThread" />
+    <!-- glcontext.js reaches the owner thread's worker through this. Nothing does in the
+         fallback, where there is no worker and the export does not exist. -->
+    <EmccExportedRuntimeMethod Include="PThread" Condition="'$(WasmEnableThreads)' == 'true'" />
     <NativeFileReference Include="Native/ctrdxhost.cpp" />
   </ItemGroup>
 
@@ -50,9 +61,18 @@
     The converted content payload is ~30MB of already-compressed webp/ogg. Letting the
     WASM SDK fingerprint and Brotli-compress it would add minutes to publish and gain
     nothing, so it ships as plain static files.
+
+    CtrdxSkipContent drops it entirely. scripts/publish_browser.py publishes this project
+    twice and keeps only one framework tree from the second run, so copying 30MB it is
+    about to delete is 30MB of nothing.
   -->
+  <PropertyGroup>
+    <CtrdxContentCopy>PreserveNewest</CtrdxContentCopy>
+    <CtrdxContentCopy Condition="'$(CtrdxSkipContent)' == 'true'">Never</CtrdxContentCopy>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Content Update="wwwroot/content/**" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot/content/**" CopyToPublishDirectory="$(CtrdxContentCopy)" />
   </ItemGroup>
 
   <!--

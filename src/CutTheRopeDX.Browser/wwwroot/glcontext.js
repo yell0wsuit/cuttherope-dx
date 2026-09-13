@@ -1,5 +1,26 @@
 import * as hostEvents from "./host-events.js";
 
+/** Returns the canvas box and its backing size, in the order managed code reads them. */
+function measure(canvas) {
+    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
+    const cssWidth = Math.max(1, Math.round(canvas.clientWidth));
+    const cssHeight = Math.max(1, Math.round(canvas.clientHeight));
+    return [
+        cssWidth,
+        cssHeight,
+        Math.max(1, Math.round(cssWidth * ratio)),
+        Math.max(1, Math.round(cssHeight * ratio)),
+    ];
+}
+
+// The single-threaded build's answer to transferCanvasToThread: the game already runs on
+// this thread, so it needs the shape of the canvas and nothing else. Nothing is given
+// away, which is why this one is safe to call before the graphics are known to work.
+export function measureCanvas(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    return canvas === null ? [] : measure(canvas);
+}
+
 // Hands the canvas to the managed owner thread's worker. Ownership is permanent:
 // the browser thread can never draw to this canvas or resize its backing store
 // again, so nothing may fall back to browser-thread rendering after this returns.
@@ -10,9 +31,9 @@ export function transferCanvasToThread(canvasId, threadId) {
         return [];
     }
 
-    const ratio = Math.min(globalThis.devicePixelRatio || 1, 2);
-    const cssWidth = Math.max(1, Math.round(canvas.clientWidth));
-    const cssHeight = Math.max(1, Math.round(canvas.clientHeight));
+    // Measured before the transfer, because an OffscreenCanvas has no CSS box to read
+    // and the element stops reporting one the moment it gives its control away.
+    const size = measure(canvas);
 
     let offscreen;
     try {
@@ -38,12 +59,7 @@ export function transferCanvasToThread(canvasId, threadId) {
             reportContextLost();
         }
     });
-    return [
-        cssWidth,
-        cssHeight,
-        Math.max(1, Math.round(cssWidth * ratio)),
-        Math.max(1, Math.round(cssHeight * ratio)),
-    ];
+    return size;
 }
 
 // A lost context cannot be rebuilt in place yet: the GPU objects Core holds - every
@@ -73,6 +89,10 @@ function reportContextLost() {
         once: true,
     });
 }
+
+// The single-threaded build loses its context on this thread, so its handler reaches the
+// page by calling this rather than by posting the message the threaded build has to send.
+globalThis.ctrdxReportContextLost = reportContextLost;
 
 let watchedCanvas = null;
 let devicePixelRatioQuery = null;

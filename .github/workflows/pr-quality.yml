@@ -18,6 +18,9 @@ on:
             - "content/**"
             - "scripts/**"
             - "distribution/**"
+            # The page decides which of the two published runtimes it can run, and that
+            # decision lives entirely in these files.
+            - "src/CutTheRopeDX.Browser/wwwroot/**"
 
 permissions:
     contents: read
@@ -52,6 +55,14 @@ jobs:
             - name: Test
               run: dotnet test --solution CutTheRopeDX.slnx --no-build -c Release
 
+            # The solution build covers only the threaded runtime. The fallback compiles
+            # different C# and relinks a different emscripten command line, so nothing above
+            # would notice it breaking until a deploy tried to publish it.
+            - name: Build the single-threaded browser runtime
+              run: >
+                  dotnet build src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
+                  -c Release -p:CtrdxSingleThreaded=true
+
     # The release and web-content scripts carry their own tests - the ANGLE checksum
     # verification, the refusal of an incomplete archive, and the directory the game looks in
     # for those libraries among them. Nothing ran them, so they documented that behaviour
@@ -73,3 +84,20 @@ jobs:
 
             - name: Test
               run: python -m pytest scripts/tests distribution/tests -q
+
+    # The runtime choice, the event writer and the isolation bootstrap are JavaScript, and
+    # they run before any managed code exists to be tested.
+    javascript-quality:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "22"
+
+            - name: Test
+              run: node --test scripts/tests/test_browser_fallback.mjs
