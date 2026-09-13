@@ -12,10 +12,11 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.Equal(new Vector2(80, 30), SdlWindowService.MapWindowToView(100, 50, 800, 600, 800, 600, 20, 20));
         }
         [Fact]
-        public void CursorScaleUsesWindowUnitsAndTopLeftHotspot()
+        public void CursorBaseSizeIsHalfTheArtWhateverTheWindow()
         {
-            Assert.Equal((32, 16), SdlCursorService.GetScaledSize(32, 16, 2, 2));
-            Assert.Equal((48, 24), SdlCursorService.GetScaledSize(32, 16, 3, 2));
+            Assert.Equal((31, 36), SdlCursorService.GetBaseSize(62, 71));
+            Assert.Equal((28, 31), SdlCursorService.GetBaseSize(55, 62));
+            Assert.Equal((1, 1), SdlCursorService.GetBaseSize(1, 1));
         }
 
         [Theory]

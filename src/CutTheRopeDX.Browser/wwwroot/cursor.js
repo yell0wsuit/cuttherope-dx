@@ -4,13 +4,10 @@
 // scene, so the CSS equivalent is the faithful port: same two images, same top-left hotspot,
 // and the pointer keeps the responsiveness of a real cursor instead of trailing a frame behind.
 
-// Logical length of the viewport's shorter side, matching ViewportLayout.LogicalShortSide.
-// The engine scales everything it draws by the short side, so a cursor scaled by anything
-// else would agree with the art at one window shape and disagree at every other.
-const GAME_SHORT_SIDE = 1440;
-
-// Below this the resize is not worth redrawing for.
-const SCALE_EPSILON = 0.01;
+// CSS pixels per art pixel, matching SdlCursorService.BaseScale. The size is fixed rather than
+// following the canvas: a cursor shrunk with the art turns unreadable in a small window. The
+// art itself is authored at twice this, so it doubles as the high-density image.
+const BASE_SCALE = 0.5;
 
 const canvas = document.getElementById("game");
 // The cutscene overlay covers the canvas, so a cursor set only there would be invisible
@@ -21,11 +18,9 @@ const sources = {
     pressed: "./content/images/cursor_active.webp",
 };
 
-const bitmaps = {};
-const scaled = {};
+const values = {};
 let enabled = true;
 let pressed = false;
-let appliedScale = 0;
 
 /** Applies the cursor the current state calls for. */
 function apply() {
@@ -35,53 +30,53 @@ function apply() {
         }
         return;
     }
-    const url = scaled[pressed ? "pressed" : "idle"];
     // Until the bitmaps load there is nothing to show, so the pointer stays the system one.
-    const value = url ? `url("${url}") 0 0, auto` : "auto";
+    const value = values[pressed ? "pressed" : "idle"] ?? "auto";
     for (const surface of surfaces) {
         surface.style.cursor = value;
     }
 }
 
-/** Redraws both bitmaps for the canvas's current size, if that size changed enough. */
-function rescale() {
-    const shortSide = Math.min(canvas.clientWidth, canvas.clientHeight);
-    if (shortSide === 0) {
-        return;
-    }
+/**
+ * Builds the cursor declaration for one loaded bitmap.
+ *
+ * @param {HTMLImageElement} image
+ * @param {string} src
+ * @returns {string}
+ */
+function build(image, src) {
+    const target = document.createElement("canvas");
+    target.width = Math.max(1, Math.round(image.naturalWidth * BASE_SCALE));
+    target.height = Math.max(1, Math.round(image.naturalHeight * BASE_SCALE));
+    const context = target.getContext("2d");
+    // The default low-quality filter drops the thin dark outline when halving.
+    context.imageSmoothingQuality = "high";
+    context.drawImage(image, 0, 0, target.width, target.height);
+    const base = target.toDataURL("image/png");
 
-    const scale = shortSide / GAME_SHORT_SIDE;
-    if (Math.abs(scale - appliedScale) < SCALE_EPSILON) {
-        return;
-    }
-    appliedScale = scale;
-
-    for (const [name, image] of Object.entries(bitmaps)) {
-        const target = document.createElement("canvas");
-        target.width = Math.max(1, Math.round(image.naturalWidth * scale));
-        target.height = Math.max(1, Math.round(image.naturalHeight * scale));
-        target
-            .getContext("2d")
-            .drawImage(image, 0, 0, target.width, target.height);
-        scaled[name] = target.toDataURL("image/png");
-    }
-
-    apply();
+    // The first form the browser accepts wins; image-set in cursor is still uneven, and an
+    // unsupported value would otherwise throw the whole declaration away.
+    const set = `url("${base}") 1x, url("${src}") 2x`;
+    const candidates = [
+        `image-set(${set}) 0 0, auto`,
+        `-webkit-image-set(${set}) 0 0, auto`,
+        `url("${base}") 0 0, auto`,
+    ];
+    return (
+        candidates.find((value) => CSS.supports("cursor", value)) ??
+        candidates.at(-1)
+    );
 }
 
 for (const [name, src] of Object.entries(sources)) {
     const image = new Image();
     image.decoding = "async";
     image.addEventListener("load", () => {
-        bitmaps[name] = image;
-        // A load invalidates whatever scale was applied without this bitmap.
-        appliedScale = 0;
-        rescale();
+        values[name] = build(image, src);
+        apply();
     });
     image.src = src;
 }
-
-new ResizeObserver(rescale).observe(canvas);
 
 /**
  * Shows or hides the cursor over the canvas. Core hides it while a cutscene plays.

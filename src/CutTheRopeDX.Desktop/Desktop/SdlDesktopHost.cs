@@ -379,8 +379,8 @@ namespace CutTheRopeDX.Desktop
 
             // The native cursor stands in for the sprite the old host drew here, so it is
             // refreshed at the same point in the frame. Core only enables and disables the
-            // service, so tracking the presentation scale and the pressed variant is the host's.
-            cursor.Update(ScreenPresentation.Instance.Snapshot.Scale, window.DevicePixelRatio, input.PrimaryPressed);
+            // service, so tracking the pressed variant is the host's.
+            cursor.Update(input.PrimaryPressed);
             if (!drewMovie)
             {
                 // Away from a movie the latch rests disarmed, so the next cutscene starts out
