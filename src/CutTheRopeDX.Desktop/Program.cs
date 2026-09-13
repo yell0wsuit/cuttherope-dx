@@ -10,6 +10,13 @@ using CutTheRopeDX.GameMain;
 
 using Microsoft.Extensions.Logging;
 
+// The disposable probe must not initialize preferences, logs, playtest handshakes or dialogs.
+// A native crash here belongs to the parent process's renderer selection, not a game session.
+if (args.Length == 1 && args[0] == RendererProbe.Argument)
+{
+    return SdlDesktopHost.ProbeOpenGl();
+}
+
 CommandLineResult cli = CommandLine.Parse(args);
 
 // Held rather than logged where it happens: the factory is built further down, after the headless

@@ -194,7 +194,15 @@ namespace CutTheRopeDX.Desktop
             rendererMemory = new(Path.Combine(Preferences.SaveDirectory, "renderer.txt"));
             selection = BackendSelector.Attempt(
                 rendererMemory.Filter(BackendSelector.PreferenceOrder(platform, forced)),
-                (kind, lifetime) => { rendererMemory.BeginAttempt(kind); return CreateDevice(kind, lifetime); },
+                (kind, lifetime) =>
+                {
+                    if (RendererProbe.Required(platform, forced, kind))
+                    {
+                        RendererProbe.Check();
+                    }
+                    rendererMemory.BeginAttempt(kind);
+                    return CreateDevice(kind, lifetime);
+                },
                 ValidateDevice,
                 rendererMemory.Absolve);
             rendererMemory.RecordSuccess();
@@ -608,6 +616,31 @@ namespace CutTheRopeDX.Desktop
             SdlGlDevice retry = lifetime.Own(new SdlGlDevice(static fault => { }, profile.Retry));
             retry.Initialize();
             return retry;
+        }
+
+        /// <summary>Validates and releases OpenGL in a disposable process, without starting the game.</summary>
+        internal static int ProbeOpenGl()
+        {
+            try
+            {
+                if (!SDL.Init(SDL.InitFlags.Video))
+                {
+                    throw new InvalidOperationException(SDL.GetError());
+                }
+                using CandidateLifetime lifetime = new();
+                SdlGraphicsDevice device = CreateDevice(GraphicsBackendKind.OpenGL, lifetime);
+                ValidateDevice(device);
+                return 0;
+            }
+            catch (Exception failure)
+            {
+                Console.Error.WriteLine(failure.Message);
+                return 1;
+            }
+            finally
+            {
+                SDL.Quit();
+            }
         }
 
         private static void ValidateDevice(SdlGraphicsDevice device)
