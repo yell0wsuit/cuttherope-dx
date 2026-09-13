@@ -18,7 +18,14 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="delta">Elapsed frame time in seconds.</param>
         public void PerformTick(float delta)
         {
-            lastTime += delta;
+            // A transition advances by at most one tick per frame it has shown. The hosts replay a
+            // stalled frame as a batch of ticks before drawing again, and without this the batch
+            // after a slow controller build spent the whole fade before any of it was drawn.
+            if (transitionTime == -1f || transitionFrameDrawn)
+            {
+                lastTime += delta;
+                transitionFrameDrawn = false;
+            }
             if (transitionTime == -1f)
             {
                 currentController.Update(delta);
@@ -58,6 +65,7 @@ namespace CutTheRopeDX.Framework.Core
             else
             {
                 DrawViewTransition();
+                OnTransitionFrameDrawn();
                 if (lastTime > transitionTime)
                 {
                     transitionTime = -1f;
@@ -106,7 +114,7 @@ namespace CutTheRopeDX.Framework.Core
             int transitionType = viewTransition;
             if (transitionType - 4 <= 1)
             {
-                float transitionProgress = MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
+                float transitionProgress = TransitionProgress;
                 if (transitionProgress < 0.5f)
                 {
                     if (prevScreenImage != null)
@@ -227,7 +235,7 @@ namespace CutTheRopeDX.Framework.Core
                 Application.SharedCanvas().SetDefaultProjection();
                 Renderer.SetClearColor(Color.Black);
                 Renderer.Clear(0);
-                transitionTime = lastTime + transitionDelay;
+                BeginTransition();
                 ApplyLandscape();
                 currentController.ActiveView().Draw();
                 nextScreenImage?.textureHandle_?.Dispose();
@@ -256,6 +264,32 @@ namespace CutTheRopeDX.Framework.Core
                 Renderer.LoadIdentity();
             }
         }
+
+        /// <summary>
+        /// Starts the transition clock from the current time.
+        /// </summary>
+        /// <remarks>
+        /// The first frame of the transition has not been shown yet, so ticks that arrive before
+        /// it is drawn leave the transition at its start.
+        /// </remarks>
+        internal void BeginTransition()
+        {
+            transitionTime = lastTime + transitionDelay;
+            transitionFrameDrawn = false;
+        }
+
+        /// <summary>
+        /// Records that a transition frame reached the screen, letting the next tick advance it.
+        /// </summary>
+        internal void OnTransitionFrameDrawn()
+        {
+            transitionFrameDrawn = true;
+        }
+
+        /// <summary>
+        /// Gets how far the current transition has run, from 0 at its start to 1 at its end.
+        /// </summary>
+        internal float TransitionProgress => MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
 
         /// <summary>
         /// Releases the captured transition frames.
@@ -500,6 +534,11 @@ namespace CutTheRopeDX.Framework.Core
         /// Accumulated root-controller time in seconds.
         /// </summary>
         private float lastTime;
+
+        /// <summary>
+        /// Whether a transition frame has been drawn since the last tick that advanced the clock.
+        /// </summary>
+        private bool transitionFrameDrawn;
 
         /// <summary>
         /// Whether the root controller is suspended.
