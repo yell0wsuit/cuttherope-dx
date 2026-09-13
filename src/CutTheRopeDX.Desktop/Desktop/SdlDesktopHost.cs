@@ -174,7 +174,8 @@ namespace CutTheRopeDX.Desktop
             {
                 "auto" => null,
                 "metal" => GraphicsBackendKind.Metal,
-                "gl" => GraphicsBackendKind.OpenGL,
+                "gl" or "opengl" => GraphicsBackendKind.OpenGL,
+                "software" => GraphicsBackendKind.Software,
                 "vulkan" => GraphicsBackendKind.Vulkan,
                 "angle" => GraphicsBackendKind.Angle,
                 _ => throw new ArgumentException($"Unknown SDL renderer '{renderer}'."),
@@ -556,6 +557,10 @@ namespace CutTheRopeDX.Desktop
             // Initialize still releases it.
             switch (kind)
             {
+                case GraphicsBackendKind.Software:
+                    SdlSoftwareDevice software = lifetime.Own(new SdlSoftwareDevice());
+                    software.Initialize();
+                    return software;
                 case GraphicsBackendKind.Metal:
                     MetalDevice metal = lifetime.Own(new MetalDevice(static fault => { }));
                     metal.Initialize();

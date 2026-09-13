@@ -11,6 +11,23 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
     public sealed class BackendSelectionTests
     {
         [Theory]
+        [InlineData("linux")]
+        [InlineData("windows")]
+        [InlineData("macos")]
+        public void SoftwareRemainsAvailableWhenNativeBackendsFail(string platform)
+        {
+            GraphicsBackendKind software = GraphicsBackendKind.Software;
+            List<string> events = [];
+            using GraphicsSelection<Resource> selected = BackendSelector.Select(platform, null,
+                (kind, lifetime) => kind == software
+                    ? lifetime.Own(new Resource("software", events))
+                    : throw new InvalidOperationException("Driver rejected"),
+                resource => events.Add("validated " + resource.Name));
+            Assert.Equal(software, selected.Kind);
+            Assert.Contains("validated software", events);
+        }
+
+        [Theory]
         [InlineData("windows", GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle, GraphicsBackendKind.OpenGL)]
         [InlineData("linux", GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL)]
         [InlineData("macos", GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL)]
@@ -180,7 +197,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                     failures.Add(failure);
                     throw failure;
                 }, _ => { }));
-            Assert.Equal(3, failures.Count);
+            Assert.Equal(4, failures.Count);
             Assert.Equal(failures, error.Flatten().InnerExceptions);
         }
 

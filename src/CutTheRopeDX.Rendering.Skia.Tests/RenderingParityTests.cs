@@ -12,6 +12,24 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
 {
     public sealed class RenderingParityTests
     {
+        [Fact]
+        public void RasterViewportCanBeCreatedAndResizedWithoutAGpuContext()
+        {
+            using FakeSkiaSurface surface = new();
+            using SkiaRenderBackend renderer = new(surface);
+            foreach (int size in new[] { 32, 48 })
+            {
+                renderer.SetViewport(0, 0, size, size);
+                renderer.Target.Clear(SKColors.Red);
+                renderer.EndFrame();
+            }
+            using SkiaTexture captured = (SkiaTexture)renderer.DetachRenderTarget();
+            Assert.Equal(48, captured.Width);
+            Assert.Equal(48, captured.Height);
+            using SKBitmap pixels = SKBitmap.FromImage(captured.Image);
+            Assert.Equal(SKColors.Red, pixels.GetPixel(8, 16));
+        }
+
         [Theory]
         [InlineData(false, 128, 0, 127)]
         [InlineData(true, 128, 0, 127)]

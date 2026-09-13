@@ -27,9 +27,10 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                     GraphicsBackendKind.Vulkan,
                     GraphicsBackendKind.Angle,
                     GraphicsBackendKind.OpenGL,
+                    GraphicsBackendKind.Software,
                 ],
-                "linux" => [GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL],
-                "macos" => [GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL],
+                "linux" => [GraphicsBackendKind.Vulkan, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Software],
+                "macos" => [GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Software],
                 _ => throw new PlatformNotSupportedException(platform),
             };
         }

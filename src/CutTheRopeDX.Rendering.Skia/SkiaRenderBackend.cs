@@ -153,10 +153,10 @@ namespace CutTheRopeDX.Rendering.Skia
             {
                 DropScissor();
                 _renderTarget?.Dispose();
-                _renderTarget = SKSurface.Create(
-                    surface.Context,
-                    budgeted: true,
-                    new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+                SKImageInfo info = new(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
+                _renderTarget = (surface.Context == null
+                    ? SKSurface.Create(info)
+                    : SKSurface.Create(surface.Context, budgeted: true, info))
                     ?? throw new InvalidOperationException("Could not create the Skia render target.");
                 _renderTargetWidth = width;
                 _renderTargetHeight = height;

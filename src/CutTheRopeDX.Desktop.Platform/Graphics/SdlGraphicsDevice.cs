@@ -112,6 +112,13 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
             target = null;
         }
 
+        /// <summary>Takes ownership of a CPU raster surface.</summary>
+        protected void SetRasterSurface(SKSurface raster)
+        {
+            ClearSurface();
+            surface = raster ?? throw new InvalidOperationException("Skia could not create a raster surface.");
+        }
+
         /// <summary>Converts an SDL failure into a useful initialization error.</summary>
         protected static void Check(bool success)
         {
@@ -135,8 +142,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
         {
             CheckThread();
             Canvas.Flush();
-            Context.Flush(submit: true, synchronous: true);
-            if (Context.IsAbandoned)
+            Context?.Flush(submit: true, synchronous: true);
+            if (Context?.IsAbandoned == true)
             {
                 // Skia abandons a context when its driver reports the device gone, so this is the
                 // one place a real loss is certain to surface: every draw after it would be

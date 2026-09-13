@@ -10,9 +10,9 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
     public sealed class GraphicsRecoveryTests
     {
         [Theory]
-        [InlineData("macos", GraphicsBackendKind.Metal, GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL)]
-        [InlineData("macos", GraphicsBackendKind.OpenGL, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Metal)]
-        [InlineData("linux", GraphicsBackendKind.OpenGL, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Vulkan)]
+        [InlineData("macos", GraphicsBackendKind.Metal, GraphicsBackendKind.Metal, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Software)]
+        [InlineData("macos", GraphicsBackendKind.OpenGL, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Metal, GraphicsBackendKind.Software)]
+        [InlineData("linux", GraphicsBackendKind.OpenGL, GraphicsBackendKind.OpenGL, GraphicsBackendKind.Vulkan, GraphicsBackendKind.Software)]
         public void TheLostRendererIsTriedFirstAndThenTheRest(
             string platform, GraphicsBackendKind lost, params GraphicsBackendKind[] expected)
         {
@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             GraphicsRecoveryCoordinator coordinator = new("windows", null);
 
             Assert.Equal(
-                [GraphicsBackendKind.OpenGL, GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle],
+                [GraphicsBackendKind.OpenGL, GraphicsBackendKind.Vulkan, GraphicsBackendKind.Angle, GraphicsBackendKind.Software],
                 coordinator.OrderAfter(GraphicsBackendKind.OpenGL));
         }
 

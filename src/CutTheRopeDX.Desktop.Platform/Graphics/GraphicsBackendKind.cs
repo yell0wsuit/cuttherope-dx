@@ -14,5 +14,8 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
         /// <summary>OpenGL ES over ANGLE, for hosts without a usable native driver.</summary>
         Angle,
+
+        /// <summary>Skia CPU raster drawing with SDL software presentation.</summary>
+        Software,
     }
 }
