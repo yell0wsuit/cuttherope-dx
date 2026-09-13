@@ -846,18 +846,34 @@ namespace CutTheRopeDX.GameMain
             null
         ];
 
-        /// <summary>Resource pack loaded for the main menu.</summary>
-        private static readonly string[] PackMenu =
+        /// <summary>
+        /// Main menu image resources, terminated by <see langword="null"/>. Loaded at startup and
+        /// on every return to the menu, and freed when gameplay replaces the menu.
+        /// </summary>
+        /// <remarks>
+        /// Every image the menu controller's constructor reaches for belongs here. Anything left
+        /// out is still decoded and uploaded — just in the single frame that builds the menu,
+        /// after the progress bar has already reported completion, which reads as a freeze on
+        /// slower texture paths like the browser's. It also never gets freed, so it stays in
+        /// memory through gameplay.
+        /// </remarks>
+        internal static readonly string[] PackMenu =
         [
             Resources.Img.MenuBgr,
             Resources.Img.MenuPopup,
             Resources.Img.MenuLogo,
+            Resources.Img.MenuLogoNew,
+            Resources.Img.CutTheRopeDXLogo,
             Resources.Img.MenuLevelUi,
             Resources.Img.MenuPackSelection,
             Resources.Img.MenuPackSelection2,
+            Resources.Img.MenuPackUI,
             Resources.Img.MenuExtraButtons,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
+            Resources.BackgroundImg.SkinBackground,
+            Resources.Img.SkinSelection,
+            Resources.Img.CandySelectionFx,
             null
         ];
 
