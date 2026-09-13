@@ -284,10 +284,6 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 : bestType == 2 ? "virtual" : "software";
             ILogger logger = Log.For(LogCategories.SdlGraphics);
             GraphicsDeviceLog.Adapter(logger, adapterType, bestName, bestVersion);
-            if (bestType == 3)
-            {
-                throw new InvalidOperationException("Only a software Vulkan adapter is available.");
-            }
         }
 
         /// <summary>Finds a queue family that supports graphics work.</summary>
