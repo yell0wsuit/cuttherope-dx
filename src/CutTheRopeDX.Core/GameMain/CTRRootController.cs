@@ -331,12 +331,15 @@ namespace CutTheRopeDX.GameMain
                 case 2:
                     {
                         int nextController = ((LoadingController)GetChild(2)).nextController;
+                        long buildStartedTicks = Stopwatch.GetTimestamp();
                         if (nextController == 0)
                         {
                             SetShowGreeting(true);
                             GameController c3 = new(this);
                             AddChildwithID(c3, 3);
                             ActivateChild(3);
+                            CTRRootControllerLog.ControllerBuilt(
+                                Log.For(LogCategories.Application), "game", Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds);
                             QueueOrPollBoxPrefetch();
                             return;
                         }
@@ -372,6 +375,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             menuController3.ShowNextPack();
                         }
+                        CTRRootControllerLog.ControllerBuilt(
+                            Log.For(LogCategories.Application), "menu", Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds);
                         return;
                     }
                 case 3:
@@ -932,6 +937,11 @@ namespace CutTheRopeDX.GameMain
     /// <summary>Log messages for the root controller's lifecycle.</summary>
     internal static partial class CTRRootControllerLog
     {
+        [LoggerMessage(
+            Level = LogLevel.Information,
+            Message = "Built the {Controller} controller behind the loading screen in {ElapsedMs:F1} ms")]
+        public static partial void ControllerBuilt(ILogger logger, string controller, double elapsedMs);
+
         [LoggerMessage(Level = LogLevel.Debug, Message = "Loading finished; showing the menu.")]
         public static partial void ShowingMenu(ILogger logger);
 
