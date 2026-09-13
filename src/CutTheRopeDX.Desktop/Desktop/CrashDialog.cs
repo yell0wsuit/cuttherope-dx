@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using SDL3;
 
@@ -97,7 +98,7 @@ namespace CutTheRopeDX.Desktop
                     Flags = SDL.MessageBoxFlags.Error,
                     Window = 0,
                     Title = title,
-                    Message = message,
+                    Message = WrapMessage(message),
                     NumButtons = count,
                     Buttons = (nint)buttons,
                     ColorScheme = 0,
@@ -117,6 +118,34 @@ namespace CutTheRopeDX.Desktop
 
                 NativeMemory.Free(buttons);
             }
+        }
+
+        /// <summary>Adds explicit line breaks for native message boxes that do not wrap text.</summary>
+        internal static string WrapMessage(string message)
+        {
+            const int columns = 80;
+            StringBuilder result = new();
+            foreach (string paragraph in message.ReplaceLineEndings("\n").Split('\n'))
+            {
+                string remaining = paragraph;
+                while (remaining.Length > columns)
+                {
+                    int end = remaining.LastIndexOf(' ', columns, columns + 1);
+                    bool atSpace = end > 0;
+                    if (!atSpace)
+                    {
+                        end = columns;
+                        if (char.IsHighSurrogate(remaining[end - 1]))
+                        {
+                            end--;
+                        }
+                    }
+                    _ = result.Append(remaining.AsSpan(0, end)).Append('\n');
+                    remaining = remaining[(end + (atSpace ? 1 : 0))..];
+                }
+                _ = result.Append(remaining).Append('\n');
+            }
+            return result.ToString(0, result.Length - 1);
         }
 
         /// <summary>

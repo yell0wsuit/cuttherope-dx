@@ -128,6 +128,16 @@ namespace CutTheRopeDX.Desktop
         /// <returns>The dialog body.</returns>
         private static string Describe(object failure)
         {
+            if (failure is AggregateException aggregate && aggregate.InnerExceptions.Count > 0)
+            {
+                // AggregateException.Message appends every inner message, which can duplicate
+                // the selector's summary. Keep the complete exception in the log.
+                AggregateException flattened = aggregate.Flatten();
+                if (flattened.InnerExceptions.Count > 0)
+                {
+                    failure = flattened.InnerExceptions[0];
+                }
+            }
             string fault = failure is Exception exception
                 ? $"{exception.GetType().Name}: {exception.Message}"
                 : Convert.ToString(failure, CultureInfo.InvariantCulture) ?? "Unknown failure.";
