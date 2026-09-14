@@ -38,8 +38,31 @@ namespace CutTheRopeDX.GameMain
         private readonly List<VectorFringe> fringes = [];
         private readonly VertexPositionColor[] dimVertices = new VertexPositionColor[4];
 
+        /// <summary>Width of the artwork, in path units.</summary>
+        private const float ArtWidth = 245.5f;
+
+        private readonly Random random;
+
         private float builtFringeWidth = float.NaN;
         private float builtFringeAlpha = float.NaN;
+
+        /// <summary>Initializes the egg with its own random source for where he appears.</summary>
+        public EasterEggOmNom()
+            : this(new Random())
+        {
+        }
+
+        /// <summary>Initializes the egg with the random source that picks where he appears.</summary>
+        /// <param name="random">Source for where along the bottom he appears.</param>
+        internal EasterEggOmNom(Random random)
+        {
+            this.random = random;
+        }
+
+        /// <summary>
+        /// Gets where along the bottom he appears this time, from 0 (flush left) to 1 (flush right).
+        /// </summary>
+        internal float Position { get; private set; }
 
         /// <summary>Gets a value indicating whether the egg still has something to draw.</summary>
         public bool IsActive => animation.IsActive;
@@ -53,6 +76,7 @@ namespace CutTheRopeDX.GameMain
             EnsureMeshes();
             builtFringeWidth = float.NaN;
             builtFringeAlpha = float.NaN;
+            Position = random.NextSingle();
             animation.Start();
         }
 
@@ -99,7 +123,7 @@ namespace CutTheRopeDX.GameMain
             DrawDim(screen, frame.Alpha);
             if (frame.ShowsOmNom && meshes.Count > 0)
             {
-                DrawOmNom(frame, Composition(screen));
+                DrawOmNom(frame, screen);
             }
 
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
@@ -133,12 +157,41 @@ namespace CutTheRopeDX.GameMain
             return (screen.x + ((screen.w - width) / 2f), screen.y + screen.h - height, scale);
         }
 
-        private void DrawOmNom(EasterEggOmNomFrame frame, (float X, float Y, float Scale) composition)
+        /// <summary>
+        /// Returns how far to shift him sideways, in design units, so that at full size he sits at
+        /// <paramref name="position"/> along the visible width without running off either edge.
+        /// </summary>
+        /// <param name="screen">The visible screen region.</param>
+        /// <param name="composition">Where the composition is placed in <paramref name="screen"/>.</param>
+        /// <param name="position">0 for flush left, 1 for flush right.</param>
+        /// <returns>The horizontal offset from where the composition places him.</returns>
+        internal static float HorizontalOffset(
+            CTRRectangle screen, (float X, float Y, float Scale) composition, float position)
         {
+            if (composition.Scale <= 0f)
+            {
+                return 0f;
+            }
+
+            float visibleLeft = (screen.x - composition.X) / composition.Scale;
+            float visibleRight = (screen.x + screen.w - composition.X) / composition.Scale;
+            float fullWidth = ArtWidth * EasterEggOmNomAnimation.FullScale;
+            float least = visibleLeft - EasterEggOmNomAnimation.HeldX;
+            float most = visibleRight - fullWidth - EasterEggOmNomAnimation.HeldX;
+
+            // Narrower than he is, there is no position that keeps him whole, so he is centered.
+            return most < least ? (least + most) / 2f : least + ((most - least) * position);
+        }
+
+        private void DrawOmNom(EasterEggOmNomFrame frame, CTRRectangle screen)
+        {
+            (float X, float Y, float Scale) composition = Composition(screen);
+            float offset = HorizontalOffset(screen, composition, Position);
+
             Renderer.PushMatrix();
             Renderer.Translate(composition.X, composition.Y, 0f);
             Renderer.Scale(composition.Scale, composition.Scale, 1f);
-            Renderer.Translate(frame.X, frame.Y, 0f);
+            Renderer.Translate(frame.X + offset, frame.Y, 0f);
             Renderer.Scale(frame.ScaleX, frame.ScaleY, 1f);
 
             // The band is authored in path units but has to land at a fixed width on screen, so

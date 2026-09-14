@@ -42,6 +42,57 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(0f, y, 2);
         }
 
+        [Theory]
+        [InlineData(0f, -750f)]
+        [InlineData(1f, 337f)]
+        public void OffsetKeepsHimWithinTheDesignWidth(float position, float expected)
+        {
+            CTRRectangle screen = new(0f, 0f, 2560f, 1440f);
+
+            float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), position);
+
+            // At full size his left edge rests at 750 and he is 1473 wide.
+            Assert.Equal(expected, offset, 0);
+        }
+
+        [Theory]
+        [InlineData(0f, -1190f)]
+        [InlineData(1f, 777f)]
+        public void OffsetReachesBothEdgesOfAnUltrawideViewport(float position, float expected)
+        {
+            CTRRectangle screen = new(0f, 0f, 3440f, 1440f);
+
+            float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), position);
+
+            Assert.Equal(expected, offset, 0);
+        }
+
+        [Fact]
+        public void OffsetOnPortraitMatchesTheDesignRangeInCompositionUnits()
+        {
+            CTRRectangle screen = new(0f, 0f, 1440f, 2560f);
+
+            float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), 1f);
+
+            Assert.Equal(337f, offset, 0);
+        }
+
+        [Fact]
+        public void EachTriggerPicksWhereHeAppears()
+        {
+            EasterEggOmNom egg = new(new System.Random(7));
+            System.Collections.Generic.HashSet<float> positions = [];
+
+            for (int i = 0; i < 5; i++)
+            {
+                egg.Trigger();
+                Assert.InRange(egg.Position, 0f, 1f);
+                _ = positions.Add(egg.Position);
+            }
+
+            Assert.True(positions.Count > 1, "every trigger picked the same position");
+        }
+
         [Fact]
         public void FollowsTheViewportOrigin()
         {

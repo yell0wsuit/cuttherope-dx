@@ -44,7 +44,18 @@ namespace CutTheRopeDX.GameMain
         /// Full size. The web edition rounds a 2.2 scale through a helper meant for pixel counts,
         /// which lands on 6 in this design space.
         /// </summary>
-        private const float FullScale = 6f;
+        internal const float FullScale = 6f;
+
+        /// <summary>Where his left edge settles horizontally at full size, in design units.</summary>
+        internal const float HeldX = RestX - RiseX;
+
+        /// <summary>Horizontal placement at no size; he travels left by <see cref="RiseX"/> as he grows.</summary>
+        private const float RestX = 1250f;
+        private const float RiseX = 500f;
+
+        /// <summary>Vertical placement at no size; he travels up by <see cref="RiseY"/> as he grows.</summary>
+        private const float RestY = 1500f;
+        private const float RiseY = 1000f;
 
         private const float EyeTravel = 25f;
         private const float SinkDistance = 750f;
@@ -149,8 +160,8 @@ namespace CutTheRopeDX.GameMain
                 ? Easing.OutExpo(t - HoldEndMs, 0f, SinkDistance, SinkEndMs - HoldEndMs)
                 : 0f;
 
-            float x = 1250f - (scale / FullScale * 500f);
-            float y = 1500f - (scale / FullScale * 1000f) + sink;
+            float x = RestX - (scale / FullScale * RiseX);
+            float y = RestY - (scale / FullScale * RiseY) + sink;
 
             float alpha = t > SinkEndMs
                 ? Math.Clamp(1f - ((t - SinkEndMs) / FadeOutMs), 0f, 1f)
