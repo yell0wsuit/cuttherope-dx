@@ -9,7 +9,7 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Pins the generated artwork to its measured shape, so a regeneration that silently drops
+    /// Pins the artwork to its measured shape, so an edit to the path data that silently drops
     /// or duplicates geometry fails here rather than on screen.
     /// </summary>
     public sealed class EasterEggOmNomArtTests
