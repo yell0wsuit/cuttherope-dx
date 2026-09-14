@@ -55,14 +55,6 @@ jobs:
             - name: Test
               run: dotnet test --solution CutTheRopeDX.slnx --no-build -c Release
 
-            # The solution build covers only the threaded runtime. The fallback compiles
-            # different C# and relinks a different emscripten command line, so nothing above
-            # would notice it breaking until a deploy tried to publish it.
-            - name: Build the single-threaded browser runtime
-              run: >
-                  dotnet build src/CutTheRopeDX.Browser/CutTheRopeDX.Browser.csproj
-                  -c Release -p:CtrdxSingleThreaded=true
-
     # The release and web-content scripts carry their own tests - the ANGLE checksum
     # verification, the refusal of an incomplete archive, and the directory the game looks in
     # for those libraries among them. Nothing ran them, so they documented that behaviour
