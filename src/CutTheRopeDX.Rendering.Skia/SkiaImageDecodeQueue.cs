@@ -25,6 +25,7 @@ namespace CutTheRopeDX.Rendering.Skia
         private readonly SemaphoreSlim slots = new(Math.Max(1, concurrency));
         private readonly Dictionary<string, PendingDecode> pending = new(StringComparer.Ordinal);
         private readonly Lock gate = new();
+        private readonly Lock counters = new();
         private long preparedPixelBytes;
         private long peakPreparedPixelBytes;
 
@@ -129,7 +130,14 @@ namespace CutTheRopeDX.Rendering.Skia
         /// <returns>Peak decoded pixel bytes awaiting upload.</returns>
         public long TakePeakPreparedPixelBytes()
         {
-            return Interlocked.Exchange(ref peakPreparedPixelBytes, Interlocked.Read(ref preparedPixelBytes));
+            // Under the same lock as the updates: reading what is held and resetting the peak to it
+            // as two steps would let a decode finishing between them be lost from the next peak.
+            lock (counters)
+            {
+                long peak = peakPreparedPixelBytes;
+                peakPreparedPixelBytes = preparedPixelBytes;
+                return peak;
+            }
         }
 
         /// <summary>
@@ -227,25 +235,25 @@ namespace CutTheRopeDX.Rendering.Skia
                 return;
             }
 
-            long held = Interlocked.Add(ref preparedPixelBytes, image.Info.BytesSize64);
-            long peak = Interlocked.Read(ref peakPreparedPixelBytes);
-            while (held > peak)
+            long bytes = image.Info.BytesSize64;
+            lock (counters)
             {
-                long seen = Interlocked.CompareExchange(ref peakPreparedPixelBytes, held, peak);
-                if (seen == peak)
-                {
-                    break;
-                }
-
-                peak = seen;
+                preparedPixelBytes += bytes;
+                peakPreparedPixelBytes = Math.Max(peakPreparedPixelBytes, preparedPixelBytes);
             }
         }
 
         private void ReleasePreparedBytes(SKImage image)
         {
-            if (image != null)
+            if (image == null)
             {
-                _ = Interlocked.Add(ref preparedPixelBytes, -image.Info.BytesSize64);
+                return;
+            }
+
+            long bytes = image.Info.BytesSize64;
+            lock (counters)
+            {
+                preparedPixelBytes -= bytes;
             }
         }
 
