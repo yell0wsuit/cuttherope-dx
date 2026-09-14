@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests
             for (int i = 0; i < fringe.IndexCount; i++)
             {
                 Vector3 position = fringe.Vertices[fringe.Indices[i]].Position;
-                if (position.Y < 29.5f || position.Y > 70.5f)
+                if (position.Y is < 29.5f or > 70.5f)
                 {
                     continue;
                 }

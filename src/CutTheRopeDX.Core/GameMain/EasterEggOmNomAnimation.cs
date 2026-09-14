@@ -51,19 +51,18 @@ namespace CutTheRopeDX.GameMain
         private const float SquashDepth = 0.1f;
 
         private float elapsedMs;
-        private bool running;
         private bool dismissing;
         private float dismissElapsedMs;
         private EasterEggOmNomFrame dismissedFrame;
 
         /// <summary>Gets a value indicating whether anything still needs drawing.</summary>
-        public bool IsActive => running;
+        public bool IsActive { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether the level should stay frozen. This drops as soon as the
         /// overlay starts fading out, so the fade plays over a level that is running again.
         /// </summary>
-        public bool FreezesGameplay => running && !dismissing && elapsedMs < FadeInMs + SinkEndMs;
+        public bool FreezesGameplay => IsActive && !dismissing && elapsedMs < FadeInMs + SinkEndMs;
 
         /// <summary>Gets the current frame.</summary>
         public EasterEggOmNomFrame CurrentFrame { get; private set; }
@@ -72,7 +71,7 @@ namespace CutTheRopeDX.GameMain
         public void Start()
         {
             elapsedMs = 0f;
-            running = true;
+            IsActive = true;
             dismissing = false;
             CurrentFrame = Evaluate(0f);
         }
@@ -99,7 +98,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="deltaSeconds">Seconds since the previous update.</param>
         public void Update(float deltaSeconds)
         {
-            if (!running)
+            if (!IsActive)
             {
                 return;
             }
@@ -130,7 +129,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Ends the timeline at once, with no closing fade.</summary>
         public void Stop()
         {
-            running = false;
+            IsActive = false;
             dismissing = false;
             CurrentFrame = default;
         }
@@ -206,17 +205,13 @@ namespace CutTheRopeDX.GameMain
 
         private static float Squash(float t)
         {
-            if (t > RiseEndMs && t < LookRightEndMs)
-            {
-                return Easing.InOutBack(
-                    t - RiseEndMs, 0f, SquashDepth, LookRightEndMs - RiseEndMs, 6f);
-            }
-            if (t >= LookRightEndMs && t < HoldEndMs)
-            {
-                return SquashDepth - Easing.InOutBack(
-                    t - LookRightEndMs, 0f, SquashDepth, HoldEndMs - LookRightEndMs, 2f);
-            }
-            return 0f;
+            return t is > RiseEndMs and < LookRightEndMs
+                ? Easing.InOutBack(
+                    t - RiseEndMs, 0f, SquashDepth, LookRightEndMs - RiseEndMs, 6f)
+                : t is >= LookRightEndMs and < HoldEndMs
+                ? SquashDepth - Easing.InOutBack(
+                    t - LookRightEndMs, 0f, SquashDepth, HoldEndMs - LookRightEndMs, 2f)
+                : 0f;
         }
     }
 }

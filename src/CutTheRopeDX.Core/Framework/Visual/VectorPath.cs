@@ -112,6 +112,9 @@ namespace CutTheRopeDX.Framework.Visual
 
                     case VectorPathVerb.Close:
                         break;
+
+                    default:
+                        break;
                 }
             }
 
@@ -126,7 +129,7 @@ namespace CutTheRopeDX.Framework.Visual
                 }
             }
 
-            contours.RemoveAll(contour => contour.Count < 3);
+            _ = contours.RemoveAll(contour => contour.Count < 3);
             return contours;
         }
 

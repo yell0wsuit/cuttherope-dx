@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Framework.Visual
                     winding += crossings[i].Direction;
                     if (winding != 0)
                     {
-                        current.Add((crossings[i].EdgeIndex, crossings[i + 1].EdgeIndex));
+                        _ = current.Add((crossings[i].EdgeIndex, crossings[i + 1].EdgeIndex));
                     }
                 }
 
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.Framework.Visual
                 foreach ((int Left, int Right) span in closed)
                 {
                     AppendTrapezoid(vertices, indices, color, edges, span, open[span], top);
-                    open.Remove(span);
+                    _ = open.Remove(span);
                 }
 
                 foreach ((int Left, int Right) span in current)
@@ -218,30 +218,20 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>One non-horizontal contour edge, with the direction it crosses a sweep line.</summary>
-        private readonly struct Edge
+        private readonly struct Edge(Vector2 start, Vector2 end)
         {
-            private readonly float x0;
-            private readonly float y0;
-            private readonly float slope;
-
-            public Edge(Vector2 start, Vector2 end)
-            {
-                x0 = start.X;
-                y0 = start.Y;
-                slope = (end.X - start.X) / (end.Y - start.Y);
-                Direction = end.Y > start.Y ? 1 : -1;
-                Top = MathF.Min(start.Y, end.Y);
-                Bottom = MathF.Max(start.Y, end.Y);
-            }
+            private readonly float x0 = start.X;
+            private readonly float y0 = start.Y;
+            private readonly float slope = (end.X - start.X) / (end.Y - start.Y);
 
             /// <summary>Gets +1 when the edge runs downward, -1 when upward.</summary>
-            public int Direction { get; }
+            public int Direction { get; } = end.Y > start.Y ? 1 : -1;
 
             /// <summary>Gets the edge's smallest Y.</summary>
-            public float Top { get; }
+            public float Top { get; } = MathF.Min(start.Y, end.Y);
 
             /// <summary>Gets the edge's largest Y.</summary>
-            public float Bottom { get; }
+            public float Bottom { get; } = MathF.Max(start.Y, end.Y);
 
             /// <summary>Returns where the edge sits at a height.</summary>
             /// <param name="y">Height to sample.</param>

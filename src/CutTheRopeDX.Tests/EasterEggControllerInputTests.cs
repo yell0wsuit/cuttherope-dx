@@ -1,4 +1,3 @@
-using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
 

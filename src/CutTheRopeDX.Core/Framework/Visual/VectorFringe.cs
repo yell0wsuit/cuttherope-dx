@@ -17,14 +17,11 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>How far off an edge the inside/outside probe steps, in path units.</summary>
         private const float ProbeDistance = 1e-3f;
 
-        private VertexPositionColor[] vertices = [];
-        private short[] indices = [];
-
         /// <summary>Gets the band's vertices.</summary>
-        public VertexPositionColor[] Vertices => vertices;
+        public VertexPositionColor[] Vertices { get; private set; } = [];
 
         /// <summary>Gets the band's triangle indices.</summary>
-        public short[] Indices => indices;
+        public short[] Indices { get; private set; } = [];
 
         /// <summary>Gets how many entries of <see cref="Indices"/> are in use.</summary>
         public int IndexCount { get; private set; }
@@ -80,17 +77,17 @@ namespace CutTheRopeDX.Framework.Visual
                     Vector2 endOuter = end + (normal * width);
 
                     short baseIndex = (short)vertexIndex;
-                    vertices[vertexIndex++] = Vertex(start, opaque);
-                    vertices[vertexIndex++] = Vertex(end, opaque);
-                    vertices[vertexIndex++] = Vertex(startOuter, transparent);
-                    vertices[vertexIndex++] = Vertex(endOuter, transparent);
+                    Vertices[vertexIndex++] = Vertex(start, opaque);
+                    Vertices[vertexIndex++] = Vertex(end, opaque);
+                    Vertices[vertexIndex++] = Vertex(startOuter, transparent);
+                    Vertices[vertexIndex++] = Vertex(endOuter, transparent);
 
-                    indices[IndexCount++] = baseIndex;
-                    indices[IndexCount++] = (short)(baseIndex + 1);
-                    indices[IndexCount++] = (short)(baseIndex + 2);
-                    indices[IndexCount++] = (short)(baseIndex + 1);
-                    indices[IndexCount++] = (short)(baseIndex + 3);
-                    indices[IndexCount++] = (short)(baseIndex + 2);
+                    Indices[IndexCount++] = baseIndex;
+                    Indices[IndexCount++] = (short)(baseIndex + 1);
+                    Indices[IndexCount++] = (short)(baseIndex + 2);
+                    Indices[IndexCount++] = (short)(baseIndex + 1);
+                    Indices[IndexCount++] = (short)(baseIndex + 3);
+                    Indices[IndexCount++] = (short)(baseIndex + 2);
                 }
             }
         }
@@ -185,13 +182,13 @@ namespace CutTheRopeDX.Framework.Visual
                 throw new InvalidOperationException(
                     $"A fringe of {edgeCount} edges does not fit a short index buffer.");
             }
-            if (vertices.Length < neededVertices)
+            if (Vertices.Length < neededVertices)
             {
-                vertices = new VertexPositionColor[neededVertices];
+                Vertices = new VertexPositionColor[neededVertices];
             }
-            if (indices.Length < neededIndices)
+            if (Indices.Length < neededIndices)
             {
-                indices = new short[neededIndices];
+                Indices = new short[neededIndices];
             }
         }
     }

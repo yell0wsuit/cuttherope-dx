@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Tests
 
                 Renderer.DrawTriangleList(vertices, indices, 6);
 
-                Assert.Single(renderer.CapturedLists);
+                _ = Assert.Single(renderer.CapturedLists);
                 Assert.Equal(6, renderer.CapturedLists[0].Length);
                 Assert.Equal(0f, renderer.CapturedLists[0][0].Position.X);
                 Assert.Equal(0f, renderer.CapturedLists[0][5].Position.X);

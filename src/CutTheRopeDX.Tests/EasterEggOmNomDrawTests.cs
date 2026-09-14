@@ -129,7 +129,7 @@ namespace CutTheRopeDX.Tests
                                 && vertex.Color.G <= vertex.Color.A
                                 && vertex.Color.B <= vertex.Color.A,
                             "a channel exceeded alpha, so the color is not premultiplied");
-                        if (vertex.Color.A > 0 && vertex.Color.A < 255)
+                        if (vertex.Color.A is > 0 and < 255)
                         {
                             sawPartialAlpha = true;
                         }

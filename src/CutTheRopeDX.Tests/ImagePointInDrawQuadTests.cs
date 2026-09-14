@@ -10,14 +10,16 @@ namespace CutTheRopeDX.Tests
     {
         private static Image ImageWithQuad(float w, float h, float offsetX, float offsetY)
         {
-            CTRTexture2D texture = new();
-            texture._realWidth = 64;
-            texture._realHeight = 32;
-            texture.quadRects = [new CTRRectangle(0f, 0f, w, h)];
-            texture.quadOffsets = [FrameworkTypes.Vect(offsetX, offsetY)];
+            CTRTexture2D texture = new()
+            {
+                _realWidth = 64,
+                _realHeight = 32,
+                quadRects = [new CTRRectangle(0f, 0f, w, h)],
+                quadOffsets = [FrameworkTypes.Vect(offsetX, offsetY)],
+            };
 
             Image image = new();
-            image.InitWithTexture(texture);
+            _ = image.InitWithTexture(texture);
             image.x = 100f;
             image.y = 200f;
             return image;
