@@ -478,6 +478,26 @@ namespace CutTheRopeDX.Rendering.Skia
         }
 
         /// <inheritdoc />
+        public void DrawTriangleList(
+            VertexPositionColor[] vertices, short[] indices, int indexCount)
+        {
+            if (indexCount < 3)
+            {
+                return;
+            }
+            BindTexture(null);
+            if (!EnsureBatchCompatible())
+            {
+                return;
+            }
+            // The indices already name whole triangles, so each one is appended as it stands.
+            for (int i = 0; i < indexCount; i++)
+            {
+                AppendColorOnly(vertices[indices[i]]);
+            }
+        }
+
+        /// <inheritdoc />
         public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
             FlushQuads();

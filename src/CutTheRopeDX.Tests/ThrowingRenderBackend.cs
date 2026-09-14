@@ -177,6 +177,11 @@ namespace CutTheRopeDX.Tests
             throw new NotSupportedException(Message);
         }
 
+        public void DrawTriangleList(VertexPositionColor[] vertices, short[] indices, int indexCount)
+        {
+            throw new NotSupportedException(Message);
+        }
+
         public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount)
         {
             throw new NotSupportedException(Message);

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Numerics;
 
 using CutTheRopeDX.Framework.Core;
@@ -9,9 +10,20 @@ namespace CutTheRopeDX.Tests
     /// <summary>Minimal no-op renderer that records the most recently selected blend function.</summary>
     internal sealed class RecordingRenderBackend : IRenderBackend
     {
+        private readonly List<VertexPositionColor[]> capturedLists = [];
+
         private Color color = Color.White;
 
         public bool IsAvailable => true;
+
+        /// <summary>Gets the indexed colored triangles drawn since the last reset, in index order.</summary>
+        public IReadOnlyList<VertexPositionColor[]> CapturedLists => capturedLists;
+
+        /// <summary>Discards every captured batch.</summary>
+        public void ClearCaptured()
+        {
+            capturedLists.Clear();
+        }
 
         public BlendingFactor LastBlendSource { get; private set; }
 
@@ -101,6 +113,18 @@ namespace CutTheRopeDX.Tests
         }
 
         public void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount) { }
+
+        public void DrawTriangleList(VertexPositionColor[] vertices, short[] indices, int indexCount)
+        {
+            // Copied rather than referenced: callers reuse vertex buffers between draws, so a
+            // stored reference would leave every captured batch pointing at the same array.
+            VertexPositionColor[] resolved = new VertexPositionColor[indexCount];
+            for (int i = 0; i < indexCount; i++)
+            {
+                resolved[i] = vertices[indices[i]];
+            }
+            capturedLists.Add(resolved);
+        }
 
         public void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount) { }
 

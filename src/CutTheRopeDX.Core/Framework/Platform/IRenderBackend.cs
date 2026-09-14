@@ -173,6 +173,11 @@ namespace CutTheRopeDX.Framework.Platform
         void DrawTriangleList(VertexPositionColorTexture[] vertices, short[] indices, int indexCount);
 
         /// <summary>
+        /// Draws an indexed triangle list using colored vertices with an explicit index count.
+        /// </summary>
+        void DrawTriangleList(VertexPositionColor[] vertices, short[] indices, int indexCount);
+
+        /// <summary>
         /// Draws a line strip using colored vertices with an explicit vertex count.
         /// </summary>
         void DrawLineStrip(VertexPositionColor[] vertices, int vertexCount);

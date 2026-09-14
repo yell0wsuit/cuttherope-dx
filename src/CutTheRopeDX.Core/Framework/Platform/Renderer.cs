@@ -446,6 +446,18 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
+        /// Draws an indexed triangle list using colored <paramref name="vertices"/> with explicit index count.
+        /// </summary>
+        public static void DrawTriangleList(VertexPositionColor[] vertices, short[] indices, int indexCount)
+        {
+            if (PlatformServices.Render is not { } r)
+            {
+                return;
+            }
+            r.DrawTriangleList(vertices, indices, indexCount);
+        }
+
+        /// <summary>
         /// Draws a line strip using colored <paramref name="vertices"/>.
         /// </summary>
         public static void DrawLineStrip(VertexPositionColor[] vertices)
