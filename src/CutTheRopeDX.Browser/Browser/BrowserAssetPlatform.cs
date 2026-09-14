@@ -115,12 +115,22 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Does nothing on the single-threaded runtime. Work handed to its pool still runs on the
+        /// game thread, only between frames, so a decode ahead of time saves nothing; and taking an
+        /// image whose decode has not run yet would have to wait for it, which that runtime cannot
+        /// do. An image nothing is decoding reads as ready and is decoded when it loads.
+        /// </remarks>
         public void PrepareImage(string contentPath)
         {
+#if WASM_THREADS
             if (!_textures.ContainsKey(contentPath))
             {
                 _decodes.Prepare(contentPath);
             }
+#else
+            _ = contentPath;
+#endif
         }
 
         /// <inheritdoc />
