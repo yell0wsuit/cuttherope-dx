@@ -91,8 +91,8 @@ namespace CutTheRopeDX.GameMain
             // Every press starts unlatched, so a press whose release another handler consumed
             // cannot leave the egg armed for a later release.
             overOmNom = false;
-            // While the egg holds the level, a press anywhere only sends it away.
-            if (easterEgg.Cancel())
+            // While the egg holds the level, a press anywhere goes to it and nowhere else.
+            if (DismissEasterEgg())
             {
                 return true;
             }

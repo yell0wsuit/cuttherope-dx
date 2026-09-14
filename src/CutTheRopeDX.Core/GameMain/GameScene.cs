@@ -1043,11 +1043,19 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets a value indicating whether the easter egg is holding the level.</summary>
         internal bool EasterEggHoldsLevel => easterEgg.FreezesGameplay;
 
-        /// <summary>Starts dismissing the easter egg if it is holding the level.</summary>
-        /// <returns><see langword="true"/> when this call started the dismissal.</returns>
+        /// <summary>
+        /// Spends a press on the easter egg while it holds the level: it dismisses the egg once Om
+        /// Nom is showing, and is swallowed while only the dim is fading up.
+        /// </summary>
+        /// <returns><see langword="true"/> when the egg took the press.</returns>
         internal bool DismissEasterEgg()
         {
-            return easterEgg.Cancel();
+            if (!easterEgg.FreezesGameplay)
+            {
+                return false;
+            }
+            _ = easterEgg.Cancel();
+            return true;
         }
 
         /// <summary>Removes the easter egg at once, with no closing fade.</summary>

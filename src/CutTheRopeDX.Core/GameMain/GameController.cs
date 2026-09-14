@@ -938,8 +938,8 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
-        /// <summary>Starts dismissing the easter egg when it is holding the level.</summary>
-        /// <returns><see langword="true"/> when the input was spent on the dismissal.</returns>
+        /// <summary>Hands the input to the easter egg when it is holding the level.</summary>
+        /// <returns><see langword="true"/> when the egg took the input.</returns>
         private bool TryDismissEasterEgg()
         {
             return overlayMode == GameControllerOverlayMode.Gameplay

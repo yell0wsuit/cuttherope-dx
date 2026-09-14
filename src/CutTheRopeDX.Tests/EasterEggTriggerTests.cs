@@ -115,7 +115,8 @@ namespace CutTheRopeDX.Tests
         public void TheLevelResumesOnceTheEggIsDismissed()
         {
             GameScene scene = SceneWithEggPlaying(out float x, out float y);
-            HeadlessGame.StepFrames(scene, 30);
+            // Past the dim and the rise, so he is fully big and can be dismissed.
+            HeadlessGame.StepFrames(scene, 60);
             float before = scene.Candy().WholeBody.Point.pos.Y;
 
             _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
@@ -137,6 +138,35 @@ namespace CutTheRopeDX.Tests
             // The 200ms fade-out, at the fixed 16ms tick.
             HeadlessGame.StepFrames(scene, 14);
             Assert.False(scene.IsEasterEggPlaying());
+        }
+
+        [Fact]
+        public void APressWhileOnlyTheDimIsUpIsSwallowedWithoutDismissing()
+        {
+            GameScene scene = SceneWithEggPlaying(out float x, out float y);
+            float before = scene.Candy().WholeBody.Point.pos.Y;
+
+            _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
+            _ = scene.TouchUpXYIndex(x + 600f, y + 600f, 0);
+
+            // Well past a dismissal's 200ms fade: the egg is still holding the level.
+            HeadlessGame.StepFrames(scene, 30);
+            Assert.True(scene.EasterEggHoldsLevel);
+            Assert.Equal(before, scene.Candy().WholeBody.Point.pos.Y);
+        }
+
+        [Fact]
+        public void APressWhileHeIsStillSpringingUpIsSwallowedWithoutDismissing()
+        {
+            GameScene scene = SceneWithEggPlaying(out float x, out float y);
+            // 320ms in: past the dim, so he is showing, but not yet at full size.
+            HeadlessGame.StepFrames(scene, 20);
+
+            _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
+            _ = scene.TouchUpXYIndex(x + 600f, y + 600f, 0);
+
+            HeadlessGame.StepFrames(scene, 30);
+            Assert.True(scene.EasterEggHoldsLevel);
         }
 
         [Fact]

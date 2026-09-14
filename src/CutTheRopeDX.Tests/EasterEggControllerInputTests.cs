@@ -11,15 +11,31 @@ namespace CutTheRopeDX.Tests
     /// </summary>
     public sealed class EasterEggControllerInputTests
     {
-        private static (GameController Controller, GameScene Scene) LoadWithEggPlaying()
+        private static (GameController Controller, GameScene Scene) LoadWithEggPlaying(bool dismissible = true)
         {
             _ = HeadlessGame.Boot();
             GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
             GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
             HeadlessGame.StepFrames(scene, 60);
             scene.TapOmNom();
+            if (dismissible)
+            {
+                // Past the 600ms before a press can dismiss him.
+                HeadlessGame.StepFrames(scene, 60);
+            }
             Assert.True(scene.EasterEggHoldsLevel);
             return (controller, scene);
+        }
+
+        [Fact]
+        public void ThePauseButtonIsSwallowedBeforeTheEggCanBeDismissed()
+        {
+            (GameController controller, GameScene scene) = LoadWithEggPlaying(dismissible: false);
+
+            controller.OnButtonPressed(GameControllerButtonId.Pause);
+
+            Assert.True(scene.EasterEggHoldsLevel);
+            Assert.False(PauseMenuOpen(controller));
         }
 
         private static bool PauseMenuOpen(GameController controller)

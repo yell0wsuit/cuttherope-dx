@@ -206,16 +206,19 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CancelDuringTheOpeningFadeFadesFromItsPartialDim()
+        public void CancelDoesNothingForTheFirst600Milliseconds()
         {
-            EasterEggOmNomAnimation animation = AdvancedTo(100f);
-            float dim = animation.CurrentFrame.Alpha;
+            // While only the dim is up.
+            Assert.False(AdvancedTo(100f).Cancel());
 
-            Assert.True(animation.Cancel());
-            animation.Update(0.1f);
+            // Showing, but early in the spring-up.
+            EasterEggOmNomAnimation rising = AdvancedTo(500f);
+            Assert.True(rising.CurrentFrame.ShowsOmNom);
+            Assert.False(rising.Cancel());
+            Assert.True(rising.FreezesGameplay);
 
-            Assert.False(animation.CurrentFrame.ShowsOmNom);
-            Assert.Equal(dim * 0.5f, animation.CurrentFrame.Alpha, 2);
+            // Past 600ms.
+            Assert.True(AdvancedTo(650f).Cancel());
         }
 
         [Fact]
