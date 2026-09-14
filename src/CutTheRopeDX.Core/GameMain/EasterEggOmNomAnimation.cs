@@ -13,14 +13,15 @@ namespace CutTheRopeDX.GameMain
     /// <param name="EyeOffset">Horizontal pupil offset, in path units.</param>
     /// <param name="X">Horizontal placement, in design units.</param>
     /// <param name="Y">Vertical placement, in design units.</param>
-    /// <param name="Alpha">Overlay opacity, 0 to 1.</param>
+    /// <param name="Alpha">Overlay opacity, 0 to 1, applied to the dim and to Om Nom alike.</param>
+    /// <param name="ShowsOmNom">Whether Om Nom is drawn, or only the dim behind him.</param>
     internal readonly record struct EasterEggOmNomFrame(
-        float ScaleX, float ScaleY, float EyeOffset, float X, float Y, float Alpha);
+        float ScaleX, float ScaleY, float EyeOffset, float X, float Y, float Alpha, bool ShowsOmNom);
 
     /// <summary>
-    /// Drives the easter egg's timeline. Om Nom springs up, glances left, right and back, holds,
-    /// then sinks away. Gameplay stays frozen until the motion ends, which is before the overlay
-    /// has finished fading, so the last of the fade plays over a running level.
+    /// Drives the easter egg's timeline. A dim fades up over the level, then Om Nom springs up,
+    /// glances left, right and back, holds, and sinks away. The level stays frozen until the
+    /// overlay starts fading out, and the whole overlay can be dismissed early.
     /// </summary>
     internal sealed class EasterEggOmNomAnimation
     {
@@ -51,15 +52,18 @@ namespace CutTheRopeDX.GameMain
 
         private float elapsedMs;
         private bool running;
+        private bool dismissing;
+        private float dismissElapsedMs;
+        private EasterEggOmNomFrame dismissedFrame;
 
         /// <summary>Gets a value indicating whether anything still needs drawing.</summary>
         public bool IsActive => running;
 
         /// <summary>
-        /// Gets a value indicating whether the level should stay frozen. This drops before
-        /// <see cref="IsActive"/> does.
+        /// Gets a value indicating whether the level should stay frozen. This drops as soon as the
+        /// overlay starts fading out, so the fade plays over a level that is running again.
         /// </summary>
-        public bool FreezesGameplay => running && elapsedMs < FadeInMs + SinkEndMs;
+        public bool FreezesGameplay => running && !dismissing && elapsedMs < FadeInMs + SinkEndMs;
 
         /// <summary>Gets the current frame.</summary>
         public EasterEggOmNomFrame CurrentFrame { get; private set; }
@@ -69,7 +73,26 @@ namespace CutTheRopeDX.GameMain
         {
             elapsedMs = 0f;
             running = true;
+            dismissing = false;
             CurrentFrame = Evaluate(0f);
+        }
+
+        /// <summary>
+        /// Freezes Om Nom where he is and fades the overlay out. Does nothing once the overlay is
+        /// already fading out, whether from an earlier dismissal or the end of the timeline.
+        /// </summary>
+        /// <returns><see langword="true"/> when this call started the dismissal.</returns>
+        public bool Cancel()
+        {
+            if (!FreezesGameplay)
+            {
+                return false;
+            }
+
+            dismissing = true;
+            dismissElapsedMs = 0f;
+            dismissedFrame = CurrentFrame;
+            return true;
         }
 
         /// <summary>Advances the timeline.</summary>
@@ -81,15 +104,35 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            if (dismissing)
+            {
+                dismissElapsedMs += deltaSeconds * 1000f;
+                float remaining = 1f - (dismissElapsedMs / FadeOutMs);
+                if (remaining <= 0f)
+                {
+                    Stop();
+                    return;
+                }
+                CurrentFrame = dismissedFrame with { Alpha = dismissedFrame.Alpha * remaining };
+                return;
+            }
+
             elapsedMs += deltaSeconds * 1000f;
             if (elapsedMs >= FadeInMs + SinkEndMs + FadeOutMs)
             {
-                running = false;
-                CurrentFrame = default;
+                Stop();
                 return;
             }
 
             CurrentFrame = Evaluate(elapsedMs);
+        }
+
+        /// <summary>Ends the timeline at once, with no closing fade.</summary>
+        public void Stop()
+        {
+            running = false;
+            dismissing = false;
+            CurrentFrame = default;
         }
 
         private static EasterEggOmNomFrame Evaluate(float elapsedMs)
@@ -97,8 +140,9 @@ namespace CutTheRopeDX.GameMain
             float t = elapsedMs - FadeInMs;
             if (t < 0f)
             {
-                // The overlay is fading up over an empty surface, so there is nothing to draw yet.
-                return new EasterEggOmNomFrame(StartScale, StartScale, 0f, 0f, 0f, 0f);
+                // Only the dim is up while it fades in; Om Nom starts once it is fully opaque.
+                return new EasterEggOmNomFrame(
+                    StartScale, StartScale, 0f, 0f, 0f, elapsedMs / FadeInMs, false);
             }
 
             float scale = Scale(t);
@@ -114,7 +158,7 @@ namespace CutTheRopeDX.GameMain
                 : 1f;
 
             return new EasterEggOmNomFrame(
-                scale, scale + Squash(t), EyeOffset(t), x, y, alpha);
+                scale, scale + Squash(t), EyeOffset(t), x, y, alpha, true);
         }
 
         private static float Scale(float t)

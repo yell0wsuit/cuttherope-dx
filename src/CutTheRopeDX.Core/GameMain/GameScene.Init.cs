@@ -99,6 +99,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void Reload()
         {
+            // The scene object outlives the level it reloads, so the egg must not carry over.
+            easterEgg.Clear();
+            overOmNom = false;
             dd.CancelAllDispatches();
             gameplayFlow.Reset();
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();

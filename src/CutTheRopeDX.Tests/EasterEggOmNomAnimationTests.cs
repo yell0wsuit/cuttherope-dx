@@ -5,8 +5,8 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Pins the easter egg's timeline: phase boundaries, the eye sweep, the squash envelope, and
-    /// where gameplay resumes relative to the fade.
+    /// Pins the easter egg's timeline: the dim fading up ahead of Om Nom, phase boundaries, the
+    /// eye sweep, the squash envelope, the closing fade, and early dismissal.
     /// </summary>
     public sealed class EasterEggOmNomAnimationTests
     {
@@ -29,16 +29,25 @@ namespace CutTheRopeDX.Tests
             EasterEggOmNomAnimation animation = new();
 
             Assert.False(animation.IsActive);
-            Assert.False(animation.FreezesGameplay);
         }
 
         [Fact]
-        public void DrawsNothingDuringTheOpeningFade()
+        public void FadesTheDimInBeforeOmNomAppears()
         {
             EasterEggOmNomAnimation animation = AdvancedTo(100f);
 
             Assert.True(animation.IsActive);
-            Assert.Equal(0f, animation.CurrentFrame.Alpha, 3);
+            Assert.False(animation.CurrentFrame.ShowsOmNom);
+            Assert.InRange(animation.CurrentFrame.Alpha, 0.3f, 0.7f);
+        }
+
+        [Fact]
+        public void ShowsOmNomOnceTheDimIsFullyUp()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(250f);
+
+            Assert.True(animation.CurrentFrame.ShowsOmNom);
+            Assert.Equal(1f, animation.CurrentFrame.Alpha, 3);
         }
 
         [Fact]
@@ -130,20 +139,32 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void ReleasesGameplayWhenTheAnimationEndsButKeepsDrawing()
+        public void KeepsDrawingThroughTheClosingFade()
         {
             EasterEggOmNomAnimation midFade = AdvancedTo(200f + 3600f + 100f);
 
-            Assert.False(midFade.FreezesGameplay);
             Assert.True(midFade.IsActive);
             Assert.InRange(midFade.CurrentFrame.Alpha, 0.01f, 0.99f);
         }
 
         [Fact]
-        public void FreezesGameplayThroughTheAnimation()
+        public void FreezesGameplayUntilTheClosingFade()
         {
+            Assert.False(new EasterEggOmNomAnimation().FreezesGameplay);
             Assert.True(AdvancedTo(100f).FreezesGameplay);
             Assert.True(AdvancedTo(200f + 3000f).FreezesGameplay);
+            Assert.False(AdvancedTo(200f + 3600f + 100f).FreezesGameplay);
+        }
+
+        [Fact]
+        public void ReleasesGameplayAsSoonAsADismissalStarts()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(200f + 1000f);
+
+            Assert.True(animation.Cancel());
+
+            Assert.False(animation.FreezesGameplay);
+            Assert.True(animation.IsActive);
         }
 
         [Fact]
@@ -160,8 +181,72 @@ namespace CutTheRopeDX.Tests
             EasterEggOmNomAnimation animation = AdvancedTo(200f + 2000f);
             animation.Start();
 
+            Assert.True(animation.IsActive);
+            Assert.False(animation.CurrentFrame.ShowsOmNom);
             Assert.Equal(0f, animation.CurrentFrame.Alpha, 3);
-            Assert.True(animation.FreezesGameplay);
+        }
+
+        [Fact]
+        public void CancelFadesOutFromTheCurrentPose()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(200f + 1200f);
+            EasterEggOmNomFrame before = animation.CurrentFrame;
+
+            Assert.True(animation.Cancel());
+            animation.Update(0.1f);
+
+            Assert.True(animation.IsActive);
+            Assert.Equal(0.5f, animation.CurrentFrame.Alpha, 2);
+            Assert.Equal(before.ScaleX, animation.CurrentFrame.ScaleX);
+            Assert.Equal(before.EyeOffset, animation.CurrentFrame.EyeOffset);
+
+            animation.Update(0.11f);
+
+            Assert.False(animation.IsActive);
+        }
+
+        [Fact]
+        public void CancelDuringTheOpeningFadeFadesFromItsPartialDim()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(100f);
+            float dim = animation.CurrentFrame.Alpha;
+
+            Assert.True(animation.Cancel());
+            animation.Update(0.1f);
+
+            Assert.False(animation.CurrentFrame.ShowsOmNom);
+            Assert.Equal(dim * 0.5f, animation.CurrentFrame.Alpha, 2);
+        }
+
+        [Fact]
+        public void CancelDoesNothingWhenIdle()
+        {
+            EasterEggOmNomAnimation animation = new();
+
+            Assert.False(animation.Cancel());
+            Assert.False(animation.IsActive);
+        }
+
+        [Fact]
+        public void CancelDoesNotInterruptTheClosingFade()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(200f + 3600f + 50f);
+
+            Assert.False(animation.Cancel());
+            Assert.True(animation.IsActive);
+        }
+
+        [Fact]
+        public void CancellingTwiceDoesNotRestartTheFade()
+        {
+            EasterEggOmNomAnimation animation = AdvancedTo(200f + 1000f);
+            Assert.True(animation.Cancel());
+            animation.Update(0.1f);
+
+            Assert.False(animation.Cancel());
+            animation.Update(0.11f);
+
+            Assert.False(animation.IsActive);
         }
     }
 }

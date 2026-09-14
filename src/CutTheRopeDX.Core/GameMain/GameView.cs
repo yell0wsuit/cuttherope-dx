@@ -43,6 +43,12 @@ namespace CutTheRopeDX.GameMain
                     }
                     child.Draw();
                 }
+                if (i == VIEW_ELEMENT_RESTART_BUTTON)
+                {
+                    // Over the HUD buttons, since a press on them only dismisses it, but under the
+                    // pause menu. The scene draws untransformed, so its screen space is this one.
+                    ((GameScene)GetChild(VIEW_ELEMENT_GAME_SCENE)).DrawEasterEgg();
+                }
             }
             GameScene gameScene = (GameScene)GetChild(0);
             if (gameScene.gameplayFlow.DimTime > 0)

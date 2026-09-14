@@ -494,6 +494,13 @@ namespace CutTheRopeDX.GameMain
         /// <param name="n">Game controller button identifier.</param>
         public void OnButtonPressed(GameControllerButtonId n)
         {
+            // The HUD buttons sit under the easter egg, so while it holds the level a press on
+            // them is just a press anywhere: it sends the egg away and does nothing else.
+            if ((n == GameControllerButtonId.Pause || n == GameControllerButtonId.Restart)
+                && TryDismissEasterEgg())
+            {
+                return;
+            }
             if (n == GameControllerButtonId.Pause)
             {
                 ExecuteInputCommand(ResolveInput(GameControllerInputKind.PauseButton));
@@ -912,6 +919,10 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool BackButtonPressed()
         {
+            if (TryDismissEasterEgg())
+            {
+                return true;
+            }
             ExecuteInputCommand(ResolveInput(GameControllerInputKind.Back));
             return true;
         }
@@ -919,8 +930,20 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool MenuButtonPressed()
         {
+            if (TryDismissEasterEgg())
+            {
+                return true;
+            }
             ExecuteInputCommand(ResolveInput(GameControllerInputKind.Menu));
             return true;
+        }
+
+        /// <summary>Starts dismissing the easter egg when it is holding the level.</summary>
+        /// <returns><see langword="true"/> when the input was spent on the dismissal.</returns>
+        private bool TryDismissEasterEgg()
+        {
+            return overlayMode == GameControllerOverlayMode.Gameplay
+                && (GetView(0)?.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE) as GameScene)?.DismissEasterEgg() == true;
         }
 
         /// <inheritdoc />
@@ -937,6 +960,9 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
+            // A forced pause cannot wait for the egg's fade, which would sit frozen behind the
+            // menu, so the egg is removed outright.
+            (GetView(0)?.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE) as GameScene)?.ClearEasterEgg();
             ExecuteInputCommand(command);
             return true;
         }

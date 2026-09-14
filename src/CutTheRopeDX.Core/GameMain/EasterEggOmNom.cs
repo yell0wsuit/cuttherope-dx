@@ -10,9 +10,10 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// Om Nom filling the screen as vector artwork when the player taps him. The layer meshes are
-    /// tessellated once and redrawn under a transform; only the antialiasing band is rebuilt, and
-    /// only when the scale or the fade moves, so that it keeps a constant width on screen.
+    /// Om Nom filling the screen as vector artwork over a dimmed level when the player taps him.
+    /// The layer meshes are tessellated once and redrawn under a transform; only the antialiasing
+    /// band is rebuilt, and only when the scale or the fade moves, so that it keeps a constant
+    /// width on screen.
     /// </summary>
     internal sealed class EasterEggOmNom
     {
@@ -25,11 +26,17 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Index of the first pupil layer; the pupils are the last two layers.</summary>
         private const int FirstPupilLayer = 4;
 
+        /// <summary>Opacity of the black dim behind Om Nom when the overlay is fully up.</summary>
+        private const float DimOpacity = 0.6f;
+
+        private static readonly short[] DimIndices = [0, 1, 2, 1, 3, 2];
+
         private readonly EasterEggOmNomAnimation animation = new();
         private readonly List<VectorPathMesh> meshes = [];
         private readonly List<VertexPositionColor[]> tintedMeshes = [];
         private readonly List<List<List<Vector2>>> contours = [];
         private readonly List<VectorFringe> fringes = [];
+        private readonly VertexPositionColor[] dimVertices = new VertexPositionColor[4];
 
         private float builtFringeWidth = float.NaN;
         private float builtFringeAlpha = float.NaN;
@@ -49,6 +56,19 @@ namespace CutTheRopeDX.GameMain
             animation.Start();
         }
 
+        /// <summary>Fades the overlay out early, leaving Om Nom where he is.</summary>
+        /// <returns><see langword="true"/> when this call started the dismissal.</returns>
+        public bool Cancel()
+        {
+            return animation.Cancel();
+        }
+
+        /// <summary>Removes the egg at once, with no closing fade.</summary>
+        public void Clear()
+        {
+            animation.Stop();
+        }
+
         /// <summary>Advances the animation.</summary>
         /// <param name="deltaSeconds">Seconds since the previous update.</param>
         public void Update(float deltaSeconds)
@@ -57,7 +77,8 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Draws the current frame in screen space.</summary>
-        public void Draw()
+        /// <param name="screen">The visible screen region the dim covers.</param>
+        public void Draw(CTRRectangle screen)
         {
             if (!animation.IsActive)
             {
@@ -65,7 +86,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             EasterEggOmNomFrame frame = animation.CurrentFrame;
-            if (frame.Alpha <= 0f || meshes.Count == 0)
+            if (frame.Alpha <= 0f)
             {
                 return;
             }
@@ -75,6 +96,29 @@ namespace CutTheRopeDX.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.SetColor(Color.White);
 
+            DrawDim(screen, frame.Alpha);
+            if (frame.ShowsOmNom && meshes.Count > 0)
+            {
+                DrawOmNom(frame);
+            }
+
+            Renderer.Enable(Renderer.GL_TEXTURE_2D);
+        }
+
+        private void DrawDim(CTRRectangle screen, float alpha)
+        {
+            Color color = RGBAColor.MakeRGBA(0f, 0f, 0f, DimOpacity * alpha).ToColor();
+            float right = screen.x + screen.w;
+            float bottom = screen.y + screen.h;
+            dimVertices[0] = new VertexPositionColor(new Vector3(screen.x, screen.y, 0f), color);
+            dimVertices[1] = new VertexPositionColor(new Vector3(right, screen.y, 0f), color);
+            dimVertices[2] = new VertexPositionColor(new Vector3(screen.x, bottom, 0f), color);
+            dimVertices[3] = new VertexPositionColor(new Vector3(right, bottom, 0f), color);
+            Renderer.DrawTriangleList(dimVertices, DimIndices, DimIndices.Length);
+        }
+
+        private void DrawOmNom(EasterEggOmNomFrame frame)
+        {
             Renderer.PushMatrix();
             Renderer.Translate(frame.X, frame.Y, 0f);
             Renderer.Scale(frame.ScaleX, frame.ScaleY, 1f);
@@ -115,7 +159,6 @@ namespace CutTheRopeDX.GameMain
             }
 
             Renderer.PopMatrix();
-            Renderer.Enable(Renderer.GL_TEXTURE_2D);
         }
 
         private static void Tint(VectorPathMesh mesh, VertexPositionColor[] target, RGBAColor fill)

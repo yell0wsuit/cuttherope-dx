@@ -104,12 +104,48 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<bool>(scene, "timeFrozen");
         }
 
-        /// <summary>Whether the easter egg is playing and holding the level.</summary>
+        /// <summary>Whether the easter egg is on screen.</summary>
         /// <param name="scene">Scene to read.</param>
-        /// <returns><see langword="true"/> while the egg holds gameplay.</returns>
+        /// <returns><see langword="true"/> while the egg is drawing.</returns>
         public static bool IsEasterEggPlaying(this GameScene scene)
         {
-            return Field<EasterEggOmNom>(scene, "easterEgg").FreezesGameplay;
+            return Field<EasterEggOmNom>(scene, "easterEgg").IsActive;
+        }
+
+        /// <summary>A screen point the primary Om Nom's own hit test agrees is on him.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The point in the input API's screen coordinates.</returns>
+        public static Vector OmNomTapPoint(this GameScene scene)
+        {
+            GameObject target = scene.OmNomTarget();
+
+            // Walk outward from the anchor until the object's own test accepts a point. The
+            // anchor is not guaranteed to sit inside the drawn quad.
+            for (int radius = 0; radius <= 200; radius += 4)
+            {
+                for (int dx = -radius; dx <= radius; dx += 4)
+                {
+                    for (int dy = -radius; dy <= radius; dy += 4)
+                    {
+                        if (target.PointInDrawQuad(target.x + dx, target.y + dy))
+                        {
+                            return scene.ScreenPositionOf(new Vector(target.x + dx, target.y + dy));
+                        }
+                    }
+                }
+            }
+
+            Assert.Fail("no point on Om Nom's draw quad was found");
+            return default;
+        }
+
+        /// <summary>Presses and releases on Om Nom, which starts the easter egg.</summary>
+        /// <param name="scene">Scene to tap.</param>
+        public static void TapOmNom(this GameScene scene)
+        {
+            Vector point = scene.OmNomTapPoint();
+            _ = scene.TouchDownXYIndex(point.X, point.Y, 0);
+            _ = scene.TouchUpXYIndex(point.X, point.Y, 0);
         }
 
         /// <summary>The primary Om Nom.</summary>

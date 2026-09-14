@@ -91,7 +91,8 @@ namespace CutTheRopeDX.GameMain
             // Every press starts unlatched, so a press whose release another handler consumed
             // cannot leave the egg armed for a later release.
             overOmNom = false;
-            if (easterEgg.FreezesGameplay)
+            // While the egg holds the level, a press anywhere only sends it away.
+            if (easterEgg.Cancel())
             {
                 return true;
             }
@@ -487,10 +488,6 @@ namespace CutTheRopeDX.GameMain
                 return true;
             }
             gesture.End();
-            if (easterEgg.FreezesGameplay)
-            {
-                return true;
-            }
             if (rockets != null)
             {
                 foreach (Rocket rocket in rockets)
