@@ -350,10 +350,18 @@ namespace CutTheRopeDX.GameMain
                         }
                         MenuController menuController3 = new(this);
                         AddChildwithID(menuController3, 1);
+                        // A menu opening on level select shows the current box's cover at once. That
+                        // cover is still loaded, from before the level or from the menu's own batch,
+                        // so freeing it here would only have the menu decode it again in the frame
+                        // that builds it.
+                        int keptCoverPack = nextController is 2 or 4 ? pack : -1;
                         int packCount = CTRPreferences.GetPacksCount();
                         for (int i = 0; i < packCount; i++)
                         {
-                            resourceMgr.FreePack(PackConfig.GetBoxCovers(i));
+                            if (i != keptCoverPack)
+                            {
+                                resourceMgr.FreePack(PackConfig.GetBoxCovers(i));
+                            }
                         }
                         if (IS_WVGA)
                         {
@@ -407,11 +415,19 @@ namespace CutTheRopeDX.GameMain
                                 resourceMgr.FreePack(PackConfig.GetBoxBackgrounds(i));
                             }
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
+                            int menuNextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
                             resourceMgr.InitLoading();
                             resourceMgr.LoadPack(PackMenu);
+                            if (menuNextController == 2)
+                            {
+                                // The menu opens on level select, which shows this box's cover at
+                                // once. Loading it with the menu keeps it out of the frame that
+                                // builds the menu; one still loaded from before costs nothing.
+                                resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
+                            }
                             resourceMgr.StartLoading();
                             LoadingController loadingController = (LoadingController)GetChild(2);
-                            loadingController.nextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
+                            loadingController.nextController = menuNextController;
                             ActivateChild(2);
                             //Show menu presence on exit to menu
                             PlatformServices.RichPresence?.MenuPresence();
