@@ -1,0 +1,178 @@
+using System;
+
+using CutTheRopeDX.Framework.Visual;
+
+namespace CutTheRopeDX.GameMain
+{
+    /// <summary>
+    /// One frame of the easter egg: where Om Nom sits, how big he is, where his eyes point, and
+    /// how far the overlay has faded.
+    /// </summary>
+    /// <param name="ScaleX">Horizontal scale.</param>
+    /// <param name="ScaleY">Vertical scale, squash included.</param>
+    /// <param name="EyeOffset">Horizontal pupil offset, in path units.</param>
+    /// <param name="X">Horizontal placement, in design units.</param>
+    /// <param name="Y">Vertical placement, in design units.</param>
+    /// <param name="Alpha">Overlay opacity, 0 to 1.</param>
+    internal readonly record struct EasterEggOmNomFrame(
+        float ScaleX, float ScaleY, float EyeOffset, float X, float Y, float Alpha);
+
+    /// <summary>
+    /// Drives the easter egg's timeline. Om Nom springs up, glances left, right and back, holds,
+    /// then sinks away. Gameplay stays frozen until the motion ends, which is before the overlay
+    /// has finished fading, so the last of the fade plays over a running level.
+    /// </summary>
+    internal sealed class EasterEggOmNomAnimation
+    {
+        private const float FadeInMs = 200f;
+        private const float FadeOutMs = 200f;
+
+        private const float RiseEndMs = 600f;
+        private const float LookLeftEndMs = 1000f;
+        private const float LookRightEndMs = 1600f;
+        private const float LookBackEndMs = 2300f;
+        private const float HoldEndMs = 2800f;
+        private const float SinkEndMs = 3600f;
+
+        /// <summary>How long each eye movement waits before it starts.</summary>
+        private const float EyeDelayMs = 100f;
+
+        private const float StartScale = 0.1f;
+
+        /// <summary>
+        /// Full size. The web edition rounds a 2.2 scale through a helper meant for pixel counts,
+        /// which lands on 6 in this design space.
+        /// </summary>
+        private const float FullScale = 6f;
+
+        private const float EyeTravel = 25f;
+        private const float SinkDistance = 750f;
+        private const float SquashDepth = 0.1f;
+
+        private float elapsedMs;
+        private bool running;
+
+        /// <summary>Gets a value indicating whether anything still needs drawing.</summary>
+        public bool IsActive => running;
+
+        /// <summary>
+        /// Gets a value indicating whether the level should stay frozen. This drops before
+        /// <see cref="IsActive"/> does.
+        /// </summary>
+        public bool FreezesGameplay => running && elapsedMs < FadeInMs + SinkEndMs;
+
+        /// <summary>Gets the current frame.</summary>
+        public EasterEggOmNomFrame CurrentFrame { get; private set; }
+
+        /// <summary>Restarts the timeline from the beginning.</summary>
+        public void Start()
+        {
+            elapsedMs = 0f;
+            running = true;
+            CurrentFrame = Evaluate(0f);
+        }
+
+        /// <summary>Advances the timeline.</summary>
+        /// <param name="deltaSeconds">Seconds since the previous update.</param>
+        public void Update(float deltaSeconds)
+        {
+            if (!running)
+            {
+                return;
+            }
+
+            elapsedMs += deltaSeconds * 1000f;
+            if (elapsedMs >= FadeInMs + SinkEndMs + FadeOutMs)
+            {
+                running = false;
+                CurrentFrame = default;
+                return;
+            }
+
+            CurrentFrame = Evaluate(elapsedMs);
+        }
+
+        private static EasterEggOmNomFrame Evaluate(float elapsedMs)
+        {
+            float t = elapsedMs - FadeInMs;
+            if (t < 0f)
+            {
+                // The overlay is fading up over an empty surface, so there is nothing to draw yet.
+                return new EasterEggOmNomFrame(StartScale, StartScale, 0f, 0f, 0f, 0f);
+            }
+
+            float scale = Scale(t);
+            float sink = t >= HoldEndMs
+                ? Easing.OutExpo(t - HoldEndMs, 0f, SinkDistance, SinkEndMs - HoldEndMs)
+                : 0f;
+
+            float x = 1250f - (scale / FullScale * 500f);
+            float y = 1500f - (scale / FullScale * 1000f) + sink;
+
+            float alpha = t > SinkEndMs
+                ? Math.Clamp(1f - ((t - SinkEndMs) / FadeOutMs), 0f, 1f)
+                : 1f;
+
+            return new EasterEggOmNomFrame(
+                scale, scale + Squash(t), EyeOffset(t), x, y, alpha);
+        }
+
+        private static float Scale(float t)
+        {
+            if (t < RiseEndMs)
+            {
+                return Easing.OutBack(t, StartScale, FullScale - StartScale, RiseEndMs, 1.5f);
+            }
+            if (t < HoldEndMs)
+            {
+                return FullScale;
+            }
+            float shrink = Easing.OutExpo(
+                t - HoldEndMs, 0f, FullScale - StartScale, SinkEndMs - HoldEndMs);
+            return Math.Max(FullScale - shrink, StartScale);
+        }
+
+        private static float EyeOffset(float t)
+        {
+            if (t < RiseEndMs)
+            {
+                return 0f;
+            }
+            if (t < LookLeftEndMs)
+            {
+                float start = RiseEndMs + EyeDelayMs;
+                return t <= start
+                    ? 0f
+                    : -Easing.OutExpo(t - start, 0f, EyeTravel, LookLeftEndMs - start);
+            }
+            if (t < LookRightEndMs)
+            {
+                return -EyeTravel + Easing.InOutExpo(
+                    t - LookLeftEndMs, 0f, EyeTravel * 2f, LookRightEndMs - LookLeftEndMs);
+            }
+            if (t < LookBackEndMs)
+            {
+                float start = LookRightEndMs + EyeDelayMs;
+                return t <= start
+                    ? EyeTravel
+                    : EyeTravel - Easing.InOutExpo(t - start, 0f, EyeTravel, LookBackEndMs - start);
+            }
+            return 0f;
+        }
+
+        private static float Squash(float t)
+        {
+            if (t > RiseEndMs && t < LookRightEndMs)
+            {
+                return Easing.InOutBack(
+                    t - RiseEndMs, 0f, SquashDepth, LookRightEndMs - RiseEndMs, 6f);
+            }
+            if (t >= LookRightEndMs && t < HoldEndMs)
+            {
+                return SquashDepth - Easing.InOutBack(
+                    t - LookRightEndMs, 0f, SquashDepth, HoldEndMs - LookRightEndMs, 2f);
+            }
+            return 0f;
+        }
+    }
+}
