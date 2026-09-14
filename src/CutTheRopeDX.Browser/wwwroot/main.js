@@ -1,6 +1,10 @@
 import * as hostEvents from "./host-events.js";
 import { setLoadingProgress } from "./loading-progress.js";
-import { probeEnvironment, selectRuntime } from "./runtime-mode.js";
+import {
+    parseModeQuery,
+    probeEnvironment,
+    selectRuntime,
+} from "./runtime-mode.js";
 
 // The failure seam is installed by the inline module in index.html rather than here, because
 // this module's static imports are fetched and evaluated before its first statement runs: an
@@ -11,10 +15,22 @@ const fail = (id, detail) => globalThis.ctrdxFail?.(id, detail);
 await globalThis.ctrdxIsolationReady;
 
 // Both runtimes are published; this picks the one this browser can actually run, before
-// either is fetched and before anything irreversible happens to the canvas.
-const choice = selectRuntime(probeEnvironment());
+// either is fetched and before anything irreversible happens to the canvas. `?mode=single`
+// or `?mode=multi` asks for one of them, for comparing the two on the same browser.
+const requested = parseModeQuery(globalThis.location.search);
+if (requested.raw !== null && requested.mode === null) {
+    console.warn(
+        `ctrdx: ignoring ?mode=${requested.raw}; expected single or multi`,
+    );
+}
+const choice = selectRuntime(probeEnvironment(), requested.mode);
+if (requested.mode !== null && requested.mode !== choice.mode) {
+    console.warn(
+        `ctrdx: ?mode=${requested.raw} cannot run here; using ${choice.mode}`,
+    );
+}
 console.info(
-    `ctrdx-wasm-env: crossOriginIsolated=${globalThis.crossOriginIsolated === true} runtime=${choice.mode}`,
+    `ctrdx-wasm-env: crossOriginIsolated=${globalThis.crossOriginIsolated === true} runtime=${choice.mode} requested=${requested.mode ?? "auto"}`,
 );
 
 if (choice.mode === "unsupported") {

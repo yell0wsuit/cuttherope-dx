@@ -3,33 +3,108 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
-import { probeEnvironment, selectRuntime } from "../../src/CutTheRopeDX.Browser/wwwroot/runtime-mode.js";
+import {
+    parseModeQuery,
+    probeEnvironment,
+    selectRuntime,
+} from "../../src/CutTheRopeDX.Browser/wwwroot/runtime-mode.js";
 import * as events from "../../src/CutTheRopeDX.Browser/wwwroot/host-events.js";
 
 const root = new URL("../../src/CutTheRopeDX.Browser/", import.meta.url);
-const source = name => readFileSync(new URL(name, root), "utf8");
-const capable = { isolated: true, sharedMemory: true, offscreenCanvas: true, workerGraphics: true, localGraphics: true };
+const source = (name) => readFileSync(new URL(name, root), "utf8");
+const capable = {
+    isolated: true,
+    sharedMemory: true,
+    offscreenCanvas: true,
+    workerGraphics: true,
+    localGraphics: true,
+};
 
 test("capable pages choose the threaded runtime", () => {
     assert.equal(selectRuntime(capable).runtime, "./_framework/dotnet.js");
 });
-for (const capability of ["isolated", "sharedMemory", "offscreenCanvas", "workerGraphics"]) {
+for (const capability of [
+    "isolated",
+    "sharedMemory",
+    "offscreenCanvas",
+    "workerGraphics",
+]) {
     test(`missing ${capability} selects the single-thread runtime`, () => {
-        assert.equal(selectRuntime({ ...capable, [capability]: false }).runtime, "./_framework-single/dotnet.js");
+        assert.equal(
+            selectRuntime({ ...capable, [capability]: false }).runtime,
+            "./_framework-single/dotnet.js",
+        );
     });
 }
 test("missing graphics reports unsupported", () => {
-    assert.equal(selectRuntime({ ...capable, workerGraphics: false, localGraphics: false }).mode, "unsupported");
+    assert.equal(
+        selectRuntime({
+            ...capable,
+            workerGraphics: false,
+            localGraphics: false,
+        }).mode,
+        "unsupported",
+    );
+});
+test("mode query accepts single and multi and reports anything else raw", () => {
+    assert.deepEqual(parseModeQuery("?mode=single"), {
+        mode: "single",
+        raw: "single",
+    });
+    assert.deepEqual(parseModeQuery("?playtest=x&mode=MULTI"), {
+        mode: "threaded",
+        raw: "MULTI",
+    });
+    assert.deepEqual(parseModeQuery("?mode=thread"), {
+        mode: null,
+        raw: "thread",
+    });
+    assert.deepEqual(parseModeQuery(""), { mode: null, raw: null });
+});
+test("requesting single overrides a capable page", () => {
+    assert.equal(selectRuntime(capable, "single").mode, "single");
+});
+test("requesting single cannot bypass missing local graphics", () => {
+    assert.equal(
+        selectRuntime({ ...capable, localGraphics: false }, "single").mode,
+        "threaded",
+    );
+});
+test("requesting multi where it cannot run still steps down", () => {
+    assert.equal(
+        selectRuntime({ ...capable, isolated: false }, "threaded").mode,
+        "single",
+    );
+    assert.equal(selectRuntime(capable, "threaded").mode, "threaded");
 });
 test("blocked worker graphics can still use local graphics and release the probe", () => {
     let releases = 0;
     const result = probeEnvironment({
-        crossOriginIsolated: true, SharedArrayBuffer,
+        crossOriginIsolated: true,
+        SharedArrayBuffer,
         HTMLCanvasElement: { prototype: { transferControlToOffscreen() {} } },
-        OffscreenCanvas: class { constructor() { throw Error("blocked"); } },
-        document: { createElement() { return { getContext() { return {
-            getExtension() { return { loseContext() { releases++; } }; },
-        }; } }; } },
+        OffscreenCanvas: class {
+            constructor() {
+                throw Error("blocked");
+            }
+        },
+        document: {
+            createElement() {
+                return {
+                    getContext() {
+                        return {
+                            getExtension() {
+                                return {
+                                    loseContext() {
+                                        releases++;
+                                    },
+                                };
+                            },
+                        };
+                    },
+                };
+            },
+        },
     });
     assert.equal(selectRuntime(result).mode, "single");
     assert.equal(releases, 1);
@@ -38,11 +113,31 @@ test("blocked worker graphics can still use local graphics and release the probe
 // Use real wasm memory, including the single-thread runtime's heap-only exports.
 for (const shared of [false, true]) {
     test(`${shared ? "shared" : "heap-only"} memory handles input, growth, and lifecycle wakes`, () => {
-        const memory = new WebAssembly.Memory({ initial: 1, maximum: 2, shared });
+        const memory = new WebAssembly.Memory({
+            initial: 1,
+            maximum: 2,
+            shared,
+        });
         let wakes = 0;
         const module = shared
-            ? { wasmMemory: memory, PThread: { pthreads: { 7: { postMessage() { wakes++; } } } } }
-            : { HEAPU8: new Uint8Array(memory.buffer), _ctrdx_wake() { wakes++; } };
+            ? {
+                  wasmMemory: memory,
+                  PThread: {
+                      pthreads: {
+                          7: {
+                              postMessage() {
+                                  wakes++;
+                              },
+                          },
+                      },
+                  },
+              }
+            : {
+                  HEAPU8: new Uint8Array(memory.buffer),
+                  _ctrdx_wake() {
+                      wakes++;
+                  },
+              };
         globalThis.ctrdxWasmModule = module;
         events.attach(64, shared ? 7 : 0);
         events.resize(800, 600, 1);
@@ -82,8 +177,8 @@ test("native wakes use the animation frame clock in both runtimes", () => {
         const context = vm.createContext({
             performance: { now: () => 2500 },
             emscripten_get_now: () => (threaded ? 1789000000000 : 0) + 2500,
-            ctrdx_frame_entry: value => frames.push(value),
-            _ctrdx_frame_entry: value => frames.push(value),
+            ctrdx_frame_entry: (value) => frames.push(value),
+            _ctrdx_frame_entry: (value) => frames.push(value),
         });
         vm.runInContext(body, context);
         assert.deepEqual(frames, [2500]);
@@ -92,16 +187,39 @@ test("native wakes use the animation frame clock in both runtimes", () => {
 });
 
 test("COI timeout settles fallback and ignores a late controller", async () => {
-    let timeout, controller, reloads = 0;
+    let timeout,
+        controller,
+        reloads = 0;
     const context = vm.createContext({
-        console, crossOriginIsolated: false,
-        sessionStorage: { getItem() { return null; }, setItem() {} },
-        location: { href: "https://example.test/", replace() { reloads++; } },
-        setTimeout(fn) { timeout = fn; return 1; }, clearTimeout() {},
-        navigator: { serviceWorker: {
-            register() { return new Promise(() => {}); },
-            addEventListener(name, fn) { controller = fn; },
-        } },
+        console,
+        crossOriginIsolated: false,
+        sessionStorage: {
+            getItem() {
+                return null;
+            },
+            setItem() {},
+        },
+        location: {
+            href: "https://example.test/",
+            replace() {
+                reloads++;
+            },
+        },
+        setTimeout(fn) {
+            timeout = fn;
+            return 1;
+        },
+        clearTimeout() {},
+        navigator: {
+            serviceWorker: {
+                register() {
+                    return new Promise(() => {});
+                },
+                addEventListener(name, fn) {
+                    controller = fn;
+                },
+            },
+        },
     });
     vm.runInContext(source("wwwroot/coi.js"), context);
     timeout();
@@ -110,24 +228,44 @@ test("COI timeout settles fallback and ignores a late controller", async () => {
     assert.equal(reloads, 0);
 });
 test("missing service workers do not prevent fallback", async () => {
-    const context = vm.createContext({ console, navigator: {}, crossOriginIsolated: false });
+    const context = vm.createContext({
+        console,
+        navigator: {},
+        crossOriginIsolated: false,
+    });
     vm.runInContext(source("wwwroot/coi.js"), context);
     assert.equal(await context.ctrdxIsolationReady, false);
 });
 test("worker install caches common shell without downloading either runtime", async () => {
     const downloaded = [];
     const context = vm.createContext({
-        URL, Request, Response, Headers, console,
+        URL,
+        Request,
+        Response,
+        Headers,
+        console,
         self: {
-            assetsManifest: { version: "test", assets: [
-                { url: "index.html", hash: "sha256-test" },
-                { url: "_framework/dotnet.js", hash: "sha256-mt" },
-                { url: "_framework-single/dotnet.js", hash: "sha256-st" },
-            ] },
+            assetsManifest: {
+                version: "test",
+                assets: [
+                    { url: "index.html", hash: "sha256-test" },
+                    { url: "_framework/dotnet.js", hash: "sha256-mt" },
+                    { url: "_framework-single/dotnet.js", hash: "sha256-st" },
+                ],
+            },
             location: { href: "https://example.test/game/coi-sw.js" },
-            importScripts() {}, addEventListener() {},
+            importScripts() {},
+            addEventListener() {},
         },
-        caches: { async open() { return { async add(request) { downloaded.push(request.url); } }; } },
+        caches: {
+            async open() {
+                return {
+                    async add(request) {
+                        downloaded.push(request.url);
+                    },
+                };
+            },
+        },
     });
     vm.runInContext(source("wwwroot/service-worker.published.js"), context);
     await vm.runInContext("onInstall()", context);

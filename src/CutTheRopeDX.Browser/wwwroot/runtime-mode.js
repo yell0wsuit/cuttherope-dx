@@ -46,17 +46,39 @@ export function probeEnvironment(scope = globalThis) {
 }
 
 /**
+ * Reads the runtime a visit asks for through its `mode` query parameter.
+ *
+ * `single` and `multi` are the accepted values, case-insensitively. The raw value is handed
+ * back as well, so a caller can tell a misspelled request from no request at all.
+ */
+export function parseModeQuery(search = "") {
+    const raw = new URLSearchParams(search).get("mode");
+    const value = raw?.trim().toLowerCase();
+    const mode =
+        value === "single" ? "single" : value === "multi" ? "threaded" : null;
+    return { mode, raw };
+}
+
+/**
  * Picks the runtime an environment can run, or reports that none of them can.
  *
  * Falling back is the default and failing is the exception: every capability the threaded
  * runtime needs beyond the single-threaded one is a reason to step down, not to stop.
+ *
+ * A <paramref name="requested"/> mode is honored only where the environment can run it. The
+ * single-threaded runtime can be chosen on any page that could draw at all; asking for the
+ * threaded one where it cannot run still steps down, because importing it there would fail
+ * before the game could report anything.
  */
-export function selectRuntime(environment) {
+export function selectRuntime(environment, requested = null) {
     const threaded =
         environment.isolated &&
         environment.sharedMemory &&
         environment.offscreenCanvas &&
         environment.workerGraphics;
+    if (requested === "single" && environment.localGraphics) {
+        return { mode: "single", runtime: SINGLE_RUNTIME, reason: null };
+    }
     if (threaded) {
         return { mode: "threaded", runtime: THREADED_RUNTIME, reason: null };
     }
