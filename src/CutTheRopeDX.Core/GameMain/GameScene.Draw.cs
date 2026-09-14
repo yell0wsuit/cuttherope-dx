@@ -366,6 +366,8 @@ namespace CutTheRopeDX.GameMain
             }
             // Screen-space gameplay UI stays readable while the world is frozen.
             staticAniPool.Draw();
+            // Last, and in screen space, so it covers the HUD rather than following the level.
+            easterEgg.Draw();
             PostDraw();
         }
 

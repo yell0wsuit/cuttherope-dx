@@ -104,6 +104,22 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<bool>(scene, "timeFrozen");
         }
 
+        /// <summary>Whether the easter egg is playing and holding the level.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns><see langword="true"/> while the egg holds gameplay.</returns>
+        public static bool IsEasterEggPlaying(this GameScene scene)
+        {
+            return Field<EasterEggOmNom>(scene, "easterEgg").FreezesGameplay;
+        }
+
+        /// <summary>The primary Om Nom.</summary>
+        /// <param name="scene">Scene to read.</param>
+        /// <returns>The scene's first target object.</returns>
+        public static GameObject OmNomTarget(this GameScene scene)
+        {
+            return scene.Targets()[0].targetObject;
+        }
+
         /// <summary>Whether the opening camera pan is still in flight.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <returns><see langword="true"/> while the pan is still travelling.</returns>

@@ -1023,6 +1023,12 @@ namespace CutTheRopeDX.GameMain
         private readonly List<TargetContext> targets = [];
 #pragma warning restore IDE0052
 
+        /// <summary>The vector Om Nom a tap on the target plays over the frozen level.</summary>
+        private readonly EasterEggOmNom easterEgg = new();
+
+        /// <summary>True while a press that began on Om Nom is waiting for its release.</summary>
+        private bool overOmNom;
+
         /// <summary>True once the first &lt;candy&gt; element has claimed the pre-built primary candy (candies[0]).</summary>
         private bool primaryCandyClaimed;
 

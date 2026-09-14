@@ -17,6 +17,14 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
+            // The egg keeps animating after it releases the level, so it is advanced either way and
+            // only the rest of the scene is held.
+            easterEgg.Update(0.016f);
+            if (easterEgg.FreezesGameplay)
+            {
+                return;
+            }
+
             delta = 0.016f;
 
             // The opening pan flies the camera across the level with input switched off. Nothing
