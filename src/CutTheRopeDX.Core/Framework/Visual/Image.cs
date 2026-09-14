@@ -260,6 +260,55 @@ namespace CutTheRopeDX.Framework.Visual
             Renderer.DrawTriangleStrip(vertices);
         }
 
+        /// <summary>
+        /// Determines whether a point falls inside the region this image paints.
+        /// </summary>
+        /// <param name="x">Point X, in the same space as <see cref="BaseElement.drawX"/>.</param>
+        /// <param name="y">Point Y, in the same space as <see cref="BaseElement.drawY"/>.</param>
+        /// <returns>
+        /// <see langword="true"/> when the point is inside the drawn region; otherwise,
+        /// <see langword="false"/>.
+        /// </returns>
+        public bool PointInDrawQuad(float x, float y)
+        {
+            if (texture == null)
+            {
+                return false;
+            }
+
+            // Resolve the drawn position rather than trusting the last frame to have left it current.
+            CalculateTopLeft(this);
+
+            float left = drawX;
+            float top = drawY;
+            float width;
+            float height;
+
+            if (quadToDraw == -1)
+            {
+                width = texture._realWidth;
+                height = texture._realHeight;
+            }
+            else
+            {
+                if (texture.quadRects == null
+                    || quadToDraw < 0
+                    || quadToDraw >= texture.quadRects.Length)
+                {
+                    return false;
+                }
+                width = texture.quadRects[quadToDraw].w;
+                height = texture.quadRects[quadToDraw].h;
+                if (restoreCutTransparency)
+                {
+                    left += texture.quadOffsets[quadToDraw].X;
+                    top += texture.quadOffsets[quadToDraw].Y;
+                }
+            }
+
+            return x >= left && x <= left + width && y >= top && y <= top + height;
+        }
+
         /// <inheritdoc />
         public override bool HandleAction(ActionData a)
         {
