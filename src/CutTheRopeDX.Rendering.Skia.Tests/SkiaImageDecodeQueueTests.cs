@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using ManualResetEventSlim release = new(false);
             using SkiaImageDecodeQueue queue = new(path =>
             {
-                _ = release.Wait(Patience);
+                _ = release.Wait(Patience, TestContext.Current.CancellationToken);
                 return Raster(3, 3);
             }, concurrency: 2);
 
@@ -104,13 +104,13 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using SkiaImageDecodeQueue queue = new(path =>
             {
                 started.Set();
-                _ = release.Wait(Patience);
+                _ = release.Wait(Patience, TestContext.Current.CancellationToken);
                 produced = Raster(6, 6);
                 return produced;
             }, concurrency: 2);
 
             queue.Prepare("images/abandoned");
-            Assert.True(started.Wait(Patience));
+            Assert.True(started.Wait(Patience, TestContext.Current.CancellationToken));
             queue.Discard("images/abandoned");
             release.Set();
 
@@ -130,14 +130,14 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
                 if (path == "images/blocker")
                 {
                     blockerStarted.Set();
-                    _ = release.Wait(Patience);
+                    _ = release.Wait(Patience, TestContext.Current.CancellationToken);
                 }
 
                 return Raster(2, 2);
             }, concurrency: 1);
 
             queue.Prepare("images/blocker");
-            Assert.True(blockerStarted.Wait(Patience));
+            Assert.True(blockerStarted.Wait(Patience, TestContext.Current.CancellationToken));
             queue.Prepare("images/scrolled-past");
             queue.Discard("images/scrolled-past");
             release.Set();
