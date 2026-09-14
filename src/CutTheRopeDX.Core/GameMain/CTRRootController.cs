@@ -356,13 +356,15 @@ namespace CutTheRopeDX.GameMain
                         // that builds it.
                         int keptCoverPack = nextController is 2 or 4 ? pack : -1;
                         int packCount = CTRPreferences.GetPacksCount();
+                        List<string[]> covers = [];
                         for (int i = 0; i < packCount; i++)
                         {
                             if (i != keptCoverPack)
                             {
-                                resourceMgr.FreePack(PackConfig.GetBoxCovers(i));
+                                covers.Add(PackConfig.GetBoxCovers(i));
                             }
                         }
+                        resourceMgr.FreePacks(covers);
                         if (IS_WVGA)
                         {
                             SetViewTransition(4);
@@ -406,14 +408,14 @@ namespace CutTheRopeDX.GameMain
                         {
                             StopGameplayPrefetch();
                             DeleteChild(3);
-                            resourceMgr.FreePack(PackGame);
-                            resourceMgr.FreePack([.. sessionResources]);
+                            List<string[]> gameplayPacks = [PackGame, [.. sessionResources]];
                             sessionResources.Clear();
                             int packCount = CTRPreferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
-                                resourceMgr.FreePack(PackConfig.GetBoxBackgrounds(i));
+                                gameplayPacks.Add(PackConfig.GetBoxBackgrounds(i));
                             }
+                            resourceMgr.FreePacks(gameplayPacks);
                             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                             int menuNextController = exitCode != 0 ? exitCode != 1 ? 3 : 2 : 1;
                             resourceMgr.InitLoading();

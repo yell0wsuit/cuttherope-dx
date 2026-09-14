@@ -746,6 +746,37 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
+            ReportFreed(FreePackResources(pack));
+        }
+
+        /// <summary>
+        /// Frees several <see langword="null"/>-terminated packs, reported as one entry rather than
+        /// one per pack.
+        /// </summary>
+        /// <param name="packs">Pack arrays of logical resource names; <see langword="null"/> ones are skipped.</param>
+        /// <remarks>
+        /// For teardowns that free a pack per box: a log entry is not free everywhere, and a line
+        /// per box says nothing the total does not.
+        /// </remarks>
+        public void FreePacks(IEnumerable<string[]> packs)
+        {
+            int freed = 0;
+            foreach (string[] pack in packs)
+            {
+                if (pack != null)
+                {
+                    freed += FreePackResources(pack);
+                }
+            }
+
+            ReportFreed(freed);
+        }
+
+        /// <summary>Frees the resources of one pack without reporting it.</summary>
+        /// <param name="pack">Pack array of logical resource names.</param>
+        /// <returns>How many entries the pack held before its terminator.</returns>
+        private int FreePackResources(string[] pack)
+        {
             int i = 0;
             while (i < pack.Length && !string.IsNullOrEmpty(pack[i]))
             {
@@ -753,9 +784,14 @@ namespace CutTheRopeDX.Framework.Core
                 i++;
             }
 
+            return i;
+        }
+
+        private static void ReportFreed(int count)
+        {
             ILogger logger = Log.For(LogCategories.ContentResources);
             string memory = MemoryReport.Describe();
-            ResourceMgrLog.PackFreed(logger, i, memory);
+            ResourceMgrLog.PackFreed(logger, count, memory);
         }
 
         /// <summary>

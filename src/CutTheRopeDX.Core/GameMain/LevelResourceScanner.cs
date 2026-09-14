@@ -509,7 +509,7 @@ namespace CutTheRopeDX.GameMain
     internal static partial class LevelResourceScannerLog
     {
         [LoggerMessage(
-            Level = LogLevel.Information,
+            Level = LogLevel.Debug,
             Message = "Level scan: {ResourceCount} resources required in {ElapsedMs:F1} ms")]
         public static partial void Scanned(ILogger logger, int resourceCount, double elapsedMs);
     }
