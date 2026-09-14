@@ -99,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             DrawDim(screen, frame.Alpha);
             if (frame.ShowsOmNom && meshes.Count > 0)
             {
-                DrawOmNom(frame);
+                DrawOmNom(frame, Composition(screen));
             }
 
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
@@ -117,15 +117,33 @@ namespace CutTheRopeDX.GameMain
             Renderer.DrawTriangleList(dimVertices, DimIndices, DimIndices.Length);
         }
 
-        private void DrawOmNom(EasterEggOmNomFrame frame)
+        /// <summary>
+        /// Places the design-space composition in a viewport: scaled to fit, centered across, and
+        /// resting on the bottom edge, so he rises from the bottom of any window shape. A 16:9
+        /// viewport the size of the design box places it untouched.
+        /// </summary>
+        /// <param name="screen">The visible screen region.</param>
+        /// <returns>Where the composition's origin lands, and the uniform scale it is drawn at.</returns>
+        internal static (float X, float Y, float Scale) Composition(CTRRectangle screen)
+        {
+            float scale = LayoutMath.Contain(
+                ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, screen);
+            float width = ViewportLayout.DesignWidth * scale;
+            float height = ViewportLayout.DesignHeight * scale;
+            return (screen.x + ((screen.w - width) / 2f), screen.y + screen.h - height, scale);
+        }
+
+        private void DrawOmNom(EasterEggOmNomFrame frame, (float X, float Y, float Scale) composition)
         {
             Renderer.PushMatrix();
+            Renderer.Translate(composition.X, composition.Y, 0f);
+            Renderer.Scale(composition.Scale, composition.Scale, 1f);
             Renderer.Translate(frame.X, frame.Y, 0f);
             Renderer.Scale(frame.ScaleX, frame.ScaleY, 1f);
 
             // The band is authored in path units but has to land at a fixed width on screen, so
-            // it shrinks as the transform above grows.
-            float fringeWidth = FringeWidth / MathF.Max(frame.ScaleX, 0.0001f);
+            // it shrinks as the transforms above grow.
+            float fringeWidth = FringeWidth / MathF.Max(frame.ScaleX * composition.Scale, 0.0001f);
 
             // Neither the width nor the color moves while he is held at full size, which is most
             // of the animation, and the band is identical frame to frame across that stretch.
