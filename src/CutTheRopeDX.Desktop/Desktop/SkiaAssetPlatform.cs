@@ -27,6 +27,9 @@ namespace CutTheRopeDX.Desktop
         : IAssetPlatform, IDisposable
     {
         private readonly Dictionary<string, SkiaTexture> textures = [];
+        private readonly SkiaImageDecodeQueue decodes = new(
+            path => SkiaImageDecodeQueue.DecodeRaster(content.Read(path + ".png")),
+            SkiaImageDecodeQueue.DefaultConcurrency);
         private bool disposed;
 
         internal static string ResolveContentRoot(string executableDirectory)
@@ -50,22 +53,29 @@ namespace CutTheRopeDX.Desktop
                 return cached;
             }
 
-            byte[] bytes;
-            try
+            // A prepared image arrives already decoded. One that was not, or whose background decode
+            // failed, is read and decoded here as it always was, which is also where a missing or
+            // corrupt file is reported.
+            SKImage decoded = decodes.Take(path);
+            if (decoded == null)
             {
-                bytes = content.Read(path + ".png");
+                byte[] bytes;
+                try
+                {
+                    bytes = content.Read(path + ".png");
+                }
+                catch (Exception failure) when (failure is FileNotFoundException or DirectoryNotFoundException)
+                {
+                    // The caller gets a null texture and draws nothing, which on screen looks like
+                    // art that was never authored rather than a file that is not on disk.
+                    ILogger logger = Log.For(LogCategories.ContentResources);
+                    SkiaAssetPlatformLog.TextureMissing(logger, path, failure);
+                    return null;
+                }
+                using SKData data = SKData.CreateCopy(bytes);
+                decoded = SKImage.FromEncodedData(data)
+                    ?? throw new InvalidDataException($"Could not decode PNG '{path}'.");
             }
-            catch (Exception failure) when (failure is FileNotFoundException or DirectoryNotFoundException)
-            {
-                // The caller gets a null texture and draws nothing, which on screen looks like
-                // art that was never authored rather than a file that is not on disk.
-                ILogger logger = Log.For(LogCategories.ContentResources);
-                SkiaAssetPlatformLog.TextureMissing(logger, path, failure);
-                return null;
-            }
-            using SKData data = SKData.CreateCopy(bytes);
-            SKImage decoded = SKImage.FromEncodedData(data)
-                ?? throw new InvalidDataException($"Could not decode PNG '{path}'.");
             SKImage image;
             try
             {
@@ -157,8 +167,28 @@ namespace CutTheRopeDX.Desktop
                 uploaded, registry?.TrackTransient() ?? SkiaResourceRegistry.DeviceIndependent);
         }
 
+        public void PrepareImage(string contentPath)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (!textures.ContainsKey(contentPath))
+            {
+                decodes.Prepare(contentPath);
+            }
+        }
+
+        public bool IsImageReady(string contentPath)
+        {
+            return textures.ContainsKey(contentPath) || decodes.IsReady(contentPath);
+        }
+
+        public void DiscardPreparedImage(string contentPath)
+        {
+            decodes.Discard(contentPath);
+        }
+
         public void FreeImage(string contentPath)
         {
+            decodes.Discard(contentPath);
             if (textures.Remove(contentPath, out SkiaTexture texture))
             {
                 registry?.Forget(contentPath);
@@ -215,6 +245,7 @@ namespace CutTheRopeDX.Desktop
             }
 
             disposed = true;
+            decodes.Dispose();
             foreach (SkiaTexture texture in textures.Values)
             {
                 texture.Dispose();

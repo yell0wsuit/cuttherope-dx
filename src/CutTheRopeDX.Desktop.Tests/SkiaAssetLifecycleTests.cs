@@ -59,6 +59,53 @@ namespace CutTheRopeDX.Desktop.Tests
         }
 
         [Fact]
+        public void APreparedPngIsDecodedAheadAndLoadedFromThatOneRead()
+        {
+            CountingStore store = new(RedPng(7, 11));
+            using SkiaAssetPlatform assets = new(store, null);
+
+            assets.PrepareImage("images/test");
+            Assert.True(System.Threading.SpinWait.SpinUntil(
+                () => assets.IsImageReady("images/test"), System.TimeSpan.FromSeconds(5)));
+
+            Assert.Equal((7, 11), assets.ImageDimensions("images/test"));
+            Assert.NotNull(assets.ImageTexture("images/test"));
+            Assert.Equal(1, store.Reads);
+        }
+
+        [Fact]
+        public void AnImageNobodyPreparedIsReportedReady()
+        {
+            using SkiaAssetPlatform assets = new(new CountingStore(RedPng(2, 2)), null);
+
+            Assert.True(assets.IsImageReady("images/untouched"));
+        }
+
+        [Fact]
+        public void APreparedMissingImageStillLoadsAsNothing()
+        {
+            using SkiaAssetPlatform assets = new(new CountingStore(null), null);
+
+            assets.PrepareImage("missing");
+
+            Assert.Null(assets.ImageTexture("missing"));
+        }
+
+        [Fact]
+        public void DiscardingAPreparedImageNeverReleasesALoadedTexture()
+        {
+            CountingStore store = new(RedPng(3, 3));
+            using SkiaAssetPlatform assets = new(store, null);
+            ITextureHandle loaded = assets.ImageTexture("images/test");
+
+            assets.PrepareImage("images/test");
+            assets.DiscardPreparedImage("images/test");
+
+            Assert.Same(loaded, assets.ImageTexture("images/test"));
+            Assert.Equal(1, store.Reads);
+        }
+
+        [Fact]
         public void MissingImageHasNoDimensionsOrTexture()
         {
             using SkiaAssetPlatform assets = new(new CountingStore(null), null);
@@ -73,6 +120,15 @@ namespace CutTheRopeDX.Desktop.Tests
         public void ResolvesPortableAndBundleContent(string executableDirectory, string expected)
         {
             Assert.Equal(Path.GetFullPath(expected), SkiaAssetPlatform.ResolveContentRoot(executableDirectory));
+        }
+
+        private static byte[] RedPng(int width, int height)
+        {
+            using SKBitmap bitmap = new(width, height);
+            bitmap.Erase(SKColors.Red);
+            using SKImage image = SKImage.FromBitmap(bitmap);
+            using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
+            return data.ToArray();
         }
 
         private sealed class CountingStore(byte[] bytes) : IContentStore

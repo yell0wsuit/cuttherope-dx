@@ -155,6 +155,21 @@ namespace CutTheRopeDX.Tests
                 inner.FreeImage(path);
             }
 
+            public void PrepareImage(string path)
+            {
+                inner.PrepareImage(path);
+            }
+
+            public bool IsImageReady(string path)
+            {
+                return inner.IsImageReady(path);
+            }
+
+            public void DiscardPreparedImage(string path)
+            {
+                inner.DiscardPreparedImage(path);
+            }
+
             public FontGeneric Font(string name)
             {
                 return inner.Font(name);

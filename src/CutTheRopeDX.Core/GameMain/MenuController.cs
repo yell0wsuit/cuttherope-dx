@@ -1359,6 +1359,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
+            PrepareCoverFor(i);
             boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
             UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
@@ -1390,6 +1391,31 @@ namespace CutTheRopeDX.GameMain
             CTRPreferences.SetLastBox(i);
             CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(i));
         }
+
+        /// <summary>
+        /// Starts decoding the cover of the box the pack selector has settled on, so opening that
+        /// box only has to upload it.
+        /// </summary>
+        /// <remarks>
+        /// Only the settled box's cover is held. Moving to another box drops the previous cover's
+        /// decode, so scrolling across every box never keeps more than one decoded cover around.
+        /// </remarks>
+        /// <param name="packIndex">Pack the selector settled on.</param>
+        private void PrepareCoverFor(int packIndex)
+        {
+            CTRResourceMgr resources = Application.SharedResourceMgr();
+            string cover = PackConfig.GetBoxCoverOrDefault(packIndex);
+            if (preparedCover != null && preparedCover != cover)
+            {
+                ResourceMgr.DiscardPreparedImageResource(preparedCover);
+            }
+
+            preparedCover = cover;
+            resources.PrepareImageResource(cover);
+        }
+
+        /// <summary>Cover whose decode the pack selector started last, or <see langword="null"/>.</summary>
+        private string preparedCover;
 
         /// <summary>
         /// Creates one level selection button for a pack.

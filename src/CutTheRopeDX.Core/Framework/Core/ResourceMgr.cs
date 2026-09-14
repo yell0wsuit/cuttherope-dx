@@ -7,6 +7,7 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
@@ -32,7 +33,71 @@ namespace CutTheRopeDX.Framework.Core
             {
                 loadQueue.Add(localizedName);
                 loadCount++;
+
+                // Decoding starts now, while the resources ahead of it are still loading, so that
+                // by the time the queue reaches it only the upload is left.
+                PrepareImageResource(localizedName);
             }
+        }
+
+        /// <summary>
+        /// Starts decoding an image resource in the background, ahead of loading it. Does nothing
+        /// for a resource that is not an image or is already loaded.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name.</param>
+        public void PrepareImageResource(string resourceName)
+        {
+            if (TryResolveResource(resourceName, out string localizedName)
+                && IsImageResource(localizedName)
+                && !s_Resources.ContainsKey(localizedName))
+            {
+                AssetPlatform.Current.PrepareImage(ImageContentPath(localizedName));
+            }
+        }
+
+        /// <summary>
+        /// Drops a background decode started by <see cref="PrepareImageResource"/> that is no
+        /// longer wanted. Never frees a loaded resource.
+        /// </summary>
+        /// <param name="resourceName">Logical resource name.</param>
+        public static void DiscardPreparedImageResource(string resourceName)
+        {
+            if (TryResolveResource(resourceName, out string localizedName) && IsImageResource(localizedName))
+            {
+                AssetPlatform.Current.DiscardPreparedImage(ImageContentPath(localizedName));
+            }
+        }
+
+        /// <summary>Content path an image resource is loaded from.</summary>
+        /// <param name="resourceName">Resolved image resource name.</param>
+        /// <returns>The content-relative path of the image.</returns>
+        internal static string ImageContentPath(string resourceName)
+        {
+            return Resources.IsBackgroundImg(resourceName)
+                ? ContentPaths.GetBackgroundImageContentPath(resourceName)
+                : ContentPaths.GetImageContentPath(resourceName);
+        }
+
+        /// <summary>Whether a resolved resource name is loaded as a texture.</summary>
+        /// <param name="localizedName">Resolved resource name.</param>
+        /// <returns><see langword="true"/> for an image resource.</returns>
+        private static bool IsImageResource(string localizedName)
+        {
+            return localizedName != Resources.Str.MenuStrings
+                && !Resources.IsSound(localizedName)
+                && !Resources.IsFont(localizedName);
+        }
+
+        /// <summary>
+        /// Whether loading a queued resource now would not wait on a background decode.
+        /// </summary>
+        /// <param name="localizedName">Resolved resource name.</param>
+        /// <returns><see langword="true"/> when the resource can load without blocking on a decode.</returns>
+        private bool IsResourceReady(string localizedName)
+        {
+            return !IsImageResource(localizedName)
+                || s_Resources.ContainsKey(localizedName)
+                || AssetPlatform.Current.IsImageReady(ImageContentPath(localizedName));
         }
 
         /// <summary>
@@ -52,7 +117,7 @@ namespace CutTheRopeDX.Framework.Core
             {
                 _ = s_Resources.Remove(key);
             }
-            Platform.AssetPlatform.Current.ClearFontCache();
+            AssetPlatform.Current.ClearFontCache();
         }
 
         /// <summary>
@@ -168,7 +233,7 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             // Font loading goes through the asset platform so headless runs can supply a stub.
-            return Platform.AssetPlatform.Current.Font(resourceName);
+            return AssetPlatform.Current.Font(resourceName);
         }
 
         /// <summary>
@@ -218,9 +283,7 @@ namespace CutTheRopeDX.Framework.Core
             ParsedTexturePackerAtlas parsedAtlas = LoadTexturePackerAtlas(atlasConfig, resourceName);
 
             bool useAntialias = atlasConfig?.UseAntialias ?? true;
-            string pngPath = Resources.IsBackgroundImg(resourceName)
-                ? ContentPaths.GetBackgroundImageContentPath(resourceName)
-                : ContentPaths.GetImageContentPath(resourceName);
+            string pngPath = ImageContentPath(resourceName);
             if (useAntialias)
             {
                 CTRTexture2D.SetAntiAliasTexParameters();
@@ -668,17 +731,35 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Loads the next queued resource and notifies the delegate when the batch is complete.
+        /// Loads queued resources for one frame and notifies the delegate when the batch is complete.
         /// </summary>
+        /// <remarks>
+        /// A frame loads resources in order while the next one is ready and the frame's budget
+        /// lasts. Images are decoded in the background from the moment they are queued, so a ready
+        /// one costs only its upload and several fit in a frame. When the next image is still
+        /// decoding, the frame stops there, possibly having loaded nothing, because loading it would
+        /// block on the decode.
+        /// </remarks>
         public void Update()
         {
-            if (loadQueue.Count > 0)
+            long frameStartedTicks = Stopwatch.GetTimestamp();
+            while (loaded < GetLoadCount()
+                && Stopwatch.GetElapsedTime(frameStartedTicks).TotalMilliseconds < FrameLoadBudgetMilliseconds)
             {
-                string resourceName = loadQueue[0];
-                loadQueue.RemoveAt(0);
-                LoadResource(resourceName);
+                if (loadQueue.Count > 0)
+                {
+                    if (!IsResourceReady(loadQueue[0]))
+                    {
+                        break;
+                    }
+
+                    string resourceName = loadQueue[0];
+                    loadQueue.RemoveAt(0);
+                    LoadResource(resourceName);
+                }
+                loaded++;
             }
-            loaded++;
+
             if (loaded >= GetLoadCount())
             {
                 if (Timer >= 0)
@@ -834,7 +915,13 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Timer identifier used for incremental loading.
         /// </summary>
-        private int Timer;
+        private int Timer = -1;
+
+        /// <summary>
+        /// Milliseconds of loading one frame may spend before leaving the rest of the queue to the
+        /// next frame, about half of a 60 Hz frame.
+        /// </summary>
+        private const double FrameLoadBudgetMilliseconds = 8.0;
 
         /// <summary>
         /// Resource categories supported by the resource manager.

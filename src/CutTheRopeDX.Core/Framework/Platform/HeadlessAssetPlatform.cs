@@ -50,6 +50,24 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
+        public void PrepareImage(string contentPath)
+        {
+            // Nothing is decoded headless, so there is nothing to start early.
+        }
+
+        /// <inheritdoc />
+        public bool IsImageReady(string contentPath)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public void DiscardPreparedImage(string contentPath)
+        {
+            // Nothing is ever prepared headless, so there is nothing to drop.
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             // No texture is ever created headless, so there is nothing to release.

@@ -13,12 +13,16 @@ namespace CutTheRopeDX.Browser
 {
     /// <summary>Asset loading backed by the browser content store and Skia decoding.</summary>
     /// <param name="surface">Supplies the GPU context textures are uploaded into.</param>
-    internal sealed class BrowserAssetPlatform(SkiaSurface surface) : IAssetPlatform
+    internal sealed class BrowserAssetPlatform(SkiaSurface surface) : IAssetPlatform, IDisposable
     {
         /// <summary>Extension the web content pipeline writes images as.</summary>
         public const string ImageExtension = ".webp";
 
         private readonly Dictionary<string, SkiaTexture> _textures = [];
+
+        private readonly SkiaImageDecodeQueue _decodes = new(
+            path => SkiaImageDecodeQueue.DecodeRaster(PlatformServices.Content.Read(path + ImageExtension)),
+            SkiaImageDecodeQueue.DefaultConcurrency);
 
         private SkiaTexture Load(string contentPath)
         {
@@ -27,12 +31,18 @@ namespace CutTheRopeDX.Browser
                 return cached;
             }
 
-            byte[] encoded = PlatformServices.Content.Read(contentPath + ImageExtension);
-            using SKData data = SKData.CreateCopy(encoded);
-            SKImage decoded = SKImage.FromEncodedData(data);
+            // A prepared image arrives already decoded, off the game thread. One that was not, or
+            // whose background decode failed, is decoded here as it always was.
+            SKImage decoded = _decodes.Take(contentPath);
             if (decoded is null)
             {
-                return null;
+                byte[] encoded = PlatformServices.Content.Read(contentPath + ImageExtension);
+                using SKData data = SKData.CreateCopy(encoded);
+                decoded = SKImage.FromEncodedData(data);
+                if (decoded is null)
+                {
+                    return null;
+                }
             }
 
             SKImage image;
@@ -105,8 +115,30 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <inheritdoc />
+        public void PrepareImage(string contentPath)
+        {
+            if (!_textures.ContainsKey(contentPath))
+            {
+                _decodes.Prepare(contentPath);
+            }
+        }
+
+        /// <inheritdoc />
+        public bool IsImageReady(string contentPath)
+        {
+            return _textures.ContainsKey(contentPath) || _decodes.IsReady(contentPath);
+        }
+
+        /// <inheritdoc />
+        public void DiscardPreparedImage(string contentPath)
+        {
+            _decodes.Discard(contentPath);
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
+            _decodes.Discard(contentPath);
             if (_textures.Remove(contentPath, out SkiaTexture texture))
             {
                 texture.Dispose();
@@ -125,6 +157,18 @@ namespace CutTheRopeDX.Browser
         public void ClearFontCache()
         {
             SkiaFontCache.Clear();
+        }
+
+        /// <summary>Releases pending background decodes and every loaded texture.</summary>
+        public void Dispose()
+        {
+            _decodes.Dispose();
+            foreach (SkiaTexture texture in _textures.Values)
+            {
+                texture.Dispose();
+            }
+
+            _textures.Clear();
         }
     }
 }

@@ -338,8 +338,9 @@ namespace CutTheRopeDX.GameMain
                             GameController c3 = new(this);
                             AddChildwithID(c3, 3);
                             ActivateChild(3);
-                            CTRRootControllerLog.ControllerBuilt(
-                                Log.For(LogCategories.Application), "game", Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds);
+                            ILogger gameBuildLogger = Log.For(LogCategories.Application);
+                            double gameBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;
+                            CTRRootControllerLog.ControllerBuilt(gameBuildLogger, "game", gameBuildMs);
                             QueueOrPollBoxPrefetch();
                             return;
                         }
@@ -375,8 +376,9 @@ namespace CutTheRopeDX.GameMain
                         {
                             menuController3.ShowNextPack();
                         }
-                        CTRRootControllerLog.ControllerBuilt(
-                            Log.For(LogCategories.Application), "menu", Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds);
+                        ILogger menuBuildLogger = Log.For(LogCategories.Application);
+                        double menuBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;
+                        CTRRootControllerLog.ControllerBuilt(menuBuildLogger, "menu", menuBuildMs);
                         return;
                     }
                 case 3:
