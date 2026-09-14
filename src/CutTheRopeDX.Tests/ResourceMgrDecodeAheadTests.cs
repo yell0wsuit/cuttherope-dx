@@ -44,6 +44,10 @@ namespace CutTheRopeDX.Tests
             previousDelegate = resources.resourcesDelegate;
             resources.resourcesDelegate = completion;
             FreeTestImages();
+
+            // Booting leaves the startup batch queued. Clearing it before recording starts keeps
+            // its decodes out of what a test sees discarded.
+            resources.InitLoading();
             platform = new RecordingPlatform(AssetPlatform.Current);
             AssetPlatform.Current = platform;
         }
