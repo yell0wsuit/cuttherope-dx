@@ -474,8 +474,11 @@ namespace CutTheRopeDX.Desktop
             assets.DiscardDeviceResources();
             _ = registry.Invalidate();
 
-            int width = window.WindowWidth;
-            int height = window.WindowHeight;
+            // The windowed size, not the current one: a fullscreen window is the size of the
+            // display, and handing that to the replacement makes it the size the window drops
+            // back to on leaving fullscreen, title bar off the top of the screen.
+            int width = window.WindowedWidth;
+            int height = window.WindowedHeight;
             bool fullscreen = window.IsFullScreen;
             window.SavePreferences();
 

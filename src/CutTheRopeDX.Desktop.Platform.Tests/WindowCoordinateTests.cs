@@ -38,7 +38,27 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         public void AWindowSizeIsFittedToTheDisplayItWillOpenOn(
             int requested, int usable, int minimum, int expected)
         {
-            Assert.Equal(expected, SdlWindowService.ClampWindowSide(requested, usable, minimum));
+            Assert.Equal(expected, SdlWindowService.ClampWindowSide(requested, usable, minimum, 0));
+        }
+
+        [Theory]
+        // A display-sized request leaves room for the title bar, so the frame stays on screen
+        // and can still be grabbed.
+        [InlineData(1080, 1032, 480, 39, 993)]
+        [InlineData(1920, 1920, 320, 16, 1904)]
+        // A size that already fits with its frame is kept.
+        [InlineData(900, 1032, 480, 39, 900)]
+        // The default margin is taken from the display, and the frame bound still applies after it.
+        [InlineData(0, 1032, 480, 39, 932)]
+        [InlineData(0, 1032, 480, 150, 882)]
+        // The display still wins over the minimum once the frame is taken from it.
+        [InlineData(1280, 520, 480, 39, 481)]
+        // A frame as large as the display leaves the smallest size SDL will accept.
+        [InlineData(1280, 30, 480, 39, 1)]
+        public void TheWindowFrameIsTakenFromTheDisplayBeforeFitting(
+            int requested, int usable, int minimum, int decoration, int expected)
+        {
+            Assert.Equal(expected, SdlWindowService.ClampWindowSide(requested, usable, minimum, decoration));
         }
 
         [Fact]
@@ -48,10 +68,10 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             // tall enough and too narrow, or the reverse.
             Assert.Equal(
                 SdlWindowService.MinimumWidth,
-                SdlWindowService.ClampWindowSide(10, 1920, SdlWindowService.MinimumWidth));
+                SdlWindowService.ClampWindowSide(10, 1920, SdlWindowService.MinimumWidth, 0));
             Assert.Equal(
                 SdlWindowService.MinimumHeight,
-                SdlWindowService.ClampWindowSide(10, 1080, SdlWindowService.MinimumHeight));
+                SdlWindowService.ClampWindowSide(10, 1080, SdlWindowService.MinimumHeight, 0));
         }
     }
 }
