@@ -32,7 +32,7 @@
 
   <!-- Tests -->
   <ItemGroup>
-    <PackageVersion Include="xunit.v3" Version="4.0.0" />
+    <PackageVersion Include="xunit.v3" Version="4.0.1" />
   </ItemGroup>
 
 </Project>
