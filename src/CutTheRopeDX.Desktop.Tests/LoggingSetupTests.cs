@@ -342,6 +342,42 @@ namespace CutTheRopeDX.Desktop.Tests
         }
 
         [Fact]
+        public void TheConsoleColorsTheLevelOnTheTerminalAndNowhereElse()
+        {
+            string colored = WriteConsoleEntry(LogLevel.Warning, color: true);
+            string plain = WriteConsoleEntry(LogLevel.Warning, color: false);
+
+            Assert.Contains("\u001b[1m\u001b[33m[Warning]\u001b[39m\u001b[49m\u001b[22m ctrdx.test message", colored, StringComparison.Ordinal);
+            Assert.Contains("[Warning] ctrdx.test message", plain, StringComparison.Ordinal);
+            Assert.DoesNotContain("\u001b", plain, StringComparison.Ordinal);
+        }
+
+        [Theory]
+        [InlineData(LogLevel.Trace)]
+        [InlineData(LogLevel.Debug)]
+        [InlineData(LogLevel.Information)]
+        [InlineData(LogLevel.Warning)]
+        [InlineData(LogLevel.Error)]
+        [InlineData(LogLevel.Critical)]
+        public void EveryLevelIsWrittenBoldInColor(LogLevel level)
+        {
+            string colored = WriteConsoleEntry(level, color: true);
+
+            Assert.Contains("\u001b[1m", colored, StringComparison.Ordinal);
+            Assert.Contains("[" + level + "]\u001b[39m\u001b[49m\u001b[22m ctrdx.test message", colored, StringComparison.Ordinal);
+        }
+
+        private static string WriteConsoleEntry(LogLevel level, bool color)
+        {
+            StringWriter written = new();
+            new RedactingConsoleFormatter(_ => color).Write(
+                new LogEntry<string>(level, "ctrdx.test", default, "state", null, (_, _) => "message"),
+                null,
+                written);
+            return written.ToString();
+        }
+
+        [Fact]
         public void TheLevelSwitchIsReadInBothItsSpellings()
         {
             // The joined spelling used to match nothing and fall through to the default, so

@@ -211,7 +211,7 @@ namespace CutTheRopeDX.Desktop
                     // was careful to redact: a bug report is usually a paste of the terminal.
                     _ = builder.AddConsole(options =>
                     {
-                        options.LogToStandardErrorThreshold = LogLevel.Error;
+                        options.LogToStandardErrorThreshold = RedactingConsoleFormatter.StandardErrorThreshold;
                         options.FormatterName = RedactingConsoleFormatter.FormatterName;
                     });
 
