@@ -136,6 +136,12 @@ namespace CutTheRopeDX.Browser
         }
 
         /// <inheritdoc />
+        public long TakePeakPreparedPixelBytes()
+        {
+            return _decodes.TakePeakPreparedPixelBytes();
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             _decodes.Discard(contentPath);

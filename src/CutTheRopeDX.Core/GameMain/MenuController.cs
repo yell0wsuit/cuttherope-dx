@@ -1407,7 +1407,7 @@ namespace CutTheRopeDX.GameMain
             string cover = PackConfig.GetBoxCoverOrDefault(packIndex);
             if (preparedCover != null && preparedCover != cover)
             {
-                ResourceMgr.DiscardPreparedImageResource(preparedCover);
+                resources.DiscardPreparedImageResource(preparedCover);
             }
 
             preparedCover = cover;

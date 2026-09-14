@@ -23,6 +23,15 @@ namespace CutTheRopeDX.Tests
             Resources.Img.MenuExtraButtons,
         ];
 
+        /// <summary>More images than the decode-ahead window holds.</summary>
+        private static readonly string[] WindowImages =
+        [
+            .. Images,
+            Resources.Img.MenuOptions,
+            Resources.Img.MenuPopup,
+            Resources.Img.MenuPackUI,
+        ];
+
         private readonly CTRResourceMgr resources;
         private readonly RecordingPlatform platform;
         private readonly IResourceMgrDelegate previousDelegate;
@@ -54,6 +63,53 @@ namespace CutTheRopeDX.Tests
             resources.LoadPack([Resources.Img.MenuButtons, Resources.Snd.Tap, null]);
 
             Assert.Equal([ResourceMgr.ImageContentPath(Resources.Img.MenuButtons)], platform.Prepared);
+        }
+
+        [Fact]
+        public void OnlyTheFirstFourImagesInTheQueueStartDecoding()
+        {
+            resources.InitLoading();
+            resources.LoadPack([Resources.Snd.Tap, .. WindowImages, null]);
+
+            Assert.Equal(PathsOf(WindowImages[..4]), platform.Prepared);
+        }
+
+        [Fact]
+        public void LoadingAnImageStartsTheNextOneInTheQueue()
+        {
+            _ = platform.StillDecoding.Add(ResourceMgr.ImageContentPath(WindowImages[1]));
+            resources.InitLoading();
+            resources.LoadPack([.. WindowImages, null]);
+
+            resources.Update();
+
+            Assert.Equal(PathsOf(WindowImages[0]), platform.Loaded);
+            Assert.Equal(PathsOf(WindowImages[..5]), platform.Prepared);
+        }
+
+        [Fact]
+        public void StartingANewBatchDropsTheDecodesAnUnfinishedOneStarted()
+        {
+            _ = platform.StillDecoding.Add(ResourceMgr.ImageContentPath(WindowImages[0]));
+            resources.InitLoading();
+            resources.LoadPack([.. WindowImages, null]);
+            resources.Update();
+
+            resources.InitLoading();
+
+            Assert.Equal(PathsOf(WindowImages[..4]), platform.Discarded);
+        }
+
+        [Fact]
+        public void StartingANewBatchKeepsADecodeStartedApartFromTheQueue()
+        {
+            resources.PrepareImageResource(WindowImages[0]);
+            resources.InitLoading();
+            resources.LoadPack([.. WindowImages, null]);
+
+            resources.InitLoading();
+
+            Assert.Equal(PathsOf(WindowImages[1..4]), platform.Discarded);
         }
 
         [Fact]
@@ -123,8 +179,9 @@ namespace CutTheRopeDX.Tests
 
         private void FreeTestImages()
         {
-            foreach (string image in Images)
+            foreach (string image in WindowImages)
             {
+                resources.DiscardPreparedImageResource(image);
                 resources.FreeResource(image);
             }
         }
@@ -150,12 +207,15 @@ namespace CutTheRopeDX.Tests
             }
         }
 
-        /// <summary>Stands in for the platform, recording what is prepared and loaded.</summary>
+        /// <summary>Stands in for the platform, recording what is prepared, discarded and loaded.</summary>
         private sealed class RecordingPlatform(IAssetPlatform inner) : IAssetPlatform
         {
             public IAssetPlatform Inner => inner;
 
+            /// <summary>Each image whose decode was started, once, in the order they started.</summary>
             public List<string> Prepared { get; } = [];
+
+            public List<string> Discarded { get; } = [];
 
             public List<string> Loaded { get; } = [];
 
@@ -163,7 +223,10 @@ namespace CutTheRopeDX.Tests
 
             public void PrepareImage(string contentPath)
             {
-                Prepared.Add(contentPath);
+                if (!Prepared.Contains(contentPath))
+                {
+                    Prepared.Add(contentPath);
+                }
             }
 
             public bool IsImageReady(string contentPath)
@@ -173,6 +236,12 @@ namespace CutTheRopeDX.Tests
 
             public void DiscardPreparedImage(string contentPath)
             {
+                Discarded.Add(contentPath);
+            }
+
+            public long TakePeakPreparedPixelBytes()
+            {
+                return 0;
             }
 
             public (int W, int H)? ImageDimensions(string contentPath)

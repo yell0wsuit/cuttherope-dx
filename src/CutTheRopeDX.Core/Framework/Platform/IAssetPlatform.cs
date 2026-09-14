@@ -58,6 +58,17 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="contentPath">Content-relative path, e.g. <c>images/obj_candy</c>.</param>
         void DiscardPreparedImage(string contentPath);
 
+        /// <summary>
+        /// Reports the most decoded pixel memory held for prepared images not yet loaded since the
+        /// last call, and starts the next reading from what is held now.
+        /// </summary>
+        /// <remarks>
+        /// Counts decoded pixels only: not decoder scratch memory, encoded file bytes, or GPU
+        /// textures.
+        /// </remarks>
+        /// <returns>Peak decoded pixel bytes awaiting upload.</returns>
+        long TakePeakPreparedPixelBytes();
+
         /// <summary>Releases the cached content manager backing an image, if any.</summary>
         /// <param name="contentPath">Content-relative path, e.g. <c>images/obj_candy</c>.</param>
         void FreeImage(string contentPath);

@@ -151,6 +151,26 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
         }
 
         [Fact]
+        public void ThePeakCountsDecodedPixelsUntilTheyAreTaken()
+        {
+            using SkiaImageDecodeQueue queue = new(_ => Raster(4, 4), concurrency: 2);
+
+            queue.Prepare("images/first");
+            queue.Prepare("images/second");
+            Assert.True(SpinWait.SpinUntil(
+                () => queue.IsReady("images/first") && queue.IsReady("images/second"), Patience));
+            queue.Take("images/first")?.Dispose();
+
+            Assert.Equal(2 * 4 * 4 * 4, queue.TakePeakPreparedPixelBytes());
+            Assert.Equal(4 * 4 * 4, queue.TakePeakPreparedPixelBytes());
+
+            queue.Take("images/second")?.Dispose();
+            _ = queue.TakePeakPreparedPixelBytes();
+
+            Assert.Equal(0, queue.TakePeakPreparedPixelBytes());
+        }
+
+        [Fact]
         public void PreparingTheSameImageTwiceDecodesItOnce()
         {
             int decodes = 0;

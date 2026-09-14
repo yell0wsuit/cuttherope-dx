@@ -68,6 +68,12 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <inheritdoc />
+        public long TakePeakPreparedPixelBytes()
+        {
+            return 0;
+        }
+
+        /// <inheritdoc />
         public void FreeImage(string contentPath)
         {
             // No texture is ever created headless, so there is nothing to release.

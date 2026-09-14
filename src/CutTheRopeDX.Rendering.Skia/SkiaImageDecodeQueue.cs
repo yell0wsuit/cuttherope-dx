@@ -25,9 +25,14 @@ namespace CutTheRopeDX.Rendering.Skia
         private readonly SemaphoreSlim slots = new(Math.Max(1, concurrency));
         private readonly Dictionary<string, PendingDecode> pending = new(StringComparer.Ordinal);
         private readonly Lock gate = new();
+        private long preparedPixelBytes;
+        private long peakPreparedPixelBytes;
 
-        /// <summary>How many decodes to run at once on this machine, leaving a core for the game.</summary>
-        public static int DefaultConcurrency => Math.Max(1, Environment.ProcessorCount - 1);
+        /// <summary>
+        /// How many decodes to run at once: one fewer than the machine's cores, and never more than
+        /// two, so decoding leaves room for the game and other background work on weaker devices.
+        /// </summary>
+        public static int DefaultConcurrency => Math.Clamp(Environment.ProcessorCount - 1, 1, 2);
 
         /// <summary>Starts decoding an image unless it is already being decoded.</summary>
         /// <param name="path">Key the image is taken by.</param>
@@ -80,7 +85,9 @@ namespace CutTheRopeDX.Rendering.Skia
 
             try
             {
-                return entry.Decode.GetAwaiter().GetResult();
+                SKImage image = entry.Decode.GetAwaiter().GetResult();
+                ReleasePreparedBytes(image);
+                return image;
             }
             catch (Exception)
             {
@@ -109,6 +116,20 @@ namespace CutTheRopeDX.Rendering.Skia
             }
 
             Abandon(entry);
+        }
+
+        /// <summary>
+        /// Reports the most decoded pixel memory held for images not yet taken since the last call,
+        /// and starts the next reading from what is held now.
+        /// </summary>
+        /// <remarks>
+        /// Counts decoded pixels only: not the decoder's scratch memory, the encoded file bytes, or
+        /// the GPU textures the images become.
+        /// </remarks>
+        /// <returns>Peak decoded pixel bytes awaiting upload.</returns>
+        public long TakePeakPreparedPixelBytes()
+        {
+            return Interlocked.Exchange(ref peakPreparedPixelBytes, Interlocked.Read(ref preparedPixelBytes));
         }
 
         /// <summary>
@@ -170,7 +191,9 @@ namespace CutTheRopeDX.Rendering.Skia
             try
             {
                 cancellation.ThrowIfCancellationRequested();
-                return decode(path);
+                SKImage image = decode(path);
+                HoldPreparedBytes(image);
+                return image;
             }
             finally
             {
@@ -178,23 +201,52 @@ namespace CutTheRopeDX.Rendering.Skia
             }
         }
 
-        private static void Abandon(PendingDecode entry)
+        private void Abandon(PendingDecode entry)
         {
             entry.Cancellation.Cancel();
             _ = entry.Decode.ContinueWith(
-                static (finished, state) =>
+                finished =>
                 {
-                    if (finished.IsCompletedSuccessfully)
+                    if (finished.IsCompletedSuccessfully && finished.Result != null)
                     {
-                        finished.Result?.Dispose();
+                        ReleasePreparedBytes(finished.Result);
+                        finished.Result.Dispose();
                     }
 
-                    ((CancellationTokenSource)state).Dispose();
+                    entry.Cancellation.Dispose();
                 },
-                entry.Cancellation,
                 CancellationToken.None,
                 TaskContinuationOptions.ExecuteSynchronously,
                 TaskScheduler.Default);
+        }
+
+        private void HoldPreparedBytes(SKImage image)
+        {
+            if (image == null)
+            {
+                return;
+            }
+
+            long held = Interlocked.Add(ref preparedPixelBytes, image.Info.BytesSize64);
+            long peak = Interlocked.Read(ref peakPreparedPixelBytes);
+            while (held > peak)
+            {
+                long seen = Interlocked.CompareExchange(ref peakPreparedPixelBytes, held, peak);
+                if (seen == peak)
+                {
+                    break;
+                }
+
+                peak = seen;
+            }
+        }
+
+        private void ReleasePreparedBytes(SKImage image)
+        {
+            if (image != null)
+            {
+                _ = Interlocked.Add(ref preparedPixelBytes, -image.Info.BytesSize64);
+            }
         }
 
         /// <summary>A decode in progress and the means to call it off before it starts.</summary>

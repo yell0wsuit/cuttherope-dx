@@ -186,6 +186,11 @@ namespace CutTheRopeDX.Desktop
             decodes.Discard(contentPath);
         }
 
+        public long TakePeakPreparedPixelBytes()
+        {
+            return decodes.TakePeakPreparedPixelBytes();
+        }
+
         public void FreeImage(string contentPath)
         {
             decodes.Discard(contentPath);

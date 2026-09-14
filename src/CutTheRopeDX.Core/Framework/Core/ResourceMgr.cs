@@ -34,23 +34,24 @@ namespace CutTheRopeDX.Framework.Core
                 loadQueue.Add(localizedName);
                 loadCount++;
 
-                // Decoding starts now, while the resources ahead of it are still loading, so that
+                // Decoding starts while the resources ahead of this one are still loading, so that
                 // by the time the queue reaches it only the upload is left.
-                PrepareImageResource(localizedName);
+                PrepareDecodeWindow();
             }
         }
 
         /// <summary>
-        /// Starts decoding an image resource in the background, ahead of loading it. Does nothing
-        /// for a resource that is not an image or is already loaded.
+        /// Starts decoding an image resource in the background, ahead of loading it and apart from
+        /// the load queue. The decode survives <see cref="InitLoading"/> until
+        /// <see cref="DiscardPreparedImageResource"/> drops it. Does nothing for a resource that is
+        /// not an image or is already loaded.
         /// </summary>
         /// <param name="resourceName">Logical resource name.</param>
         public void PrepareImageResource(string resourceName)
         {
-            if (TryResolveResource(resourceName, out string localizedName)
-                && IsImageResource(localizedName)
-                && !s_Resources.ContainsKey(localizedName))
+            if (TryResolveResource(resourceName, out string localizedName) && IsPendingImage(localizedName))
             {
+                _ = heldPreparations.Add(localizedName);
                 AssetPlatform.Current.PrepareImage(ImageContentPath(localizedName));
             }
         }
@@ -60,12 +61,73 @@ namespace CutTheRopeDX.Framework.Core
         /// longer wanted. Never frees a loaded resource.
         /// </summary>
         /// <param name="resourceName">Logical resource name.</param>
-        public static void DiscardPreparedImageResource(string resourceName)
+        public void DiscardPreparedImageResource(string resourceName)
         {
             if (TryResolveResource(resourceName, out string localizedName) && IsImageResource(localizedName))
             {
+                _ = heldPreparations.Remove(localizedName);
                 AssetPlatform.Current.DiscardPreparedImage(ImageContentPath(localizedName));
             }
+        }
+
+        /// <summary>
+        /// Starts decoding the first <see cref="DecodeAheadImages"/> images in the load queue that
+        /// are not loaded yet.
+        /// </summary>
+        /// <remarks>
+        /// Each image in the window is either still decoding or decoded and waiting for its upload,
+        /// and the queue is loaded in order, so the window bounds how many decoded images a batch
+        /// holds at once. It moves along as images load.
+        /// </remarks>
+        private void PrepareDecodeWindow()
+        {
+            int inWindow = 0;
+            foreach (string name in loadQueue)
+            {
+                if (inWindow == DecodeAheadImages)
+                {
+                    break;
+                }
+
+                if (IsPendingImage(name))
+                {
+                    AssetPlatform.Current.PrepareImage(ImageContentPath(name));
+                    inWindow++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Drops the decodes of the load queue's window, except those held by
+        /// <see cref="PrepareImageResource"/>, for a batch that is being abandoned.
+        /// </summary>
+        private void DiscardDecodeWindow()
+        {
+            int inWindow = 0;
+            foreach (string name in loadQueue)
+            {
+                if (inWindow == DecodeAheadImages)
+                {
+                    break;
+                }
+
+                if (IsPendingImage(name))
+                {
+                    inWindow++;
+                    if (!heldPreparations.Contains(name))
+                    {
+                        AssetPlatform.Current.DiscardPreparedImage(ImageContentPath(name));
+                    }
+                }
+            }
+        }
+
+        /// <summary>Whether a resolved resource name is an image that is not loaded yet.</summary>
+        /// <param name="localizedName">Resolved resource name.</param>
+        /// <returns><see langword="true"/> for an image still to be loaded.</returns>
+        private bool IsPendingImage(string localizedName)
+        {
+            return IsImageResource(localizedName) && !s_Resources.ContainsKey(localizedName);
         }
 
         /// <summary>Content path an image resource is loaded from.</summary>
@@ -553,9 +615,14 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public virtual void InitLoading()
         {
+            // A batch abandoned partway would otherwise leave its window's decoded images held
+            // with nothing left to take them.
+            DiscardDecodeWindow();
             loadQueue.Clear();
             loaded = 0;
             loadCount = 0;
+            longestUpdateMs = 0;
+            _ = AssetPlatform.Current.TakePeakPreparedPixelBytes();
             batchStartedTicks = Stopwatch.GetTimestamp();
         }
 
@@ -696,17 +763,19 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         public virtual void LoadImmediately()
         {
+            long startedTicks = Stopwatch.GetTimestamp();
             int drained = 0;
             while (loadQueue.Count != 0)
             {
                 string resourceName = loadQueue[0];
                 loadQueue.RemoveAt(0);
                 LoadResource(resourceName);
+                PrepareDecodeWindow();
                 loaded++;
                 drained++;
             }
 
-            ReportBatchComplete(drained, "immediate");
+            ReportBatchComplete(drained, "immediate", Stopwatch.GetElapsedTime(startedTicks).TotalMilliseconds);
         }
 
         /// <summary>
@@ -735,8 +804,8 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <remarks>
         /// A frame loads resources in order while the next one is ready and the frame's budget
-        /// lasts. Images are decoded in the background from the moment they are queued, so a ready
-        /// one costs only its upload and several fit in a frame. When the next image is still
+        /// lasts. Images are decoded in the background once they enter the decode-ahead window, so a
+        /// ready one costs only its upload and several fit in a frame. When the next image is still
         /// decoding, the frame stops there, possibly having loaded nothing, because loading it would
         /// block on the decode.
         /// </remarks>
@@ -748,18 +817,29 @@ namespace CutTheRopeDX.Framework.Core
             {
                 if (loadQueue.Count > 0)
                 {
-                    if (!IsResourceReady(loadQueue[0]))
+                    // The window already covers the head. Preparing it here as well keeps an image
+                    // that somehow was not from reading as ready, since an image nothing is
+                    // decoding is ready, and then being decoded inline on this thread.
+                    string resourceName = loadQueue[0];
+                    if (IsPendingImage(resourceName))
+                    {
+                        AssetPlatform.Current.PrepareImage(ImageContentPath(resourceName));
+                    }
+
+                    if (!IsResourceReady(resourceName))
                     {
                         break;
                     }
 
-                    string resourceName = loadQueue[0];
                     loadQueue.RemoveAt(0);
                     LoadResource(resourceName);
+                    PrepareDecodeWindow();
                 }
                 loaded++;
             }
 
+            // Taken before the completion callback, which builds controllers that are not loading.
+            longestUpdateMs = Math.Max(longestUpdateMs, Stopwatch.GetElapsedTime(frameStartedTicks).TotalMilliseconds);
             if (loaded >= GetLoadCount())
             {
                 if (Timer >= 0)
@@ -767,7 +847,7 @@ namespace CutTheRopeDX.Framework.Core
                     TimerManager.StopTimer(Timer);
                 }
                 Timer = -1;
-                ReportBatchComplete(GetLoadCount(), "incremental");
+                ReportBatchComplete(GetLoadCount(), "incremental", longestUpdateMs);
                 resourcesDelegate.AllResourcesLoaded();
             }
         }
@@ -867,11 +947,15 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <param name="count">How many resources the batch loaded.</param>
         /// <param name="mode">Which drain produced it, immediate or incremental.</param>
+        /// <param name="longestUpdateMs">
+        /// Longest single loading step, not counting the completion callback: the longest frame for
+        /// an incremental batch, the whole drain for an immediate one.
+        /// </param>
         /// <remarks>
         /// A batch of nothing is not reported: entering a controller that needs no new resource
         /// still runs a batch, and those would otherwise be most of the lines here.
         /// </remarks>
-        private void ReportBatchComplete(int count, string mode)
+        private void ReportBatchComplete(int count, string mode, double longestUpdateMs)
         {
             if (count <= 0)
             {
@@ -879,9 +963,10 @@ namespace CutTheRopeDX.Framework.Core
             }
 
             double elapsedMs = Stopwatch.GetElapsedTime(batchStartedTicks).TotalMilliseconds;
+            double peakPreparedMiB = AssetPlatform.Current.TakePeakPreparedPixelBytes() / (1024.0 * 1024.0);
             ILogger logger = Log.For(LogCategories.ContentResources);
             string memory = MemoryReport.Describe();
-            ResourceMgrLog.BatchLoaded(logger, count, mode, elapsedMs, memory);
+            ResourceMgrLog.BatchLoaded(logger, count, mode, elapsedMs, longestUpdateMs, peakPreparedMiB, memory);
         }
 
         /// <summary>
@@ -924,6 +1009,21 @@ namespace CutTheRopeDX.Framework.Core
         private const double FrameLoadBudgetMilliseconds = 8.0;
 
         /// <summary>
+        /// How many images ahead in the load queue are decoded at once, which bounds how many
+        /// decoded images wait for upload: four full-screen 2048² images are about 64 MiB.
+        /// </summary>
+        private const int DecodeAheadImages = 4;
+
+        /// <summary>
+        /// Images whose decodes <see cref="PrepareImageResource"/> started apart from the load queue,
+        /// which abandoning a batch leaves running.
+        /// </summary>
+        private readonly HashSet<string> heldPreparations = [];
+
+        /// <summary>Longest single loading step of the current batch, for the completion report.</summary>
+        private double longestUpdateMs;
+
+        /// <summary>
         /// Resource categories supported by the resource manager.
         /// </summary>
         public enum ResourceType
@@ -963,9 +1063,16 @@ namespace CutTheRopeDX.Framework.Core
 
         [LoggerMessage(
             Level = LogLevel.Information,
-            Message = "Loaded {Count} resources ({Mode}) in {ElapsedMs:F1} ms; {Memory}")]
+            Message = "Loaded {Count} resources ({Mode}) in {ElapsedMs:F1} ms; longest loading step "
+                + "{LongestUpdateMs:F1} ms; peak decoded pixels awaiting upload {PeakPreparedMiB:F1} MiB; {Memory}")]
         public static partial void BatchLoaded(
-            ILogger logger, int count, string mode, double elapsedMs, string memory);
+            ILogger logger,
+            int count,
+            string mode,
+            double elapsedMs,
+            double longestUpdateMs,
+            double peakPreparedMiB,
+            string memory);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Freed {Count} resources; {Memory}")]
         public static partial void PackFreed(ILogger logger, int count, string memory);

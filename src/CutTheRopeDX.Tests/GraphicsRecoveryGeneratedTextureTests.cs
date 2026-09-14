@@ -170,6 +170,11 @@ namespace CutTheRopeDX.Tests
                 inner.DiscardPreparedImage(path);
             }
 
+            public long TakePeakPreparedPixelBytes()
+            {
+                return inner.TakePeakPreparedPixelBytes();
+            }
+
             public FontGeneric Font(string name)
             {
                 return inner.Font(name);
