@@ -1033,6 +1033,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>True while a press that began on Om Nom is waiting for its release.</summary>
         private bool overOmNom;
 
+        /// <summary>
+        /// Gets a value indicating whether the primary Om Nom wears the classic skin, the only one
+        /// the vector artwork depicts, so the only one whose tap plays the easter egg.
+        /// </summary>
+        private bool EasterEggMatchesTarget =>
+            targetObject != null && targetAnimationController?.SkinDefinition == null;
+
         /// <summary>Gets a value indicating whether the easter egg is holding the level.</summary>
         internal bool EasterEggHoldsLevel => easterEgg.FreezesGameplay;
 

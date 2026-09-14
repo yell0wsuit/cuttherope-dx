@@ -112,12 +112,13 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<EasterEggOmNom>(scene, "easterEgg").IsActive;
         }
 
-        /// <summary>A screen point the primary Om Nom's own hit test agrees is on him.</summary>
+        /// <summary>A screen point an Om Nom's own hit test agrees is on him.</summary>
         /// <param name="scene">Scene to read.</param>
+        /// <param name="index">Which Om Nom, in load order; 0 is the primary one.</param>
         /// <returns>The point in the input API's screen coordinates.</returns>
-        public static Vector OmNomTapPoint(this GameScene scene)
+        public static Vector OmNomTapPoint(this GameScene scene, int index = 0)
         {
-            GameObject target = scene.OmNomTarget();
+            GameObject target = scene.Targets()[index].targetObject;
 
             // Walk outward from the anchor until the object's own test accepts a point. The
             // anchor is not guaranteed to sit inside the drawn quad.

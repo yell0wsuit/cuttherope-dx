@@ -120,10 +120,19 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <summary>Adds an Om Nom. Every scenario needs one; the scene assumes a target exists.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
+        /// <param name="targetType">
+        /// Level skin override: <c>0</c> wears the player's selected skin, <c>n</c> wears skin slot
+        /// <c>n - 1</c>, so <c>1</c> is the classic skin.
+        /// </param>
         /// <returns>This scenario.</returns>
-        public Scenario OmNom(int x, int y)
+        public Scenario OmNom(int x, int y, int targetType = 0)
         {
-            return Add(Node("target", x, y));
+            XElement target = Node("target", x, y);
+            if (targetType != 0)
+            {
+                target.SetAttributeValue("targetType", targetType);
+            }
+            return Add(target);
         }
 
         /// <summary>Adds a plain fixed hook with a rope to the candy.</summary>

@@ -60,6 +60,36 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AnOmNomInANonClassicSkinDoesNotStartTheEgg()
+        {
+            // The tap point comes from a classic Om Nom in the same spot, so the test does not
+            // lean on the other skin's hit region to find him.
+            _ = SceneWithOmNom(out float x, out float y);
+            // Slot 2, the first manifest skin that is plainly not the classic look.
+            GameScene scene = Scenario.New().Candy(160, 100).OmNom(160, 400, targetType: 3).Build();
+            Assert.NotNull(scene.Targets()[0].controller.SkinDefinition);
+
+            _ = scene.TouchDownXYIndex(x, y, 0);
+            _ = scene.TouchUpXYIndex(x, y, 0);
+
+            Assert.False(scene.IsEasterEggPlaying());
+        }
+
+        [Fact]
+        public void OnlyThePrimaryOmNomStartsTheEgg()
+        {
+            GameScene scene = Scenario.New().Candy(160, 100).OmNom(80, 400).OmNom(240, 400).Build();
+            Vector second = scene.OmNomTapPoint(index: 1);
+            Assert.False(scene.OmNomTarget().PointInDrawQuad(
+                scene.Targets()[1].targetObject.x, scene.Targets()[1].targetObject.y));
+
+            _ = scene.TouchDownXYIndex(second.X, second.Y, 0);
+            _ = scene.TouchUpXYIndex(second.X, second.Y, 0);
+
+            Assert.False(scene.IsEasterEggPlaying());
+        }
+
+        [Fact]
         public void TheEggDoesNotStartWithoutATap()
         {
             GameScene scene = SceneWithOmNom(out float _, out float _);

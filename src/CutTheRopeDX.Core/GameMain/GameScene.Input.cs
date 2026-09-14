@@ -452,7 +452,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             // Checked last so the egg can never shadow a rope cut or a grab.
-            if (targetObject != null
+            if (EasterEggMatchesTarget
                 && targetObject.PointInDrawQuad(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
             {
                 overOmNom = true;
@@ -621,7 +621,7 @@ namespace CutTheRopeDX.GameMain
             if (overOmNom)
             {
                 overOmNom = false;
-                if (targetObject != null
+                if (EasterEggMatchesTarget
                     && targetObject.PointInDrawQuad(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     easterEgg.Trigger();
