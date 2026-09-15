@@ -678,18 +678,7 @@ namespace CutTheRopeDX.GameMain
                 releasedCandy.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(releasedCandy);
             }
 
-            if (mice != null)
-            {
-                foreach (object obj in mice)
-                {
-                    if (obj is Mouse mouse && mouse.IsActive)
-                    {
-                        mouse.BeginRetreat();
-                        break;
-                    }
-                }
-            }
-
+            miceManager.RetreatActiveMouse();
             miceManager.LockActiveMouse();
         }
 

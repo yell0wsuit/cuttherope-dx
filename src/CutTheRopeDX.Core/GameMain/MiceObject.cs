@@ -143,6 +143,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Sends the active mouse back into its hole, including one still playing its entry
+        /// animation. A mouse only turns active once that animation ends, so waiting for it would
+        /// leave a mouse caught mid-entry standing in its hole for good once the handoff is locked.
+        /// </summary>
+        public void RetreatActiveMouse()
+        {
+            activeMouse?.BeginRetreat();
+        }
+
+        /// <summary>
         /// Handles click interaction for dropping candy from the active mouse.
         /// </summary>
         /// <param name="x">X coordinate of the click.</param>
