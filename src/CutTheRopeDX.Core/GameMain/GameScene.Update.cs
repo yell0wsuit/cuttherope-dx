@@ -670,9 +670,16 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 // Only a whole body enters a tube; the body-role table keeps split halves out, so
-                // there is no split carve-out left in the entry gate.
+                // there is no split carve-out left in the entry gate. Frozen time catches nothing: a
+                // held candy never moves, so the entry test would read it as heading in and swallow
+                // it again the moment it came out.
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Transport))
                 {
+                    if (timeFrozen)
+                    {
+                        break;
+                    }
+
                     CandyContext ctx = body.Owner;
                     if (!ctx.Capabilities.CanEnterTransport)
                     {

@@ -503,6 +503,26 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void BambooTubeDoesNotCatchTheCandyAgainWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .BambooTube(20, 40, TubeMouth.CatchesFalling)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Act.EnterBambooTube(scene, candy, TubeMouth.CatchesFalling);
+            Freeze(scene);
+
+            // A candy already inside comes out on its own timer, as a sock's does in Time Travel.
+            Assert.True(Interaction.StepUntil(scene, () => candy.Lifecycle.Transport?.BambooTube == null));
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.Null(candy.Lifecycle.Transport?.BambooTube);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
