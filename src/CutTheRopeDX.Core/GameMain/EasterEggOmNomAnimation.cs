@@ -36,10 +36,10 @@ namespace CutTheRopeDX.GameMain
         private const float SinkEndMs = 3600f;
 
         /// <summary>
-        /// How long after the tap before a press can dismiss him: the dim is up and he is most of
-        /// the way through springing up.
+        /// How long after the tap before a press can dismiss the egg, so a press landing right on the
+        /// heels of the one that started it does not send it straight away again.
         /// </summary>
-        private const float DismissibleAfterMs = 400f;
+        private const float DismissibleAfterMs = 150f;
 
         /// <summary>How long each eye movement waits before it starts.</summary>
         private const float EyeDelayMs = 100f;
@@ -95,9 +95,8 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Freezes Om Nom where he is and fades the overlay out. Does nothing for the first
-        /// <see cref="DismissibleAfterMs"/>, so he is always seen springing up before he can be
-        /// sent away, and nothing once the overlay is already fading out, whether from an earlier
-        /// dismissal or the end of the timeline.
+        /// <see cref="DismissibleAfterMs"/>, and nothing once the overlay is already fading out,
+        /// whether from an earlier dismissal or the end of the timeline.
         /// </summary>
         /// <returns><see langword="true"/> when this call started the dismissal.</returns>
         public bool Cancel()

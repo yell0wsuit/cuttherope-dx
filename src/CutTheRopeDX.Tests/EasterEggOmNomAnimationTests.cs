@@ -206,19 +206,16 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CancelDoesNothingForTheFirst600Milliseconds()
+        public void CancelDoesNothingForTheFirst150Milliseconds()
         {
-            // While only the dim is up.
-            Assert.False(AdvancedTo(100f).Cancel());
+            EasterEggOmNomAnimation early = AdvancedTo(100f);
+            Assert.False(early.Cancel());
+            Assert.True(early.FreezesGameplay);
 
-            // Showing, but early in the spring-up.
-            EasterEggOmNomAnimation rising = AdvancedTo(500f);
-            Assert.True(rising.CurrentFrame.ShowsOmNom);
-            Assert.False(rising.Cancel());
-            Assert.True(rising.FreezesGameplay);
-
-            // Past 600ms.
-            Assert.True(AdvancedTo(650f).Cancel());
+            // Past 150ms, while the dim is still fading up and before Om Nom shows.
+            EasterEggOmNomAnimation dimming = AdvancedTo(170f);
+            Assert.False(dimming.CurrentFrame.ShowsOmNom);
+            Assert.True(dimming.Cancel());
         }
 
         [Fact]

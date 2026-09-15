@@ -135,7 +135,7 @@ namespace CutTheRopeDX.Tests
             _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
             _ = scene.TouchUpXYIndex(x + 600f, y + 600f, 0);
 
-            // The 200ms fade-out, at the fixed 16ms tick.
+            // The 200ms fade-out, at 60 updates a second.
             HeadlessGame.StepFrames(scene, 14);
             Assert.False(scene.IsEasterEggPlaying());
         }
@@ -156,20 +156,6 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void APressWhileHeIsStillSpringingUpIsSwallowedWithoutDismissing()
-        {
-            GameScene scene = SceneWithEggPlaying(out float x, out float y);
-            // 320ms in: past the dim, so he is showing, but not yet at full size.
-            HeadlessGame.StepFrames(scene, 20);
-
-            _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
-            _ = scene.TouchUpXYIndex(x + 600f, y + 600f, 0);
-
-            HeadlessGame.StepFrames(scene, 30);
-            Assert.True(scene.EasterEggHoldsLevel);
-        }
-
-        [Fact]
         public void TheDismissingPressOnOmNomDoesNotRestartTheEgg()
         {
             GameScene scene = SceneWithEggPlaying(out float x, out float y);
@@ -187,7 +173,7 @@ namespace CutTheRopeDX.Tests
         {
             GameScene scene = SceneWithEggPlaying(out float _, out float _);
 
-            // 200ms dim, 3600ms of motion and the 200ms closing fade, at the fixed 16ms tick.
+            // 200ms dim, 3600ms of motion and the 200ms closing fade, at 60 updates a second.
             HeadlessGame.StepFrames(scene, 251);
 
             Assert.False(scene.IsEasterEggPlaying());
