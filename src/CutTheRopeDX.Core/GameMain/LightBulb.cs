@@ -79,17 +79,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The bottle cap sprite.</summary>
         private readonly GameObject top;
 
-        /// <summary>Animation displayed when captured by a normal bubble.</summary>
-        private readonly Animation bubbleAnimation;
-
-        /// <summary>Animation displayed when captured by a ghost bubble.</summary>
-        private readonly CandyInGhostBubbleAnimation ghostBubbleAnimation;
-
         /// <summary>Gets the animation displayed when captured by a normal bubble.</summary>
-        internal Animation BubbleAnimation => bubbleAnimation;
+        internal Animation BubbleAnimation { get; }
 
         /// <summary>Gets the animation displayed when captured by a ghost bubble.</summary>
-        internal CandyInGhostBubbleAnimation GhostBubbleAnimation => ghostBubbleAnimation;
+        internal CandyInGhostBubbleAnimation GhostBubbleAnimation { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LightBulb"/> class.
@@ -135,12 +129,12 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(firefly);
 
             // Create bubble capture animation (shown when inside a normal bubble)
-            bubbleAnimation = BubbleAnimationFactory.CreateBubble();
-            _ = AddChild(bubbleAnimation);
+            BubbleAnimation = BubbleAnimationFactory.CreateBubble();
+            _ = AddChild(BubbleAnimation);
 
             // Create ghost bubble animation (shown when inside a ghost bubble)
-            ghostBubbleAnimation = BubbleAnimationFactory.CreateGhostBubble();
-            _ = AddChild(ghostBubbleAnimation);
+            GhostBubbleAnimation = BubbleAnimationFactory.CreateGhostBubble();
+            _ = AddChild(GhostBubbleAnimation);
 
             // Set bounding box based on bottle dimensions (the main visual element)
             CTRRectangle bottleRect = bottle.texture.quadRects[ImgObjLighterBottle];
@@ -265,13 +259,13 @@ namespace CutTheRopeDX.GameMain
             firefly.Draw();
 
             // Draw bubble animation if currently captured by it
-            if (bubbleAnimation.visible)
+            if (BubbleAnimation.visible)
             {
-                bubbleAnimation.Draw();
+                BubbleAnimation.Draw();
             }
-            if (ghostBubbleAnimation.visible)
+            if (GhostBubbleAnimation.visible)
             {
-                ghostBubbleAnimation.Draw();
+                GhostBubbleAnimation.Draw();
             }
 
             PostDrawNoChildren(); // Restore transformations
@@ -342,8 +336,8 @@ namespace CutTheRopeDX.GameMain
             visible = !owner.HasNoWholeBodyInPlay && transport?.Sock == null;
 
             bool hasBubble = visible && owner.WholeBody.Bubble != null;
-            bubbleAnimation.visible = hasBubble && !owner.WholeBody.BubbleHasGhost;
-            ghostBubbleAnimation.visible = hasBubble && owner.WholeBody.BubbleHasGhost;
+            BubbleAnimation.visible = hasBubble && !owner.WholeBody.BubbleHasGhost;
+            GhostBubbleAnimation.visible = hasBubble && owner.WholeBody.BubbleHasGhost;
         }
     }
 }

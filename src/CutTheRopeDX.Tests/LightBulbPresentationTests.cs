@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Reflection;
 
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
@@ -89,16 +88,12 @@ namespace CutTheRopeDX.Tests
 
         private static Animation BubbleAnimation(LightBulb bulb)
         {
-            return (Animation)typeof(LightBulb)
-                .GetField("bubbleAnimation", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(bulb);
+            return bulb.BubbleAnimation;
         }
 
         private static CandyInGhostBubbleAnimation GhostBubbleAnimation(LightBulb bulb)
         {
-            return (CandyInGhostBubbleAnimation)typeof(LightBulb)
-                .GetField("ghostBubbleAnimation", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(bulb);
+            return bulb.GhostBubbleAnimation;
         }
     }
 }
