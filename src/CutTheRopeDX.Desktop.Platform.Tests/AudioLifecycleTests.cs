@@ -35,6 +35,43 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
                 ?? throw new InvalidOperationException($"Could not create an in-memory mixer: {SDL.GetError()}");
         }
 
+        [Fact]
+        public void MusicLoadsFromFlacWhenOneShips()
+        {
+            Touch("sounds/theme.flac");
+            Touch("sounds/theme.wav");
+
+            Assert.Equal(
+                Path.Combine(root, "sounds", "theme.flac"),
+                SdlAudioBackend.ResolveAudioPath(root, "sounds/theme", music: true));
+        }
+
+        [Fact]
+        public void MusicFallsBackToWavWhenNoFlacShips()
+        {
+            Assert.Equal(
+                Path.Combine(root, "sounds", "loop.wav"),
+                SdlAudioBackend.ResolveAudioPath(root, "sounds/loop", music: true));
+        }
+
+        [Fact]
+        public void SoundEffectsAlwaysLoadFromWav()
+        {
+            Touch("sounds/sfx/tone.flac");
+
+            Assert.Equal(
+                Path.Combine(root, "sounds", "sfx", "tone.wav"),
+                SdlAudioBackend.ResolveAudioPath(root, "sounds/sfx/tone", music: false));
+        }
+
+        /// <summary>Creates an empty file, for tests that only care whether a path exists.</summary>
+        private void Touch(string relativePath)
+        {
+            string path = Path.Combine(root, relativePath.Replace('/', Path.DirectorySeparatorChar));
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.WriteAllBytes(path, []);
+        }
+
         /// <summary>
         /// Renders the next <paramref name="milliseconds"/> of mixer output and reports the loudest
         /// sample in it. Silence is zero, so this is what distinguishes playing from stopped.

@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Content
     /// </summary>
     /// <remarks>
     /// Nothing is converted and nothing is copied here. Every asset the game loads is already in
-    /// a format it opens directly - PNG through Skia, WAV through the mixer, and XML, JSON, fonts
+    /// a format it opens directly - PNG through Skia, WAV and FLAC through the mixer, and XML, JSON, fonts
     /// and video straight off disk - so the build's whole job is to say which files those are.
     /// MSBuild does the copying from that answer, which is what puts them in the output directory,
     /// the publish directory and the macOS bundle without this having to know about any of them.
@@ -47,6 +47,9 @@ namespace CutTheRopeDX.Content
             // of them is the startup splash, so a build without them does not reach the menu.
             new("images/**/*.xml", Required: true),
             new("sounds/**/*.wav", Required: true),
+
+            // Music ships as FLAC; effects stay WAV.
+            new("sounds/**/*.flac", Required: true),
             new("maps/*.*", Required: true),
             new("locales/*.*", Required: true),
             new("fonts/*.*", Required: true),

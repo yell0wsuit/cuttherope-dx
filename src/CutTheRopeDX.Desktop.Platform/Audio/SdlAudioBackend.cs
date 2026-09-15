@@ -22,8 +22,11 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
     /// </remarks>
     internal sealed class SdlAudioBackend : IAudioBackend, IDisposable
     {
-        /// <summary>Extension every shipped sound and music file carries.</summary>
+        /// <summary>Extension sound effects ship in.</summary>
         private const string SoundExtension = ".wav";
+
+        /// <summary>Extension music ships in.</summary>
+        private const string MusicExtension = ".flac";
 
         private static readonly Lock LibraryLock = new();
         private static int libraryUsers;
@@ -164,7 +167,8 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
 
             // Effects are short, are replayed constantly and often overlap, so they are decoded up
             // front; paying that cost once beats decoding on every hit.
-            return new SdlSoundEffect(mixer, LoadAudio(contentPath, predecode: true));
+            return new SdlSoundEffect(
+                mixer, LoadAudio(ResolveAudioPath(contentRoot, contentPath, music: false), predecode: true));
         }
 
         /// <inheritdoc />
@@ -178,16 +182,41 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
 
             // Songs are minutes long and are never freed, so they stream rather than decode; the
             // cache is what keeps replaying one from accumulating copies of it.
-            SdlMusicTrack track = new(LoadAudio(contentPath, predecode: false));
+            SdlMusicTrack track = new(LoadAudio(ResolveAudioPath(contentRoot, contentPath, music: true), predecode: false));
             music.Add(contentPath, track);
             return track;
         }
 
-        private nint LoadAudio(string contentPath, bool predecode)
+        /// <summary>
+        /// Resolves the file a sound or music content path is loaded from.
+        /// </summary>
+        /// <param name="contentRoot">Absolute path to the deployed content directory.</param>
+        /// <param name="contentPath">Content-relative path without an extension.</param>
+        /// <param name="music">Whether the path names music rather than a sound effect.</param>
+        /// <returns>The absolute path to load, whether or not the file exists.</returns>
+        /// <remarks>
+        /// Music ships as FLAC, which the mixer decodes with its built-in decoder, while effects stay
+        /// WAV because a predecoded FLAC effect holds float samples at twice the memory. A WAV is
+        /// still accepted for music when no FLAC sits beside it, so a tree carrying one plays. When
+        /// neither exists the FLAC path is returned, so the error names the file that should ship.
+        /// </remarks>
+        internal static string ResolveAudioPath(string contentRoot, string contentPath, bool music)
         {
-            string path = Path.Combine(
+            string basePath = Path.Combine(
                 contentRoot,
-                (contentPath + SoundExtension).Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
+                contentPath.Replace('\\', '/').Replace('/', Path.DirectorySeparatorChar));
+            if (!music)
+            {
+                return basePath + SoundExtension;
+            }
+
+            string flac = basePath + MusicExtension;
+            string wav = basePath + SoundExtension;
+            return File.Exists(flac) || !File.Exists(wav) ? flac : wav;
+        }
+
+        private nint LoadAudio(string path, bool predecode)
+        {
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException($"Audio file not found: {path}", path);

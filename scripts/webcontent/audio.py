@@ -1,4 +1,4 @@
-"""WAV to Ogg Opus conversion.
+"""WAV and FLAC to Ogg Opus conversion.
 
 Music keeps stereo at 192 kbps. Sound effects are short and percussive, so 96 kbps
 mono is transparent for them and cuts 21 MB of WAV to under 2 MB.
@@ -63,8 +63,14 @@ def write_ogg(job: pipeline.Job, ffmpeg: Path, content_root: Path) -> None:
     )
 
 
+#: Source audio the game ships: effects as WAV, music as FLAC.
+SOURCE_PATTERNS = ("*.wav", "*.flac")
+
+
 def _jobs(content_root: Path, out_root: Path) -> Iterator[pipeline.Job]:
-    for source in sorted((content_root / "sounds").rglob("*.wav")):
+    sounds = content_root / "sounds"
+    sources = {path for pattern in SOURCE_PATTERNS for path in sounds.rglob(pattern)}
+    for source in sorted(sources):
         relative = source.relative_to(content_root)
         out_relative = relative.with_suffix(".ogg")
         yield pipeline.Job(
@@ -82,7 +88,7 @@ def convert_audio(
     ffmpeg: Path,
     report: progress.Reporter = progress.SILENT,
 ) -> tuple[int, int]:
-    """Converts every WAV under content_root/sounds, skipping unchanged outputs."""
+    """Converts every WAV and FLAC under content_root/sounds, skipping unchanged outputs."""
     return pipeline.run_stage(
         "audio",
         _jobs(content_root, out_root),

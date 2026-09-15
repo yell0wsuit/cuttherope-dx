@@ -69,6 +69,7 @@ obj/*
 # Binary content assets — fetched from ctrdx-assets at build time, not stored in Git
 content/**/*.png
 content/**/*.wav
+content/**/*.flac
 content/**/*.ogg
 content/**/*.mp4
 content/**/*.ttf

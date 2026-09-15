@@ -10,7 +10,7 @@ a SHA-256 manifest the build uses to detect missing assets and verify a download
 
 The zip mirrors the folders as-is, including the git-tracked json/xml metadata, so
 it doubles as a complete snapshot. The manifest, however, lists ONLY binary assets
-(the 9 fetched extensions): the build copies just those out of the bundle, leaving
+(the 10 fetched extensions): the build copies just those out of the bundle, leaving
 git-tracked text to come from Git — so a stale bundle can never clobber it.
 """
 
@@ -21,7 +21,7 @@ import sys
 import zipfile
 from pathlib import Path
 
-BINARY_EXTS = {".png", ".wav", ".ogg", ".mp4", ".ttf", ".otf", ".cur", ".xnb", ".wmv"}
+BINARY_EXTS = {".png", ".wav", ".flac", ".ogg", ".mp4", ".ttf", ".otf", ".cur", ".xnb", ".wmv"}
 INCLUDE_DIRS = ("fonts", "images", "sounds", "video_hd")
 EXCLUDE_NAMES = {".DS_Store"}
 MANIFEST_NAME = "file_manifest.json"
@@ -31,7 +31,7 @@ CHUNK = 1 << 20  # 1 MiB
 # binary assets a new game build depends on, in the same change that publishes the
 # bundle - never before, or clients would be told they are behind a release that
 # doesn't exist yet.
-CONTENT_VERSION = 5
+CONTENT_VERSION = 6
 
 
 def _sha256(path: Path) -> str:

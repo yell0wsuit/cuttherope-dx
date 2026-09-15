@@ -41,6 +41,20 @@ def test_settings_differ_between_music_and_sfx():
     )
 
 
+def test_flac_music_and_wav_effects_both_become_ogg_jobs(tmp_path):
+    sounds = tmp_path / "content" / "sounds"
+    (sounds / "sfx").mkdir(parents=True)
+    (sounds / "menu_music.flac").write_bytes(b"fLaC")
+    (sounds / "sfx" / "tap.wav").write_bytes(b"RIFF")
+    (sounds / "notes.txt").write_text("not audio")
+
+    jobs = {job.out_rel: job for job in audio._jobs(tmp_path / "content", tmp_path / "out")}
+
+    assert set(jobs) == {"sounds/menu_music.ogg", "sounds/sfx/tap.ogg"}
+    assert jobs["sounds/menu_music.ogg"].settings == audio.settings_for(Path("sounds/menu_music.flac"))
+    assert jobs["sounds/sfx/tap.ogg"].settings == audio.settings_for(Path("sounds/sfx/tap.wav"))
+
+
 def test_sfx_command_encodes_22050_hz_source(tmp_path):
     try:
         ffmpeg = ffmpeg_tool.find_ffmpeg()

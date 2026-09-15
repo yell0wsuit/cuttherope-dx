@@ -613,7 +613,7 @@ namespace CutTheRopeDX.GameMain
             public const string XmasBell = "xmas_bell";
             public const string TeleportXmas = "teleport_xmas";
             public const string SteamStart = "steam_start";
-            public const string SteamStart2 = "steam_start2";
+            public const string SteamStart2 = "steam_start_2";
             public const string SteamEnd = "steam_end";
             public const string LanternTeleportIn = "lantern_teleport_in";
             public const string LanternTeleportOut = "lantern_teleport_out";
@@ -629,17 +629,17 @@ namespace CutTheRopeDX.GameMain
             public const string StarLight2 = "star_light02";
             public const string TransporterDrop = "transporter_drop";
             public const string TransporterMove = "transporter_move";
-            public const string Conv01 = "con01";
-            public const string Conv02 = "con02";
-            public const string Conv03 = "con03";
-            public const string Conv04 = "con04";
+            public const string Conv01 = "transporter_click1";
+            public const string Conv02 = "transporter_click2";
+            public const string Conv03 = "transporter_click3";
+            public const string Conv04 = "transporter_click4";
 
             // CTR Experiments sounds
             public const string ExpGun = "gun";
             public const string ExpSuckerDrop = "sucker_drop";
             public const string ExpSuckerLand = "sucker_land";
             public const string ExpRocketStart = "rocket_start";
-            public const string ExpRocketFlyLooped = "rocket_fly_looped";
+            public const string ExpRocketFlyLooped = "rocket_fly";
             public const string ExpRocketInWater = "rocket_in_water";
             public const string ExpWaterSplash = "water_splash";
             public const string ExpSnailIn = "snail_in";
@@ -650,7 +650,7 @@ namespace CutTheRopeDX.GameMain
             public const string ExpHandClap = "hand_clap";
             public const string ExpAntsTakeCandy = "ants_take_candy";
             public const string ExpAntsDropCandy = "ants_drop_candy";
-            public const string ExpBambooChute = "bamboo_chutes_4_5";
+            public const string ExpBambooChute = "bamboo_chutes";
 
             // CTR Time Travel sounds
             public const string TTArtistChewing = "Artist_chewing";
@@ -764,7 +764,7 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusic2 = "game_music2";
             public const string GameMusic3 = "game_music3";
             public const string GameMusic4 = "game_music4";
-            public const string GameMusic5 = "game_music5";
+            public const string GameMusic5 = "game_music_remake";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
         }

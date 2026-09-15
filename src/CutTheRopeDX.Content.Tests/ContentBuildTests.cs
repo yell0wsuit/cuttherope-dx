@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Content.Tests
                     "locales/en.json",
                     "maps/1_1.xml",
                     "packlist.json",
-                    "sounds/menu_music.wav",
+                    "sounds/menu_music.flac",
                     "sounds/sfx/tap.wav",
                     "video_hd/intro.mp4",
                 ],
@@ -209,7 +209,7 @@ namespace CutTheRopeDX.Content.Tests
             WritePng("images/menu/logo.png", 12, 34);
             Write("images/menu/logo.json", /*lang=json,strict*/ "{\"frames\":[]}");
             Write("images/animations/fx_pause.xml", "<animation />");
-            Write("sounds/menu_music.wav", "RIFF....WAVE");
+            Write("sounds/menu_music.flac", "fLaC");
             Write("sounds/sfx/tap.wav", "RIFF....WAVE");
             Write("maps/1_1.xml", "<level id=\"1\" />");
             Write("locales/en.json", /*lang=json,strict*/ "{\"PLAY\":\"Play\"}");
