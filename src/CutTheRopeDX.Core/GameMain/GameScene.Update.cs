@@ -479,7 +479,7 @@ namespace CutTheRopeDX.GameMain
             }
             UpdateLightEmitterPhysics();
             UpdateNightStarLighting();
-            conveyors.Update(delta);
+            conveyors.Update(delta, timeFrozen);
 
             // The ants stop marching while time is frozen. Their carry marker has to stop with them:
             // the candy is pinned, so a marker that kept going would drag it the whole frozen

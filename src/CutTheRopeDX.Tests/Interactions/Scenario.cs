@@ -546,8 +546,9 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="width">Belt width (thickness) in level units.</param>
         /// <param name="velocity">Belt speed.</param>
         /// <param name="angle">Belt rotation in degrees.</param>
+        /// <param name="manual">Whether the player drags the belt instead of it running on its own.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Conveyor(int x, int y, int length = 120, int width = 20, float velocity = 40f, float angle = 0f)
+        public Scenario Conveyor(int x, int y, int length = 120, int width = 20, float velocity = 40f, float angle = 0f, bool manual = false)
         {
             XElement belt = Node("conveyorBelt", x, y);
             belt.SetAttributeValue("length", Num(length));
@@ -555,7 +556,7 @@ namespace CutTheRopeDX.Tests.Interactions
             belt.SetAttributeValue("angle", Num(angle));
             belt.SetAttributeValue("velocity", Num(velocity));
             belt.SetAttributeValue("direction", "forward");
-            belt.SetAttributeValue("type", "auto");
+            belt.SetAttributeValue("type", manual ? "manual" : "auto");
             return Add(belt);
         }
 

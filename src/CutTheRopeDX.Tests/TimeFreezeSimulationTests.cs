@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -594,6 +595,57 @@ namespace CutTheRopeDX.Tests
             HeadlessGame.StepFrames(scene, 1);
 
             Assert.True(VectLength(VectSub(candy.WholeBody.Point.pos, frozenAt)) < 10f);
+        }
+
+        [Fact]
+        public void AutomaticConveyorStopsCarryingItsItemsWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .OmNom(20, 460)
+                .Conveyor(160, 300, length: 160, velocity: 40f)
+                .Star(200, 300)
+                .PauseSwitcher(300, 460)
+                .Build();
+            HeadlessGame.StepFrames(scene, 5);
+            Star star = scene.Stars()[0];
+            _ = Assert.Single(scene.Conveyors().Iterator().First().BoundObjects);
+            Freeze(scene);
+            float frozenAt = star.x;
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.Equal(frozenAt, star.x, 3);
+        }
+
+        [Fact]
+        public void ManualConveyorStillDragsAndCoastsWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .OmNom(20, 460)
+                .Conveyor(160, 300, length: 160, manual: true)
+                .Star(200, 300)
+                .PauseSwitcher(300, 460)
+                .Build();
+            HeadlessGame.StepFrames(scene, 5);
+            Star star = scene.Stars()[0];
+            Freeze(scene);
+            Vector grip = scene.ScreenPositionOf(star);
+            float before = star.x;
+
+            Assert.True(scene.TouchDownXYIndex(grip.X, grip.Y, 1));
+            for (int step = 1; step <= 6; step++)
+            {
+                _ = scene.TouchMoveXYIndex(grip.X + (step * 15f), grip.Y, 1);
+                HeadlessGame.StepFrames(scene, 1);
+            }
+            float dragged = star.x;
+            _ = scene.TouchUpXYIndex(grip.X + 120f, grip.Y, 1);
+            HeadlessGame.StepFrames(scene, 10);
+
+            Assert.True(dragged > before);
+            Assert.True(star.x > dragged);
         }
 
         [Fact]

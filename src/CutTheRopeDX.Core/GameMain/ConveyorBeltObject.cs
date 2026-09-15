@@ -152,11 +152,22 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Updates all conveyor belts.
         /// </summary>
+        /// <remarks>
+        /// Frozen time stops only the automatic belts. A manual belt is the player's to move, so its
+        /// drag, coasting, alignment and spacing all carry on; halting the coast would bank the
+        /// release speed and spend it in one go when time resumes.
+        /// </remarks>
         /// <param name="deltaTime">The time elapsed since the last frame in seconds.</param>
-        public void Update(float deltaTime)
+        /// <param name="timeFrozen">Whether gameplay time is stopped.</param>
+        public void Update(float deltaTime, bool timeFrozen)
         {
             foreach (ConveyorBelt belt in list)
             {
+                if (timeFrozen && !belt.IsManual)
+                {
+                    continue;
+                }
+
                 belt.Update(deltaTime);
             }
 
