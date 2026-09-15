@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests
                 _realWidth = 64,
                 _realHeight = 32,
                 quadRects = [new CTRRectangle(0f, 0f, w, h)],
-                quadOffsets = [FrameworkTypes.Vect(offsetX, offsetY)],
+                quadOffsets = [Framework.Helpers.CTRMathHelper.Vect(offsetX, offsetY)],
             };
 
             Image image = new();
