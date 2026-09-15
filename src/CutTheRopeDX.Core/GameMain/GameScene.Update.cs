@@ -998,7 +998,12 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_FLY)
                         {
+                            // prevPos too: a frozen point is never integrated, so a candy dragged
+                            // while time is stopped (by a hand's turning arm) would otherwise leave
+                            // prevPos behind, and the first running frame would replay the whole
+                            // drag as one frame of velocity.
                             rocket.point.pos = rocketStar.pos;
+                            rocket.point.prevPos = rocketStar.pos;
                         }
                         continue;
                     }

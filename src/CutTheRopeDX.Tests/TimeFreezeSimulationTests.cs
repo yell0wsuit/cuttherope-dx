@@ -733,6 +733,35 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void RocketCandyMovedWhileFrozenDoesNotLurchWhenTimeResumes()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Rocket(160, 200, impulse: 0f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Rocket rocket = Act.BindRocket(scene, candy);
+            Assert.Equal(Rocket.STATE_ROCKET_FLY, rocket.state);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+
+            // A hand turning its arm drags a held candy like this while time is frozen: position and
+            // previous position move together, so the candy itself carries no velocity.
+            ConstraintedPoint point = candy.WholeBody.Point;
+            Vector heldAt = new(point.pos.X - 120f, point.pos.Y - 120f);
+            point.pos = heldAt;
+            point.prevPos = heldAt;
+            HeadlessGame.StepFrames(scene, 10);
+
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.True(VectLength(VectSub(point.pos, heldAt)) < 10f);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
