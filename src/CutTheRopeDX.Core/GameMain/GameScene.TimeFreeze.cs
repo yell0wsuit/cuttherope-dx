@@ -42,6 +42,10 @@ namespace CutTheRopeDX.GameMain
         {
             timeFrozen = !timeFrozen;
             particlesAniPool.updateable = !timeFrozen;
+            foreach (Rocket rocket in rockets ?? [])
+            {
+                rocket?.SetExhaustHidden(timeFrozen);
+            }
             if (timeFrozen)
             {
                 switcher.ShowFrozen();

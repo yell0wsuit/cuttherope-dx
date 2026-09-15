@@ -786,6 +786,33 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void FlyingRocketHidesItsExhaustWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Rocket(160, 200, time: 2f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            Rocket rocket = Act.BindRocket(scene, scene.Candy());
+            Assert.NotNull(rocket.particles);
+            Assert.NotNull(rocket.cloudParticles);
+            Assert.False(rocket.ExhaustHidden);
+
+            Freeze(scene);
+
+            Assert.True(rocket.ExhaustHidden);
+            Assert.False(rocket.particles.visible);
+            Assert.False(rocket.cloudParticles.visible);
+
+            Freeze(scene);
+
+            Assert.False(rocket.ExhaustHidden);
+            Assert.True(rocket.particles.visible);
+            Assert.True(rocket.cloudParticles.visible);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();

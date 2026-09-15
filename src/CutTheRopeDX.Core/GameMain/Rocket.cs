@@ -203,9 +203,31 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Draw()
         {
-            container.Draw();
+            if (!ExhaustHidden)
+            {
+                container.Draw();
+            }
             base.Draw();
         }
+
+        /// <summary>
+        /// Hides or restores the flame and both exhaust trails. Frozen time turns the exhaust off
+        /// rather than leaving it hanging where the rocket was when time stopped.
+        /// </summary>
+        /// <remarks>
+        /// The flame is skipped at draw time instead of having its visibility cleared, because an
+        /// idle rocket already keeps its flame disabled and restoring visibility would light it.
+        /// </remarks>
+        /// <param name="hidden"><see langword="true"/> to hide the exhaust.</param>
+        public void SetExhaustHidden(bool hidden)
+        {
+            ExhaustHidden = hidden;
+            _ = (particles?.visible = !hidden);
+            _ = (cloudParticles?.visible = !hidden);
+        }
+
+        /// <summary>Gets whether the flame and exhaust trails are hidden while time is frozen.</summary>
+        public bool ExhaustHidden { get; private set; }
 
         /// <inheritdoc />
         public void TimelinereachedKeyFramewithIndex(Timeline t, KeyFrame k, int i)
