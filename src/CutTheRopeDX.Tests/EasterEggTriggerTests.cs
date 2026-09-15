@@ -16,6 +16,8 @@ namespace CutTheRopeDX.Tests
         private static GameScene SceneWithOmNom(out float x, out float y)
         {
             GameScene scene = Scenario.New().Candy(160, 100).OmNom(160, 400).Build();
+            // The tap wiring is under test here, not the roll, so every tap that should play it does.
+            scene.SetEasterEggChance(1f);
             Vector screen = scene.OmNomTapPoint();
             x = screen.X;
             y = screen.Y;
@@ -67,6 +69,7 @@ namespace CutTheRopeDX.Tests
             _ = SceneWithOmNom(out float x, out float y);
             // Slot 2, the first manifest skin that is plainly not the classic look.
             GameScene scene = Scenario.New().Candy(160, 100).OmNom(160, 400, targetType: 3).Build();
+            scene.SetEasterEggChance(1f);
             Assert.NotNull(scene.Targets()[0].controller.SkinDefinition);
 
             _ = scene.TouchDownXYIndex(x, y, 0);
@@ -79,12 +82,24 @@ namespace CutTheRopeDX.Tests
         public void OnlyThePrimaryOmNomStartsTheEgg()
         {
             GameScene scene = Scenario.New().Candy(160, 100).OmNom(80, 400).OmNom(240, 400).Build();
+            scene.SetEasterEggChance(1f);
             Vector second = scene.OmNomTapPoint(index: 1);
             Assert.False(scene.OmNomTarget().PointInDrawQuad(
                 scene.Targets()[1].targetObject.x, scene.Targets()[1].targetObject.y));
 
             _ = scene.TouchDownXYIndex(second.X, second.Y, 0);
             _ = scene.TouchUpXYIndex(second.X, second.Y, 0);
+
+            Assert.False(scene.IsEasterEggPlaying());
+        }
+
+        [Fact]
+        public void ATapOnOmNomThatLosesTheRollDoesNotStartTheEgg()
+        {
+            GameScene scene = SceneWithOmNom(out float _, out float _);
+            scene.SetEasterEggChance(0f);
+
+            scene.TapOmNom();
 
             Assert.False(scene.IsEasterEggPlaying());
         }

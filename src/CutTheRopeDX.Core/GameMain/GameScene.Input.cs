@@ -624,7 +624,7 @@ namespace CutTheRopeDX.GameMain
                 if (EasterEggMatchesTarget
                     && targetObject.PointInDrawQuad(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
-                    easterEgg.Trigger();
+                    _ = easterEgg.TryTrigger();
                 }
             }
             return true;

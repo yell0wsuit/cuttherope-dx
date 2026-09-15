@@ -17,6 +17,7 @@ namespace CutTheRopeDX.Tests
             GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
             GameScene scene = (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE);
             HeadlessGame.StepFrames(scene, 60);
+            scene.SetEasterEggChance(1f);
             scene.TapOmNom();
             if (dismissible)
             {

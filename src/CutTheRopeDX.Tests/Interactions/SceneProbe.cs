@@ -112,6 +112,14 @@ namespace CutTheRopeDX.Tests.Interactions
             return Field<EasterEggOmNom>(scene, "easterEgg").IsActive;
         }
 
+        /// <summary>Sets the chance that a tap on Om Nom plays the easter egg.</summary>
+        /// <param name="scene">Scene to change.</param>
+        /// <param name="chance">0 never plays it, 1 always does.</param>
+        public static void SetEasterEggChance(this GameScene scene, float chance)
+        {
+            Field<EasterEggOmNom>(scene, "easterEgg").TriggerChance = chance;
+        }
+
         /// <summary>A screen point an Om Nom's own hit test agrees is on him.</summary>
         /// <param name="scene">Scene to read.</param>
         /// <param name="index">Which Om Nom, in load order; 0 is the primary one.</param>

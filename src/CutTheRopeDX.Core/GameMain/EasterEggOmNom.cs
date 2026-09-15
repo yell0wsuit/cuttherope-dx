@@ -70,6 +70,21 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets a value indicating whether the level should stay frozen.</summary>
         public bool FreezesGameplay => animation.FreezesGameplay;
 
+        /// <summary>Gets or sets the chance, from 0 to 1, that a tap on Om Nom plays the egg.</summary>
+        internal float TriggerChance { get; set; } = 0.5f;
+
+        /// <summary>Rolls <see cref="TriggerChance"/> and starts the animation when it comes up.</summary>
+        /// <returns><see langword="true"/> when the roll started the egg.</returns>
+        public bool TryTrigger()
+        {
+            if (random.NextSingle() >= TriggerChance)
+            {
+                return false;
+            }
+            Trigger();
+            return true;
+        }
+
         /// <summary>Starts the animation from the beginning.</summary>
         public void Trigger()
         {
