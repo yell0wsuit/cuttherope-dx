@@ -64,6 +64,49 @@ namespace CutTheRopeDX.GameMain
             tutorialDirector.Fire(timeFrozen ? TutorialEvent.TimeFreeze : TutorialEvent.TimeUnfreeze);
         }
 
+        /// <summary>
+        /// Stops or restarts every bubble overlay's animation to match the freeze, leaving the rest of
+        /// each candy animating. Time Travel flips the same updateable flag on a bubbled candy's
+        /// bubble when the pause switcher toggles; applying it every step also covers a body that
+        /// splits or comes back from transport while time is stopped.
+        /// </summary>
+        private void SyncBubbleAnimationsToFreeze()
+        {
+            bool running = !timeFrozen;
+            foreach (CandyContext ctx in candies)
+            {
+                SetBubbleAnimationsUpdateable(ctx.WholeBody, running);
+                if (ctx.Lifecycle.Split is SplitCandyState split)
+                {
+                    foreach (CandyBody half in split.SurvivingBodies)
+                    {
+                        SetBubbleAnimationsUpdateable(half, running);
+                    }
+                }
+
+                // A bulb draws its own bubble overlays rather than handing them to its body.
+                if (ctx.LightBulb is LightBulb bulb)
+                {
+                    bulb.BubbleAnimation.updateable = running;
+                    bulb.GhostBubbleAnimation.updateable = running;
+                }
+            }
+        }
+
+        /// <summary>Sets whether a body's bubble and ghost-bubble animations advance.</summary>
+        /// <param name="body">The body whose overlays to set, or <see langword="null"/>.</param>
+        /// <param name="updateable">Whether the overlays advance.</param>
+        private static void SetBubbleAnimationsUpdateable(CandyBody body, bool updateable)
+        {
+            if (body == null)
+            {
+                return;
+            }
+
+            _ = (body.BubbleAnimation?.updateable = updateable);
+            _ = (body.GhostBubbleAnimation?.updateable = updateable);
+        }
+
         /// <summary>Silences looping sounds whose gameplay sources stop when time is frozen.</summary>
         private void StopLoopingMoverSounds()
         {

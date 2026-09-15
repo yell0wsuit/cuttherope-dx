@@ -85,6 +85,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Animation displayed when captured by a ghost bubble.</summary>
         private readonly CandyInGhostBubbleAnimation ghostBubbleAnimation;
 
+        /// <summary>Gets the animation displayed when captured by a normal bubble.</summary>
+        internal Animation BubbleAnimation => bubbleAnimation;
+
+        /// <summary>Gets the animation displayed when captured by a ghost bubble.</summary>
+        internal CandyInGhostBubbleAnimation GhostBubbleAnimation => ghostBubbleAnimation;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LightBulb"/> class.
         /// </summary>

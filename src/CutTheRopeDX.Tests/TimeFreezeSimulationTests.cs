@@ -89,7 +89,7 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void FrozenAxeStopsPhysicsAndBladeSpinButKeepsBubbleAnimationAdvancing()
+        public void FrozenAxeHoldsItsBladeSpinAndBubbleAnimation()
         {
             GameScene scene = Scenario.New()
                 .Candy(60, 100)
@@ -107,12 +107,14 @@ namespace CutTheRopeDX.Tests
             HeadlessGame.StepFrames(scene, 4);
 
             Assert.Equal(rotation, axe.GetChild(1).rotation);
-            Assert.NotEqual(bubbleTime, axe.bubbleAnimation.GetTimeline(0).time);
+            Assert.Equal(bubbleTime, axe.bubbleAnimation.GetTimeline(0).time);
         }
 
         [Fact]
-        public void FrozenCandyBubbleAnimationKeepsAdvancing()
+        public void FrozenCandyBubbleAnimationHoldsItsFrameUntilTimeResumes()
         {
+            // Time Travel clears the updateable flag on a bubbled candy's bubble animation when the
+            // pause switcher stops time, and sets it again when time resumes.
             GameScene scene = Scenario.New()
                 .Candy(160, 200)
                 .Bubble(160, 200)
@@ -126,6 +128,11 @@ namespace CutTheRopeDX.Tests
             float before = timeline.time;
 
             HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(before, timeline.time);
+
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
 
             Assert.NotEqual(before, timeline.time);
         }
@@ -810,6 +817,27 @@ namespace CutTheRopeDX.Tests
             Assert.False(rocket.ExhaustHidden);
             Assert.True(rocket.particles.visible);
             Assert.True(rocket.cloudParticles.visible);
+        }
+
+        [Fact]
+        public void FrozenLightBulbBubbleAnimationHoldsItsFrame()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .LightBulb(160, 200)
+                .Bubble(160, 200)
+                .OmNom(20, 460)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext bulb = Assert.Single(scene.Candies(), context => context.LightBulb != null);
+            _ = Act.CaptureInBubble(scene, bulb);
+            Freeze(scene);
+            Timeline timeline = bulb.LightBulb.BubbleAnimation.GetTimeline(0);
+            float before = timeline.time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(before, timeline.time);
         }
 
         [Fact]

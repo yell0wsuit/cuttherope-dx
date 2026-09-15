@@ -46,6 +46,7 @@ namespace CutTheRopeDX.GameMain
                 switcher?.Update(delta);
             }
             pauseSwitcherWaves?.Update(delta);
+            SyncBubbleAnimationsToFreeze();
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
