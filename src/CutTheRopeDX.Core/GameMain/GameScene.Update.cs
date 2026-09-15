@@ -706,7 +706,9 @@ namespace CutTheRopeDX.GameMain
 
             foreach (SteamTube steamTube in tubes)
             {
-                if (steamTube != null)
+                // Frozen steam neither puffs nor pushes: the column holds its height and the valve
+                // holds its animation until time resumes.
+                if (steamTube != null && !timeFrozen)
                 {
                     steamTube.Update(delta);
                     if (steamTube.steamState != 3)

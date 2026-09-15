@@ -649,6 +649,51 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void SteamColumnHoldsStillWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .OmNom(20, 460)
+                .SteamTube(160, 300)
+                .PauseSwitcher(300, 460)
+                .Build();
+            SteamTube tube = scene.SteamTubes()[0];
+            HeadlessGame.StepFrames(scene, 5);
+            Freeze(scene);
+            float height = tube.GetCurrentHeightModulated();
+
+            HeadlessGame.StepFrames(scene, 30);
+
+            Assert.Equal(height, tube.GetCurrentHeightModulated());
+        }
+
+        [Fact]
+        public void SteamValveIgnoresTapsWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .OmNom(20, 460)
+                .SteamTube(160, 300)
+                .PauseSwitcher(300, 460)
+                .Build();
+            SteamTube tube = scene.SteamTubes()[0];
+            Vector valve = scene.ScreenPositionOf(new Vector(tube.x, tube.y + (28f * tube.GetHeightScale())));
+            int state = tube.steamState;
+            Freeze(scene);
+
+            _ = scene.TouchDownXYIndex(valve.X, valve.Y, 1);
+            _ = scene.TouchUpXYIndex(valve.X, valve.Y, 1);
+
+            Assert.Equal(state, tube.steamState);
+
+            Freeze(scene);
+            _ = scene.TouchDownXYIndex(valve.X, valve.Y, 1);
+            _ = scene.TouchUpXYIndex(valve.X, valve.Y, 1);
+
+            Assert.NotEqual(state, tube.steamState);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();

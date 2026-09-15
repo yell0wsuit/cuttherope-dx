@@ -235,9 +235,11 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
+            // A frozen valve cannot turn: the steam it would change is frozen too, so the tap would
+            // switch the level with nothing on screen to show it.
             foreach (SteamTube steamTube in tubes)
             {
-                if (steamTube != null && steamTube.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
+                if (steamTube != null && !timeFrozen && steamTube.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     tutorialDirector.Fire(TutorialEvent.SteamBurst);
                     return true;
