@@ -720,12 +720,19 @@ namespace CutTheRopeDX.GameMain
             List<Lantern> lanterns = Lantern.GetAllLanterns();
             foreach (Lantern lantern in lanterns)
             {
-                lantern.Update(delta);
+                // Frozen time holds an empty lantern on its path and lets no lantern take a candy. A
+                // lantern already holding the candy carries on as it would, release tap included.
+                lantern.Update(delta, timeFrozen && lantern.lanternState == Lantern.LanternStateInactive);
 
                 bool lanternInactive = lantern.lanternState == Lantern.LanternStateInactive;
                 bool groupOccupied = AnyCandyInLantern();
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Lantern))
                 {
+                    if (timeFrozen)
+                    {
+                        break;
+                    }
+
                     CandyContext ctx = body.Owner;
                     if (!ctx.Capabilities.CanEnterLantern)
                     {

@@ -413,10 +413,18 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <summary>Adds a lantern.</summary>
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
+        /// <param name="path">Optional mover path string.</param>
+        /// <param name="moveSpeed">Mover speed for <paramref name="path"/>.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Lantern(int x, int y)
+        public Scenario Lantern(int x, int y, string path = null, float moveSpeed = 0f)
         {
-            return Add(Node("lantern", x, y));
+            XElement lantern = Node("lantern", x, y);
+            if (path != null)
+            {
+                lantern.SetAttributeValue("path", path);
+                lantern.SetAttributeValue("moveSpeed", Num(moveSpeed));
+            }
+            return Add(lantern);
         }
 
         /// <summary>

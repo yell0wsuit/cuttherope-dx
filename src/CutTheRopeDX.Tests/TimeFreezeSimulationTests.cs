@@ -694,6 +694,45 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void LanternDoesNotCaptureCandyWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Lantern(40, 40)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Interaction.Hover(candy);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+            Act.MoveTo(Lantern.GetAllLanterns()[0], candy.WholeBody.Point.pos);
+
+            HeadlessGame.StepFrames(scene, 10);
+
+            Assert.False(candy.Lifecycle.Attachments.InLantern);
+        }
+
+        [Fact]
+        public void EmptyLanternHoldsItsPathWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(40, 40)
+                .OmNom(20, 460)
+                .Lantern(160, 200, path: "80,0", moveSpeed: 30f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            Lantern lantern = Lantern.GetAllLanterns()[0];
+            HeadlessGame.StepFrames(scene, 5);
+            Freeze(scene);
+            Vector frozenAt = new(lantern.x, lantern.y);
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.Equal(frozenAt, new Vector(lantern.x, lantern.y));
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
