@@ -860,6 +860,44 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void RocketExhaustComesBackWhereTheRocketIsWhenTimeResumes()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Rocket(160, 200, impulse: 0f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Rocket rocket = Act.BindRocket(scene, candy);
+            HeadlessGame.StepFrames(scene, 2);
+            float flameX = rocket.container.x;
+            float sparksX = rocket.particles.x;
+            float cloudsX = rocket.cloudParticles.x;
+            Freeze(scene);
+
+            // Particles already in the air belong to where the rocket was; they must not reappear.
+            Assert.Equal(0, rocket.particles.particleCount);
+            Assert.Equal(0, rocket.particles.particleIdx);
+            Assert.Equal(0, rocket.cloudParticles.particleCount);
+            Assert.Equal(0, rocket.cloudParticles.particleIdx);
+
+            ConstraintedPoint point = candy.WholeBody.Point;
+            Vector heldAt = new(point.pos.X - 120f, point.pos.Y);
+            point.pos = heldAt;
+            point.prevPos = heldAt;
+            HeadlessGame.StepFrames(scene, 5);
+
+            // Unfreezing can be drawn before the next update runs, so the exhaust has to be moved
+            // onto the rocket at the moment it is shown again.
+            Freeze(scene);
+
+            Assert.Equal(flameX - 120f, rocket.container.x, 1);
+            Assert.Equal(sparksX - 120f, rocket.particles.x, 1);
+            Assert.Equal(cloudsX - 120f, rocket.cloudParticles.x, 1);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
