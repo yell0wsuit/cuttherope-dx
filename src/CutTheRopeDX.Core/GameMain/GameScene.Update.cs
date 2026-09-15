@@ -1005,6 +1005,17 @@ namespace CutTheRopeDX.GameMain
                             rocket.point.pos = rocketStar.pos;
                             rocket.point.prevPos = rocketStar.pos;
                         }
+                        if (carriesCandy)
+                        {
+                            // The body still follows its candy's heading, so a candy turned by a
+                            // hand while time is stopped does not leave the rocket pointing the old
+                            // way. Same formula as the running path, rope alignment included.
+                            float heading = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
+                            rocket.rotation = rocket.state == Rocket.STATE_ROCKET_FLY
+                                ? heading + rocket.additionalAngle
+                                : heading;
+                            rocket.UpdateRotation();
+                        }
                         continue;
                     }
                     // Rocket flight requires zero gravity on the candy point. Any drop path (e.g.

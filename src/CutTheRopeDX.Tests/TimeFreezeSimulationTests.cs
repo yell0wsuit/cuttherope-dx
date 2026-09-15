@@ -762,6 +762,30 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void FlyingRocketTurnsWithItsCandyWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Rocket(160, 200, impulse: 0f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Rocket rocket = Act.BindRocket(scene, candy);
+            Assert.Equal(Rocket.STATE_ROCKET_FLY, rocket.state);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+            float before = rocket.rotation;
+
+            // A hand's rotating arm turns a held candy while time is frozen.
+            candy.WholeBody.Main.rotation += 90f;
+            HeadlessGame.StepFrames(scene, 2);
+
+            float expected = (before + 90f) % 360f;
+            Assert.Equal(expected < 0f ? expected + 360f : expected, rocket.rotation, 2);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
