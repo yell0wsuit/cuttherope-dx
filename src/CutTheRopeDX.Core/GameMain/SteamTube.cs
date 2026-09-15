@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="heightScale">
         /// Scale factor for steam tube dimensions. Typically 3 for PC (vs 1 on WP).
-        /// Scales: tube width (10f), valve position (27f), touch offset (28f), collision radius (17.5f),
+        /// Scales: tube width (10f), valve position (27f), touch offset (28f), touch radius (40f), collision radius (17.5f),
         /// base heights (32.9f/94f/141f), and vertical offset (1f).
         /// Does NOT scale: sine wave modulation amplitude (always 1f).
         /// </param>
@@ -142,7 +142,9 @@ namespace CutTheRopeDX.GameMain
         {
             Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
             float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
-            if (touchZone < 40f)
+            // The Windows Phone reach of 40 grows with the tube like the valve offset above it, or
+            // the valve would be a third of its authored size to tap in DX's larger world.
+            if (touchZone < 40f * heightScale)
             {
                 int valveTimelineIndex = 0;
                 switch (steamState)
