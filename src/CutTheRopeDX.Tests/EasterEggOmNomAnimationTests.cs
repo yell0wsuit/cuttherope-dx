@@ -148,23 +148,26 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void FreezesGameplayUntilTheClosingFade()
+        public void FreezesGameplayUntilTheClosingFadeIsGone()
         {
             Assert.False(new EasterEggOmNomAnimation().FreezesGameplay);
             Assert.True(AdvancedTo(100f).FreezesGameplay);
             Assert.True(AdvancedTo(200f + 3000f).FreezesGameplay);
-            Assert.False(AdvancedTo(200f + 3600f + 100f).FreezesGameplay);
+            Assert.True(AdvancedTo(200f + 3600f + 100f).FreezesGameplay);
+            Assert.False(AdvancedTo(200f + 3600f + 300f).FreezesGameplay);
         }
 
         [Fact]
-        public void ReleasesGameplayAsSoonAsADismissalStarts()
+        public void KeepsGameplayFrozenUntilADismissalHasFaded()
         {
             EasterEggOmNomAnimation animation = AdvancedTo(200f + 1000f);
 
             Assert.True(animation.Cancel());
+            animation.Update(0.1f);
+            Assert.True(animation.FreezesGameplay);
 
+            animation.Update(0.11f);
             Assert.False(animation.FreezesGameplay);
-            Assert.True(animation.IsActive);
         }
 
         [Fact]

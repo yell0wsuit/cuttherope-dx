@@ -17,8 +17,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
-            // The egg keeps animating after it releases the level, so it is advanced either way and
-            // only the rest of the scene is held.
+            // The egg advances on its own while it holds the rest of the scene still.
             // Real elapsed time per update rather than gameplay's rounded 16ms, so its timeline runs
             // at the wall-clock pace it was authored against instead of 4% slow.
             easterEgg.Update(1f / 60f);

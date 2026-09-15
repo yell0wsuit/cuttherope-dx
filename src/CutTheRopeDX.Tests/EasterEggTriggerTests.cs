@@ -121,7 +121,11 @@ namespace CutTheRopeDX.Tests
 
             _ = scene.TouchDownXYIndex(x + 600f, y + 600f, 0);
             _ = scene.TouchUpXYIndex(x + 600f, y + 600f, 0);
-            HeadlessGame.StepFrames(scene, 5);
+            // Held through the 200ms dismissal fade, then running again. The twelfth update is the
+            // one that finishes the fade, and the level steps in that same update.
+            HeadlessGame.StepFrames(scene, 11);
+            Assert.Equal(before, scene.Candy().WholeBody.Point.pos.Y);
+            HeadlessGame.StepFrames(scene, 9);
 
             Assert.NotEqual(before, scene.Candy().WholeBody.Point.pos.Y);
         }

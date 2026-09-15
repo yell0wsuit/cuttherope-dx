@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
             scene.TapOmNom();
             if (dismissible)
             {
-                // Past the 600ms before a press can dismiss him.
+                // Past the 150ms before a press can dismiss him.
                 HeadlessGame.StepFrames(scene, 60);
             }
             Assert.True(scene.EasterEggHoldsLevel);
@@ -43,6 +43,14 @@ namespace CutTheRopeDX.Tests
             return controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).IsEnabled();
         }
 
+        /// <summary>Asserts the egg was sent away: it holds the level through its fade, then is gone.</summary>
+        private static void AssertDismissed(GameScene scene)
+        {
+            Assert.True(scene.IsEasterEggPlaying());
+            HeadlessGame.StepFrames(scene, 20);
+            Assert.False(scene.IsEasterEggPlaying());
+        }
+
         [Fact]
         public void ThePauseButtonDismissesTheEggInsteadOfPausing()
         {
@@ -50,7 +58,7 @@ namespace CutTheRopeDX.Tests
 
             controller.OnButtonPressed(GameControllerButtonId.Pause);
 
-            Assert.False(scene.EasterEggHoldsLevel);
+            AssertDismissed(scene);
             Assert.True(scene.updateable);
             Assert.False(PauseMenuOpen(controller));
         }
@@ -60,6 +68,8 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, GameScene scene) = LoadWithEggPlaying();
             controller.OnButtonPressed(GameControllerButtonId.Pause);
+            // Presses stay swallowed until the dismissal fade is gone.
+            HeadlessGame.StepFrames(scene, 20);
 
             controller.OnButtonPressed(GameControllerButtonId.Pause);
 
@@ -74,7 +84,7 @@ namespace CutTheRopeDX.Tests
 
             controller.OnButtonPressed(GameControllerButtonId.Restart);
 
-            Assert.False(scene.EasterEggHoldsLevel);
+            AssertDismissed(scene);
             Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
         }
 
@@ -85,7 +95,7 @@ namespace CutTheRopeDX.Tests
 
             _ = controller.BackButtonPressed();
 
-            Assert.False(scene.EasterEggHoldsLevel);
+            AssertDismissed(scene);
             Assert.Equal(0, controller.exitCode);
             Assert.False(PauseMenuOpen(controller));
         }
@@ -97,7 +107,7 @@ namespace CutTheRopeDX.Tests
 
             _ = controller.MenuButtonPressed();
 
-            Assert.False(scene.EasterEggHoldsLevel);
+            AssertDismissed(scene);
             Assert.False(PauseMenuOpen(controller));
         }
 

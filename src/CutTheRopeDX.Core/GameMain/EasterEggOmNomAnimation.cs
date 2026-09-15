@@ -21,7 +21,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Drives the easter egg's timeline. A dim fades up over the level, then Om Nom springs up,
     /// glances left, right and back, holds, and sinks away. The level stays frozen until the
-    /// overlay starts fading out, and the whole overlay can be dismissed early.
+    /// overlay has faded away completely, and the whole overlay can be dismissed early.
     /// </summary>
     internal sealed class EasterEggOmNomAnimation
     {
@@ -76,10 +76,10 @@ namespace CutTheRopeDX.GameMain
         public bool IsActive { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the level should stay frozen. This drops as soon as the
-        /// overlay starts fading out, so the fade plays over a level that is running again.
+        /// Gets a value indicating whether the level should stay frozen: for as long as any of the
+        /// overlay, the dim included, is still on screen.
         /// </summary>
-        public bool FreezesGameplay => IsActive && !dismissing && elapsedMs < FadeInMs + SinkEndMs;
+        public bool FreezesGameplay => IsActive;
 
         /// <summary>Gets the current frame.</summary>
         public EasterEggOmNomFrame CurrentFrame { get; private set; }
@@ -101,7 +101,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when this call started the dismissal.</returns>
         public bool Cancel()
         {
-            if (!FreezesGameplay || elapsedMs < DismissibleAfterMs)
+            if (!IsActive
+                || dismissing
+                || elapsedMs >= FadeInMs + SinkEndMs
+                || elapsedMs < DismissibleAfterMs)
             {
                 return false;
             }
