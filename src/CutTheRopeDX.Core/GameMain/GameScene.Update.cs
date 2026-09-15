@@ -146,8 +146,8 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     // A detached suction cup that has been trying to stick for long enough re-sticks,
-                    // but only where there is wall to stick to.
-                    if (rope != null && grab.Mount is SuctionMount mount && mount.TickSticking(delta))
+                    // but only where there is wall to stick to. Its countdown waits out frozen time.
+                    if (rope != null && !timeFrozen && grab.Mount is SuctionMount mount && mount.TickSticking(delta))
                     {
                         if (GameObject.RectInObject(mapOriginX, mapOriginY, mapOriginX + mapWidth, mapOriginY + mapHeight, grab))
                         {
@@ -179,7 +179,14 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (grab.Attachment.IsSimulated)
                         {
-                            UpdateRopeWithAntCarryOverride(rope, delta);
+                            // A rope hanging from a kicked suction cup holds its shape while time is
+                            // frozen. A rope still pinned to the wall keeps simulating around its held
+                            // candy, and a cut piece keeps falling while it fades.
+                            bool kickedRopeHeld = timeFrozen && grab.Mount?.IsMounted == false && rope.cut == -1;
+                            if (!kickedRopeHeld)
+                            {
+                                UpdateRopeWithAntCarryOverride(rope, delta);
+                            }
                             if (grab.Spider is SpiderRider rider && rider.IsAttached)
                             {
                                 if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
@@ -1370,7 +1377,8 @@ namespace CutTheRopeDX.GameMain
                     body.Point.ApplyImpulseDelta(Vect(-body.Point.v.X / damping, (-body.Point.v.Y / damping) + verticalWaterImpulse), delta);
                 }
             }
-            if (waterLayer != null && bungees != null)
+            // Water only ever pushes a kicked cup's anchor, and that rope holds still while frozen.
+            if (waterLayer != null && bungees != null && !timeFrozen)
             {
                 foreach (Grab grab in bungees)
                 {

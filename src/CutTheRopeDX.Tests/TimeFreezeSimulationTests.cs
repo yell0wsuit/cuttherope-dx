@@ -898,6 +898,62 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void KickedSuctionCupRopeHoldsStillWhileFrozen()
+        {
+            (GameScene scene, Grab hook) = FrozenKickedCup();
+            Bungee rope = hook.Rope;
+            ConstraintedPoint middle = rope.parts[rope.parts.Count / 2];
+            Vector anchor = rope.bungeeAnchor.pos;
+            Vector middleAt = middle.pos;
+
+            HeadlessGame.StepFrames(scene, 30);
+
+            Assert.Equal(anchor, rope.bungeeAnchor.pos);
+            Assert.Equal(middleAt, middle.pos);
+        }
+
+        [Fact]
+        public void KickedSuctionCupDoesNotReStickWhileFrozen()
+        {
+            (GameScene scene, Grab hook) = FrozenKickedCup();
+            hook.Mount.BeginSticking();
+
+            HeadlessGame.StepFrames(scene, (int)(Grab.STICK_DELAY / 0.016f) + 10);
+
+            Assert.False(hook.Mount.IsMounted);
+            Assert.Equal(0f, hook.Mount.StickTimer);
+        }
+
+        [Fact]
+        public void PumpDoesNotBlowAKickedSuctionCupWhileFrozen()
+        {
+            (GameScene scene, Grab hook) = FrozenKickedCup(withPump: true);
+            Pump pump = scene.Pumps()[0];
+            Act.MoveTo(pump, new Vector(hook.x, hook.y + 60f));
+            Vector anchor = hook.Rope.bungeeAnchor.pos;
+
+            scene.OperatePump(pump);
+
+            Assert.Equal(anchor, hook.Rope.bungeeAnchor.pos);
+        }
+
+        private static (GameScene Scene, Grab Hook) FrozenKickedCup(bool withPump = false)
+        {
+            Scenario scenario = Scenario.New()
+                .Candy(160, 260, "first")
+                .Grab(160, 120, length: 100, kickable: true, kicked: true, candyNumber: "first")
+                .OmNom(20, 460)
+                .PauseSwitcher(300, 460);
+            GameScene scene = (withPump ? scenario.Pump(40, 40) : scenario).Build();
+            Grab hook = Assert.Single(scene.Grabs(), grab => grab.Mount != null);
+            Assert.False(hook.Mount.IsMounted);
+            HeadlessGame.StepFrames(scene, 3);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+            return (scene, hook);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
