@@ -566,6 +566,37 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void AntsDoNotCarryTheCandyOnWhileFrozen()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(120, 200)
+                .OmNom(20, 460)
+                .Ants(100, 200, path: "200,0")
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Act.CarryByAnts(scene, candy);
+            HeadlessGame.StepFrames(scene, 5);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+            CandyAttachments attachments = candy.Lifecycle.Attachments;
+            Vector marker = attachments.AntInteractionPoint;
+            float carryTime = attachments.AntInteractionTime;
+            Vector frozenAt = candy.WholeBody.Point.pos;
+
+            HeadlessGame.StepFrames(scene, 120);
+
+            Assert.Equal(marker, attachments.AntInteractionPoint);
+            Assert.Equal(carryTime, attachments.AntInteractionTime);
+
+            // Had the marker kept marching, the candy would snap the whole frozen distance at once.
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.True(VectLength(VectSub(candy.WholeBody.Point.pos, frozenAt)) < 10f);
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();
