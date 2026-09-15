@@ -1,6 +1,7 @@
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
 
 namespace CutTheRopeDX.GameMain
@@ -88,7 +89,7 @@ namespace CutTheRopeDX.GameMain
                 if (ctx.LightBulb is LightBulb bulb)
                 {
                     bulb.BubbleAnimation.updateable = running;
-                    bulb.GhostBubbleAnimation.updateable = running;
+                    HoldGhostBubbleFrames(bulb.GhostBubbleAnimation, !running);
                 }
             }
         }
@@ -104,7 +105,35 @@ namespace CutTheRopeDX.GameMain
             }
 
             _ = (body.BubbleAnimation?.updateable = updateable);
-            _ = (body.GhostBubbleAnimation?.updateable = updateable);
+            HoldGhostBubbleFrames(body.GhostBubbleAnimation, !updateable);
+        }
+
+        /// <summary>
+        /// Holds or resumes a ghost bubble's own frames while its drifting clouds keep animating.
+        /// The clouds are children of the ghost bubble, so the overlay stays updateable and only
+        /// its current timeline is paused.
+        /// </summary>
+        /// <param name="ghost">The ghost-bubble overlay, or <see langword="null"/>.</param>
+        /// <param name="held">Whether the bubble frames hold still.</param>
+        private static void HoldGhostBubbleFrames(CandyInGhostBubbleAnimation ghost, bool held)
+        {
+            if (ghost == null)
+            {
+                return;
+            }
+
+            ghost.updateable = true;
+            Timeline frames = ghost.GetCurrentTimeline();
+            if (held && frames?.state == Timeline.TimelineState.TIMELINE_PLAYING)
+            {
+                frames.PauseTimeline();
+            }
+            else if (!held && frames?.state == Timeline.TimelineState.TIMELINE_PAUSED)
+            {
+                // Resuming from a pause continues where the frames stopped; starting any other
+                // state would rewind them.
+                frames.PlayTimeline();
+            }
         }
 
         /// <summary>Silences looping sounds whose gameplay sources stop when time is frozen.</summary>

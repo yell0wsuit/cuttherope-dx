@@ -820,6 +820,25 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void FrozenGhostBubbleHoldsItsBubbleButKeepsItsCloudsDrifting()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(160, 440)
+                .PauseSwitcher(60, 440)
+                .Build();
+            CandyInGhostBubbleAnimation ghost = scene.Candy().WholeBody.GhostBubbleAnimation;
+            Freeze(scene);
+            float bubbleTime = ghost.GetTimeline(0).time;
+            float cloudTime = ghost.backCloud.GetTimeline(0).time;
+
+            HeadlessGame.StepFrames(scene, 4);
+
+            Assert.Equal(bubbleTime, ghost.GetTimeline(0).time);
+            Assert.NotEqual(cloudTime, ghost.backCloud.GetTimeline(0).time);
+        }
+
+        [Fact]
         public void FrozenLightBulbBubbleAnimationHoldsItsFrame()
         {
             GameScene scene = Scenario.New()
