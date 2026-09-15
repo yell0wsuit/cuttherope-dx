@@ -27,6 +27,12 @@ namespace CutTheRopeDX.Browser
         [JSImport("post", "playtest")]
         public static partial void Post(string json);
 
+        /// <summary>Reads the level message the editor stored before opening this tab.</summary>
+        /// <param name="nonce">The session nonce the level was stored under.</param>
+        /// <returns>The stored level message, or an empty string when there is none.</returns>
+        [JSImport("storedLevel", "playtest")]
+        public static partial string StoredLevel(string nonce);
+
         /// <summary>Takes every message queued since the previous call.</summary>
         /// <returns>The queued messages, oldest first; empty when none arrived.</returns>
         [JSImport("drain", "playtest")]

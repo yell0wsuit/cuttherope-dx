@@ -1,7 +1,11 @@
 // Playtest transport. The editor and this game are served from one origin, so a BroadcastChannel
 // reaches between them; it carries the level itself, because a browser tab has no argv to put it in.
+// The editor also leaves the level in localStorage before it opens this tab, because opening it
+// backgrounds the editor, and a mobile browser may suspend or discard a background tab before it
+// can answer over the channel.
 
 const CHANNEL = "ctrdx-playtest";
+const STORAGE_PREFIX = "ctrdx-playtest:";
 
 let channel = null;
 let inbox = [];
@@ -28,6 +32,21 @@ export function open() {
 /** Posts one JSON message. A no-op before open(). */
 export function post(json) {
     channel?.postMessage(json);
+}
+
+/**
+ * The level message the editor stored for this session, or "" when there is none.
+ *
+ * Read rather than taken: a reload of this tab needs it again, and the editor owns its removal.
+ */
+export function storedLevel(nonce) {
+    try {
+        const stored = globalThis.localStorage.getItem(STORAGE_PREFIX + nonce);
+        return stored === null ? "" : (JSON.parse(stored).message ?? "");
+    } catch {
+        // Blocked site data or a malformed entry: the channel is still there to fall back on.
+        return "";
+    }
 }
 
 /** Takes every message queued since the last call. */

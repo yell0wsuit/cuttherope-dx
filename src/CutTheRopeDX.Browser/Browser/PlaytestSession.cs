@@ -17,7 +17,8 @@ namespace CutTheRopeDX.Browser
     /// </summary>
     /// <remarks>
     /// The desktop head is handed a level by path on the command line and watches that path. A tab
-    /// has neither, so this stands in for both: the level arrives over the BroadcastChannel and is
+    /// has neither, so this stands in for both: the level arrives from localStorage, where the editor
+    /// left it before opening the tab, or over the BroadcastChannel, and is
     /// written to <see cref="LevelPath"/> in the WASM in-memory filesystem, which
     /// <see cref="CustomLevelSession"/> is then activated against. From that point Core cannot tell
     /// the two heads apart, and the reload path - debounce, resource scan, instant-versus-full
@@ -32,13 +33,34 @@ namespace CutTheRopeDX.Browser
         private const string LevelFileName = "level.xml";
 
         /// <summary>How long to wait for the editor to answer the announcement before giving up.</summary>
-        private static readonly TimeSpan LevelTimeout = TimeSpan.FromSeconds(10);
+        /// <remarks>
+        /// Matches the editor's own grace period. Past it the editor has already written this
+        /// session off and dropped the level, so waiting any longer could not be answered.
+        /// </remarks>
+        private static readonly TimeSpan LevelTimeout = TimeSpan.FromSeconds(15);
 
         /// <summary>How often to check for the first level while waiting.</summary>
         private static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(100);
 
+        /// <summary>How often the announcement is repeated while no level has arrived.</summary>
+        /// <remarks>
+        /// Opening the game sends the editor's tab to the background, and a mobile browser throttles
+        /// or suspends background tabs. A single announcement can sit unanswered until the editor
+        /// runs again, so it is repeated rather than trusted to be heard the first time.
+        /// </remarks>
+        private static readonly TimeSpan AnnounceInterval = TimeSpan.FromSeconds(1);
+
         private static PushedFileWatcherFactory _watchers;
         private static string _nonce = "";
+
+        /// <summary>The level most recently written to <see cref="LevelPath"/>.</summary>
+        private static string _lastLevel;
+
+        /// <summary>
+        /// Announcements the editor may still answer. Each is answered with the session's level, so
+        /// that many copies of the last level can arrive after the first and must not restart it.
+        /// </summary>
+        private static int _unansweredAnnouncements;
 
         /// <summary>Whether this page is running a playtest.</summary>
         public static bool IsActive { get; private set; }
@@ -73,13 +95,29 @@ namespace CutTheRopeDX.Browser
 
             string handshake = PlaytestHandshake.FormatLine(ResolveVersion());
             PlaytestInterop.Open();
-            PlaytestInterop.Post(PlaytestChannelMessage.FormatReady(_nonce, handshake));
+            string ready = PlaytestChannelMessage.FormatReady(_nonce, handshake);
+            PlaytestInterop.Post(ready);
+            _unansweredAnnouncements = 1;
             PlaytestLog.Handshake(logger, handshake);
 
+            // A level the editor stored before opening this tab needs nothing more from it, which
+            // matters because the editor may have been suspended or discarded since. The
+            // announcement still went out, so a running editor learns the session is live and its
+            // answer is absorbed as a copy.
+            bool stored = TryTakeStoredLevel();
+
             DateTime deadline = DateTime.UtcNow + LevelTimeout;
+            DateTime nextAnnouncement = DateTime.UtcNow + AnnounceInterval;
             while (DateTime.UtcNow < deadline)
             {
-                if (TryTakeLevel())
+                if (!stored && _unansweredAnnouncements > 0 && DateTime.UtcNow >= nextAnnouncement)
+                {
+                    PlaytestInterop.Post(ready);
+                    _unansweredAnnouncements++;
+                    nextAnnouncement = DateTime.UtcNow + AnnounceInterval;
+                }
+
+                if (stored || TryTakeLevel())
                 {
                     _watchers = new PushedFileWatcherFactory();
                     PlatformServices.FileWatchers = _watchers;
@@ -152,18 +190,40 @@ namespace CutTheRopeDX.Browser
         /// <remarks>
         /// Only the last level in a batch is written. Two levels in one frame means the user pressed
         /// Play twice faster than a frame, and the older one is already stale.
+        /// <para>
+        /// A copy of the last level is an answer to a repeated announcement, not a Play, as long as
+        /// announcements remain unanswered. Any other level ends that: the channel keeps order, so
+        /// every answer the editor was going to send has already arrived ahead of it.
+        /// </para>
         /// </remarks>
         private static bool TryTakeLevel()
         {
             string newest = null;
             foreach (string json in PlaytestInterop.Drain())
             {
-                if (PlaytestChannelMessage.TryParse(json, out PlaytestMessageKind kind, out string nonce, out string payload)
-                    && kind == PlaytestMessageKind.Level
-                    && string.Equals(nonce, _nonce, StringComparison.Ordinal))
+                if (!PlaytestChannelMessage.TryParse(json, out PlaytestMessageKind kind, out string nonce, out string payload)
+                    || kind != PlaytestMessageKind.Level
+                    || !string.Equals(nonce, _nonce, StringComparison.Ordinal))
                 {
-                    newest = payload;
+                    continue;
                 }
+
+                string previous = newest ?? _lastLevel;
+                if (previous == null)
+                {
+                    _unansweredAnnouncements--;
+                }
+                else if (_unansweredAnnouncements > 0 && string.Equals(payload, previous, StringComparison.Ordinal))
+                {
+                    _unansweredAnnouncements--;
+                    continue;
+                }
+                else
+                {
+                    _unansweredAnnouncements = 0;
+                }
+
+                newest = payload;
             }
 
             if (newest == null)
@@ -171,15 +231,42 @@ namespace CutTheRopeDX.Browser
                 return false;
             }
 
+            WriteLevel(newest);
+            return true;
+        }
+
+        /// <summary>Writes the level the editor stored for this session before opening the tab.</summary>
+        /// <returns><see langword="true"/> when a stored level was found and written.</returns>
+        /// <remarks>
+        /// Not an answer to an announcement, so it leaves <see cref="_unansweredAnnouncements"/>
+        /// alone: the editor's reply, when it comes, is a copy of this level.
+        /// </remarks>
+        private static bool TryTakeStoredLevel()
+        {
+            if (!PlaytestChannelMessage.TryParse(PlaytestInterop.StoredLevel(_nonce), out PlaytestMessageKind kind, out string nonce, out string payload)
+                || kind != PlaytestMessageKind.Level
+                || !string.Equals(nonce, _nonce, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            WriteLevel(payload);
+            return true;
+        }
+
+        /// <summary>Replaces the session's level file.</summary>
+        /// <param name="level">The level document.</param>
+        private static void WriteLevel(string level)
+        {
             // Written to a scratch file and moved into place, so a reader never sees a half-written
             // document. Same-directory moves are atomic, and this holds on the WASM filesystem too.
             _ = Directory.CreateDirectory(LevelDirectory);
             string scratch = LevelPath + ".tmp";
-            File.WriteAllText(scratch, newest);
+            File.WriteAllText(scratch, level);
             File.Move(scratch, LevelPath, true);
+            _lastLevel = level;
             ILogger logger = Log.For(LogCategories.Playtest);
-            PlaytestLog.LevelReceived(logger, newest.Length);
-            return true;
+            PlaytestLog.LevelReceived(logger, level.Length);
         }
 
         /// <summary>Resolves this build's version for the handshake.</summary>
