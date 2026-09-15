@@ -523,6 +523,49 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void CarryingMouseHoldsTheCandyInPlaceWhileFrozen()
+        {
+            // A short stay makes an unfrozen mouse retreat and hand the candy to the second hole
+            // well inside the frozen window.
+            GameScene scene = Scenario.New()
+                .Candy(160, 200)
+                .OmNom(20, 460)
+                .Mouse(160, 200, activeTime: 1f)
+                .Mouse(260, 100, index: 2, activeTime: 1f)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Mouse mouse = Act.CarryByMouse(scene, candy);
+            Freeze(scene);
+            HeadlessGame.StepFrames(scene, 1);
+            Vector frozenAt = candy.WholeBody.Point.pos;
+
+            HeadlessGame.StepFrames(scene, 120);
+
+            Assert.True(mouse.IsActive);
+            Assert.True(scene.MouseCarries(candy));
+            Assert.Equal(frozenAt.X, candy.WholeBody.Point.pos.X, 3);
+            Assert.Equal(frozenAt.Y, candy.WholeBody.Point.pos.Y, 3);
+        }
+
+        [Fact]
+        public void MouseDoesNotGrabFrozenCandy()
+        {
+            GameScene scene = Scenario.New()
+                .Candy(160, 190)
+                .OmNom(20, 460)
+                .Mouse(160, 200)
+                .PauseSwitcher(300, 460)
+                .Build();
+            CandyContext candy = scene.Candy();
+            Freeze(scene);
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.False(scene.MouseCarries(candy));
+        }
+
+        [Fact]
         public void LoopingGameplaySoundsStopAndRestartAcrossTimeFreeze()
         {
             _ = HeadlessGame.Boot();

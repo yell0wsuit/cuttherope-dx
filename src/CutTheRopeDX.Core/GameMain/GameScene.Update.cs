@@ -812,7 +812,9 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = rotatedCircles.Remove(rotatedCircle6);
             }
-            if (miceManager != null)
+            // Frozen time holds the mice where they are: no animation, no retreat countdown, no
+            // hand-off to the next hole and no new grab.
+            if (miceManager != null && !timeFrozen)
             {
                 miceManager.Update(delta);
 
