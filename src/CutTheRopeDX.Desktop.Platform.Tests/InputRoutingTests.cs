@@ -10,6 +10,18 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
 {
     public sealed class InputRoutingTests
     {
+        [Theory]
+        [InlineData(SDL.EventType.WindowMaximized)]
+        [InlineData(SDL.EventType.WindowRestored)]
+        public void WindowModeChangesRefreshTheWindowState(SDL.EventType type)
+        {
+            int refreshes = 0;
+            SdlInputRouter input = new() { WindowId = 7, Resized = () => refreshes++ };
+            SDL.Event e = new() { Window = new() { Type = type, WindowID = 7 } };
+            input.HandleEvent(e);
+            Assert.Equal(1, refreshes);
+        }
+
         [Fact]
         public void DragPreservesEveryEdgeAndIgnoresSyntheticMouse()
         {

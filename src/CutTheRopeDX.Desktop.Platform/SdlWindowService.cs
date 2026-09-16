@@ -20,25 +20,34 @@ namespace CutTheRopeDX.Desktop.Platform
 
         /// <summary>The client height the window has, or returns to, when it is not fullscreen.</summary>
         public int WindowedHeight { get; private set; }
+        /// <summary>Whether the window is maximized, or should return to maximized after fullscreen.</summary>
+        public bool WindowedMaximized { get; private set; }
         public int WindowWidth { get; private set; } = 1;
         public int WindowHeight { get; private set; } = 1;
         public int PixelWidth { get; private set; } = 1;
         public int PixelHeight { get; private set; } = 1;
         public float DevicePixelRatio => (float)PixelWidth / WindowWidth;
         public bool IsFullScreen => (SDL.GetWindowFlags(window) & SDL.WindowFlags.Fullscreen) != 0;
-        public void Initialize(int width, int height, bool fullscreen)
+        public void Initialize(int width, int height, bool fullscreen, bool maximized = false)
         {
             Check(SDL.SetWindowMinimumSize(window, 320, 480));
             ApplyWindowSize(width, height);
             Center();
+            Show();
+            FitWindowedSizeToFrame();
+            if (maximized)
+            {
+                Check(SDL.MaximizeWindow(window));
+                Check(SDL.SyncWindow(window));
+                RefreshSurface();
+            }
             if (fullscreen != IsFullScreen)
             {
                 ToggleFullScreen();
             }
 
-            Show();
-            FitWindowedSizeToFrame();
             RefreshSurface();
+            SavePreferences();
             ILogger logger = Log.For(LogCategories.SdlHost);
             SdlWindowServiceLog.Resolution(
                 logger, WindowWidth, WindowHeight, PixelWidth, PixelHeight, DevicePixelRatio, IsFullScreen);
@@ -188,13 +197,21 @@ namespace CutTheRopeDX.Desktop.Platform
             SdlWindowServiceLog.SurfaceChanged(surfaceLogger, width, height, pixelWidth, pixelHeight);
             // A maximized client is the work area less the frame; kept as the windowed size, it
             // would reopen unmaximized with its title bar above the top of the display.
-            if ((flags & (SDL.WindowFlags.Fullscreen | SDL.WindowFlags.Minimized | SDL.WindowFlags.Maximized)) == 0
-                && (WindowedWidth != width || WindowedHeight != height))
+            if ((flags & (SDL.WindowFlags.Fullscreen | SDL.WindowFlags.Minimized)) == 0)
             {
-                WindowedWidth = width; WindowedHeight = height;
-                // Queue the resized dimensions for the host's periodic save, rather than
-                // keeping them only in memory until a fullscreen toggle or clean shutdown.
-                SavePreferences(fullscreen: false);
+                bool maximized = (flags & SDL.WindowFlags.Maximized) != 0;
+                bool changed = WindowedMaximized != maximized;
+                WindowedMaximized = maximized;
+                if (!maximized && (WindowedWidth != width || WindowedHeight != height))
+                {
+                    WindowedWidth = width; WindowedHeight = height;
+                    changed = true;
+                }
+                if (changed)
+                {
+                    // Queue size and mode changes for the host's periodic save.
+                    SavePreferences(fullscreen: false);
+                }
             }
             CtrRenderer.OnSurfaceChanged(pixelWidth, pixelHeight, DevicePixelRatio);
         }
@@ -210,12 +227,18 @@ namespace CutTheRopeDX.Desktop.Platform
         }
         public void SavePreferences()
         {
-            SavePreferences(IsFullScreen);
+            SDL.WindowFlags flags = SDL.GetWindowFlags(window);
+            if ((flags & (SDL.WindowFlags.Fullscreen | SDL.WindowFlags.Minimized)) == 0)
+            {
+                WindowedMaximized = (flags & SDL.WindowFlags.Maximized) != 0;
+            }
+            SavePreferences((flags & SDL.WindowFlags.Fullscreen) != 0);
         }
         private void SavePreferences(bool fullscreen)
         {
             Preferences.SetIntForKey(WindowedWidth, "PREFS_WINDOW_WIDTH", false);
             Preferences.SetIntForKey(WindowedHeight, "PREFS_WINDOW_HEIGHT", false);
+            Preferences.SetBooleanForKey(WindowedMaximized, "PREFS_WINDOW_MAXIMIZED", false);
             Preferences.SetBooleanForKey(fullscreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
         private static void Check(bool ok)

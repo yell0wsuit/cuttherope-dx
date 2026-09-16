@@ -12,6 +12,40 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
     public sealed class WindowPreferenceTests
     {
         [Theory]
+        [InlineData(SDL.WindowFlags.Maximized)]
+        [InlineData(SDL.WindowFlags.Fullscreen)]
+        [InlineData(SDL.WindowFlags.Minimized)]
+        public void MaximizedModeIsSavedUntilTheWindowIsRestored(SDL.WindowFlags nextMode)
+        {
+            IPreferenceStore previousStore = PlatformServices.Preferences;
+            try
+            {
+                PlatformServices.Preferences = new MemoryStore();
+                Preferences.LoadPreferences();
+                SdlWindowService window = new(0);
+                window.RefreshSurface(960, 720, 1920, 1440, 0);
+                window.RefreshSurface(1470, 850, 2940, 1700, SDL.WindowFlags.Maximized);
+                window.RefreshSurface(1470, 850, 2940, 1700, nextMode);
+                Preferences.Update(force: true);
+                Preferences.LoadPreferences();
+
+                Assert.True(Preferences.GetBooleanForKey("PREFS_WINDOW_MAXIMIZED"));
+                Assert.Equal(960, Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"));
+                Assert.Equal(720, Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"));
+
+                window.RefreshSurface(960, 720, 1920, 1440, 0);
+                Preferences.Update(force: true);
+                Preferences.LoadPreferences();
+                Assert.False(Preferences.GetBooleanForKey("PREFS_WINDOW_MAXIMIZED"));
+            }
+            finally
+            {
+                PlatformServices.Preferences = previousStore;
+                Preferences.LoadPreferences();
+            }
+        }
+
+        [Theory]
         [InlineData(SDL.WindowFlags.Fullscreen)]
         [InlineData(SDL.WindowFlags.Maximized)]
         [InlineData(SDL.WindowFlags.Minimized)]

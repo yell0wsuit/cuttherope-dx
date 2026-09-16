@@ -93,6 +93,8 @@ namespace CutTheRopeDX.Desktop.Platform
                     break;
                 case SDL.EventType.WindowPixelSizeChanged:
                 case SDL.EventType.WindowResized:
+                case SDL.EventType.WindowMaximized:
+                case SDL.EventType.WindowRestored:
                     if (Matches(e.Window.WindowID))
                     {
                         Resized();
@@ -211,10 +213,6 @@ namespace CutTheRopeDX.Desktop.Platform
                 case SDL.EventType.WindowMoved:
                     break;
                 case SDL.EventType.WindowMetalViewResized:
-                    break;
-                case SDL.EventType.WindowMaximized:
-                    break;
-                case SDL.EventType.WindowRestored:
                     break;
                 case SDL.EventType.WindowMouseEnter:
                     break;
