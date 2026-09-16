@@ -50,10 +50,28 @@
              RemoveProperties="$(_ContentBuilderRemovedProperties)">
       <Output TaskParameter="TargetOutputs" PropertyName="_ContentBuilderAssembly" />
     </MSBuild>
+    <Error Condition="'$(BuildContent)' == 'true' AND !Exists('$(_ContentBuilderAssembly)')"
+           Text="The content builder was built, but no assembly was found at '$(_ContentBuilderAssembly)'." />
+
+    <!--
+      The builder reports its own failures as build errors. The exit code is taken here so the
+      build ends on a sentence about which step failed rather than on MSB3073, which only
+      repeats the command line.
+    -->
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
+          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; fetch -s &quot;$(ContentSourcePath)&quot;"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="_ContentFetchExitCode" />
+    </Exec>
+    <Error Condition="'$(BuildContent)' == 'true' AND '$(_ContentFetchExitCode)' != '0'"
+           Text="Could not get the game assets into '$(ContentSourcePath)'. The content builder's error above says why." />
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
+          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="_ContentBuildExitCode" />
+    </Exec>
+    <Error Condition="'$(BuildContent)' == 'true' AND '$(_ContentBuildExitCode)' != '0'"
+           Text="Could not work out which game content to ship from '$(ContentSourcePath)'. The content builder's error above says why." />
   </Target>
 
   <!--

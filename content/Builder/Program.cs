@@ -7,6 +7,16 @@ try
 }
 catch (ArgumentException exception)
 {
-    Console.Error.WriteLine(exception.Message);
+    ContentError.Write(Console.Error, ContentError.InvalidArguments, exception.Message);
+    return 1;
+}
+// Anything else would reach the runtime's own crash report, which the build log hides.
+catch (Exception exception)
+{
+    ContentError.Write(
+        Console.Error,
+        ContentError.Unexpected,
+        $"{exception.GetType().Name}: {exception.Message}");
+    Console.Error.WriteLine(exception);
     return 1;
 }

@@ -33,15 +33,24 @@ namespace CutTheRopeDX.Content.Commands
                         "Unknown content command."),
                 };
             }
-            catch (Exception exception) when (
-                exception is ArgumentException or
-                    ContentBuildException or
-                    HttpRequestException or
-                    TaskCanceledException or
-                    IOException or
-                    InvalidDataException)
+            catch (ArgumentException exception)
             {
-                Console.Error.WriteLine(exception.Message);
+                ContentError.Write(Console.Error, ContentError.InvalidArguments, exception.Message);
+                return 1;
+            }
+            catch (Exception exception) when (
+                exception is HttpRequestException or TaskCanceledException)
+            {
+                ContentError.Write(
+                    Console.Error,
+                    ContentError.DownloadFailed,
+                    $"Could not download the game assets from {AssetsUrl}: {exception.Message}");
+                return 1;
+            }
+            catch (Exception exception) when (
+                exception is ContentBuildException or IOException or InvalidDataException)
+            {
+                ContentError.Write(Console.Error, ContentError.ContentUnreadable, exception.Message);
                 return 1;
             }
         }
@@ -104,8 +113,12 @@ namespace CutTheRopeDX.Content.Commands
                 if (!verification.Success)
                 {
                     WriteVerificationFailures(verification);
-                    Console.Error.WriteLine(
-                        $"Downloaded bundle doesn't match {ManifestName}; aborting.");
+                    ContentError.Write(
+                        Console.Error,
+                        ContentError.AssetsMismatched,
+                        $"The downloaded assets do not match {ManifestName}: "
+                        + $"{verification.Missing.Count} missing, "
+                        + $"{verification.Mismatched.Count} mismatched.");
                     return 1;
                 }
 
@@ -141,9 +154,11 @@ namespace CutTheRopeDX.Content.Commands
             }
 
             WriteVerificationFailures(verification);
-            Console.Error.WriteLine(
-                $"Verify failed: {verification.Missing.Count} missing, " +
-                $"{verification.Mismatched.Count} mismatched of {manifest.Files.Count}.");
+            ContentError.Write(
+                Console.Error,
+                ContentError.AssetsMismatched,
+                $"Verify failed: {verification.Missing.Count} missing, "
+                + $"{verification.Mismatched.Count} mismatched of {manifest.Files.Count}.");
             return 1;
         }
 
