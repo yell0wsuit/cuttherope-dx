@@ -28,15 +28,23 @@
       into the publish directory, only to delete it while assembling the package.
     -->
     <DeployContent Condition="'$(DeployContent)' == ''">true</DeployContent>
+
+    <!--
+      The builder is a plain framework-dependent tool, whatever the game is being published as.
+      RuntimeIdentifier alone is not enough to strip: a publish passes _IsPublishing, and with
+      PublishAot, PublishReadyToRun or PublishSingleFile beside it the SDK infers the host RID on
+      its own, which moves the builder under bin/Debug/<rid>/ where the Exec below cannot find it.
+    -->
+    <_ContentBuilderRemovedProperties>Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile;PublishAot;PublishReadyToRun;PublishTrimmed;_IsPublishing</_ContentBuilderRemovedProperties>
   </PropertyGroup>
 
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Restore"
              Condition="'$(BuildContent)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
+             RemoveProperties="$(_ContentBuilderRemovedProperties)" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
              Condition="'$(BuildContent)' == 'true'"
-             RemoveProperties="Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile" />
+             RemoveProperties="$(_ContentBuilderRemovedProperties)" />
     <Exec Condition="'$(BuildContent)' == 'true'"
           Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
     <Exec Condition="'$(BuildContent)' == 'true'"
