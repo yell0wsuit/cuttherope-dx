@@ -45,6 +45,28 @@ body:
               1. See error...
       validations:
           required: true
+    - type: upload
+      id: logs
+      attributes:
+          label: Log file
+          description: |
+              Strongly recommended: without a log, most bugs cannot be investigated. Upload the log from the session where the bug happened. Each launch writes its own file, named `ctrdx-<date>-<time>.log`, in the `logs` folder inside `CutTheRopeDX_SaveData`:
+
+              - **Windows:** next to the game's executable, e.g. `CutTheRopeDX_SaveData/logs`
+              - **macOS, Linux AppImage/.deb, or a folder the game cannot write to:** `Documents/CutTheRopeDX_SaveData/logs` in your home folder
+
+              For several logs, zip them.
+      validations:
+          required: false
+          accept: ".log,.zip"
+    - type: upload
+      id: media
+      attributes:
+          label: Screenshots or videos
+          description: Optional, but they help a lot for visual bugs.
+      validations:
+          required: false
+          accept: ".png,.jpg,.jpeg,.gif,.webp,.mp4,.mov,.webm"
     - type: dropdown
       id: os
       attributes:
@@ -60,9 +82,9 @@ body:
       id: cpuspec
       attributes:
           label: CPU spec
-          description: What type of CPU are you using? (Intel i9-14900, etc.)
+          description: Optional; the log already records it. What type of CPU are you using? (Intel i9-14900, etc.)
       validations:
-          required: true
+          required: false
     - type: input
       id: gpuspec
       attributes:
@@ -73,14 +95,14 @@ body:
     - type: input
       attributes:
           label: RAM spec
-          description: How much RAM do you have? (e.g. 8GB of RAM)
+          description: Optional; the log already records it. How much RAM do you have? (e.g. 8GB of RAM)
       validations:
-          required: true
+          required: false
     - type: textarea
       attributes:
           label: Additional info
-          description: Any extra info, logs, or stack traces go here.
+          description: Any extra info or stack traces go here.
           placeholder: |
-              Paste any error logs or useful notes here...
+              Paste any error messages or useful notes here...
       validations:
           required: false
