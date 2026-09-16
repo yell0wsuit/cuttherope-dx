@@ -57,6 +57,9 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
     <ApplicationId>page.yell0wsuit.cuttherope.dx</ApplicationId>
     <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
+    <ApplicationDisplayVersion>$(VersionPrefix)</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion Condition="'$(VersionSuffix)' != ''">$(VersionPrefix)-$(VersionSuffix)</ApplicationDisplayVersion>
+    <ApplicationVersion>$([System.Text.RegularExpressions.Regex]::Match('$(VersionPrefix)', '^[0-9]+(\.[0-9]+)*').Value)</ApplicationVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-macos'">
