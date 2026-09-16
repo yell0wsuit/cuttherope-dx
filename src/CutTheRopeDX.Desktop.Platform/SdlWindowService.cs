@@ -182,7 +182,15 @@ namespace CutTheRopeDX.Desktop.Platform
             SdlWindowServiceLog.SurfaceChanged(surfaceLogger, width, height, pixelWidth, pixelHeight);
             // A maximized client is the work area less the frame; kept as the windowed size, it
             // would reopen unmaximized with its title bar above the top of the display.
-            if (!IsFullScreen && (SDL.GetWindowFlags(window) & (SDL.WindowFlags.Minimized | SDL.WindowFlags.Maximized)) == 0) { WindowedWidth = width; WindowedHeight = height; }
+            // Saved as it changes rather than only on the way out, so a run that ends without
+            // reaching the host's shutdown - stopped from a debugger, killed, crashed - still
+            // reopens at the size the player last left it.
+            if (!IsFullScreen && (SDL.GetWindowFlags(window) & (SDL.WindowFlags.Minimized | SDL.WindowFlags.Maximized)) == 0
+                && (WindowedWidth != width || WindowedHeight != height))
+            {
+                WindowedWidth = width; WindowedHeight = height;
+                SavePreferences();
+            }
             CtrRenderer.OnSurfaceChanged(pixelWidth, pixelHeight, DevicePixelRatio);
         }
         public Vector2 MapWindowToView(float x, float y)
