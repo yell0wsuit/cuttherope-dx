@@ -309,7 +309,8 @@ def package(output_dir: Path, version: str, arch_label: str):
     """Compress the build output into a .7z archive."""
     py7zr, tqdm = packaging_tools()
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
-    archive_name = f"CutTheRopeDX-v{version}-Windows-{arch_label}.7z"
+    # "+" in a prerelease version is not kept in GitHub asset names, so file names use "_".
+    archive_name = f"CutTheRopeDX-v{version.replace('+', '_')}-Windows-{arch_label}.7z"
     archive_path = RELEASE_DIR / archive_name
 
     published = sorted(f for f in output_dir.rglob("*") if f.is_file())

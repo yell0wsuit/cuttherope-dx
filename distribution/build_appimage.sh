@@ -34,6 +34,9 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
+# "+" in a prerelease version is not kept in GitHub asset names, so file names use "_".
+FILE_VERSION="${VERSION//+/_}"
+
 echo "=== Building Cut the Rope: DX v$VERSION AppImage ==="
 
 # Step 1: Build the application
@@ -126,12 +129,12 @@ fi
 
 # Build the AppImage. appimagetool is itself an AppImage, so it needs FUSE to
 # self-mount; CI runners have none, hence the extract-and-run fallback.
-ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$APPDIR" "$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
+ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$APPDIR" "$PUBLISH_DIR/${APP_NAME}-${FILE_VERSION}-x86_64.AppImage"
 
 # Cleanup build directory
 rm -rf "$BUILD_DIR"
 
-APPIMAGE_FILE="$PUBLISH_DIR/${APP_NAME}-${VERSION}-x86_64.AppImage"
+APPIMAGE_FILE="$PUBLISH_DIR/${APP_NAME}-${FILE_VERSION}-x86_64.AppImage"
 APPIMAGE_SIZE=$(ls -lh "$APPIMAGE_FILE" | awk '{print $5}')
 
 # Copy to release_github

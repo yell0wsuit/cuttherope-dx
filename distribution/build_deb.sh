@@ -39,7 +39,9 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-DEB_ROOT="$BUILD_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}"
+# "+" in a prerelease version is not kept in GitHub asset names, so file names use "_".
+FILE_VERSION="${VERSION//+/_}"
+DEB_ROOT="$BUILD_DIR/${APP_NAME}_${FILE_VERSION}_${ARCHITECTURE}"
 
 echo "=== Building Cut the Rope: DX v$VERSION .deb ==="
 
@@ -131,12 +133,12 @@ echo "[5/5] Building .deb package..."
 dpkg-deb --build --root-owner-group "$DEB_ROOT"
 
 # Move to Publish folder
-mv "$BUILD_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb" "$PUBLISH_DIR/"
+mv "$BUILD_DIR/${APP_NAME}_${FILE_VERSION}_${ARCHITECTURE}.deb" "$PUBLISH_DIR/"
 
 # Cleanup
 rm -rf "$BUILD_DIR"
 
-DEB_FILE="$PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
+DEB_FILE="$PUBLISH_DIR/${APP_NAME}_${FILE_VERSION}_${ARCHITECTURE}.deb"
 DEB_SIZE=$(ls -lh "$DEB_FILE" | awk '{print $5}')
 
 # Copy to release_github
@@ -149,5 +151,5 @@ echo "=== Build complete! ==="
 echo "Package created: $DEB_FILE ($DEB_SIZE)"
 echo "Copied to:       $RELEASE_DIR/"
 echo ""
-echo "To install: sudo apt install $PUBLISH_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}.deb"
+echo "To install: sudo apt install $PUBLISH_DIR/${APP_NAME}_${FILE_VERSION}_${ARCHITECTURE}.deb"
 echo "To uninstall: sudo apt remove $APP_NAME"

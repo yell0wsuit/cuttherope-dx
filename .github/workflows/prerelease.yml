@@ -1,0 +1,45 @@
+name: Prerelease
+
+# Publishes a testing build as a GitHub prerelease whenever a user-facing change lands on
+# main. Only feat and fix commits count; chore, refactor, ci, test, docs and the like do not
+# change what players get, so they do not produce a build. The version is a fixed
+# 1.0.0-prerelease+<run number>, the same shape as a development build: prereleases never
+# check for updates, so the number only has to be unique, not ordered against releases.
+on:
+    push:
+        branches: [main]
+
+permissions:
+    contents: read
+
+# Two quick merges would otherwise race to publish; let each finish in order.
+concurrency:
+    group: prerelease
+    cancel-in-progress: false
+
+jobs:
+    gate:
+        runs-on: ubuntu-latest
+        outputs:
+            publish: ${{ steps.check.outputs.publish }}
+        steps:
+            # Matches the conventional-commit subject of any commit in the push, with an
+            # optional scope and breaking-change marker: "feat: ...", "fix(ui)!: ...".
+            - id: check
+              run: |
+                  if jq -r '.commits[].message | split("\n")[0]' "$GITHUB_EVENT_PATH" \
+                      | grep -Eiq '^(feat|fix)(\([^)]*\))?!?:'; then
+                      echo "publish=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "publish=false" >> "$GITHUB_OUTPUT"
+                      echo "No feat or fix commits in this push; skipping prerelease."
+                  fi
+
+    release:
+        needs: gate
+        if: needs.gate.outputs.publish == 'true'
+        permissions:
+            contents: write
+        uses: ./.github/workflows/release.yml
+        with:
+            version: 1.0.0-prerelease+${{ github.run_number }}

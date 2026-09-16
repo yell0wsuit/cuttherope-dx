@@ -9,6 +9,13 @@ on:
                 description: "Version to build, e.g. 2.30.0"
                 required: true
                 type: string
+    # The prerelease workflow builds through this one, so both publish the same bundles.
+    workflow_call:
+        inputs:
+            version:
+                description: "Version to build, e.g. 1.0.0-prerelease+57"
+                required: true
+                type: string
 
 permissions:
     contents: read
@@ -21,16 +28,30 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             version: ${{ steps.resolve.outputs.version }}
+            prerelease: ${{ steps.resolve.outputs.prerelease }}
         steps:
-            # Tag pushes carry a leading "v" the scripts must not receive; dispatch runs
-            # supply the bare version already.
+            # Tag pushes carry a leading "v" the scripts must not receive; dispatch and
+            # called runs supply the bare version already. Releases are X.Y.Z; a CI
+            # prerelease is X.Y.Z-prerelease+<run number>.
             - id: resolve
+              env:
+                  INPUT_VERSION: ${{ inputs.version }}
               run: |
-                  if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-                      echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+                  if [ -n "$INPUT_VERSION" ]; then
+                      version="$INPUT_VERSION"
                   else
-                      echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+                      version="${GITHUB_REF_NAME#v}"
                   fi
+                  if ! echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-prerelease\+[0-9]+)?$'; then
+                      echo "::error::'$version' is not X.Y.Z or X.Y.Z-prerelease+N"
+                      exit 1
+                  fi
+                  case "$version" in
+                      *-prerelease*) prerelease=true ;;
+                      *) prerelease=false ;;
+                  esac
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+                  echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
 
     # The raw asset download is shared with the Pages deploy, so both agree on what "the
     # assets" are and neither re-implements the fetch. It runs once here to fill the cache
@@ -178,5 +199,10 @@ jobs:
               with:
                   tag_name: v${{ needs.version.outputs.version }}
                   name: v${{ needs.version.outputs.version }}
+                  # A dispatched or prerelease run has no tag yet; pin the one it creates to
+                  # the commit that was built rather than the default branch's head.
+                  target_commitish: ${{ github.sha }}
+                  prerelease: ${{ needs.version.outputs.prerelease == 'true' }}
+                  make_latest: ${{ needs.version.outputs.prerelease == 'true' && 'false' || 'true' }}
                   files: artifacts/*
                   generate_release_notes: true

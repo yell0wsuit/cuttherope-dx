@@ -14,15 +14,16 @@ def generate(version: str) -> str:
     whatever the packaging scripts emit, by glob. A rename on that side has to be
     mirrored here or the notes will link to assets that do not exist.
     """
-    tag = f"v{version}"
-    dl = f"{BASE_URL}/{tag}"
+    dl = f"{BASE_URL}/v{version}"
+    # File names swap a prerelease version's "+" for "_"; the tag keeps it.
+    file_tag = f"v{version.replace('+', '_')}"
 
     files = {
-        "win_x64": f"CutTheRopeDX-{tag}-Windows-x64.7z",
-        "mac_ffmpeg": f"CutTheRopeDX-{tag}-macOS-arm64-ffmpeg.dmg",
-        "mac_avf": f"CutTheRopeDX-{tag}-macOS-arm64-avfoundation.dmg",
-        "appimage": f"CutTheRope-DX-{tag}-x86_64.AppImage",
-        "deb": f"cuttherope-dx_{tag}_amd64.deb",
+        "win_x64": f"CutTheRopeDX-{file_tag}-Windows-x64.7z",
+        "mac_ffmpeg": f"CutTheRopeDX-{file_tag}-macOS-arm64-ffmpeg.dmg",
+        "mac_avf": f"CutTheRopeDX-{file_tag}-macOS-arm64-avfoundation.dmg",
+        "appimage": f"CutTheRope-DX-{file_tag}-x86_64.AppImage",
+        "deb": f"cuttherope-dx_{file_tag}_amd64.deb",
     }
 
     md = f"""## Downloads

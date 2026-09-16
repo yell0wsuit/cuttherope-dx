@@ -135,7 +135,9 @@ echo "[5/5] Packaging .dmg archive..."
 
 RELEASE_DIR="$PROJECT_ROOT/src/CutTheRopeDX.Desktop/bin/release_github"
 mkdir -p "$RELEASE_DIR"
-ARCHIVE_NAME="CutTheRopeDX-v${VERSION}-macOS-arm64-ffmpeg.dmg"
+# "+" in a prerelease version is not kept in GitHub asset names, so file names use "_".
+FILE_VERSION=$(printf '%s' "$VERSION" | tr '+' '_')
+ARCHIVE_NAME="CutTheRopeDX-v${FILE_VERSION}-macOS-arm64-ffmpeg.dmg"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_NAME"
 
 # Remove old archive if exists
