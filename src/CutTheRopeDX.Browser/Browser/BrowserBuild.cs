@@ -6,7 +6,7 @@ namespace CutTheRopeDX.Browser
     internal static class BrowserBuild
     {
         /// <summary>The Cut the Rope: DX name, as the page's title shows it.</summary>
-        private const string ProductName = "Cut The Rope: DX";
+        private const string ProductName = "Cut the Rope: DX";
 
         /// <summary>Which build this is, as the banner reports it.</summary>
 #if DEBUG

@@ -8,6 +8,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # App metadata
 # =========================
 APP_NAME="CutTheRope-DX"
+APP_DISPLAY_NAME="Cut the Rope: DX"
 BUNDLE_ID="page.yell0wsuit.cuttherope.dx"
 
 # =========================
@@ -42,7 +43,7 @@ if [ -z "$USE_AOT" ]; then
     esac
 fi
 
-echo "=== Building Cut The Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
+echo "=== Building Cut the Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
 
 # =========================
 # Step 1: Build the application
@@ -98,6 +99,7 @@ fi
 
 # Write Info.plist
 sed -e "s/{{APP_NAME}}/$APP_NAME/g" \
+    -e "s/{{APP_DISPLAY_NAME}}/$APP_DISPLAY_NAME/g" \
     -e "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" \
     -e "s/{{VERSION}}/$VERSION/g" \
     "$TEMPLATES_DIR/Info.plist" > "$APP_DIR/Contents/Info.plist"

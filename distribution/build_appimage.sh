@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build script for creating an AppImage for Cut The Rope: DX
+# Build script for creating an AppImage for Cut the Rope: DX
 # Usage: `./build_appimage.sh [version]` or `bash build_appimage.sh [version]`
 #
 # Requirements:
@@ -13,7 +13,7 @@ set -e
 # Configuration
 APP_NAME="CutTheRope-DX"
 APP_ID="page.yell0wsuit.cuttherope.dx"
-APP_DISPLAY_NAME="Cut The Rope: DX"
+APP_DISPLAY_NAME="Cut the Rope: DX"
 EXEC_NAME="CutTheRope-DX"
 DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope."
 
@@ -34,7 +34,7 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-echo "=== Building Cut The Rope: DX v$VERSION AppImage ==="
+echo "=== Building Cut the Rope: DX v$VERSION AppImage ==="
 
 # Step 1: Build the application
 echo "[1/5] Building Linux x64 release..."

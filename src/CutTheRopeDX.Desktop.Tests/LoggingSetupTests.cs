@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Desktop.Tests
 
                 string[] lines = File.ReadAllLines(LogPath(root, Stamp));
 
-                Assert.Equal("Cut The Rope: DX", lines[0]);
+                Assert.Equal("Cut the Rope: DX", lines[0]);
                 Assert.EndsWith(" version", lines[1]);
                 Assert.StartsWith("Version: ", lines[2]);
                 Assert.StartsWith("OS: ", lines[3]);

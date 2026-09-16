@@ -7,7 +7,9 @@
     <key>CFBundleIconFile</key>
     <string>CutTheRopeDXIcon</string>
     <key>CFBundleDisplayName</key>
-    <string>Cut The Rope: DX</string>
+    <string>Cut the Rope: DX</string>
+    <key>CFBundleName</key>
+    <string>Cut the Rope: DX</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.games</string>
     <key>NSPrincipalClass</key>

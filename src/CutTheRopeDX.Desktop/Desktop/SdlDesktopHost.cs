@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Desktop
         internal static readonly string Version = ResolveVersion();
 
         /// <summary>The Cut the Rope: DX name shown in the title.</summary>
-        internal const string CtrDXProductName = "Cut The Rope: DX";
+        internal const string CtrDXProductName = "Cut the Rope: DX";
 
         /// <summary>
         /// How many devices may be built without one of them drawing anything before the run is
@@ -180,6 +180,8 @@ namespace CutTheRopeDX.Desktop
                 "angle" => GraphicsBackendKind.Angle,
                 _ => throw new ArgumentException($"Unknown SDL renderer '{renderer}'."),
             };
+            // Names the game to the OS instead of the executable.
+            _ = SDL.SetAppMetadata(CtrDXProductName, Version, "page.yell0wsuit.cuttherope.dx");
             if (!SDL.Init(SDL.InitFlags.Video | SDL.InitFlags.Events | SDL.InitFlags.Gamepad))
             {
                 throw new InvalidOperationException(SDL.GetError());

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build script for creating a .deb package for Cut The Rope: DX
+# Build script for creating a .deb package for Cut the Rope: DX
 # Usage: `./build_deb.sh [version]` or `bash build_deb.sh [version]`
 #
 # Requirements:
@@ -12,7 +12,7 @@ set -e
 
 # Configuration
 APP_NAME="cuttherope-dx"
-APP_DISPLAY_NAME="Cut The Rope: DX"
+APP_DISPLAY_NAME="Cut the Rope: DX"
 ARCHITECTURE="amd64"
 MAINTAINER="yell0wsuit"
 DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope."
@@ -41,7 +41,7 @@ fi
 
 DEB_ROOT="$BUILD_DIR/${APP_NAME}_${VERSION}_${ARCHITECTURE}"
 
-echo "=== Building Cut The Rope: DX v$VERSION .deb ==="
+echo "=== Building Cut the Rope: DX v$VERSION .deb ==="
 
 # Step 1: Build the application
 echo "[1/5] Building Linux x64 release..."
