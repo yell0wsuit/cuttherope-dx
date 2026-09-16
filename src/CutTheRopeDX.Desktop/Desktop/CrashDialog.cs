@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 
 using SDL3;
 
@@ -63,89 +61,18 @@ namespace CutTheRopeDX.Desktop
         /// <param name="message">Body text.</param>
         /// <param name="offerLog">Whether to include the button that reveals the log.</param>
         /// <returns>The identifier of the button pressed, or <see cref="OkButton"/> if none was.</returns>
-        /// <remarks>
-        /// The buttons are marshalled by hand. SDL wants an array of its own layout behind a
-        /// pointer, and the managed struct the binding exposes cannot be laid out into one without
-        /// the reflection-based marshaller, which a NativeAOT publish will not carry.
-        /// </remarks>
-        private static unsafe int Prompt(string title, string message, bool offerLog)
+        private static int Prompt(string title, string message, bool offerLog)
         {
-            int count = offerLog ? 2 : 1;
-            NativeButton* buttons = (NativeButton*)NativeMemory.Alloc((nuint)(count * sizeof(NativeButton)));
-            nint okText = Marshal.StringToCoTaskMemUTF8("OK");
-            nint logText = offerLog ? Marshal.StringToCoTaskMemUTF8("Open log location") : 0;
+            // Enter and Escape both dismiss: neither should reveal a folder by accident.
+            NativeMessageBox.Button ok = new(OkButton, "OK",
+                SDL.MessageBoxButtonFlags.ReturnkeyDefault | SDL.MessageBoxButtonFlags.EscapekeyDefault);
 
-            try
-            {
-                // Listed before OK so the platform puts the plain dismissal in the position a
-                // player expects to confirm with.
-                if (offerLog)
-                {
-                    buttons[0] = new NativeButton { Flags = 0, ButtonId = OpenLogButton, Text = logText };
-                }
-
-                buttons[count - 1] = new NativeButton
-                {
-                    // Enter and Escape both dismiss: neither should reveal a folder by accident.
-                    Flags = (uint)(SDL.MessageBoxButtonFlags.ReturnkeyDefault
-                        | SDL.MessageBoxButtonFlags.EscapekeyDefault),
-                    ButtonId = OkButton,
-                    Text = okText,
-                };
-
-                SDL.MessageBoxData data = new()
-                {
-                    Flags = SDL.MessageBoxFlags.Error,
-                    Window = 0,
-                    Title = title,
-                    Message = WrapMessage(message),
-                    NumButtons = count,
-                    Buttons = (nint)buttons,
-                    ColorScheme = 0,
-                };
-
-                // A box that could not be shown leaves the identifier untouched, so the answer is
-                // only trusted when SDL says it asked.
-                return SDL.ShowMessageBox(in data, out int pressed) ? pressed : OkButton;
-            }
-            finally
-            {
-                Marshal.FreeCoTaskMem(okText);
-                if (logText != 0)
-                {
-                    Marshal.FreeCoTaskMem(logText);
-                }
-
-                NativeMemory.Free(buttons);
-            }
-        }
-
-        /// <summary>Adds explicit line breaks for native message boxes that do not wrap text.</summary>
-        internal static string WrapMessage(string message)
-        {
-            const int columns = 80;
-            StringBuilder result = new();
-            foreach (string paragraph in message.ReplaceLineEndings("\n").Split('\n'))
-            {
-                string remaining = paragraph;
-                while (remaining.Length > columns)
-                {
-                    int end = remaining.LastIndexOf(' ', columns, columns + 1);
-                    bool atSpace = end > 0;
-                    if (!atSpace)
-                    {
-                        end = columns;
-                        if (char.IsHighSurrogate(remaining[end - 1]))
-                        {
-                            end--;
-                        }
-                    }
-                    _ = result.Append(remaining.AsSpan(0, end)).Append('\n');
-                    remaining = remaining[(end + (atSpace ? 1 : 0))..];
-                }
-                _ = result.Append(remaining).Append('\n');
-            }
-            return result.ToString(0, result.Length - 1);
+            // Listed before OK so the platform puts the plain dismissal in the position a player
+            // expects to confirm with.
+            return offerLog
+                ? NativeMessageBox.Show(SDL.MessageBoxFlags.Error, title, message, OkButton,
+                    new NativeMessageBox.Button(OpenLogButton, "Open log location"), ok)
+                : NativeMessageBox.Show(SDL.MessageBoxFlags.Error, title, message, OkButton, ok);
         }
 
         /// <summary>
@@ -175,17 +102,6 @@ namespace CutTheRopeDX.Desktop
             catch (Exception)
             {
             }
-        }
-
-        /// <summary>
-        /// SDL's own button layout: flags, identifier, and a pointer to UTF-8 text.
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential)]
-        private struct NativeButton
-        {
-            public uint Flags;
-            public int ButtonId;
-            public nint Text;
         }
     }
 }

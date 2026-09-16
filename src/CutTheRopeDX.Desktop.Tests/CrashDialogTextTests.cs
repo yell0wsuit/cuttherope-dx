@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Desktop.Tests
 
         private static string Format(string message)
         {
-            return CrashDialog.WrapMessage(message);
+            return NativeMessageBox.WrapMessage(message);
         }
     }
 }
