@@ -2,11 +2,11 @@
 
 ## Supported Versions
 
-Only the latest version of *Cut the Rope: DX* is supported. All users should update to the [latest release](https://github.com/yell0wsuit/cuttherope-dx/releases/latest) to receive security patches and bug fixes. Older versions will not receive fixes.
+Only the latest version of *Cut the Rope DX* is supported. All users should update to the [latest release](https://github.com/yell0wsuit/cuttherope-dx/releases/latest) to receive security patches and bug fixes. Older versions will not receive fixes.
 
 ## Scope
 
-This policy covers the *Cut the Rope: DX* repository only. Vulnerabilities in upstream dependencies (such as SDL, SkiaSharp or FFmpeg) are out of scope—please report those to their respective projects. If an upstream fix is relevant to this project, it will be incorporated in a future update.
+This policy covers the *Cut the Rope DX* repository only. Vulnerabilities in upstream dependencies (such as SDL, SkiaSharp or FFmpeg) are out of scope—please report those to their respective projects. If an upstream fix is relevant to this project, it will be incorporated in a future update.
 
 ## Reporting a Vulnerability
 

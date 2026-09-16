@@ -1,12 +1,12 @@
-# Cut the Rope: DX
+# Cut the Rope DX
 
 <p align="center">
-  <img alt="Logo of Cut the Rope: DX" src="./images/CutTheRopeDXLogo.svg"/>
+  <img alt="Logo of Cut the Rope DX" src="./images/CutTheRopeDXLogo.svg"/>
 </p>
 
 ## About
 
-_Cut the Rope: DX (Decompiled Extra)_ is a fan-made enhancement of the PC version of _Cut the Rope_, originally developed by ZeptoLab. This project aims to improve the original game's codebase, add new features, and enhance the overall gaming experience.
+_Cut the Rope DX (Decompiled Extra)_ is a fan-made enhancement of the PC version of _Cut the Rope_, originally developed by ZeptoLab. This project aims to improve the original game's codebase, add new features, and enhance the overall gaming experience.
 
 The game's source code is decompiled from the PC version, which serves as the foundation for development and feature expansion.
 
@@ -19,7 +19,7 @@ The logo is designed by Bingies24 and darealmrcatz.
 
 ### Related projects
 
-- [Cut the Rope DX: Level Editor](https://github.com/yell0wsuit/ctrdx-editor/): a standalone app for creating and editing levels for Cut the Rope: DX.
+- [Cut the Rope DX: Level Editor](https://github.com/yell0wsuit/ctrdx-editor/): a standalone app for creating and editing levels for Cut the Rope DX.
 - [Cut the Rope: H5DX](https://github.com/yell0wsuit/cuttherope-h5dx): a web edition of Cut The Rope, originated from the FirefoxOS version. Deprecated, superseded by this project's browser edition.
 
 ## Download
@@ -52,7 +52,7 @@ Please see [issue #68](https://github.com/yell0wsuit/cuttherope-dx/issues/68) fo
 
 ## Development & contributing
 
-The development of _Cut the Rope: DX_ is an ongoing process, and contributions are welcome! If you'd like to help out, please consider the following:
+The development of _Cut the Rope DX_ is an ongoing process, and contributions are welcome! If you'd like to help out, please consider the following:
 
 - **Reporting issues**: If you encounter any bugs or issues, please report them on the [GitHub Issues page](https://github.com/yell0wsuit/cuttherope-dx/issues).
 - **Feature requests**: If you have ideas for new features or improvements, feel free to submit a feature request through Issues.
@@ -154,7 +154,7 @@ The build writes the site to the `dist/wwwroot` directory. The [Deploy Browser t
 
 ## Running a custom level
 
-_Cut the Rope: DX_ can launch straight into a level XML file instead of the normal game, which is intended for level editors and other external tools.
+_Cut the Rope DX_ can launch straight into a level XML file instead of the normal game, which is intended for level editors and other external tools.
 
 ```bash
 CutTheRopeDX --level <path-to-level.xml>

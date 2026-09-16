@@ -361,7 +361,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Title line shown in place of the versioned one on hosts that carry no version.
         /// </summary>
-        private const string WebEditionTitle = "Cut the Rope: DX - Web Edition";
+        private const string WebEditionTitle = "Cut the Rope DX - Web Edition";
 
         /// <summary>
         /// Builds the fanwork main text with version substitution.

@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Desktop.Tests
         public void NamesTheRendererThatDrew(GraphicsBackendKind renderer, string expected)
         {
             Assert.Equal(
-                $"Cut the Rope: DX v{SdlDesktopHost.Version} | {expected}",
+                $"Cut the Rope DX v{SdlDesktopHost.Version} | {expected}",
                 SdlDesktopHost.TitleFor(renderer));
         }
 

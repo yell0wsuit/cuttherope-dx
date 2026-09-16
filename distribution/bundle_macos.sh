@@ -42,7 +42,7 @@ if [ -z "$USE_AOT" ]; then
     esac
 fi
 
-echo "=== Building Cut the Rope: DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
+echo "=== Building Cut the Rope DX v$VERSION for macOS (NativeAOT: $USE_AOT) ==="
 
 # =========================
 # Step 1: Build the application

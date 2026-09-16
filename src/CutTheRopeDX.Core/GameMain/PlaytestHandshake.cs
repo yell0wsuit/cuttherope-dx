@@ -8,17 +8,17 @@ namespace CutTheRopeDX.GameMain
     /// Announces this build's identity and version to a launcher when a custom level is accepted.
     /// </summary>
     /// <remarks>
-    /// The editor starts the game with <c>--level</c> but otherwise cannot tell Cut the Rope: DX from
+    /// The editor starts the game with <c>--level</c> but otherwise cannot tell Cut the Rope DX from
     /// any other program, nor a build that understands the switch from an older one that silently
     /// ignores it and opens the normal menu - both exit 0 with no error. This handshake closes both
     /// gaps at once: the moment a custom level loads, the game writes a single identifying line to
     /// standard output. A launcher that sees the line within a short window knows it launched Cut the
-    /// Rope: DX (the <see cref="Signature"/> token) and which version it is (for feature gating); the
-    /// line's absence means the target is not Cut the Rope: DX, or is too old to playtest.
+    /// Rope DX (the <see cref="Signature"/> token) and which version it is (for feature gating); the
+    /// line's absence means the target is not Cut the Rope DX, or is too old to playtest.
     /// </remarks>
     internal static class PlaytestHandshake
     {
-        /// <summary>Fixed token identifying the emitter as playtest-capable Cut the Rope: DX. Stable contract with the editor.</summary>
+        /// <summary>Fixed token identifying the emitter as playtest-capable Cut the Rope DX. Stable contract with the editor.</summary>
         public const string Signature = "ctrdx-playtest";
 
         /// <summary>Handshake format version. Bumped when the line's shape or meaning changes.</summary>

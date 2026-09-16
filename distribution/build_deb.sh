@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build script for creating a .deb package for Cut the Rope: DX
+# Build script for creating a .deb package for Cut the Rope DX
 # Usage: `./build_deb.sh [version]` or `bash build_deb.sh [version]`
 #
 # Requirements:
@@ -12,10 +12,10 @@ set -e
 
 # Configuration
 APP_NAME="cuttherope-dx"
-APP_DISPLAY_NAME="Cut the Rope: DX"
+APP_DISPLAY_NAME="Cut the Rope DX"
 ARCHITECTURE="amd64"
 MAINTAINER="yell0wsuit"
-DESCRIPTION="Cut the Rope: DX, a fan-made enhancement of the PC version of Cut the Rope."
+DESCRIPTION="Cut the Rope DX, a fan-made enhancement of the PC version of Cut the Rope."
 
 # What the shipped natives link against, read off their ELF DT_NEEDED entries rather than
 # guessed: libSkiaSharp.so needs libfontconfig.so.1 and libstdc++.so.6, and a missing one
@@ -43,7 +43,7 @@ fi
 FILE_VERSION="${VERSION//+/_}"
 DEB_ROOT="$BUILD_DIR/${APP_NAME}_${FILE_VERSION}_${ARCHITECTURE}"
 
-echo "=== Building Cut the Rope: DX v$VERSION .deb ==="
+echo "=== Building Cut the Rope DX v$VERSION .deb ==="
 
 # Step 1: Build the application
 echo "[1/5] Building Linux x64 release..."

@@ -1,8 +1,8 @@
 /*
-  The name Finder, the Dock and the menu bar show. The bundle's own file name cannot carry a
-  colon, so the display name is a localization over it. Info.plist has to keep
+  The name Finder, the Dock and the menu bar show. The bundle's file name stays CutTheRope-DX,
+  so the display name is a localization over it. Info.plist has to keep
   CFBundleDisplayName equal to the file name, or macOS takes the app as renamed by the user
   and shows the file name instead.
 */
-CFBundleDisplayName = "Cut the Rope: DX";
-CFBundleName = "Cut the Rope: DX";
+CFBundleDisplayName = "Cut the Rope DX";
+CFBundleName = "Cut the Rope DX";

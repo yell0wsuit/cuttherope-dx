@@ -59,8 +59,8 @@ namespace CutTheRopeDX.Desktop
         /// </summary>
         internal static readonly string Version = ResolveVersion();
 
-        /// <summary>The Cut the Rope: DX name shown in the title.</summary>
-        internal const string CtrDXProductName = "Cut the Rope: DX";
+        /// <summary>The Cut the Rope DX name shown in the title.</summary>
+        internal const string CtrDXProductName = "Cut the Rope DX";
 
         /// <summary>
         /// How many devices may be built without one of them drawing anything before the run is

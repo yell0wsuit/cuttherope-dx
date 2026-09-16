@@ -1,4 +1,4 @@
-# Contributing to _Cut the Rope: DX_
+# Contributing to _Cut the Rope DX_
 
 Thank you for your interest in contributing! Please take a moment to review this guide before submitting issues, feature requests, translation contributions, or pull requests.
 

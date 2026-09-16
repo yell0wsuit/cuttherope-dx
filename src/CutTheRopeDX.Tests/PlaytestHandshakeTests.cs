@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void SignatureIsStableContract()
         {
-            // The editor keys off this exact token to recognize Cut the Rope: DX; keep it stable.
+            // The editor keys off this exact token to recognize Cut the Rope DX; keep it stable.
             Assert.Equal("ctrdx-playtest", PlaytestHandshake.Signature);
             Assert.StartsWith(PlaytestHandshake.Signature + " ", PlaytestHandshake.FormatLine("1.0.0"));
         }
