@@ -16,14 +16,15 @@ def generate(version: str) -> str:
     """
     dl = f"{BASE_URL}/v{version}"
     # File names swap a prerelease version's "+" for "_"; the tag keeps it.
-    file_tag = f"v{version.replace('+', '_')}"
+    file_version = version.replace("+", "_")
+    file_tag = f"v{file_version}"
 
     files = {
         "win_x64": f"CutTheRopeDX-{file_tag}-Windows-x64.7z",
         "mac_ffmpeg": f"CutTheRopeDX-{file_tag}-macOS-arm64-ffmpeg.dmg",
         "mac_avf": f"CutTheRopeDX-{file_tag}-macOS-arm64-avfoundation.dmg",
-        "appimage": f"CutTheRope-DX-{file_tag}-x86_64.AppImage",
-        "deb": f"cuttherope-dx_{file_tag}_amd64.deb",
+        "appimage": f"CutTheRope-DX-{file_version}-x86_64.AppImage",
+        "deb": f"cuttherope-dx_{file_version}_amd64.deb",
     }
 
     md = f"""## Downloads
