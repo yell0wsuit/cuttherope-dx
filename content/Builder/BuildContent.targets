@@ -33,9 +33,12 @@
       The builder is a plain framework-dependent tool, whatever the game is being published as.
       RuntimeIdentifier alone is not enough to strip: a publish passes _IsPublishing, and with
       PublishAot, PublishReadyToRun or PublishSingleFile beside it the SDK infers the host RID on
-      its own, which moves the builder under bin/Debug/<rid>/ where the Exec below cannot find it.
+      its own. Only global properties can be removed this way, though. Environment variables still
+      reach the builder and can move its output (a machine-wide Platform variable, common on OEM
+      Windows installs, puts it under bin/<platform>/), so the builder is run from the path its own
+      build reports rather than from a fixed one.
     -->
-    <_ContentBuilderRemovedProperties>Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;PublishSingleFile;PublishAot;PublishReadyToRun;PublishTrimmed;_IsPublishing</_ContentBuilderRemovedProperties>
+    <_ContentBuilderRemovedProperties>Configuration;TargetFramework;RuntimeIdentifier;RuntimeIdentifiers;SelfContained;UseCurrentRuntimeIdentifier;PublishSingleFile;PublishAot;PublishReadyToRun;PublishTrimmed;_IsPublishing</_ContentBuilderRemovedProperties>
   </PropertyGroup>
 
   <Target Name="BuildGameContent" BeforeTargets="BeforeBuild">
@@ -44,11 +47,13 @@
              RemoveProperties="$(_ContentBuilderRemovedProperties)" />
     <MSBuild Projects="$(ContentBuilderProject)" Targets="Build"
              Condition="'$(BuildContent)' == 'true'"
-             RemoveProperties="$(_ContentBuilderRemovedProperties)" />
+             RemoveProperties="$(_ContentBuilderRemovedProperties)">
+      <Output TaskParameter="TargetOutputs" PropertyName="_ContentBuilderAssembly" />
+    </MSBuild>
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
+          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; fetch -s &quot;$(ContentSourcePath)&quot;" />
     <Exec Condition="'$(BuildContent)' == 'true'"
-          Command="dotnet &quot;$(MSBuildThisFileDirectory)bin/Debug/CutTheRopeDX.Content.dll&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
+          Command="dotnet &quot;$(_ContentBuilderAssembly)&quot; build -s &quot;$(ContentSourcePath)&quot; -o &quot;$(ContentIntermediateDir)&quot;" />
   </Target>
 
   <!--
