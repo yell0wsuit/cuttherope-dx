@@ -70,6 +70,9 @@
     <BundleResource Include="../../distribution/icons/CutTheRopeDXIcon.icns">
       <Link>CutTheRopeDXIcon.icns</Link>
     </BundleResource>
+    <BundleResource Include="../../distribution/macos/en.lproj/InfoPlist.strings">
+      <Link>en.lproj/InfoPlist.strings</Link>
+    </BundleResource>
   </ItemGroup>
 
 
