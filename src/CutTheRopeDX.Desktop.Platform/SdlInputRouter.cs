@@ -403,7 +403,18 @@ namespace CutTheRopeDX.Desktop.Platform
                 Back();
             }
 
-            if (key == SDL.Keycode.F11 || (key == SDL.Keycode.Return && (modifiers & SDL.Keymod.Alt) != 0))
+            // macOS reserves F11 for Show Desktop by default; offer Control+Command+F
+            // without requiring the player to change system keyboard shortcuts.
+            bool fullscreenShortcut = (key, OperatingSystem.IsMacOS()) switch
+            {
+                (SDL.Keycode.F11, _) => true, // F11
+                (SDL.Keycode.Return, _) => (modifiers & SDL.Keymod.Alt) != 0, // Alt + Enter
+                (SDL.Keycode.F, true) => (modifiers & SDL.Keymod.Ctrl) != 0
+                    && (modifiers & SDL.Keymod.GUI) != 0
+                    && (modifiers & (SDL.Keymod.Shift | SDL.Keymod.Alt)) == 0, // Control+Command+F (macOS)
+                _ => false
+            };
+            if (fullscreenShortcut)
             {
                 ToggleFullscreen();
             }
