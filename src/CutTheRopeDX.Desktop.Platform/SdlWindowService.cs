@@ -20,14 +20,22 @@ namespace CutTheRopeDX.Desktop.Platform
 
         /// <summary>The client height the window has, or returns to, when it is not fullscreen.</summary>
         public int WindowedHeight { get; private set; }
+
+        /// <summary>Whether the window is maximized, as the player left it outside fullscreen.</summary>
+        public bool WindowedMaximized { get; private set; }
+
+        /// <summary>The maximized flag as last read from a window that was neither fullscreen nor minimized.</summary>
+        private bool observedMaximized;
         public int WindowWidth { get; private set; } = 1;
         public int WindowHeight { get; private set; } = 1;
         public int PixelWidth { get; private set; } = 1;
         public int PixelHeight { get; private set; } = 1;
         public float DevicePixelRatio => (float)PixelWidth / WindowWidth;
         public bool IsFullScreen => (SDL.GetWindowFlags(window) & SDL.WindowFlags.Fullscreen) != 0;
-        public void Initialize(int width, int height, bool fullscreen)
+        public void Initialize(int width, int height, bool fullscreen, bool maximized)
         {
+            WindowedMaximized = maximized;
+            observedMaximized = (SDL.GetWindowFlags(window) & SDL.WindowFlags.Maximized) != 0;
             Check(SDL.SetWindowMinimumSize(window, 320, 480));
             ApplyWindowSize(width, height);
             Center();
@@ -38,6 +46,15 @@ namespace CutTheRopeDX.Desktop.Platform
 
             Show();
             FitWindowedSizeToFrame();
+            // Asked for only when the window does not already read as maximized: on macOS this is
+            // a zoom toggle, and a windowed size that fills the screen already reads as zoomed, so
+            // asking again would shrink it.
+            if (maximized && !IsFullScreen && (SDL.GetWindowFlags(window) & SDL.WindowFlags.Maximized) == 0)
+            {
+                Check(SDL.MaximizeWindow(window));
+                _ = SDL.SyncWindow(window);
+            }
+
             RefreshSurface();
             ILogger logger = Log.For(LogCategories.SdlHost);
             SdlWindowServiceLog.Resolution(
@@ -182,17 +199,62 @@ namespace CutTheRopeDX.Desktop.Platform
             SdlWindowServiceLog.SurfaceChanged(surfaceLogger, width, height, pixelWidth, pixelHeight);
             // A maximized client is the work area less the frame; kept as the windowed size, it
             // would reopen unmaximized with its title bar above the top of the display.
-            // Saved as it changes rather than only on the way out, so a run that ends without
-            // reaching the host's shutdown - stopped from a debugger, killed, crashed - still
-            // reopens at the size the player last left it.
-            if (!IsFullScreen && (SDL.GetWindowFlags(window) & (SDL.WindowFlags.Minimized | SDL.WindowFlags.Maximized)) == 0
+            SDL.WindowFlags flags = SDL.GetWindowFlags(window);
+            bool wasMaximized = WindowedMaximized;
+            (WindowedMaximized, observedMaximized) = NextMaximizedState(
+                WindowedMaximized, observedMaximized, flags, width, height, WindowedWidth, WindowedHeight);
+            bool changed = WindowedMaximized != wasMaximized;
+            if ((flags & (SDL.WindowFlags.Fullscreen | SDL.WindowFlags.Minimized | SDL.WindowFlags.Maximized)) == 0
                 && (WindowedWidth != width || WindowedHeight != height))
             {
                 WindowedWidth = width; WindowedHeight = height;
+                changed = true;
+            }
+
+            if (changed)
+            {
                 SavePreferences();
             }
             CtrRenderer.OnSurfaceChanged(pixelWidth, pixelHeight, DevicePixelRatio);
         }
+        /// <summary>Decides what a reading of the window's flags says about the maximized state to keep.</summary>
+        /// <param name="saved">The maximized state kept so far.</param>
+        /// <param name="observed">The maximized flag as last read outside fullscreen and minimized.</param>
+        /// <param name="flags">The window's flags now.</param>
+        /// <param name="width">The window's client width now.</param>
+        /// <param name="height">The window's client height now.</param>
+        /// <param name="windowedWidth">The windowed width kept so far.</param>
+        /// <param name="windowedHeight">The windowed height kept so far.</param>
+        /// <returns>The maximized state to keep, and the flag to compare the next reading with.</returns>
+        /// <remarks>
+        /// Only a change in the flag counts, so a window read before the saved state was applied to
+        /// it does not overwrite that state. A change to maximized is believed only when the window
+        /// has left its windowed size: macOS sets the flag from geometry, and a windowed size that
+        /// fills the screen comes back from fullscreen flagged maximized without the player having
+        /// asked for it.
+        /// </remarks>
+        internal static (bool Saved, bool Observed) NextMaximizedState(
+            bool saved, bool observed, SDL.WindowFlags flags, int width, int height, int windowedWidth, int windowedHeight)
+        {
+            if ((flags & (SDL.WindowFlags.Fullscreen | SDL.WindowFlags.Minimized)) != 0)
+            {
+                return (saved, observed);
+            }
+
+            bool maximized = (flags & SDL.WindowFlags.Maximized) != 0;
+            if (maximized == observed)
+            {
+                return (saved, observed);
+            }
+
+            if (maximized && width == windowedWidth && height == windowedHeight)
+            {
+                return (saved, maximized);
+            }
+
+            return (maximized, maximized);
+        }
+
         public Vector2 MapWindowToView(float x, float y)
         {
             CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
@@ -207,6 +269,7 @@ namespace CutTheRopeDX.Desktop.Platform
         {
             Preferences.SetIntForKey(WindowedWidth, "PREFS_WINDOW_WIDTH", false);
             Preferences.SetIntForKey(WindowedHeight, "PREFS_WINDOW_HEIGHT", false);
+            Preferences.SetBooleanForKey(WindowedMaximized, "PREFS_WINDOW_MAXIMIZED", false);
             Preferences.SetBooleanForKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
         private static void Check(bool ok)

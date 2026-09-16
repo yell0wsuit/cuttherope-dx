@@ -32,6 +32,7 @@ namespace CutTheRopeDX.Framework.Core
             "PREFS_CANDY_WAS_CHANGED",
             "PREFS_GAME_CENTER_ENABLED",
             "PREFS_WINDOW_FULLSCREEN",
+            "PREFS_WINDOW_MAXIMIZED",
             "PREFS_RPC_ENABLED",
             "PREFS_UPDATE_CHECK",
             "PREFS_CLICK_TO_CUT",

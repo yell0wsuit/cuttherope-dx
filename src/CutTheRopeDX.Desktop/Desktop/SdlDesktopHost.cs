@@ -247,7 +247,7 @@ namespace CutTheRopeDX.Desktop
                 Quit = Exit,
             };
             AttachWindow(device);
-            window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"));
+            window.Initialize(Preferences.GetIntForKey("PREFS_WINDOW_WIDTH"), Preferences.GetIntForKey("PREFS_WINDOW_HEIGHT"), Preferences.GetBooleanForKey("PREFS_WINDOW_FULLSCREEN"), Preferences.GetBooleanForKey("PREFS_WINDOW_MAXIMIZED"));
             // SDL reports gamepad buttons only for devices that have been opened, so the Back
             // handling in the router is inert until this runs.
             gamepads = new(
@@ -480,6 +480,7 @@ namespace CutTheRopeDX.Desktop
             int width = window.WindowedWidth;
             int height = window.WindowedHeight;
             bool fullscreen = window.IsFullScreen;
+            bool maximized = window.WindowedMaximized;
             window.SavePreferences();
 
             SdlGraphicsDevice device;
@@ -499,7 +500,7 @@ namespace CutTheRopeDX.Desktop
             {
                 _ = SDL.SetWindowTitle(device.Window, TitleFor(selection.Kind));
                 AttachWindow(device);
-                window.Initialize(width, height, fullscreen);
+                window.Initialize(width, height, fullscreen, maximized);
                 render.Rebind(device);
                 assets.Rebind(device.Context);
                 report = GraphicsRecovery.Complete(plan);

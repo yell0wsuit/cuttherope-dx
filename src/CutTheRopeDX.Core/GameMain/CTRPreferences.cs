@@ -657,6 +657,7 @@ namespace CutTheRopeDX.GameMain
             SetIntForKey(0, "PREFS_LAST_BOX", true);
             SetIntForKey(0, "PREFS_LAST_GAMEPACK", true);
             SetBooleanForKey(false, "PREFS_WINDOW_FULLSCREEN", true);
+            SetBooleanForKey(false, "PREFS_WINDOW_MAXIMIZED", true);
             SetBooleanForKey(true, "PREFS_RPC_ENABLED", true);
             SetBooleanForKey(true, "PREFS_UPDATE_CHECK", true);
             CheckForUnlockIAP();
