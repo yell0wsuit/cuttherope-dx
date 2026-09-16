@@ -24,7 +24,6 @@ def generate(version: str) -> str:
         "mac_ffmpeg": f"CutTheRopeDX-{file_tag}-macOS-arm64-ffmpeg.dmg",
         "mac_avf": f"CutTheRopeDX-{file_tag}-macOS-arm64-avfoundation.dmg",
         "appimage": f"CutTheRope-DX-{file_version}-x86_64.AppImage",
-        "deb": f"cuttherope-dx_{file_version}_amd64.deb",
     }
 
     md = f"""## Downloads
@@ -53,11 +52,8 @@ def generate(version: str) -> str:
 
 ### 🐧 Linux
 
-- **AppImage (x86_64)** – *Recommended*
-  - [{files['appimage']}]({dl}/{files['appimage']})
-
-- **Debian / Ubuntu**
-  - [{files['deb']}]({dl}/{files['deb']})"""
+- **AppImage (x86_64)**
+  - [{files['appimage']}]({dl}/{files['appimage']})"""
 
     return md
 
