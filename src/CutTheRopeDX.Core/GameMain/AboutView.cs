@@ -1,10 +1,10 @@
 using System;
-using System.Reflection;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.Helpers;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -373,16 +373,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Gets the executing assembly version string.
-        /// </summary>
-        /// <returns>The current assembly version string.</returns>
-        private static string GetAssemblyVersion()
-        {
-            string fullName = Assembly.GetExecutingAssembly().FullName;
-            return fullName.Split('=', StringSplitOptions.None)[1].Split(',', StringSplitOptions.None)[0];
-        }
-
-        /// <summary>
         /// Resolves the <c>%versionNo%</c> placeholder in an About string.
         /// </summary>
         /// <param name="text">Localized text that may carry the placeholder.</param>
@@ -391,7 +381,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (!OperatingSystem.IsBrowser())
             {
-                return text.Replace("%versionNo%", GetAssemblyVersion(), StringComparison.Ordinal);
+                return text.Replace("%versionNo%", AppVersion.Abbreviate(AppVersion.Current), StringComparison.Ordinal);
             }
 
             string[] lines = text.Split('\n');

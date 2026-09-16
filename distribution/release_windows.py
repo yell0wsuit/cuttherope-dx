@@ -367,7 +367,7 @@ def resolve_options() -> tuple[str, bool, str]:
         )
         sys.exit(1)
 
-    version = input("Version (e.g. 2.12.0.1): ").strip()
+    version = input("Version (e.g. 2.30.0): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)
         sys.exit(1)

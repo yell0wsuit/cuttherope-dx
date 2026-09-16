@@ -819,7 +819,7 @@ namespace CutTheRopeDX.Desktop
         /// <remarks>
         /// Reported as recorded, including the "+&lt;hash&gt;" a revision-stamped development build
         /// appends: naming the exact commit is the point of showing a version on an unreleased
-        /// build. A release sets no suffix, so it reads as a plain four-part version.
+        /// build. A release sets no suffix, so it reads as a plain three-part version.
         /// </remarks>
         /// <returns>The version to show, or "Unknown" when the assembly carries none.</returns>
         private static string ResolveVersion()

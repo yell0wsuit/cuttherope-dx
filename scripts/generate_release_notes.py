@@ -62,7 +62,7 @@ def generate(version: str) -> str:
 
 def main():
     """Prompts for a version and prints the generated markdown."""
-    version = input("Version (without 'v' prefix, e.g. 2.12.0.1): ").strip()
+    version = input("Version (without 'v' prefix, e.g. 2.30.0): ").strip()
     if not version:
         print("Version is required.", file=sys.stderr)
         sys.exit(1)
