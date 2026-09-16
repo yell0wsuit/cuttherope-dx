@@ -230,7 +230,7 @@ namespace CutTheRopeDX.GameMain
                 Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                grab.GunSource?.SetDisabled(candies[0].Lifecycle.Attachments.InLantern);
+                grab.GunSource?.SetDisabled(candies[0].Lifecycle.Attachments.InLantern || MouseCarries(candies[0]));
                 grab.DrawBack();
             }
             foreach (object bungeeObj in bungees)

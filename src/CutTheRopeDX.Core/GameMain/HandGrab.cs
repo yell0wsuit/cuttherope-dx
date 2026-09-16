@@ -3,8 +3,8 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Pure grab-gate for the mechanical hand. An idle hand grabs a candy only when the candy exists,
     /// is not captured in a lantern, is not in sock transit, and is within grab range. Both bamboo and
-    /// sock transit now hide the whole body, so <c>candyPresent</c> already excludes them and
-    /// <c>candyInSock</c> is a redundant second gate the caller still supplies; Task 9 removes it.
+    /// sock transit hide the whole body, so <c>candyPresent</c> already excludes them and
+    /// <c>candyInSock</c> is a redundant second gate the caller still supplies.
     /// <c>inRange</c> is precomputed by the caller
     /// (distance &lt; <c>MechanicalHand.MH_GRAB_DISTANCE</c>). One candy per hand.
     /// </summary>

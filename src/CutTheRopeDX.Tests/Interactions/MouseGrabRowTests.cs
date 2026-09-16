@@ -25,6 +25,32 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void MouseGrabReleasesTheGunRope()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Grab(160, 60, gun: true, moveLength: -1f));
+            Grab gun = scene.Grabs()[0];
+            Assert.True(scene.TouchDownXYIndex((int)gun.x, (int)gun.y, 0));
+            Assert.Equal(1, scene.AttachedRopeCount(candy));
+
+            _ = Act.CarryByMouse(scene, candy);
+
+            Assert.Equal(0, scene.AttachedRopeCount(candy));
+        }
+
+        [Fact]
+        public void GunCannotFireAtAMouseCarriedCandy()
+        {
+            (GameScene scene, CandyContext candy) = Rig(s => s.Grab(160, 60, gun: true, moveLength: -1f));
+            Grab gun = scene.Grabs()[0];
+            _ = Act.CarryByMouse(scene, candy);
+
+            _ = scene.TouchDownXYIndex((int)gun.x, (int)gun.y, 0);
+
+            Assert.False(gun.GunSource.HasFired);
+            Assert.Equal(0, scene.AttachedRopeCount(candy));
+        }
+
+        [Fact]
         public void MouseGrabSnatchesTheCandyFromTheHand()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Hand(160, 120, segmentLength: 20, segmentAngle: 90f));

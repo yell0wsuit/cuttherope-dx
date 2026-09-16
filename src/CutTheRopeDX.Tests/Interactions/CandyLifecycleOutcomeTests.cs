@@ -101,8 +101,8 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <remarks>
         /// The capture is invoked directly rather than crawled to. A spider only advances along
         /// <c>Bungee.drawPts</c>, and those are filled by <c>DrawBungee</c> alone, so a headless run
-        /// leaves the rope untessellated and the spider parked at the hook forever. Task 9 owns that
-        /// draw-path dependency; this test is about which state the capture writes.
+        /// leaves the rope untessellated and the spider parked at the hook forever. That draw-path
+        /// dependency is out of scope here; this test is about which state the capture writes.
         /// </remarks>
         [Fact]
         public void ASpiderStealingThePrimaryRecordsSpiderRemoval()

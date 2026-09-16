@@ -44,10 +44,18 @@ namespace CutTheRopeDX.GameMain
         /// <param name="candyInLantern">
         /// <see langword="true"/> when the target candy is captured in a lantern.
         /// </param>
+        /// <param name="candyCarriedByMouse">
+        /// <see langword="true"/> when a mouse is carrying the target candy.
+        /// </param>
         /// <returns><see langword="true"/> when an unfired gun has an available candy.</returns>
-        public bool CanFire(bool candyInLantern)
+        /// <remarks>
+        /// A candy another device already owns is no target: the cup would stick to a point the
+        /// owner teleports every frame, leaving a rope the player cannot act on. The lantern and the
+        /// mouse are the two owners that hold a candy while it stays in play.
+        /// </remarks>
+        public bool CanFire(bool candyInLantern, bool candyCarriedByMouse)
         {
-            return !HasFired && !candyInLantern;
+            return !HasFired && !candyInLantern && !candyCarriedByMouse;
         }
 
         /// <summary>Fires the gun, capturing the baselines the cup tracks against.</summary>

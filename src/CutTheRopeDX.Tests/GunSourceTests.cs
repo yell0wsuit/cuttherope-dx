@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
             GunSource gun = new();
 
             Assert.True(gun.CanAttach);
-            Assert.True(gun.CanFire(candyInLantern: false));
+            Assert.True(gun.CanFire(candyInLantern: false, candyCarriedByMouse: false));
             Assert.False(gun.HasFired);
         }
 
@@ -22,7 +22,15 @@ namespace CutTheRopeDX.Tests
         {
             GunSource gun = new();
 
-            Assert.False(gun.CanFire(candyInLantern: true));
+            Assert.False(gun.CanFire(candyInLantern: true, candyCarriedByMouse: false));
+        }
+
+        [Fact]
+        public void GunWithCandyInAMouseCannotFire()
+        {
+            GunSource gun = new();
+
+            Assert.False(gun.CanFire(candyInLantern: false, candyCarriedByMouse: true));
         }
 
         [Fact]
@@ -32,7 +40,7 @@ namespace CutTheRopeDX.Tests
             gun.Fire(new Vector(0f, 0f), new Vector(0f, 100f), candyRotation: 0f);
 
             Assert.True(gun.HasFired);
-            Assert.False(gun.CanFire(candyInLantern: false));
+            Assert.False(gun.CanFire(candyInLantern: false, candyCarriedByMouse: false));
             Assert.False(gun.CanAttach);
         }
 

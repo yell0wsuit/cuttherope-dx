@@ -196,7 +196,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     Grab grab = (Grab)obj;
                     GunSource gun = grab.GunSource;
-                    if (gun != null && gun.CanFire(candies[0].Lifecycle.Attachments.InLantern))
+                    if (gun != null && gun.CanFire(candies[0].Lifecycle.Attachments.InLantern, MouseCarries(candies[0])))
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
