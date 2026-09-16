@@ -39,15 +39,6 @@ namespace CutTheRopeDX.Content.Commands
                 return 1;
             }
             catch (Exception exception) when (
-                exception is HttpRequestException or TaskCanceledException)
-            {
-                ContentError.Write(
-                    Console.Error,
-                    ContentError.DownloadFailed,
-                    $"Could not download the game assets from {AssetsUrl}: {exception.Message}");
-                return 1;
-            }
-            catch (Exception exception) when (
                 exception is ContentBuildException or IOException or InvalidDataException)
             {
                 ContentError.Write(Console.Error, ContentError.ContentUnreadable, exception.Message);
@@ -105,7 +96,20 @@ namespace CutTheRopeDX.Content.Commands
                 string archivePath = Path.Combine(temporaryDirectory, "ctrdx-assets-vk.zip");
                 using AssetDownloader downloader = new();
                 Console.WriteLine($"Downloading content assets from {AssetsUrl}...");
-                await downloader.DownloadAsync(AssetsUrl, archivePath, retries: 3);
+                try
+                {
+                    await downloader.DownloadAsync(AssetsUrl, archivePath, retries: 3);
+                }
+                catch (Exception exception) when (
+                    exception is HttpRequestException or IOException or TimeoutException)
+                {
+                    ContentError.Write(
+                        Console.Error,
+                        ContentError.DownloadFailed,
+                        $"Could not download the game assets from {AssetsUrl} "
+                        + $"({exception.Message}). Check the internet connection and build again.");
+                    return 1;
+                }
 
                 AssetArchive archive = new(archivePath, manifest);
                 AssetVerificationResult verification = archive.Verify();
