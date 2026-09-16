@@ -48,7 +48,6 @@ namespace CutTheRopeDX.GameMain
             conveyors.ProcessItems(tubes);
             conveyors.ProcessItems(pumps);
             conveyors.ProcessItems(bungees);
-            conveyors.ProcessItems(LightEmitterVisuals());
 
             foreach (object obj in rotatedCircles)
             {

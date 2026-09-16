@@ -1,5 +1,4 @@
 using CutTheRopeDX.Framework;
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
@@ -22,7 +21,7 @@ namespace CutTheRopeDX.GameMain
     /// The light bulb can be attached to ropes via its constraint point and can
     /// capture or be captured by bubbles.
     /// </remarks>
-    internal sealed class LightBulb : CTRGameObject, ITransporterItem, ITransporterBindAware
+    internal sealed class LightBulb : CTRGameObject
     {
         /// <summary>Sprite index for the light glow effect.</summary>
         private const int ImgObjLighterLight = 0;
@@ -280,41 +279,6 @@ namespace CutTheRopeDX.GameMain
         private void PostDrawNoChildren()
         {
             RestoreTransformations(this);
-        }
-
-        /// <inheritdoc />
-        public float PositionOnTransporter { get; set; }
-
-        /// <inheritdoc />
-        public Vector BindPoint => Vect(x, y);
-
-        /// <inheritdoc />
-        public void SetBindPoint(Vector point)
-        {
-            x = point.X;
-            y = point.Y;
-            constraint.pos = point;
-        }
-
-        /// <inheritdoc />
-        public float CollisionRadius => width * 0.15f;
-
-        /// <inheritdoc />
-        public float MinScale => 0.5f;
-
-        /// <inheritdoc />
-        public float MaxScale => 1.0f;
-
-        /// <inheritdoc />
-        public float TransporterScale { get; set; } = 1.0f;
-
-        /// <inheritdoc />
-        public bool IsDrawnByTransporter { get; set; }
-
-        /// <inheritdoc />
-        public void WillBind()
-        {
-            IsDrawnByTransporter = true;
         }
 
         /// <inheritdoc />
