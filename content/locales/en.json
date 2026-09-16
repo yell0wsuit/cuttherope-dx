@@ -134,6 +134,8 @@
     "TRACES_BTN": "Traces",
     "OUTDATED_WINDOWS_TITLE": "Outdated Windows version detected!",
     "OUTDATED_WINDOWS_TEXT": "This Windows version is not officially supported. Bugs and crashes may occur.\nPlease do not open a GitHub issue or ask for help for problems caused by this configuration.",
+    "PRERELEASE_TITLE": "Prerelease version",
+    "PRERELEASE_TEXT": "This is a testing version, built ahead of the official release so new changes can be tested early. Some bugs may occur.\nIf you find one, please report it on GitHub along with logs for investigation.",
     "STARTUP_LEGAL_DISCLAIMER": "Original game by ZeptoLab.\nCut the Rope: DX is not, and will never be affiliated with or endorsed by ZeptoLab.\nAll rights to the original game and its assets belong to ZeptoLab.",
     "TUTORIAL_TEXTS": {
         "TUTORIAL_LVL_1_1_01": "Slide across or click to cut the rope",

@@ -2251,6 +2251,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             TryShowOutdatedWindowsPopup();
+            TryShowPrereleasePopup();
             TryShowUpdatePopup();
             if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
             {
@@ -2433,6 +2434,40 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Shows the testing-version notice on the main menu, once per prerelease version.
+        /// </summary>
+        /// <remarks>
+        /// Waits for any popup already on screen, such as the outdated Windows warning, so the two
+        /// are not stacked on top of each other.
+        /// </remarks>
+        private void TryShowPrereleasePopup()
+        {
+            if (prereleasePopupShown)
+            {
+                return;
+            }
+
+            if (activeViewID != VIEW_MAIN_MENU)
+            {
+                return;
+            }
+
+            if (!PrereleaseNotice.IsDue(AppVersion.Current))
+            {
+                prereleasePopupShown = true;
+                return;
+            }
+
+            if (ActiveView().GetChildWithName("popup") != null)
+            {
+                return;
+            }
+
+            prereleasePopupShown = true;
+            PrereleaseNotice.Show(popUpMenu.builder, AppVersion.Current);
+        }
+
+        /// <summary>
         /// Shows the update-available popup once when update information is ready on the main menu.
         /// </summary>
         private void TryShowUpdatePopup()
@@ -2569,6 +2604,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Whether the outdated Windows popup has already been shown.</summary>
         private bool outdatedWindowsPopupShown;
+
+        /// <summary>Whether the prerelease notice has been dealt with this session.</summary>
+        private bool prereleasePopupShown;
 
         /// <summary>Localized menu resource pack reloaded when the UI language changes.</summary>
         private static readonly string[] PackLocalizationMenu = [Resources.Img.MenuExtraButtonsEn];

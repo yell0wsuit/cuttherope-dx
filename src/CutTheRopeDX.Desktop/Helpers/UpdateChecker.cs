@@ -34,8 +34,10 @@ namespace CutTheRopeDX.Helpers
                 return;
             }
 
+            // Prerelease builds are testers' builds: the stable release they would be offered is
+            // not an upgrade from them, so they never check.
             string currentVersion = GetCurrentVersionString();
-            if (IsDirtyVersion(currentVersion))
+            if (IsDirtyVersion(currentVersion) || AppVersion.IsPrereleaseVersion(currentVersion))
             {
                 return;
             }
