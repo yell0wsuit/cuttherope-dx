@@ -129,12 +129,12 @@ fi
 
 # Build the AppImage. appimagetool is itself an AppImage, so it needs FUSE to
 # self-mount; CI runners have none, hence the extract-and-run fallback.
-ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$APPDIR" "$PUBLISH_DIR/${APP_NAME}-${FILE_VERSION}-x86_64.AppImage"
+APPIMAGE_FILE="$PUBLISH_DIR/CutTheRopeDX-v${FILE_VERSION}-x86_64.AppImage"
+ARCH=x86_64 "$APPIMAGETOOL" --appimage-extract-and-run "$APPDIR" "$APPIMAGE_FILE"
 
 # Cleanup build directory
 rm -rf "$BUILD_DIR"
 
-APPIMAGE_FILE="$PUBLISH_DIR/${APP_NAME}-${FILE_VERSION}-x86_64.AppImage"
 APPIMAGE_SIZE=$(ls -lh "$APPIMAGE_FILE" | awk '{print $5}')
 
 # Copy to release_github

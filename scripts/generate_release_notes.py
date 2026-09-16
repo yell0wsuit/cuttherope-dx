@@ -23,7 +23,7 @@ def generate(version: str) -> str:
         "win_x64": f"CutTheRopeDX-{file_tag}-Windows-x64.7z",
         "mac_ffmpeg": f"CutTheRopeDX-{file_tag}-macOS-arm64-ffmpeg.dmg",
         "mac_avf": f"CutTheRopeDX-{file_tag}-macOS-arm64-avfoundation.dmg",
-        "appimage": f"CutTheRope-DX-{file_version}-x86_64.AppImage",
+        "appimage": f"CutTheRopeDX-{file_tag}-x86_64.AppImage",
     }
 
     md = f"""## Downloads
