@@ -130,7 +130,7 @@ namespace CutTheRopeDX.GameMain
                 while (k < grabCount)
                 {
                     Grab grab = bungees[k];
-                    grab.Update(delta);
+                    grab.Update(delta, timeFrozen);
 
                     if (grab.GunSource is GunSource gunSource)
                     {

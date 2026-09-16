@@ -70,6 +70,14 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
+        /// <remarks>A bee stops flapping and tilting while time is stopped.</remarks>
+        public override void Update(float delta, bool timeFrozen)
+        {
+            _ = (bee?.updateable = !timeFrozen);
+            base.Update(delta, timeFrozen);
+        }
+
+        /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
@@ -80,7 +88,7 @@ namespace CutTheRopeDX.GameMain
                 SyncRopeAnchor();
             }
 
-            if (bee != null)
+            if (bee?.updateable == true)
             {
                 Vector vector2 = mover.path[mover.targetPoint];
                 Vector pos = mover.pos;
