@@ -1978,7 +1978,7 @@ namespace CutTheRopeDX.GameMain
                                     ctx.Lifecycle.Attachments.Hand == otherHand))
                             {
                                 otherHand.cPoint.RemoveConstraint(grabbedBody.Point);
-                                otherHand.ReleaseCandy();
+                                otherHand.ReleaseCandyTo(hand);
                                 reorderHands = true;
                                 break;
                             }
@@ -2025,6 +2025,14 @@ namespace CutTheRopeDX.GameMain
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
                     CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
+                }
+
+                // A hand whose candy was taken stays releasing while the taker's claw is still in
+                // range and the candy is still held. Otherwise the candy passing on to a third hand
+                // would free this one to steal it straight back from a static claw nearby.
+                if (hand.TakenBy != null && hands.Exists(h => h?.State == MechanicalHandState.HoldingCandy))
+                {
+                    distance = Math.Min(distance, VectDistance(hand.cPoint.pos, hand.TakenBy.cPoint.pos));
                 }
 
                 if (hand.TrySettleToIdle(distance) == HandSettle.SettledOwingDropSound)

@@ -239,6 +239,7 @@ namespace CutTheRopeDX.GameMain
         public void GrabCandy()
         {
             State = MechanicalHandState.HoldingCandy;
+            TakenBy = null;
             DoRotateCandy = false;
             releaseSoundPlayed = false;
             graceTimer = MH_BOUNCER_GRACE;
@@ -250,6 +251,17 @@ namespace CutTheRopeDX.GameMain
         public void ReleaseCandy()
         {
             BeginRelease(dropSoundPlayed: false);
+        }
+
+        /// <summary>
+        /// Lets go of the candy because <paramref name="taker"/> grabbed it away. The drop sound is
+        /// still owed. See <see cref="TakenBy"/> for why the taker is remembered.
+        /// </summary>
+        /// <param name="taker">The hand that now holds the candy.</param>
+        public void ReleaseCandyTo(MechanicalHand taker)
+        {
+            BeginRelease(dropSoundPlayed: false);
+            TakenBy = taker;
         }
 
         /// <summary>
@@ -273,6 +285,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             State = MechanicalHandState.Idle;
+            TakenBy = null;
             bool owed = !releaseSoundPlayed;
             releaseSoundPlayed = false;
             return owed ? HandSettle.SettledOwingDropSound : HandSettle.Settled;
@@ -317,6 +330,7 @@ namespace CutTheRopeDX.GameMain
         private void BeginRelease(bool dropSoundPlayed)
         {
             State = MechanicalHandState.Releasing;
+            TakenBy = null;
             DoRotateCandy = false;
             releaseSoundPlayed = dropSoundPlayed;
         }
@@ -366,6 +380,7 @@ namespace CutTheRopeDX.GameMain
                 cPoint = null;
                 segments = null;
                 rotatingSegment = null;
+                TakenBy = null;
             }
             base.Dispose(disposing);
         }
@@ -421,6 +436,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Current mechanical hand state.</summary>
         public MechanicalHandState State { get; private set; }
+
+        /// <summary>
+        /// The hand that grabbed the candy away from this one, while this hand is still releasing
+        /// it. The candy is pinned to the holder's claw, so once a third hand takes it the candy
+        /// jumps away without any claw moving. Settling on candy distance alone would let this hand
+        /// go idle and steal the candy back, and a cluster of static claws would pass it around
+        /// forever. Null when the candy was dropped rather than taken.
+        /// </summary>
+        public MechanicalHand TakenBy { get; private set; }
 
         /// <summary>Whether the candy held by this hand should rotate with segment movement.</summary>
         public bool DoRotateCandy { get; private set; }

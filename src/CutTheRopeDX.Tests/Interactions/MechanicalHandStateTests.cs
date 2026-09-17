@@ -125,10 +125,12 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(
                 Interaction.StepUntil(scene, () => first.DoRotateCandy, maxFrames: 10),
                 "the first hand never started rotating its rocket candy");
-            _ = Act.GrabWithHand(scene, rocketCandy, handIndex: 1);
+            MechanicalHand second = Act.GrabWithHand(scene, rocketCandy, handIndex: 1);
 
-            // The stolen-from hand settles, then takes the plain candy instead.
-            Interaction.PlaceCandyAt(rocketCandy, new Vector(2000f, 2000f));
+            // The taker carries the candy away, so the stolen-from hand settles, then takes the
+            // plain candy instead.
+            Vector claw = second.ClawPosition();
+            Act.MoveClawTo(second, new Vector(claw.X + 400f, claw.Y + 300f));
             Assert.True(
                 Interaction.StepUntil(scene, () => first.State == MechanicalHandState.Idle, maxFrames: 60),
                 "the stolen-from hand never settled to idle");
