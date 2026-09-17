@@ -75,15 +75,48 @@ namespace CutTheRopeDX.Tests
             });
         }
 
-        private static BaseElement FirstStar(GameScene scene)
+        [Fact]
+        public void ACollectedStarKeepsItsSlotInTheRow()
+        {
+            // The fill animation's frames are trimmed to the star's silhouette as it flips, so
+            // they are narrower than the empty frame. Spacing the row by each icon's current size
+            // let a resize landing mid-pickup pin that icon on top of its neighbour for good.
+            _ = HeadlessGame.Boot();
+
+            LayoutSurfaces.WithSurface(720, 1280, () =>
+            {
+                GameScene scene = HeadlessGame.LoadLevel(0, 0);
+                Image[] stars = Stars(scene);
+                scene.RelayoutHud();
+                float[] emptyX = [stars[0].x, stars[1].x, stars[2].x];
+                float[] emptyY = [stars[0].y, stars[1].y, stars[2].y];
+
+                stars[0].SetDrawQuad(11);
+                stars[1].SetDrawQuad(4);
+                scene.RelayoutHud();
+
+                for (int i = 0; i < stars.Length; i++)
+                {
+                    Assert.Equal(emptyX[i], stars[i].x, 0.01);
+                    Assert.Equal(emptyY[i], stars[i].y, 0.01);
+                }
+            });
+        }
+
+        private static Image FirstStar(GameScene scene)
+        {
+            return Stars(scene)[0];
+        }
+
+        private static Image[] Stars(GameScene scene)
         {
             FieldInfo field = typeof(GameScene).GetField(
                 "hudStar",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.NotNull(field);
-            BaseElement[] stars = (BaseElement[])field.GetValue(scene);
+            Image[] stars = (Image[])field.GetValue(scene);
             Assert.NotNull(stars);
-            return stars[0];
+            return stars;
         }
     }
 }

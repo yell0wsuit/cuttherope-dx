@@ -283,7 +283,9 @@ namespace CutTheRopeDX.GameMain
         /// center, so it stays flush against the corner instead of bleeding past it: each icon is
         /// center-anchored, which already keeps it centered on its own position as it scales, so
         /// multiplying that position by the scale is enough to grow the whole row from the corner
-        /// with no extra correction term.
+        /// with no extra correction term. Slots are sized by the empty star frame rather than each
+        /// icon's current one: a resize landing while a pickup's fill animation was on a narrow
+        /// frame otherwise left that icon parked on top of its neighbour.
         /// </remarks>
         public void RelayoutHud()
         {
@@ -292,9 +294,8 @@ namespace CutTheRopeDX.GameMain
 
             for (int i = 0; i < 3; i++)
             {
-                int starSize = hudStar[i].width;
-                hudStar[i].x = ((starSize * i) + (starSize / 2)) * hudScale;
-                hudStar[i].y = hudStar[i].height / 2f * hudScale;
+                hudStar[i].x = ((hudStarSlotWidth * i) + (hudStarSlotWidth / 2)) * hudScale;
+                hudStar[i].y = hudStarSlotHeight / 2f * hudScale;
                 hudStar[i].scaleX = hudStar[i].scaleY = hudScale;
             }
             UpdateBackgroundScale();
@@ -1285,6 +1286,20 @@ namespace CutTheRopeDX.GameMain
         /// The HUD star animations that show collected stars.
         /// </summary>
         private readonly Animation[] hudStar = new Animation[3];
+
+        /// <summary>
+        /// Width of one slot in the HUD star row, taken from the empty star frame.
+        /// </summary>
+        /// <remarks>
+        /// An icon's own width follows whichever frame it is drawing, and the fill animation's
+        /// frames are trimmed narrower than the empty one, so the row cannot be spaced by it.
+        /// </remarks>
+        private readonly int hudStarSlotWidth;
+
+        /// <summary>
+        /// Height of one slot in the HUD star row, taken from the empty star frame.
+        /// </summary>
+        private readonly int hudStarSlotHeight;
 
         /// <summary>
         /// The gameplay camera.

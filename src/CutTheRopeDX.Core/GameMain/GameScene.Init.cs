@@ -80,10 +80,11 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
                 _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, HudUiStarFirstQuad, HudUiStarLastQuad);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
-                int starSize = hudStar[i].width;
+                hudStarSlotWidth = hudStar[i].width;
+                hudStarSlotHeight = hudStar[i].height;
                 hudStar[i].anchor = 18;
-                hudStar[i].x = (starSize * i) + (starSize / 2);
-                hudStar[i].y = hudStar[i].height / 2;
+                hudStar[i].x = (hudStarSlotWidth * i) + (hudStarSlotWidth / 2);
+                hudStar[i].y = hudStarSlotHeight / 2;
                 _ = AddChild(hudStar[i]);
             }
             int selectedTraceIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
