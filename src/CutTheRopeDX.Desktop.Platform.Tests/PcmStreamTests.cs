@@ -186,6 +186,20 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             Assert.True(stream.IsDrained);
         }
 
+        [Fact]
+        public void TheRateTheStreamPlaysOutAtIsReported()
+        {
+            // Which rate the device settled on is what decides whether a resampler sits in the
+            // path, and a log that does not say it cannot tell a stuck cutscene from a working one.
+            using SdlPcmStream resampled = SdlPcmStream.CreateForTesting(
+                Frequency, Channels, TimeSpan.FromMilliseconds(20), outputFrequency: 48000);
+            Assert.NotNull(resampled);
+
+            Assert.Equal(48000, resampled.DeviceFrequency);
+            Assert.Equal(Channels, resampled.DeviceChannels);
+            Assert.Equal(20, resampled.DeviceBuffer.TotalMilliseconds);
+        }
+
         /// <summary>Takes everything the stream will hand over, standing in for the device.</summary>
         private static void DrainEverything(SdlPcmStream target)
         {

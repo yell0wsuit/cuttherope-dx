@@ -920,6 +920,26 @@ namespace CutTheRopeDX.Framework.Media
             // A machine with no audio device still plays the movie; the soundtrack is what is lost.
             audioInstance = SdlPcmStream.TryOpen(audioSampleRate, audioChannels);
 
+            if (audioInstance == null)
+            {
+                VideoPlayerLog.AudioDeviceUnavailable(Logger);
+            }
+            else
+            {
+                VideoPlayerLog.AudioDeviceOpened(
+                    Logger,
+                    audioSampleRate,
+                    audioChannels,
+                    audioInstance.DeviceFrequency,
+                    audioInstance.DeviceChannels,
+                    audioInstance.DeviceBuffer.TotalMilliseconds,
+
+                    // A device that would not say its rate is reported as not resampling rather
+                    // than as resampling, because the zero printed beside it is what says the
+                    // answer is unknown; guessing either way here would read as fact.
+                    audioInstance.DeviceFrequency > 0 && audioInstance.DeviceFrequency != audioSampleRate);
+            }
+
             return true;
         }
 

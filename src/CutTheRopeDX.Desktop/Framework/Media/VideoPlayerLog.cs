@@ -189,6 +189,39 @@ namespace CutTheRopeDX.Framework.Media
             Message = "Decode ended early: {Stage} returned {ErrorCode} after {FramesDecoded} frames")]
         public static partial void DecodeFailed(ILogger logger, string stage, int errorCode, int framesDecoded);
 
+        /// <summary>Records what the audio device runs at, beside what the soundtrack is.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="sourceFrequency">Sample rate the movie's audio was encoded at.</param>
+        /// <param name="sourceChannels">Channel count the movie's audio was encoded with.</param>
+        /// <param name="deviceFrequency">Sample rate the device runs at, or zero if it would not say.</param>
+        /// <param name="deviceChannels">Channel count the device runs at, or zero if it would not say.</param>
+        /// <param name="deviceBufferMs">How much audio the device holds.</param>
+        /// <param name="resampling">Whether the two rates differ, so a resampler sits between them.</param>
+        /// <remarks>
+        /// The two rates are what decide whether a resampler sits in the path, and a resampler is
+        /// what makes the end of a soundtrack something that has to be announced rather than
+        /// simply reached. A machine whose cutscenes end differently from another's differs here
+        /// first, and nothing else in a log says so.
+        /// </remarks>
+        [LoggerMessage(
+            Level = LogLevel.Debug,
+            Message = "Audio device {DeviceFrequency} Hz {DeviceChannels}ch buffering "
+                + "{DeviceBufferMs:F0} ms; soundtrack {SourceFrequency} Hz {SourceChannels}ch, "
+                + "resampling={Resampling}")]
+        public static partial void AudioDeviceOpened(
+            ILogger logger,
+            int sourceFrequency,
+            int sourceChannels,
+            int deviceFrequency,
+            int deviceChannels,
+            double deviceBufferMs,
+            bool resampling);
+
+        /// <summary>Reports a machine with no audio output, where the movie plays silently.</summary>
+        /// <param name="logger">Destination logger.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "No audio device; the movie plays silently")]
+        public static partial void AudioDeviceUnavailable(ILogger logger);
+
         /// <summary>
         /// Reports a cutscene whose decoding is over but which has not told the game so.
         /// </summary>
