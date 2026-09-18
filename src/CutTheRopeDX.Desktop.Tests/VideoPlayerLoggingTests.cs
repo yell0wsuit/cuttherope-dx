@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Desktop.Tests
     public class VideoPlayerLoggingTests
     {
         [Fact]
-        public void LifecycleChatterIsTraceSoADefaultRunStaysQuiet()
+        public void LifecycleChatterIsBelowInformationSoADefaultRunStaysQuiet()
         {
             RecordingLoggerProvider recorder = new();
             using ILoggerFactory factory = LoggerFactory.Create(builder =>

@@ -166,16 +166,19 @@ namespace CutTheRopeDX.Framework.Media
             return opaque == null ? 0 : Volatile.Read(ref *(int*)opaque);
         }
 
+        /// <summary>The logger every line from this player goes to.</summary>
+        private static ILogger Logger => Log.For(LogCategories.MediaFFmpeg);
+
         /// <inheritdoc/>
         public void Play(string moviePath, bool mute)
         {
+            VideoPlayerLog.PlayRequested(Logger, moviePath, mute);
             if (abandoned)
             {
                 // A previous cutscene left its decode thread running inside resources this never
                 // got to release. Starting another would build a second set beside them, so the
                 // rest of the session goes without cutscenes instead.
-                ILogger abandonedLogger = Log.For(LogCategories.MediaFFmpeg);
-                VideoPlayerLog.SkippingMovie(abandonedLogger, moviePath, fileExists: true, librariesLoaded: false);
+                VideoPlayerLog.SkippingMovie(Logger, moviePath, fileExists: true, librariesLoaded: false);
                 PlaybackFinished?.Invoke();
                 return;
             }
@@ -191,14 +194,14 @@ namespace CutTheRopeDX.Framework.Media
 
             if (!fileExists(fullPath) || !librariesLoaded)
             {
-                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
-                VideoPlayerLog.SkippingMovie(logger, moviePath, fileExists(fullPath), librariesLoaded);
+                VideoPlayerLog.SkippingMovie(Logger, moviePath, fileExists(fullPath), librariesLoaded);
                 PlaybackFinished?.Invoke();
                 return;
             }
 
             if (!InitializeFfmpeg(fullPath))
             {
+                VideoPlayerLog.SkippingMovie(Logger, moviePath, fileExists: true, librariesLoaded: true);
                 Cleanup();
                 PlaybackFinished?.Invoke();
                 return;
@@ -206,6 +209,11 @@ namespace CutTheRopeDX.Framework.Media
 
             EnsureTexture(videoWidth, videoHeight);
             EnsureBuffer(videoWidth, videoHeight);
+
+            double durationSeconds = formatContext->duration == ffmpeg.AV_NOPTS_VALUE
+                ? -1
+                : formatContext->duration / (double)ffmpeg.AV_TIME_BASE;
+            VideoPlayerLog.Opened(Logger, moviePath, videoWidth, videoHeight, durationSeconds, audioInstance != null);
 
             waitForStart = true;
         }
@@ -255,6 +263,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
+            VideoPlayerLog.Stop(Logger);
             HasPlaybackFinished = true;
             playbackStopwatch.Stop();
             audioInstance?.Stop();
@@ -267,6 +276,7 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (!IsPaused)
             {
+                VideoPlayerLog.Pause(Logger);
                 IsPaused = true;
                 playbackStopwatch.Stop();
                 pauseGate.Reset();
@@ -279,6 +289,7 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (IsPaused)
             {
+                VideoPlayerLog.Resume(Logger);
                 IsPaused = false;
                 playbackStopwatch.Start();
                 pauseGate.Set();
@@ -294,6 +305,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
+            VideoPlayerLog.Start(Logger);
             waitForStart = false;
             playbackStopwatch.Restart();
             pauseGate.Set();
@@ -315,6 +327,10 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
+            // Ahead of the pause check, so a cutscene held past its end is reported rather than
+            // sitting on its last frame in silence.
+            ReportStalledCompletion();
+
             if (IsPaused)
             {
                 return;
@@ -327,10 +343,52 @@ namespace CutTheRopeDX.Framework.Media
 
             if (HasPlaybackFinished && formatContext != null && IsAudioPlaybackDrained())
             {
+                VideoPlayerLog.UpdateCleanup(Logger, videoTexture != null);
                 Cleanup();
                 IsPaused = false;
+                VideoPlayerLog.UpdateFinishing(Logger);
                 PlaybackFinished?.Invoke();
             }
+        }
+
+        /// <summary>How long completion may trail the end of decoding before it is reported.</summary>
+        /// <remarks>
+        /// Completion waits for the soundtrack to play out, which is the audio queue's lead plus
+        /// the device's own buffer: a fraction of a second. Several times that is a stall.
+        /// </remarks>
+        private const int CompletionStallWarningMs = 2000;
+
+        /// <summary>
+        /// Warns, once per cutscene, when decoding ended a while ago and completion has not come.
+        /// </summary>
+        private void ReportStalledCompletion()
+        {
+            if (!HasPlaybackFinished || formatContext == null || completionStallReported)
+            {
+                return;
+            }
+
+            if (decodeEndedAt < 0)
+            {
+                decodeEndedAt = Stopwatch.GetTimestamp();
+                return;
+            }
+
+            long waitedMs = (long)Stopwatch.GetElapsedTime(decodeEndedAt).TotalMilliseconds;
+            if (waitedMs < CompletionStallWarningMs)
+            {
+                return;
+            }
+
+            completionStallReported = true;
+            int pendingAudioBuffers;
+            lock (audioLock)
+            {
+                pendingAudioBuffers = pendingAudioQueue.Count;
+            }
+
+            double deviceQueuedMs = audioInstance?.Queued.TotalMilliseconds ?? 0;
+            VideoPlayerLog.CompletionStalled(Logger, waitedMs, IsPaused, pendingAudioBuffers, deviceQueuedMs);
         }
 
         /// <inheritdoc/>
@@ -341,6 +399,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
+            VideoPlayerLog.Disposing(Logger);
             disposed = true;
             Cleanup();
             pauseGate.Dispose();
@@ -379,8 +438,7 @@ namespace CutTheRopeDX.Framework.Media
             }
             catch (Exception ex)
             {
-                ILogger logger = Log.For(LogCategories.MediaFFmpeg);
-                VideoPlayerLog.DecodeThreadFailed(logger, ex);
+                VideoPlayerLog.DecodeThreadFailed(Logger, ex);
                 HasPlaybackFinished = true;
             }
         }
@@ -560,7 +618,7 @@ namespace CutTheRopeDX.Framework.Media
         {
             if (formatContext == null || packet == null || videoCodecContext == null)
             {
-                HasPlaybackFinished = true;
+                EndDecode("decoder state", 0);
                 return;
             }
 
@@ -580,7 +638,7 @@ namespace CutTheRopeDX.Framework.Media
                 int readResult = ffmpeg.av_read_frame(formatContext, packet);
                 if (readResult < 0)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode(readResult == ffmpeg.AVERROR_EOF ? null : "av_read_frame", readResult);
                     return;
                 }
 
@@ -601,7 +659,7 @@ namespace CutTheRopeDX.Framework.Media
                 ffmpeg.av_packet_unref(packet);
                 if (sendResult < 0)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode("avcodec_send_packet", sendResult);
                     return;
                 }
 
@@ -613,13 +671,13 @@ namespace CutTheRopeDX.Framework.Media
 
                 if (receiveResult == ffmpeg.AVERROR_EOF)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode(null, receiveResult);
                     return;
                 }
 
                 if (receiveResult < 0)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode("avcodec_receive_frame", receiveResult);
                     return;
                 }
 
@@ -643,7 +701,7 @@ namespace CutTheRopeDX.Framework.Media
                 byte* srcBase = rgbaFrame->data[0];
                 if (srcBase == null)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode("sws_scale", 0);
                     return;
                 }
 
@@ -662,9 +720,37 @@ namespace CutTheRopeDX.Framework.Media
                     frameReady = true;
                 }
 
-                _ = Interlocked.Increment(ref frameCount);
+                if (Interlocked.Increment(ref frameCount) == 1)
+                {
+                    VideoPlayerLog.FirstFrame(Logger, videoWidth, videoHeight);
+                }
+
                 return;
             }
+        }
+
+        /// <summary>
+        /// Marks decoding as over and records why. Called from the decode thread.
+        /// </summary>
+        /// <param name="failedStage">
+        /// The call that failed, or <see langword="null"/> when the movie simply ran out.
+        /// </param>
+        /// <param name="errorCode">What that call returned.</param>
+        private void EndDecode(string failedStage, int errorCode)
+        {
+            ILogger logger = Logger;
+            int framesDecoded = Volatile.Read(ref frameCount);
+            if (failedStage == null)
+            {
+                double clockSeconds = GetPlaybackClock();
+                VideoPlayerLog.DecodeReachedEnd(logger, framesDecoded, clockSeconds);
+            }
+            else
+            {
+                VideoPlayerLog.DecodeFailed(logger, failedStage, errorCode, framesDecoded);
+            }
+
+            HasPlaybackFinished = true;
         }
 
         /// <summary>
@@ -791,7 +877,7 @@ namespace CutTheRopeDX.Framework.Media
 
                 if (receiveResult < 0)
                 {
-                    HasPlaybackFinished = true;
+                    EndDecode("avcodec_receive_frame (audio)", receiveResult);
                     return;
                 }
 
@@ -1068,6 +1154,8 @@ namespace CutTheRopeDX.Framework.Media
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
+            decodeEndedAt = -1;
+            completionStallReported = false;
             playbackStopwatch.Reset();
             videoStreamIndex = -1;
             videoWidth = 0;
@@ -1178,6 +1266,12 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>Indicates audio should be muted.</summary>
         private bool mute;
+
+        /// <summary>When the main thread first saw decoding over, or -1 before then.</summary>
+        private long decodeEndedAt = -1;
+
+        /// <summary>Whether this cutscene's stalled completion has been reported already.</summary>
+        private bool completionStallReported;
 
         /// <summary>Time base for converting video timestamps to seconds.</summary>
         private double videoTimeBase;

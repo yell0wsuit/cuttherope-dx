@@ -1,6 +1,9 @@
 using System;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
+
+using Microsoft.Extensions.Logging;
 
 namespace CutTheRopeDX.Framework.Media
 {
@@ -37,6 +40,9 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="mute">If <see langword="true" />, audio will be muted during playback.</param>
         public void PlayURL(string moviePath, bool mute)
         {
+            ILogger logger = Logger;
+            string listener = delegateMovieMgrDelegate?.GetType().Name ?? "nobody";
+            MovieMgrLog.PlayRequested(logger, moviePath, mute, listener);
             url = moviePath;
             videoPlayer.Play(moviePath, mute);
         }
@@ -80,6 +86,8 @@ namespace CutTheRopeDX.Framework.Media
             {
                 return;
             }
+            ILogger logger = Logger;
+            MovieMgrLog.StopRequested(logger, url);
             videoPlayer.Stop();
         }
 
@@ -88,6 +96,9 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public void Pause()
         {
+            ILogger logger = Logger;
+            bool playing = videoPlayer.IsPlaying();
+            MovieMgrLog.PauseRequested(logger, playing, videoPlayer.IsPaused);
             videoPlayer.Pause();
         }
 
@@ -105,6 +116,9 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public void Resume()
         {
+            ILogger logger = Logger;
+            bool playing = videoPlayer.IsPlaying();
+            MovieMgrLog.ResumeRequested(logger, playing, videoPlayer.IsPaused);
             videoPlayer.Resume();
         }
 
@@ -129,7 +143,16 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private void OnPlaybackFinished()
         {
-            delegateMovieMgrDelegate?.MoviePlaybackFinished(url);
+            ILogger logger = Logger;
+            if (delegateMovieMgrDelegate == null)
+            {
+                MovieMgrLog.FinishedUnobserved(logger, url);
+                return;
+            }
+
+            string listener = delegateMovieMgrDelegate.GetType().Name;
+            MovieMgrLog.Finished(logger, url, listener);
+            delegateMovieMgrDelegate.MoviePlaybackFinished(url);
         }
 
         /// <summary>
@@ -141,6 +164,9 @@ namespace CutTheRopeDX.Framework.Media
             videoPlayer.Dispose();
         }
 
+        /// <summary>The logger every line from the manager goes to.</summary>
+        private static ILogger Logger => Log.For(LogCategories.MediaMovie);
+
 #pragma warning disable CA1859
         /// <summary>The underlying video player implementation.</summary>
         private readonly IVideoPlayer videoPlayer;
@@ -151,5 +177,59 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>Delegate to notify when movie playback events occur.</summary>
         public IMovieMgrDelegate delegateMovieMgrDelegate;
+    }
+
+    /// <summary>Log messages for cutscene requests and completion.</summary>
+    /// <remarks>
+    /// These are the game's side of a cutscene, and the player backends log their own side
+    /// under their own categories. Reading the two together shows where a cutscene that never
+    /// ended got stuck: a finish the player never reported, or one nobody acted on.
+    /// </remarks>
+    internal static partial class MovieMgrLog
+    {
+        /// <summary>Records a cutscene being asked for.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="url">Movie requested.</param>
+        /// <param name="mute">Whether it plays silently.</param>
+        /// <param name="listener">Type of whoever will be told it finished.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Play {Url}, mute={Mute}, listener={Listener}")]
+        public static partial void PlayRequested(ILogger logger, string url, bool mute, string listener);
+
+        /// <summary>Records a skip of the cutscene on screen.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="url">Movie being skipped.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Stop {Url}")]
+        public static partial void StopRequested(ILogger logger, string url);
+
+        /// <summary>Records a pause request, which arrives on every focus loss.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="playing">Whether a cutscene is loaded.</param>
+        /// <param name="paused">Whether it was already paused.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Pause requested: playing={Playing}, alreadyPaused={Paused}")]
+        public static partial void PauseRequested(ILogger logger, bool playing, bool paused);
+
+        /// <summary>Records a resume request.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="playing">Whether a cutscene is loaded.</param>
+        /// <param name="paused">Whether it was paused.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Resume requested: playing={Playing}, paused={Paused}")]
+        public static partial void ResumeRequested(ILogger logger, bool playing, bool paused);
+
+        /// <summary>Records a finished cutscene being handed to the game.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="url">Movie that finished.</param>
+        /// <param name="listener">Type of the controller told.</param>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Finished {Url}; notifying {Listener}")]
+        public static partial void Finished(ILogger logger, string url, string listener);
+
+        /// <summary>Reports a cutscene that finished with nothing listening for it.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="url">Movie that finished.</param>
+        /// <remarks>
+        /// The listener is what takes the movie view down, so a finish nobody hears leaves the
+        /// screen black with nothing left to change it.
+        /// </remarks>
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Finished {Url} with no listener; nothing will leave the movie view")]
+        public static partial void FinishedUnobserved(ILogger logger, string url);
     }
 }

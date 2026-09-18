@@ -10,7 +10,9 @@ namespace CutTheRopeDX.Framework.Media
     /// <remarks>
     /// Both players share these, and the caller passes the logger, so which backend produced a
     /// line is carried by its category rather than by a prefix in the text. The lifecycle lines
-    /// are traces: they are a running commentary useful only when a cutscene misbehaves.
+    /// are debug: one each per cutscene, and a running commentary useful only when a cutscene
+    /// misbehaves, so <c>--log-level debug</c> is what a report of a stuck cutscene asks for.
+    /// Anything that can repeat every frame stays at trace.
     /// </remarks>
     internal static partial class VideoPlayerLog
     {
@@ -18,7 +20,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="logger">Destination logger.</param>
         /// <param name="moviePath">Movie the caller asked for.</param>
         /// <param name="mute">Whether playback was asked to be silent.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Play requested: {MoviePath}, mute={Mute}")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Play requested: {MoviePath}, mute={Mute}")]
         public static partial void PlayRequested(ILogger logger, string moviePath, bool mute);
 
         /// <summary>Reports a movie file that is not where it was expected.</summary>
@@ -44,49 +46,49 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="logger">Destination logger.</param>
         /// <param name="width">Frame width in pixels.</param>
         /// <param name="height">Frame height in pixels.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "First frame: {Width}x{Height}")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "First frame: {Width}x{Height}")]
         public static partial void FirstFrame(ILogger logger, int width, int height);
 
         /// <summary>Records a stop request.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Stop")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Stop")]
         public static partial void Stop(ILogger logger);
 
         /// <summary>Records a pause request.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Pause")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Pause")]
         public static partial void Pause(ILogger logger);
 
         /// <summary>Records a resume request.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Resume")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Resume")]
         public static partial void Resume(ILogger logger);
 
         /// <summary>Records a start request.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Start")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Start")]
         public static partial void Start(ILogger logger);
 
         /// <summary>Records the update that tears the finished playback down.</summary>
         /// <param name="logger">Destination logger.</param>
         /// <param name="hasTexture">Whether a texture is still held.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Update: triggering cleanup, videoTexture={HasTexture}")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Update: triggering cleanup, videoTexture={HasTexture}")]
         public static partial void UpdateCleanup(ILogger logger, bool hasTexture);
 
         /// <summary>Records the update that notifies the game playback is over.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Update: invoking PlaybackFinished")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Update: invoking PlaybackFinished")]
         public static partial void UpdateFinishing(ILogger logger);
 
         /// <summary>Records the player being disposed.</summary>
         /// <param name="logger">Destination logger.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Dispose")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Dispose")]
         public static partial void Disposing(ILogger logger);
 
         /// <summary>Records playback reaching its end.</summary>
         /// <param name="logger">Destination logger.</param>
         /// <param name="hasTexture">Whether a texture is still held.</param>
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Playback finished, videoTexture={HasTexture}")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Playback finished, videoTexture={HasTexture}")]
         public static partial void PlaybackFinished(ILogger logger, bool hasTexture);
 
         /// <summary>Reports that the decoder libraries could not be brought up.</summary>
@@ -144,5 +146,67 @@ namespace CutTheRopeDX.Framework.Media
             Level = LogLevel.Warning,
             Message = "Decode thread did not stop within {WaitedMs} ms; releasing anyway")]
         public static partial void DecodeThreadDidNotStop(ILogger logger, int waitedMs);
+
+        /// <summary>Reports the stream a cutscene opened with.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="moviePath">Movie that was opened.</param>
+        /// <param name="width">Frame width in pixels.</param>
+        /// <param name="height">Frame height in pixels.</param>
+        /// <param name="durationSeconds">Container duration, or a negative value when unknown.</param>
+        /// <param name="hasAudio">Whether a soundtrack will be played.</param>
+        [LoggerMessage(
+            Level = LogLevel.Debug,
+            Message = "Opened {MoviePath}: {Width}x{Height}, {DurationSeconds:F2}s, audio={HasAudio}")]
+        public static partial void Opened(
+            ILogger logger, string moviePath, int width, int height, double durationSeconds, bool hasAudio);
+
+        /// <summary>Records a pause request that had nothing to hold.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="reason">Why the request was ignored.</param>
+        /// <remarks>
+        /// The host pauses the movie whenever the window loses focus, whether or not one is
+        /// playing, so this is routine; it is here so a log shows the request arrived.
+        /// </remarks>
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Pause ignored: {Reason}")]
+        public static partial void PauseIgnored(ILogger logger, string reason);
+
+        /// <summary>Records the decoder running out of packets.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="framesDecoded">Video frames decoded over the whole playback.</param>
+        /// <param name="clockSeconds">Playback clock when the end was reached.</param>
+        [LoggerMessage(
+            Level = LogLevel.Debug,
+            Message = "Decode reached the end after {FramesDecoded} frames at {ClockSeconds:F2}s")]
+        public static partial void DecodeReachedEnd(ILogger logger, int framesDecoded, double clockSeconds);
+
+        /// <summary>Reports decoding ending early on an FFmpeg error.</summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="stage">Which call failed.</param>
+        /// <param name="errorCode">The FFmpeg error code it returned.</param>
+        /// <param name="framesDecoded">Video frames decoded before the failure.</param>
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Decode ended early: {Stage} returned {ErrorCode} after {FramesDecoded} frames")]
+        public static partial void DecodeFailed(ILogger logger, string stage, int errorCode, int framesDecoded);
+
+        /// <summary>
+        /// Reports a cutscene whose decoding is over but which has not told the game so.
+        /// </summary>
+        /// <param name="logger">Destination logger.</param>
+        /// <param name="waitedMs">How long since decoding ended.</param>
+        /// <param name="paused">Whether the player is held paused.</param>
+        /// <param name="pendingAudioBuffers">Decoded audio buffers not yet handed to the device.</param>
+        /// <param name="deviceQueuedMs">Audio the device stream has not played yet.</param>
+        /// <remarks>
+        /// Completion waits on the soundtrack playing out, which takes a fraction of a second.
+        /// Anything longer leaves the last frame of the movie on screen with nothing to end it,
+        /// and this names which of the two things it waits on is holding it.
+        /// </remarks>
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "Decode ended {WaitedMs} ms ago but playback has not completed: paused={Paused}, "
+                + "pendingAudioBuffers={PendingAudioBuffers}, deviceQueuedMs={DeviceQueuedMs:F0}")]
+        public static partial void CompletionStalled(
+            ILogger logger, long waitedMs, bool paused, int pendingAudioBuffers, double deviceQueuedMs);
     }
 }

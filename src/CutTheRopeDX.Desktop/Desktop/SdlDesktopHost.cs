@@ -129,7 +129,14 @@ namespace CutTheRopeDX.Desktop
             }
             else
             {
-                switch (GraphicsRecovery.PressAction(moviePressArmed, movies.IsPaused()))
+                MoviePressAction action = GraphicsRecovery.PressAction(moviePressArmed, movies.IsPaused());
+                if (action != MoviePressAction.Ignore)
+                {
+                    ILogger pressLogger = Log.For(LogCategories.SdlHost);
+                    SdlDesktopHostLog.MoviePress(pressLogger, action);
+                }
+
+                switch (action)
                 {
                     case MoviePressAction.Resume:
                         movies.Resume();
@@ -232,6 +239,8 @@ namespace CutTheRopeDX.Desktop
                 Back = () => { Application.SharedMovieMgr().Stop(); _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed(); },
                 FocusChanged = focused =>
                 {
+                    ILogger focusLogger = Log.For(LogCategories.SdlHost);
+                    SdlDesktopHostLog.FocusChanged(focusLogger, focused);
                     if (focused)
                     {
                         CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
@@ -883,6 +892,12 @@ namespace CutTheRopeDX.Desktop
 
         [LoggerMessage(Level = LogLevel.Error, Message = "Rejected {Renderer}: {Reason}")]
         public static partial void RejectedRenderer(ILogger logger, GraphicsBackendKind renderer, string reason);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Press on a cutscene: {Action}")]
+        public static partial void MoviePress(ILogger logger, MoviePressAction action);
+
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Window focused={Focused}; pausing or resuming the runtime")]
+        public static partial void FocusChanged(ILogger logger, bool focused);
 
         [LoggerMessage(Level = LogLevel.Error, Message = "Device lost: {Reason}")]
         public static partial void DeviceLost(ILogger logger, string reason);

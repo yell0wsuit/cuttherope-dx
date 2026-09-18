@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Tests;
+
+using Microsoft.Extensions.Logging;
 
 using Xunit;
 
@@ -218,6 +222,32 @@ namespace CutTheRopeDX.Desktop.Tests
             // player cannot reach a screen that has already moved on.
             player.ReachEndOfMovie();
             Assert.Equal(0, finished.Count);
+        }
+
+        [Fact]
+        public void AFinishNobodyIsListeningForIsReported()
+        {
+            // The listener is what takes the movie view down, so a finish with none leaves a black
+            // screen behind and the log is the only place that says why.
+            RecordingLoggerProvider recorder = new();
+            using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddProvider(recorder));
+            Log.Factory = factory;
+            try
+            {
+                (MovieMgr movies, _) = StartMovie();
+                movies.delegateMovieMgrDelegate = null;
+
+                player.ReachEndOfMovie();
+
+                LogRecord entry = Assert.Single(recorder.Records, record => record.Level >= LogLevel.Warning);
+                Assert.Equal(LogCategories.MediaMovie, entry.Category);
+                Assert.Contains("ctr_intro", entry.Message);
+                movies.Dispose();
+            }
+            finally
+            {
+                Log.Factory = null;
+            }
         }
 
         public void Dispose()

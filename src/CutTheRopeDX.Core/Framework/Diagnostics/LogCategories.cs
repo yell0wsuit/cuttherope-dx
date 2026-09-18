@@ -15,6 +15,11 @@ namespace CutTheRopeDX.Framework.Diagnostics
         /// <summary>Graphics device construction and adapter reporting.</summary>
         public const string SdlGraphics = "Sdl.Graphics";
 
+        /// <summary>
+        /// Cutscene requests and completion as the game sees them, whichever player is behind them.
+        /// </summary>
+        public const string MediaMovie = "Media.Movie";
+
         /// <summary>The FFmpeg video player.</summary>
         public const string MediaFFmpeg = "Media.FFmpeg";
 
