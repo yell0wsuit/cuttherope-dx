@@ -245,8 +245,10 @@ namespace CutTheRopeDX.Framework.Media
         public bool IsPlaying()
         {
             // Report active until cleanup runs so callers keep invoking Update(),
-            // which performs final cleanup and fires PlaybackFinished.
-            return formatContext != null;
+            // which performs final cleanup and fires PlaybackFinished. An abandoned teardown
+            // leaves the contexts in place for the thread still using them, but the cutscene
+            // itself has been reported over and must not be finished a second time.
+            return formatContext != null && !abandoned;
         }
 
         /// <inheritdoc/>
@@ -258,7 +260,10 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Stop()
         {
-            if (HasPlaybackFinished)
+            // Keyed on the movie being open rather than on decoding having ended, because the two
+            // are apart for as long as the soundtrack takes to play out. A skip in that window has
+            // to end the cutscene too, or a device that never drains leaves nothing that can.
+            if (!IsPlaying())
             {
                 return;
             }
@@ -274,14 +279,34 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Pause()
         {
-            if (!IsPaused)
+            if (IsPaused)
             {
-                VideoPlayerLog.Pause(Logger);
-                IsPaused = true;
-                playbackStopwatch.Stop();
-                pauseGate.Reset();
-                audioInstance?.Pause();
+                return;
             }
+
+            // The host pauses on every focus loss, movie or not. Recording a pause with nothing
+            // open left the flag set for whichever cutscene came next, and Update holds a paused
+            // one short of finishing: it played to its last frame and sat there until a click
+            // resumed it.
+            if (!IsPlaying())
+            {
+                VideoPlayerLog.PauseIgnored(Logger, "no movie open");
+                return;
+            }
+
+            // Past the end there is nothing left to hold but the last of the soundtrack, and
+            // holding it only keeps the final frame on screen for longer.
+            if (HasPlaybackFinished)
+            {
+                VideoPlayerLog.PauseIgnored(Logger, "decoding already ended");
+                return;
+            }
+
+            VideoPlayerLog.Pause(Logger);
+            IsPaused = true;
+            playbackStopwatch.Stop();
+            pauseGate.Reset();
+            audioInstance?.Pause();
         }
 
         /// <inheritdoc/>
@@ -322,7 +347,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <inheritdoc/>
         public void Update()
         {
-            if (waitForStart)
+            if (waitForStart || !IsPlaying())
             {
                 return;
             }
@@ -341,11 +366,10 @@ namespace CutTheRopeDX.Framework.Media
                 DrainAudioQueue();
             }
 
-            if (HasPlaybackFinished && formatContext != null && IsAudioPlaybackDrained())
+            if (HasPlaybackFinished && IsAudioPlaybackDrained())
             {
                 VideoPlayerLog.UpdateCleanup(Logger, videoTexture != null);
                 Cleanup();
-                IsPaused = false;
                 VideoPlayerLog.UpdateFinishing(Logger);
                 PlaybackFinished?.Invoke();
             }
@@ -1079,6 +1103,13 @@ namespace CutTheRopeDX.Framework.Media
 
         private void Cleanup()
         {
+            // The thread an earlier teardown gave up on is still inside everything below, so no
+            // later teardown may release it either.
+            if (abandoned)
+            {
+                return;
+            }
+
             HasStopRequested = true;
             pauseGate.Set();
 
@@ -1154,6 +1185,7 @@ namespace CutTheRopeDX.Framework.Media
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
+            IsPaused = false;
             decodeEndedAt = -1;
             completionStallReported = false;
             playbackStopwatch.Reset();
