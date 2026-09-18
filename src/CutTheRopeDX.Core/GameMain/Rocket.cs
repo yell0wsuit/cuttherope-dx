@@ -168,10 +168,13 @@ namespace CutTheRopeDX.GameMain
             SyncPointToMover();
         }
 
-        /// <summary>Keeps the physics point and the object position on whichever one leads.</summary>
+        /// <summary>
+        /// Keeps the physics point and the object position on whichever one leads: the path until
+        /// the rocket takes a candy (binding drops the mover), the point from then on.
+        /// </summary>
         private void SyncPointToMover()
         {
-            if (mover != null && !mover.IsPaused)
+            if (mover != null)
             {
                 point.pos.X = x;
                 point.pos.Y = y;

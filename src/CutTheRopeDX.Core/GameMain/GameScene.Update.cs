@@ -1166,7 +1166,7 @@ namespace CutTheRopeDX.GameMain
                                 // Time Travel bursts the bubble before it takes the candy.
                                 PopCandyBubble(body);
                             }
-                            rocket.mover?.Pause();
+                            rocket.SetMover(null);
                             rocket.startRotation = rocket.rotation;
                             // Per-candy: only a holder of THIS candy selects the direct-FLY bind.
                             // The rocket steals from nobody — it coexists with hand or mouse and
