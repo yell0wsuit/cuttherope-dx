@@ -659,37 +659,57 @@ namespace CutTheRopeDX.Framework.Media
 
             while (true)
             {
-                int readResult = ffmpeg.av_read_frame(formatContext, packet);
-                if (readResult < 0)
+                if (!videoDraining)
                 {
-                    EndDecode(readResult == ffmpeg.AVERROR_EOF ? null : "av_read_frame", readResult);
-                    return;
-                }
+                    int readResult = ffmpeg.av_read_frame(formatContext, packet);
+                    if (readResult == ffmpeg.AVERROR_EOF)
+                    {
+                        // A decoder that reorders frames holds the last ones back until it is told
+                        // no more packets are coming. Without the empty packet that says so, those
+                        // frames are never handed over and the movie ends short of its last frame.
+                        _ = ffmpeg.avcodec_send_packet(videoCodecContext, null);
+                        videoDraining = true;
+                    }
+                    else if (readResult < 0)
+                    {
+                        EndDecode("av_read_frame", readResult);
+                        return;
+                    }
+                    else
+                    {
+                        if (packet->stream_index == audioStreamIndex && !mute && audioCodecContext != null)
+                        {
+                            DecodeAudioPacket(packet);
+                            ffmpeg.av_packet_unref(packet);
+                            continue;
+                        }
 
-                if (packet->stream_index == audioStreamIndex && !mute && audioCodecContext != null)
-                {
-                    DecodeAudioPacket(packet);
-                    ffmpeg.av_packet_unref(packet);
-                    continue;
-                }
+                        if (packet->stream_index != videoStreamIndex)
+                        {
+                            ffmpeg.av_packet_unref(packet);
+                            continue;
+                        }
 
-                if (packet->stream_index != videoStreamIndex)
-                {
-                    ffmpeg.av_packet_unref(packet);
-                    continue;
-                }
-
-                int sendResult = ffmpeg.avcodec_send_packet(videoCodecContext, packet);
-                ffmpeg.av_packet_unref(packet);
-                if (sendResult < 0)
-                {
-                    EndDecode("avcodec_send_packet", sendResult);
-                    return;
+                        int sendResult = ffmpeg.avcodec_send_packet(videoCodecContext, packet);
+                        ffmpeg.av_packet_unref(packet);
+                        if (sendResult < 0)
+                        {
+                            EndDecode("avcodec_send_packet", sendResult);
+                            return;
+                        }
+                    }
                 }
 
                 int receiveResult = ffmpeg.avcodec_receive_frame(videoCodecContext, videoFrame);
                 if (receiveResult == ffmpeg.AVERROR(ffmpeg.EAGAIN))
                 {
+                    // A draining decoder has nothing more to wait for, so it cannot ask for more.
+                    if (videoDraining)
+                    {
+                        EndDecode(null, receiveResult);
+                        return;
+                    }
+
                     continue;
                 }
 
@@ -1185,6 +1205,7 @@ namespace CutTheRopeDX.Framework.Media
             videoBuffer = null;
             frameReady = false;
             waitForStart = false;
+            videoDraining = false;
             IsPaused = false;
             decodeEndedAt = -1;
             completionStallReported = false;
@@ -1298,6 +1319,11 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>Indicates audio should be muted.</summary>
         private bool mute;
+
+        /// <summary>
+        /// Whether the file has run out and the decoder is handing over the frames it held back.
+        /// </summary>
+        private bool videoDraining;
 
         /// <summary>When the main thread first saw decoding over, or -1 before then.</summary>
         private long decodeEndedAt = -1;
