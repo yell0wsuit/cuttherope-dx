@@ -196,17 +196,22 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="waitedMs">How long since decoding ended.</param>
         /// <param name="paused">Whether the player is held paused.</param>
         /// <param name="pendingAudioBuffers">Decoded audio buffers not yet handed to the device.</param>
-        /// <param name="deviceQueuedMs">Audio the device stream has not played yet.</param>
+        /// <param name="deviceQueuedFrames">Sample frames the device stream has not taken yet.</param>
         /// <remarks>
         /// Completion waits on the soundtrack playing out, which takes a fraction of a second.
         /// Anything longer leaves the last frame of the movie on screen with nothing to end it,
         /// and this names which of the two things it waits on is holding it.
+        /// <para>
+        /// The queue is reported in frames rather than in the time they last, because what holds a
+        /// stream short of empty is a handful of frames: rounded to milliseconds they read as
+        /// nothing at all, which is indistinguishable from the queue this is meant to rule out.
+        /// </para>
         /// </remarks>
         [LoggerMessage(
             Level = LogLevel.Warning,
             Message = "Decode ended {WaitedMs} ms ago but playback has not completed: paused={Paused}, "
-                + "pendingAudioBuffers={PendingAudioBuffers}, deviceQueuedMs={DeviceQueuedMs:F0}")]
+                + "pendingAudioBuffers={PendingAudioBuffers}, deviceQueuedFrames={DeviceQueuedFrames}")]
         public static partial void CompletionStalled(
-            ILogger logger, long waitedMs, bool paused, int pendingAudioBuffers, double deviceQueuedMs);
+            ILogger logger, long waitedMs, bool paused, int pendingAudioBuffers, int deviceQueuedFrames);
     }
 }
