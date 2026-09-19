@@ -105,10 +105,10 @@ namespace CutTheRopeDX.GameMain
         {
             if (rootNode != null)
             {
-                CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
-                ctrrootController.SetMap(rootNode);
-                ctrrootController.SetMapName(selectedMap);
-                CTRRootController.SetMapsList(maplist);
+                RootController root = Application.SharedRootController();
+                root.SetMap(rootNode);
+                root.SetMapName(selectedMap);
+                RootController.SetMapsList(maplist);
                 Deactivate();
             }
         }
@@ -119,7 +119,7 @@ namespace CutTheRopeDX.GameMain
         public void SetNormalMode()
         {
             autoLoad = false;
-            ((CTRRootController)Application.SharedRootController()).SetPicker(true);
+            Application.SharedRootController().SetPicker(true);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace CutTheRopeDX.GameMain
         public void SetAutoLoadMap(string map)
         {
             autoLoad = true;
-            ((CTRRootController)Application.SharedRootController()).SetPicker(false);
+            Application.SharedRootController().SetPicker(false);
             selectedMap = map;
         }
 

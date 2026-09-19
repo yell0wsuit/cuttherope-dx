@@ -2,7 +2,6 @@ using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
-using CutTheRopeDX.GameMain;
 
 namespace CutTheRopeDX
 {
@@ -41,7 +40,7 @@ namespace CutTheRopeDX
         /// <returns><see langword="true"/> when gameplay is the active child.</returns>
         public static bool IsInGameplay()
         {
-            return Application.SharedRootController().activeChildID == CTRRootController.CHILD_GAME;
+            return Application.SharedRootController().activeChildID == RootController.CHILD_GAME;
         }
 
         /// <summary>Names the active root child, for smoke-run reporting.</summary>
@@ -50,10 +49,10 @@ namespace CutTheRopeDX
         {
             return Application.SharedRootController().activeChildID switch
             {
-                CTRRootController.CHILD_START => "startup",
-                CTRRootController.CHILD_MENU => "menu",
-                CTRRootController.CHILD_LOADING => "loading",
-                CTRRootController.CHILD_GAME => "game",
+                RootController.CHILD_START => "startup",
+                RootController.CHILD_MENU => "menu",
+                RootController.CHILD_LOADING => "loading",
+                RootController.CHILD_GAME => "game",
                 _ => "none",
             };
         }

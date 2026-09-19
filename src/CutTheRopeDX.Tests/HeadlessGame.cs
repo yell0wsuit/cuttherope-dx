@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
         /// <returns>The loaded scene.</returns>
         public static GameScene LoadLevel(int pack, int level)
         {
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             root.SetPicker(false);
             root.SetPack(pack);
             root.SetLevel(level);
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests
         /// <returns>An activated controller. Its scene is <c>GetView(0).GetChild(0)</c>.</returns>
         public static GameController LoadLevelWithController(int pack, int level)
         {
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             root.SetPicker(false);
             root.SetPack(pack);
             root.SetLevel(level);
@@ -90,7 +90,7 @@ namespace CutTheRopeDX.Tests
         /// <returns>The loaded scene.</returns>
         public static GameScene LoadScenarioMap(XElement map, int pack = 0, int level = 0)
         {
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             root.SetPack(pack);
             root.SetLevel(level);
             root.PrepareMapAndEnsureResources(map, "scenario.xml");

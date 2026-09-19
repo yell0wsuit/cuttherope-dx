@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Framework.Core
     /// and manages screen-transition capture/drawing.
     /// </summary>
     /// <param name="parent">Parent controller reference passed to the base controller.</param>
-    internal class RootController(ViewController parent) : ViewController(parent)
+    internal partial class RootController(ViewController parent) : ViewController(parent)
     {
         /// <summary>
         /// Advances the active controller and applies any pending deactivation requests.
@@ -170,12 +170,6 @@ namespace CutTheRopeDX.Framework.Core
             ApplyLandscape();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.Disable(Renderer.GL_BLEND);
-        }
-
-        /// <inheritdoc />
-        public override void Activate()
-        {
-            base.Activate();
         }
 
         /// <summary>
@@ -342,11 +336,14 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Resumes input routing and other root-controller activity.
+        /// Resumes input routing and other root-controller activity, unless the Crystal overlay is active.
         /// </summary>
         public virtual void Resume()
         {
-            suspended = false;
+            if (!inCrystal)
+            {
+                suspended = false;
+            }
         }
 
         /// <inheritdoc />

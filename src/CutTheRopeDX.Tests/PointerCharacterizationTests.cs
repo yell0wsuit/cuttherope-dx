@@ -102,7 +102,7 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
             MenuController controller = new(
-                (CTRRootController)Application.SharedRootController());
+                Application.SharedRootController());
 
             try
             {
@@ -130,7 +130,7 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
             MenuController controller = new(
-                (CTRRootController)Application.SharedRootController());
+                Application.SharedRootController());
 
             try
             {

@@ -36,7 +36,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public GameScene()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             dd = new DelayedDispatcher();
             initialCameraToStarDistance = -1f;
             aniPool = new AnimationsPool
@@ -56,11 +56,11 @@ namespace CutTheRopeDX.GameMain
             };
             _ = AddChild(staticAniPool);
             camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-            string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(cTRRootController.GetPack());
+            string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(root.GetPack());
             string boxBackground = boxBackgrounds.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
             if (string.IsNullOrWhiteSpace(boxBackground))
             {
-                throw new InvalidDataException($"Pack config is missing boxBackground for pack {cTRRootController.GetPack()}.");
+                throw new InvalidDataException($"Pack config is missing boxBackground for pack {root.GetPack()}.");
             }
             back = new TileMap().InitWithRowsColumns(1, 1);
             // Wide levels can move the camera past one P1 width, so repeat it on both axes.
@@ -105,8 +105,8 @@ namespace CutTheRopeDX.GameMain
             overOmNom = false;
             dd.CancelAllDispatches();
             gameplayFlow.Reset();
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (cTRRootController.IsPicker())
+            RootController root = Application.SharedRootController();
+            if (root.IsPicker())
             {
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://reload"), "mappicker://reload", true);
                 return;
@@ -129,8 +129,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            int pack = cTRRootController.GetPack();
-            int level = cTRRootController.GetLevel();
+            int pack = root.GetPack();
+            int level = root.GetLevel();
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
             XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
         }
@@ -144,18 +144,18 @@ namespace CutTheRopeDX.GameMain
             gameplayFlow.Reset();
             initialCameraToStarDistance = -1f;
             animateRestartDim = false;
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (cTRRootController.IsPicker())
+            RootController root = Application.SharedRootController();
+            if (root.IsPicker())
             {
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://next"), "mappicker://next", true);
                 return;
             }
-            int pack = cTRRootController.GetPack();
-            int level = cTRRootController.GetLevel();
+            int pack = root.GetPack();
+            int level = root.GetLevel();
             if (level < Preferences.GetLevelsInPackCount(pack) - 1)
             {
-                cTRRootController.SetLevel(++level);
-                cTRRootController.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
+                root.SetLevel(++level);
+                root.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
                 string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
             }
@@ -188,8 +188,8 @@ namespace CutTheRopeDX.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             image.AddTimelinewithID(timeline, 0);
 
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            Vector? earthBgPosition = PackConfig.GetEarthBgPosition(cTRRootController.GetPack());
+            RootController root = Application.SharedRootController();
+            Vector? earthBgPosition = PackConfig.GetEarthBgPosition(root.GetPack());
             if (earthBgPosition.HasValue)
             {
                 image.x = earthBgPosition.Value.X;

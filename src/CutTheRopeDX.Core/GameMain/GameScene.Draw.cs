@@ -50,7 +50,7 @@ namespace CutTheRopeDX.GameMain
             int p2Count = BackgroundTiling.GetP2Count(mapHeight, SCREEN_HEIGHT);
             if (p2Count > 0)
             {
-                int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
+                int pack = Application.SharedRootController().GetPack();
                 int p2Y = PackConfig.GetBoxBackgroundP2Y(pack);
                 if (p2Y > 0)
                 {

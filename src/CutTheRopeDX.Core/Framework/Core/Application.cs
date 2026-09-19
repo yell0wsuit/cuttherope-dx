@@ -3,7 +3,6 @@ using System;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
 namespace CutTheRopeDX.Framework.Core
@@ -37,7 +36,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>Shared root controller.</returns>
         public static RootController SharedRootController()
         {
-            root ??= new CTRRootController(null);
+            root ??= RootController.CreateGameRoot();
             return root;
         }
 
@@ -139,7 +138,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>New root controller instance.</returns>
         public virtual RootController CreateRootController()
         {
-            return new CTRRootController(null);
+            return RootController.CreateGameRoot();
         }
 
         /// <summary>

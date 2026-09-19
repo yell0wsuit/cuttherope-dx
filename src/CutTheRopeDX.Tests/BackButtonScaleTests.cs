@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests
         /// <returns>The back button, laid out for the current surface.</returns>
         private static Button BackButton()
         {
-            MenuController controller = new((CTRRootController)Application.SharedRootController());
+            MenuController controller = new(Application.SharedRootController());
             try
             {
                 controller.ShowView(MenuController.VIEW_ABOUT);

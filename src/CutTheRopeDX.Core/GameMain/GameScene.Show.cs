@@ -20,8 +20,8 @@ namespace CutTheRopeDX.GameMain
             InitializeCandyObjects();
             InitializeHUDStars();
 
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            XElement map = cTRRootController.GetMap();
+            RootController root = Application.SharedRootController();
+            XElement map = root.GetMap();
 
             float mapScale = 3f;
             float mapOffsetY = 0f;
@@ -59,7 +59,7 @@ namespace CutTheRopeDX.GameMain
             tummyTeasers = 0;
             starsCollected = 0;
             // Update RPC with current level info (on start/restart)
-            PlatformServices.RichPresence?.SetLevelPresence(cTRRootController.GetPack(), cTRRootController.GetLevel(), starsCollected, false, levelName);
+            PlatformServices.RichPresence?.SetLevelPresence(root.GetPack(), root.GetLevel(), starsCollected, false, levelName);
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 body.Bubble = null;
@@ -74,7 +74,7 @@ namespace CutTheRopeDX.GameMain
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
-            string packAndLevelNumbers = (cTRRootController.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (cTRRootController.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
+            string packAndLevelNumbers = (root.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (root.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
             LevelLabelText levelLabel = LevelLabel.Resolve(
                 CustomLevelSession.IsActive,
                 ResolveLevelDisplayName(),
@@ -121,7 +121,7 @@ namespace CutTheRopeDX.GameMain
                 ResetBungeeHighlight();
             }
             PlatformServices.Cursor?.ReleaseButtons();
-            CTRRootController.LogEvent("IG_SHOWN");
+            RootController.LogEvent("IG_SHOWN");
         }
 
         /// <summary>

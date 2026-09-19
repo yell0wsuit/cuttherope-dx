@@ -71,7 +71,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="_1">The XML loader success flag.</param>
         public void XmlLoaderFinishedWithfromwithSuccess(XElement rootNode, string _, bool _1)
         {
-            CTRRootController rootController = (CTRRootController)Application.SharedRootController();
+            RootController rootController = Application.SharedRootController();
             string resolvedMapName = ResolveMapName(_);
             rootController.PrepareMapAndEnsureResources(rootNode, resolvedMapName);
             if (animateRestartDim)
@@ -90,7 +90,7 @@ namespace CutTheRopeDX.GameMain
         private static string ResolveMapName(string source)
         {
             return string.IsNullOrWhiteSpace(source) || source.Contains("://", StringComparison.Ordinal)
-                ? ((CTRRootController)Application.SharedRootController()).GetMapName()
+                ? Application.SharedRootController().GetMapName()
                 : Path.GetFileName(source);
         }
 

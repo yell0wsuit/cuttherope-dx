@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 MenuController controller = new(
-                    (CTRRootController)Application.SharedRootController());
+                    Application.SharedRootController());
                 try
                 {
                     if (viewId == MenuController.VIEW_LEVEL_SELECT)

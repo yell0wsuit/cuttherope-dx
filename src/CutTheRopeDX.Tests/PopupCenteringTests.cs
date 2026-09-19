@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
                     MenuController controller = new(
-                        (CTRRootController)Application.SharedRootController());
+                        Application.SharedRootController());
                     try
                     {
                         controller.ShowView(MenuController.VIEW_MAIN_MENU);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
                     MenuController controller = new(
-                        (CTRRootController)Application.SharedRootController());
+                        Application.SharedRootController());
                     try
                     {
                         controller.ShowView(MenuController.VIEW_MAIN_MENU);
@@ -136,7 +136,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(2560, 1440, () =>
             {
                 MenuController controller = new(
-                    (CTRRootController)Application.SharedRootController());
+                    Application.SharedRootController());
                 try
                 {
                     controller.ShowView(MenuController.VIEW_MAIN_MENU);

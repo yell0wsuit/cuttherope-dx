@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 MenuController controller = new(
-                    (CTRRootController)Application.SharedRootController());
+                    Application.SharedRootController());
                 try
                 {
                     controller.ShowView(viewId);
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 MenuController controller = new(
-                    (CTRRootController)Application.SharedRootController());
+                    Application.SharedRootController());
                 try
                 {
                     controller.PreLevelSelect();

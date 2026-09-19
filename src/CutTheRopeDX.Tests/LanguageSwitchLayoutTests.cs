@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(720, 1280, () =>
             {
-                MenuController controller = new((CTRRootController)root);
+                MenuController controller = new(root);
                 try
                 {
                     controller.ShowView(MenuController.VIEW_LANGUAGE_SELECT);

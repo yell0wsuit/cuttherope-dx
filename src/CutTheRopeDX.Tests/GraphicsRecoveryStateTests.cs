@@ -114,7 +114,7 @@ namespace CutTheRopeDX.Tests
         public void RecoveryLeavesAMenuOnTheSameScreenWithTheSameSelectionAndScroll()
         {
             _ = HeadlessGame.Boot();
-            MenuController controller = new((CTRRootController)Application.SharedRootController());
+            MenuController controller = new(Application.SharedRootController());
             try
             {
                 controller.PreLevelSelect();

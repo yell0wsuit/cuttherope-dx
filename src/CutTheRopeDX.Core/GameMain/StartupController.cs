@@ -134,7 +134,7 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(PackCommon);
             resourceMgr.LoadPack(PackCommonImages);
-            resourceMgr.LoadPack(CTRRootController.PackMenu);
+            resourceMgr.LoadPack(RootController.PackMenu);
             resourceMgr.LoadPack(PackLocalizationMenu);
             resourceMgr.StartLoading();
         }
@@ -166,7 +166,7 @@ namespace CutTheRopeDX.GameMain
             // frame that hands this controller over — after the bar had already reported 100%,
             // so it read as a freeze on a blank screen. Doing it here puts it under the bar,
             // which is still short of full and goes on animating while this returns.
-            ((CTRRootController)Application.SharedRootController()).PrebuildMenuControllers();
+            Application.SharedRootController().PrebuildMenuControllers();
             resourcesLoaded = true;
         }
 

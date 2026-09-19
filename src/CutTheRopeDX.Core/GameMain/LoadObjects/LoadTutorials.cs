@@ -24,7 +24,7 @@ namespace CutTheRopeDX.GameMain
             int mapOffsetX,
             int mapOffsetY)
         {
-            CTRRootController rootController = (CTRRootController)Application.SharedRootController();
+            RootController rootController = Application.SharedRootController();
             TutorialPromptLoader loader = new(
                 tutorialDirector,
                 new TutorialVisualFactory(tutorialSignTints),

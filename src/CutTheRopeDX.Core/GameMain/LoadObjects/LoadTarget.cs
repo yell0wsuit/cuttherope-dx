@@ -33,7 +33,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            int pack = ((CTRRootController)Application.SharedRootController()).GetPack();
+            int pack = Application.SharedRootController().GetPack();
             int sittingPlatform = PackConfig.GetSittingPlatform(pack);
 
             int targetType = ParseIntOrZero(xmlNode.Attribute("targetType")?.Value ?? string.Empty);
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.GameMain
 
             bool isPrimaryTarget = targets.Count == 0;
             bool paddingtonGreetingPending =
-                isPaddington && isPrimaryTarget && !nightLevel && CTRRootController.IsShowGreeting();
+                isPaddington && isPrimaryTarget && !nightLevel && RootController.IsShowGreeting();
 
             // Paddington seats Om Nom on the bear's suitcase instead of the pack's usual platform.
             string supportResource = isPaddington ? Resources.Img.CharSupportsXmas : Resources.Img.CharSupports;
@@ -105,14 +105,14 @@ namespace CutTheRopeDX.GameMain
 
             // Show greeting if needed (skip for night levels).
             // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
-            if (CTRRootController.IsShowGreeting())
+            if (RootController.IsShowGreeting())
             {
                 if (!nightLevel && !controller.StartsWithGreeting)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }
 
-                CTRRootController.SetShowGreeting(false);
+                RootController.SetShowGreeting(false);
             }
 
             support = targets[0].support;

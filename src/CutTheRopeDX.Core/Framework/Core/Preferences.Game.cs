@@ -255,7 +255,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The total star count.</returns>
         public static int GetTotalStars()
         {
-            if (Application.SharedRootController() is CTRRootController rootController)
+            if (Application.SharedRootController() is RootController rootController)
             {
                 int pack = rootController.GetPack();
                 return GetTotalStarsInBox(GetBoxForPack(pack));

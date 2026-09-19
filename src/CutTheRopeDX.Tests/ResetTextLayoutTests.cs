@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests
         /// <returns>The text, wrapped for the current surface.</returns>
         private static Text ResetText()
         {
-            MenuController controller = new((CTRRootController)Application.SharedRootController());
+            MenuController controller = new(Application.SharedRootController());
             try
             {
                 controller.ShowView(MenuController.VIEW_RESET);

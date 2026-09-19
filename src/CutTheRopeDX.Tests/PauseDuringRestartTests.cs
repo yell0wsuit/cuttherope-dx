@@ -100,7 +100,7 @@ namespace CutTheRopeDX.Tests
         public void PausingNormalLevelShowsBestScore()
         {
             (GameController controller, _) = Load();
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             int score = Preferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
 
             controller.OnButtonPressed(GameControllerButtonId.Pause);

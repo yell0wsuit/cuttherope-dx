@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Tests
         private const int Pack = 1;
         private const int Level = 4;
 
-        private static (GameController Controller, GameScene Scene, BoxOpenClose Box, CTRRootController Root) Load()
+        private static (GameController Controller, GameScene Scene, BoxOpenClose Box, RootController Root) Load()
         {
             _ = HeadlessGame.Boot();
             GameController controller = HeadlessGame.LoadLevelWithController(Pack, Level);
@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
                 controller,
                 (GameScene)view.GetChild(0),
                 (BoxOpenClose)view.GetChild(4),
-                (CTRRootController)Application.SharedRootController());
+                Application.SharedRootController());
         }
 
         private static void SetConflictingSceneResult(GameScene scene)
@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void SuppliedResultDrivesPresentationAnimationAndPersistence()
         {
-            (GameController controller, GameScene scene, BoxOpenClose box, CTRRootController root) = Load();
+            (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
             int saveBox = root.GetBox();
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void SuppliedResultControlsImprovementComparisons()
         {
-            (GameController controller, GameScene scene, BoxOpenClose box, CTRRootController root) = Load();
+            (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
             int saveBox = root.GetBox();
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void CustomLevelDisplaysResultWithoutPersistingIt()
         {
-            (GameController controller, GameScene scene, BoxOpenClose box, CTRRootController root) = Load();
+            (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
             int saveBox = root.GetBox();
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);

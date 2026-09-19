@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
                     MenuController controller = new(
-                        (CTRRootController)Application.SharedRootController());
+                        Application.SharedRootController());
                     try
                     {
                         controller.ShowView(MenuController.VIEW_LANGUAGE_SELECT);

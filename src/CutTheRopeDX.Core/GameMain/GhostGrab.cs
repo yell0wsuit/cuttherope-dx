@@ -108,7 +108,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             if (RadiusSource?.ShouldDrawCircle == true)
             {
-                CTRRootController rootController = (CTRRootController)Application.SharedRootController();
+                RootController rootController = Application.SharedRootController();
                 int pack = rootController.GetPack();
                 RGBAColor? ghostGrabOverride = PackConfig.GetGhostGrabColor(pack);
                 RGBAColor grabColor = ghostGrabOverride.HasValue

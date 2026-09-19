@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
     /// <remarks>
     /// <see cref="IsAvailable"/> deliberately does not throw. It is the documented mechanism (see
     /// <see cref="Renderer.IsAvailable"/>) by which headless-safe production code branches away
-    /// from rendering entirely - <c>RootController</c>, <c>CTRRootController</c>, and
+    /// from rendering entirely - <c>RootController</c>, <c>RootController</c>, and
     /// <c>LoadingView</c> all query it unconditionally, every frame, by design. Reporting
     /// <see langword="false"/> here matches the semantics headless runs have always had (no
     /// device present); every other member represents an actual attempt to drive a graphics

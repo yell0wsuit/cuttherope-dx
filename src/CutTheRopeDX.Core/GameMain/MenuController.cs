@@ -1289,7 +1289,7 @@ namespace CutTheRopeDX.GameMain
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 5);
             int lastPack = Preferences.GetLastBox();
-            ((CTRRootController)Application.SharedRootController()).SetBox(Preferences.GetLastGamePack());
+            Application.SharedRootController().SetBox(Preferences.GetLastGamePack());
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
@@ -1368,8 +1368,8 @@ namespace CutTheRopeDX.GameMain
                 Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
                 childWithName.PlayTimeline(0);
             }
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            if (showNextPackStatus && i == cTRRootController.GetPack() + 1)
+            RootController root = Application.SharedRootController();
+            if (showNextPackStatus && i == root.GetPack() + 1)
             {
                 showNextPackStatus = false;
                 if (unlockedForPackLevel == UNLOCKEDSTATE.LOCKED)
@@ -1674,8 +1674,8 @@ namespace CutTheRopeDX.GameMain
         {
             showNextPackStatus = false;
             base.Activate();
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            pack = cTRRootController.GetPack();
+            RootController root = Application.SharedRootController();
+            pack = root.GetPack();
             if (IsSinglePack && viewToShow == VIEW_PACK_SELECT)
             {
                 pack = 0;
@@ -1705,8 +1705,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void ShowNextPack()
         {
-            CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
-            int currentPackIndex = cTRRootController.GetPack();
+            RootController root = Application.SharedRootController();
+            int currentPackIndex = root.GetPack();
             if (currentPackIndex < Preferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
@@ -1717,7 +1717,7 @@ namespace CutTheRopeDX.GameMain
             replayingIntroMovie = false;
             if (PackConfig.OutroVideo != null)
             {
-                packContainer.PlaceToScrollPoint(cTRRootController.GetPack() + 1);
+                packContainer.PlaceToScrollPoint(root.GetPack() + 1);
                 CTRSoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
                 Application.SharedMovieMgr().PlayURL(PackConfig.OutroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
@@ -1732,7 +1732,7 @@ namespace CutTheRopeDX.GameMain
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
-            ((CTRRootController)Application.SharedRootController()).SetSurvival(false);
+            Application.SharedRootController().SetSurvival(false);
             Deactivate();
         }
 
@@ -1814,10 +1814,10 @@ namespace CutTheRopeDX.GameMain
         public void TimelineFinished(Timeline t)
         {
             CTRSoundMgr.StopMusic();
-            CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
-            ctrrootController.SetBox(Preferences.GetBoxForPack(pack));
-            ctrrootController.SetPack(pack);
-            ctrrootController.SetLevel(level);
+            RootController root = Application.SharedRootController();
+            root.SetBox(Preferences.GetBoxForPack(pack));
+            root.SetPack(pack);
+            root.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
             ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
             if (pack == 0 && level == 0 && Preferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
@@ -1899,7 +1899,7 @@ namespace CutTheRopeDX.GameMain
                     CreateCandySelection();
                     CreateLeaderboards();
                     ddMainMenu.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_recreateOptions), null, 0.01f);
-                    ((CTRRootController)Application.SharedRootController()).RecreateLoadingController();
+                    Application.SharedRootController().RecreateLoadingController();
 
                     // Every view above was rebuilt outside a layout pass, the picker on screen
                     // included, and showing another one begins by drawing that picker to capture
@@ -1936,8 +1936,8 @@ namespace CutTheRopeDX.GameMain
                     ShowView(1);
                     return;
                 case var id when id == MenuButtonId.PlayPack0:
-                    ((CTRRootController)Application.SharedRootController()).SetBox(Preferences.GetBoxForPack(0));
-                    ((CTRRootController)Application.SharedRootController()).SetPack(0);
+                    Application.SharedRootController().SetBox(Preferences.GetBoxForPack(0));
+                    Application.SharedRootController().SetPack(0);
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
                     ((MapPickerController)GetChild(0)).SetNormalMode();
@@ -1948,19 +1948,19 @@ namespace CutTheRopeDX.GameMain
                         CTRSoundMgr.StopMusic();
                         pack = 0;
                         Application.SharedRootController().SetViewTransition(-1);
-                        CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
+                        RootController root = Application.SharedRootController();
                         ResourceMgr resourceMgr = Application.SharedResourceMgr();
                         resourceMgr.InitLoading();
                         resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         resourceMgr.LoadImmediately();
-                        ctrrootController.SetSurvival(true);
-                        ctrrootController.SetBox(Preferences.GetBoxForPack(pack));
-                        ctrrootController.SetPack(pack);
+                        root.SetSurvival(true);
+                        root.SetBox(Preferences.GetBoxForPack(pack));
+                        root.SetPack(pack);
                         Deactivate();
                         return;
                     }
                 case var id when id == MenuButtonId.OpenFullVersion:
-                    CTRRootController.OpenFullVersionPage();
+                    RootController.OpenFullVersionPage();
                     return;
                 case var id when id == MenuButtonId.ToggleSound:
                     {

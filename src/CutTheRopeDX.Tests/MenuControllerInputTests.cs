@@ -13,7 +13,7 @@ namespace CutTheRopeDX.Tests
         public void RepeatedLevelClickKeepsTheFirstPendingSelection()
         {
             _ = HeadlessGame.Boot();
-            MenuController controller = new((CTRRootController)Application.SharedRootController());
+            MenuController controller = new(Application.SharedRootController());
 
             try
             {
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests
         public void PreparingLevelSelectionAllowsANewSelection()
         {
             _ = HeadlessGame.Boot();
-            MenuController controller = new((CTRRootController)Application.SharedRootController());
+            MenuController controller = new(Application.SharedRootController());
 
             try
             {

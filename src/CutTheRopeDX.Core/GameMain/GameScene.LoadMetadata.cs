@@ -69,7 +69,7 @@ namespace CutTheRopeDX.GameMain
             ActivePhysicsConstants.UseTimeTravelRocketModel = false;
             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
-            CTRRootController rc = (CTRRootController)Application.SharedRootController();
+            RootController rc = Application.SharedRootController();
 
             // Single pass through XML metadata nodes, ignoring duplicate settings layers.
             foreach (XElement xmlnode in LevelMetadataLayerSelection.SelectLayers(mapNode))

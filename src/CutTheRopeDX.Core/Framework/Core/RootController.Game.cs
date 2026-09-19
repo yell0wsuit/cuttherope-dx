@@ -6,20 +6,18 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Commons;
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
 using Microsoft.Extensions.Logging;
 
-namespace CutTheRopeDX.GameMain
+namespace CutTheRopeDX.Framework.Core
 {
-    /// <summary>
-    /// Top-level game controller that manages the startup → menu → loading → gameplay lifecycle,
-    /// resource loading/unloading across transitions, and background prefetch of box-level resources.
-    /// </summary>
-    internal sealed class CTRRootController : RootController
+    // Game lifecycle: startup → menu → loading → gameplay, resource loading/unloading across
+    // transitions, and background prefetch of box-level resources.
+    internal partial class RootController
     {
         /// <summary>
         /// Stub for analytics event logging.
@@ -100,7 +98,7 @@ namespace CutTheRopeDX.GameMain
             double elapsedMs = Stopwatch.GetElapsedTime(startedTicks).TotalMilliseconds;
             ILogger logger = Log.For(LogCategories.ContentXml);
             string memory = MemoryReport.Describe();
-            CTRRootControllerLog.LevelReady(logger, pack, level, newMapName, elapsedMs, memory);
+            RootControllerLog.LevelReady(logger, pack, level, newMapName, elapsedMs, memory);
 
             StartBoxResourceScanIfNeeded();
             QueueOrPollBoxPrefetch();
@@ -123,11 +121,21 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Initialises the root controller, loads startup resources, and adds the startup child controller.
+        /// Creates the game's root controller with startup resources loaded and the startup child
+        /// controller (or, for a custom-level session, the loading controller) added.
         /// </summary>
-        /// <param name="parent">Parent view controller that hosts this root controller.</param>
-        public CTRRootController(ViewController parent)
-            : base(parent)
+        /// <returns>The new root controller.</returns>
+        public static RootController CreateGameRoot()
+        {
+            RootController root = new(null);
+            root.LoadStartup();
+            return root;
+        }
+
+        /// <summary>
+        /// Loads startup resources and adds the first child controller.
+        /// </summary>
+        private void LoadStartup()
         {
             loadedMap = null;
             ResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -203,7 +211,7 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.StartLoading();
             ILogger logger = Log.For(LogCategories.ContentXml);
             string mapName = GetMapName();
-            CTRRootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
+            RootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
             ((LoadingController)GetChild(2)).nextController = 0;
             ActivateChild(2);
         }
@@ -226,7 +234,7 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.StartLoading();
             ILogger logger = Log.For(LogCategories.ContentXml);
             string mapName = GetMapName();
-            CTRRootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
+            RootControllerLog.LevelLoadStarted(logger, pack, level, mapName, levelResources.Length);
             ((LoadingController)GetChild(2)).nextController = 0;
             ActivateChild(2);
         }
@@ -254,21 +262,6 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         public static void EnableGameCenter()
         {
-        }
-
-        /// <inheritdoc />
-        public override void Suspend()
-        {
-            suspended = true;
-        }
-
-        /// <inheritdoc />
-        public override void Resume()
-        {
-            if (!inCrystal)
-            {
-                suspended = false;
-            }
         }
 
         /// <inheritdoc />
@@ -304,7 +297,7 @@ namespace CutTheRopeDX.GameMain
                             AndroidAPI.DisableBanners();
                         }
                         ILogger logger = Log.For(LogCategories.Application);
-                        CTRRootControllerLog.ShowingMenu(logger);
+                        RootControllerLog.ShowingMenu(logger);
                         ActivateChild(1);
                         //Show menu presence after loading screen
                         PlatformServices.RichPresence?.MenuPresence();
@@ -340,7 +333,7 @@ namespace CutTheRopeDX.GameMain
                             ActivateChild(3);
                             ILogger gameBuildLogger = Log.For(LogCategories.Application);
                             double gameBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;
-                            CTRRootControllerLog.ControllerBuilt(gameBuildLogger, "game", gameBuildMs);
+                            RootControllerLog.ControllerBuilt(gameBuildLogger, "game", gameBuildMs);
                             QueueOrPollBoxPrefetch();
                             return;
                         }
@@ -388,7 +381,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         ILogger menuBuildLogger = Log.For(LogCategories.Application);
                         double menuBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;
-                        CTRRootControllerLog.ControllerBuilt(menuBuildLogger, "menu", menuBuildMs);
+                        RootControllerLog.ControllerBuilt(menuBuildLogger, "menu", menuBuildMs);
                         return;
                     }
                 case 3:
@@ -474,7 +467,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="b">Whether the Crystal overlay is active.</param>
         public static void SetInCrystal(bool b)
         {
-            ((CTRRootController)Application.SharedRootController()).inCrystal = b;
+            Application.SharedRootController().inCrystal = b;
         }
 
         /// <summary>Stub for opening the full version store page.</summary>
@@ -552,14 +545,14 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> if the greeting should be shown.</returns>
         public static bool IsShowGreeting()
         {
-            return ((CTRRootController)Application.SharedRootController()).showGreeting;
+            return Application.SharedRootController().showGreeting;
         }
 
         /// <summary>Sets whether the Om Nom greeting animation should play on the next level start.</summary>
         /// <param name="s">Whether to show the greeting.</param>
         public static void SetShowGreeting(bool s)
         {
-            ((CTRRootController)Application.SharedRootController()).showGreeting = s;
+            Application.SharedRootController().showGreeting = s;
         }
 
         /// <summary>Stub for posting a named achievement with a value.</summary>
@@ -703,7 +696,7 @@ namespace CutTheRopeDX.GameMain
 
             if (boxScanPollTimer < 0)
             {
-                boxScanPollTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).PollBoxResourceScan(), this, 0.25f);
+                boxScanPollTimer = TimerManager.Schedule(static obj => ((RootController)obj).PollBoxResourceScan(), this, 0.25f);
             }
         }
 
@@ -753,7 +746,7 @@ namespace CutTheRopeDX.GameMain
 
             if (prefetchDrainTimer < 0)
             {
-                prefetchDrainTimer = TimerManager.Schedule(static obj => ((CTRRootController)obj).DrainPrefetchQueue(), this, 1f / 60f);
+                prefetchDrainTimer = TimerManager.Schedule(static obj => ((RootController)obj).DrainPrefetchQueue(), this, 1f / 60f);
             }
         }
 
@@ -955,7 +948,7 @@ namespace CutTheRopeDX.GameMain
     }
 
     /// <summary>Log messages for the root controller's lifecycle.</summary>
-    internal static partial class CTRRootControllerLog
+    internal static partial class RootControllerLog
     {
         [LoggerMessage(
             Level = LogLevel.Information,
