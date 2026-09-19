@@ -6,9 +6,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
-using CutTheRopeDX.GameMain;
 
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Helpers
                 return;
             }
 
-            if (!CTRPreferences.IsUpdateCheckEnabled())
+            if (!Preferences.IsUpdateCheckEnabled())
             {
                 return;
             }

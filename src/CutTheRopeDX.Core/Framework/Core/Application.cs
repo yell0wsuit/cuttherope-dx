@@ -17,7 +17,7 @@ namespace CutTheRopeDX.Framework.Core
         /// Returns the shared preferences instance.
         /// </summary>
         /// <returns>Shared preferences instance.</returns>
-        public static CTRPreferences SharedPreferences()
+        public static Preferences SharedPreferences()
         {
             return prefs;
         }
@@ -128,9 +128,9 @@ namespace CutTheRopeDX.Framework.Core
         /// Creates the preferences store used by the application.
         /// </summary>
         /// <returns>New preferences instance.</returns>
-        public virtual CTRPreferences CreatePreferences()
+        public virtual Preferences CreatePreferences()
         {
-            return new CTRPreferences();
+            return new Preferences();
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Shared preferences instance.
         /// </summary>
-        private static CTRPreferences prefs;
+        private static Preferences prefs;
 
         /// <summary>
         /// Shared resource manager instance.

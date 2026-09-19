@@ -991,14 +991,14 @@ namespace CutTheRopeDX.GameMain
             baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
-            int totalStars = CTRPreferences.GetTotalStarsInBox(CTRPreferences.GetBoxForPack(n));
-            if (n > 0 && n < CTRPreferences.GetPacksCount() && CTRPreferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= CTRPreferences.PackUnlockStars(n))
+            int totalStars = Preferences.GetTotalStarsInBox(Preferences.GetBoxForPack(n));
+            if (n > 0 && n < Preferences.GetPacksCount() && Preferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= Preferences.PackUnlockStars(n))
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
+                Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
             // Resolve pack config index: for display index == packsCount, use the coming soon entry
-            int packConfigIndex = n < CTRPreferences.GetPacksCount() ? n : PackConfig.GetComingSoonPackIndex();
-            bool isComingSoon = n >= CTRPreferences.GetPacksCount();
+            int packConfigIndex = n < Preferences.GetPacksCount() ? n : PackConfig.GetComingSoonPackIndex();
+            bool isComingSoon = n >= Preferences.GetPacksCount();
             PackDefinition packDef = PackConfig.Packs[packConfigIndex];
             string resourceName = packDef.PackSpritesheet;
             int q = packDef.PackQuadIndex;
@@ -1021,7 +1021,7 @@ namespace CutTheRopeDX.GameMain
                 boxPackStrings = $"{n + 1}. {boxPackNameString}";
             }
             string packTitle = boxPackStrings;
-            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(n, 0);
+            UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(n, 0);
             bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
             PackStripLayout strip = PackStrip();
@@ -1037,7 +1037,7 @@ namespace CutTheRopeDX.GameMain
             if (flag)
             {
                 _ = baseElement.AddChild(image);
-                int requiredStars = CTRPreferences.PackUnlockStars(n);
+                int requiredStars = Preferences.PackUnlockStars(n);
                 Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
                 image2.DoRestoreCutTransparency();
                 image2.anchor = image2.parentAnchor = 9;
@@ -1085,7 +1085,7 @@ namespace CutTheRopeDX.GameMain
                     _ = monsterSlot.AddChild(image3);
                 }
                 _ = baseElement.AddChild(image);
-                if (CTRPreferences.IsPackPerfect(n) & !isComingSoon)
+                if (Preferences.IsPackPerfect(n) & !isComingSoon)
                 {
                     // Create perfect pack badge
                     Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 8);
@@ -1174,7 +1174,7 @@ namespace CutTheRopeDX.GameMain
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
             string text = Application.GetString("TOTAL_STARS").ToString();
             text = text.Replace("%d", "");
-            HBox hBox = CreateTextWithStar(text + CTRPreferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
+            HBox hBox = CreateTextWithStar(text + Preferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
             PlaceStarTotal(hBox);
             hBox.SetName("text");
             PackStripLayout strip = PackStrip();
@@ -1189,7 +1189,7 @@ namespace CutTheRopeDX.GameMain
             packContainer.dontHandleTouchDownsHandledByChilds = true;
             packContainer.dontHandleTouchMovesHandledByChilds = true;
             packContainer.dontHandleTouchUpsHandledByChilds = true;
-            packContainer.TurnScrollPointsOnWithCapacity(CTRPreferences.GetPacksCount() + 2);
+            packContainer.TurnScrollPointsOnWithCapacity(Preferences.GetPacksCount() + 2);
             packContainer.delegateScrollableContainerProtocol = this;
             packContainer.x = (VisibleBounds.w / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
@@ -1202,7 +1202,7 @@ namespace CutTheRopeDX.GameMain
             };
             _ = hBox2.AddChild(baseElement2);
             float scrollPointX = 0f + strip.PackOffset;
-            int displayCount = CTRPreferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
+            int displayCount = Preferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
             for (int i = 0; i < displayCount; i++)
             {
                 TouchBaseElement touchBaseElement = (TouchBaseElement)CreatePackElementforContainer(i, packContainer);
@@ -1288,8 +1288,8 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(button);
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 5);
-            int lastPack = CTRPreferences.GetLastBox();
-            ((CTRRootController)Application.SharedRootController()).SetBox(CTRPreferences.GetLastGamePack());
+            int lastPack = Preferences.GetLastBox();
+            ((CTRRootController)Application.SharedRootController()).SetBox(Preferences.GetLastGamePack());
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
@@ -1355,17 +1355,17 @@ namespace CutTheRopeDX.GameMain
             {
                 nextb.SetState(Button.BUTTON_STATE.BUTTON_UP);
             }
-            if (i == CTRPreferences.GetPacksCount())
+            if (i == Preferences.GetPacksCount())
             {
                 return;
             }
             PrepareCoverFor(i);
             boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
-            UNLOCKEDSTATE unlockedForPackLevel = CTRPreferences.GetUnlockedForPackLevel(i, 0);
+            UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
             if (childWithName != null && unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED)
             {
-                CTRPreferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
+                Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
                 childWithName.PlayTimeline(0);
             }
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
@@ -1388,8 +1388,8 @@ namespace CutTheRopeDX.GameMain
         {
             currentPack = i;
             pack = i;
-            CTRPreferences.SetLastBox(i);
-            CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(i));
+            Preferences.SetLastBox(i);
+            Preferences.SetLastGamePack(Preferences.GetBoxForPack(i));
         }
 
         /// <summary>
@@ -1425,8 +1425,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured level button element.</returns>
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
-            bool flag = CTRPreferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
-            int starsForPackLevel = CTRPreferences.GetStarsForPackLevel(p, l);
+            bool flag = Preferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
+            int starsForPackLevel = Preferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
             {
                 bbc = MakeRectangle(5f, 0f, -10f, 0f),
@@ -1512,11 +1512,11 @@ namespace CutTheRopeDX.GameMain
             image5.PlayTimeline(1);
             _ = menuView.AddChild(image5);
             levelsShadow = image5;
-            HBox hBox = CreateTextWithStar(CTRPreferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (CTRPreferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
+            HBox hBox = CreateTextWithStar(Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
 
             hBox.x = -30f;
             hBox.y = 40f;
-            int levelsInPack = CTRPreferences.GetLevelsInPackCount(pack);
+            int levelsInPack = Preferences.GetLevelsInPackCount(pack);
             int columnsPerRow;
             float horizontalSpacing;
             float buttonScale;
@@ -1707,7 +1707,7 @@ namespace CutTheRopeDX.GameMain
         {
             CTRRootController cTRRootController = (CTRRootController)Application.SharedRootController();
             int currentPackIndex = cTRRootController.GetPack();
-            if (currentPackIndex < CTRPreferences.GetPacksCount() - 1)
+            if (currentPackIndex < Preferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
                 packContainer.MoveToScrollPointmoveMultiplier(currentPackIndex + 1, 0.8f);
@@ -1764,8 +1764,8 @@ namespace CutTheRopeDX.GameMain
             {
                 pack = 0;
                 currentPack = 0;
-                CTRPreferences.SetLastBox(0);
-                CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(0));
+                Preferences.SetLastBox(0);
+                Preferences.SetLastGamePack(Preferences.GetBoxForPack(0));
                 PreLevelSelect();
                 ShowView(VIEW_LEVEL_SELECT);
                 if (isOutro)
@@ -1774,20 +1774,20 @@ namespace CutTheRopeDX.GameMain
                 }
                 return;
             }
-            if (!isOutro && CTRPreferences.ShouldPlayLevelScroll())
+            if (!isOutro && Preferences.ShouldPlayLevelScroll())
             {
-                packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
+                packContainer.PlaceToScrollPoint(Preferences.GetPacksCount() - 1);
                 packContainer.MoveToScrollPointmoveMultiplier(0, 0.6f);
-                CTRPreferences.DisablePlayLevelScroll();
+                Preferences.DisablePlayLevelScroll();
             }
             else
             {
-                packContainer.PlaceToScrollPoint(CTRPreferences.GetLastBox());
+                packContainer.PlaceToScrollPoint(Preferences.GetLastBox());
             }
             ShowView(5);
             if (isOutro)
             {
-                packContainer.PlaceToScrollPoint(CTRPreferences.GetPacksCount() - 1);
+                packContainer.PlaceToScrollPoint(Preferences.GetPacksCount() - 1);
                 ShowGameFinishedPopup();
             }
         }
@@ -1815,12 +1815,12 @@ namespace CutTheRopeDX.GameMain
         {
             CTRSoundMgr.StopMusic();
             CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
-            ctrrootController.SetBox(CTRPreferences.GetBoxForPack(pack));
+            ctrrootController.SetBox(Preferences.GetBoxForPack(pack));
             ctrrootController.SetPack(pack);
             ctrrootController.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
             ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
-            if (pack == 0 && level == 0 && CTRPreferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
+            if (pack == 0 && level == 0 && Preferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
             {
                 replayingIntroMovie = true;
                 ShowView(7);
@@ -1916,12 +1916,12 @@ namespace CutTheRopeDX.GameMain
             {
                 case var id when id == MenuButtonId.Play:
                     {
-                        for (int i = 0; i < CTRPreferences.GetPacksCount(); i++)
+                        for (int i = 0; i < Preferences.GetPacksCount(); i++)
                         {
                             GameController.CheckForBoxPerfect(i);
                         }
                         replayingIntroMovie = false;
-                        if (CTRPreferences.GetScoreForPackLevel(0, 0) == 0 && PackConfig.IntroVideo != null)
+                        if (Preferences.GetScoreForPackLevel(0, 0) == 0 && PackConfig.IntroVideo != null)
                         {
                             ShowView(7);
                             CTRSoundMgr.StopMusic();
@@ -1936,7 +1936,7 @@ namespace CutTheRopeDX.GameMain
                     ShowView(1);
                     return;
                 case var id when id == MenuButtonId.PlayPack0:
-                    ((CTRRootController)Application.SharedRootController()).SetBox(CTRPreferences.GetBoxForPack(0));
+                    ((CTRRootController)Application.SharedRootController()).SetBox(Preferences.GetBoxForPack(0));
                     ((CTRRootController)Application.SharedRootController()).SetPack(0);
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
@@ -1954,7 +1954,7 @@ namespace CutTheRopeDX.GameMain
                         resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         resourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
-                        ctrrootController.SetBox(CTRPreferences.GetBoxForPack(pack));
+                        ctrrootController.SetBox(Preferences.GetBoxForPack(pack));
                         ctrrootController.SetPack(pack);
                         Deactivate();
                         return;
@@ -2024,8 +2024,8 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == MenuButtonId.ConfirmResetYes:
                     {
-                        CTRPreferences ctrpreferences = Application.SharedPreferences();
-                        CTRPreferences.ResetToDefaults();
+                        Preferences preferences = Application.SharedPreferences();
+                        Preferences.ResetToDefaults();
                         Preferences.RequestSave();
                         DeleteView(5);
                         CreatePackSelect();
@@ -2202,10 +2202,10 @@ namespace CutTheRopeDX.GameMain
                             packContainer.MoveToScrollPointmoveMultiplier(targetPack, 0.8f);
                             return;
                         }
-                        CTRPreferences.SetLastBox(pack);
-                        CTRPreferences.SetLastGamePack(CTRPreferences.GetBoxForPack(pack));
-                        bool flag5 = CTRPreferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != CTRPreferences.GetPacksCount();
-                        if (targetPack != CTRPreferences.GetPacksCount() && !flag5)
+                        Preferences.SetLastBox(pack);
+                        Preferences.SetLastGamePack(Preferences.GetBoxForPack(pack));
+                        bool flag5 = Preferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != Preferences.GetPacksCount();
+                        if (targetPack != Preferences.GetPacksCount() && !flag5)
                         {
                             PreLevelSelect();
                             ShowView(6);
@@ -2482,7 +2482,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (!CTRPreferences.IsUpdateCheckEnabled())
+            if (!Preferences.IsUpdateCheckEnabled())
             {
                 return;
             }
@@ -2519,7 +2519,7 @@ namespace CutTheRopeDX.GameMain
         public const int VIEW_LEVEL_SELECT = 6;
 
         /// <summary>Whether the game is configured with a single playable pack.</summary>
-        private static bool IsSinglePack => CTRPreferences.GetPacksCount() == 1;
+        private static bool IsSinglePack => Preferences.GetPacksCount() == 1;
 
         /// <summary>Movie playback view identifier.</summary>
         public const int VIEW_MOVIE = 7;
@@ -2555,7 +2555,7 @@ namespace CutTheRopeDX.GameMain
         private ScrollableContainer levelContainer;
 
         /// <summary>Pack box elements shown in the pack selection container.</summary>
-        private readonly BaseElement[] boxes = new BaseElement[CTRPreferences.GetPacksCount() + 1];
+        private readonly BaseElement[] boxes = new BaseElement[Preferences.GetPacksCount() + 1];
 
         /// <summary>Whether to show the next-pack unlock status after scrolling.</summary>
         private bool showNextPackStatus;

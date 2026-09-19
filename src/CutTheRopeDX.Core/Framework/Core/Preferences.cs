@@ -15,8 +15,9 @@ namespace CutTheRopeDX.Framework.Core
 {
     /// <summary>
     /// Stores global and per-box preferences, persists them as JSON, and handles migration from older save layouts.
+    /// Game progress (scores, stars, pack unlocks) lives in <c>Preferences.Game.cs</c>.
     /// </summary>
-    internal class Preferences : FrameworkTypes
+    internal partial class Preferences : FrameworkTypes
     {
         /// <summary>
         /// Prefix used by legacy numeric unlocked-state keys that are migrated to booleans.
@@ -365,11 +366,12 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Initializes a preferences instance and loads saved preference data from disk.
+        /// Initializes a preferences instance, loads saved preference data from disk, and applies first-launch defaults or migrations.
         /// </summary>
         public Preferences()
         {
             LoadPreferences();
+            firstLaunch = InitializeGameDefaults();
         }
 
         // ── Global accessors (PREFS_*, IAP_*, SOUND_ON, etc.) ────────────────────

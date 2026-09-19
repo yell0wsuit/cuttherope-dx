@@ -153,7 +153,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Activate()
         {
-            _ = CTRPreferences.IsFirstLaunch();
+            _ = Preferences.IsFirstLaunch();
             base.Activate();
 
             if (CustomLevelSession.IsActive)
@@ -355,7 +355,7 @@ namespace CutTheRopeDX.GameMain
                         // so freeing it here would only have the menu decode it again in the frame
                         // that builds it.
                         int keptCoverPack = nextController is 2 or 4 ? pack : -1;
-                        int packCount = CTRPreferences.GetPacksCount();
+                        int packCount = Preferences.GetPacksCount();
                         List<string[]> covers = [];
                         for (int i = 0; i < packCount; i++)
                         {
@@ -379,7 +379,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = pack < CTRPreferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
+                            menuController3.viewToShow = pack < Preferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
                         }
                         ActivateChild(1);
                         if (nextController == 3)
@@ -410,7 +410,7 @@ namespace CutTheRopeDX.GameMain
                             DeleteChild(3);
                             List<string[]> gameplayPacks = [PackGame, [.. sessionResources]];
                             sessionResources.Clear();
-                            int packCount = CTRPreferences.GetPacksCount();
+                            int packCount = Preferences.GetPacksCount();
                             for (int i = 0; i < packCount; i++)
                             {
                                 gameplayPacks.Add(PackConfig.GetBoxBackgrounds(i));

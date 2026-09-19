@@ -2,30 +2,28 @@ using System;
 using System.Globalization;
 
 using CutTheRopeDX.Commons;
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.GameMain;
 
-namespace CutTheRopeDX.GameMain
+namespace CutTheRopeDX.Framework.Core
 {
-    /// <summary>
-    /// Manages game preferences including level progress, scores, stars, pack unlocks, and user settings.
-    /// </summary>
-    internal sealed class CTRPreferences : Preferences
+    // Game-specific preferences: level progress, scores, stars, pack unlocks, and user settings.
+    internal partial class Preferences
     {
         /// <summary>
-        /// Initializes preferences, performing first-launch setup or migration from older versions as needed.
+        /// Performs first-launch setup, or migrates preferences saved by older versions.
         /// </summary>
-        public CTRPreferences()
+        /// <returns><see langword="true"/> when no preferences existed yet, i.e. this is the first launch.</returns>
+        private static bool InitializeGameDefaults()
         {
-            if (!GetBooleanForKey("PREFS_EXIST"))
+            bool isFirstLaunch = !GetBooleanForKey("PREFS_EXIST");
+            if (isFirstLaunch)
             {
                 SetBooleanForKey(true, "PREFS_EXIST", true);
                 SetIntForKey(0, "PREFS_GAME_STARTS", true);
                 SetIntForKey(0, "PREFS_LEVELS_WON", true);
                 ResetToDefaults();
                 ResetMusicSound();
-                firstLaunch = true;
-                playLevelScroll = false;
             }
             else
             {
@@ -60,13 +58,12 @@ namespace CutTheRopeDX.GameMain
                     }
                     SetScoreHash();
                 }
-                firstLaunch = false;
-                playLevelScroll = false;
             }
             SetIntForKey(2, "PREFS_VERSION", true);
             EnsureSlotEntryPacksUnlocked();
             SetRpcPreferenceInJson(); // temporary hack, remove after setting UI is implemented
             SetUpdateCheckPreferenceInJson(); // temporary hack, remove after setting UI is implemented
+            return isFirstLaunch;
         }
 
         /// <summary>

@@ -101,7 +101,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameController controller, _) = Load();
             CTRRootController root = (CTRRootController)Application.SharedRootController();
-            int score = CTRPreferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
+            int score = Preferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
 
             controller.OnButtonPressed(GameControllerButtonId.Pause);
 

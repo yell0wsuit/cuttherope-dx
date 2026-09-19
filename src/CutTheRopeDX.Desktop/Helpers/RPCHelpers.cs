@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers.Discord;
 
 using Microsoft.Extensions.Logging;
@@ -57,7 +56,7 @@ namespace CutTheRopeDX.Helpers
             }
 
             string details = "Browsing Menu";
-            string state = $"⭐ Total: {CTRPreferences.GetTotalStars()}";
+            string state = $"⭐ Total: {Preferences.GetTotalStars()}";
             client.SetActivity(
                 details: details,
                 state: state,
