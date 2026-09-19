@@ -46,16 +46,43 @@ jobs:
             - name: Install web content tooling
               run: python3 -m pip install --upgrade pillow fonttools
 
-            # One ffmpeg now does both jobs: Opus for the sound effects and VP9/Opus for the
-            # cutscenes. The runner image ships none at all, and build_web_content.py checks
-            # the encoders before converting, so assert them here rather than discovering a
-            # gap partway through a deploy.
+            # One ffmpeg does both jobs: Opus for the sound effects and VP9/Opus for the
+            # cutscenes. The runner image ships none, and apt spends longer refreshing its
+            # index than this takes, so it is the BtbN build the release already pins, read
+            # from download_ffmpeg_linux.sh so the two cannot drift. build_web_content.py
+            # checks the encoders before converting, so assert them here rather than
+            # discovering a gap partway through a deploy.
             - name: Install ffmpeg
+              id: ffmpeg
               run: |
-                  sudo apt-get update
-                  sudo apt-get install -y ffmpeg
-                  ffmpeg -hide_banner -encoders | grep -q libopus
-                  ffmpeg -hide_banner -encoders | grep -q libvpx-vp9
+                  SCRIPT=distribution/download_ffmpeg_linux.sh
+                  TAG=$(sed -n 's/^FFMPEG_BUILD_TAG="\(.*\)"$/\1/p' "$SCRIPT")
+                  VERSION=$(sed -n 's/^FFMPEG_BUILD_VERSION="\(.*\)"$/\1/p' "$SCRIPT")
+                  test -n "$TAG" && test -n "$VERSION"
+                  RELEASE="https://github.com/BtbN/FFmpeg-Builds/releases/download/$TAG"
+                  SERIES=$(echo "$VERSION" | sed 's/^n\([0-9]*\.[0-9]*\).*/\1/')
+                  ARCHIVE="ffmpeg-$VERSION-linux64-lgpl-$SERIES.tar.xz"
+                  cd "$RUNNER_TEMP"
+                  curl -fsSL --retry 3 -O "$RELEASE/$ARCHIVE" -O "$RELEASE/checksums.sha256"
+                  grep " $ARCHIVE\$" checksums.sha256 | sha256sum -c -
+                  tar -xf "$ARCHIVE"
+                  FFMPEG="$RUNNER_TEMP/${ARCHIVE%.tar.xz}/bin/ffmpeg"
+                  "$FFMPEG" -hide_banner -encoders | grep -q libopus
+                  "$FFMPEG" -hide_banner -encoders | grep -q libvpx-vp9
+                  echo "CTRDX_FFMPEG=$FFMPEG" >> "$GITHUB_ENV"
+                  echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+            # The converter is incremental, stamping each output with its source's SHA-256 and
+            # the encoder settings, so any earlier payload is a safe starting point: whatever
+            # changed since is reconverted and the rest is skipped. The ffmpeg pin heads the
+            # prefix because a new encoder build is the one change those stamps cannot see.
+            - name: Cache converted content
+              uses: actions/cache@v6
+              with:
+                  path: src/CutTheRopeDX.Browser/wwwroot/content
+                  key: web-content-${{ steps.ffmpeg.outputs.tag }}-${{ needs.content.outputs.cache-key }}-${{ hashFiles('scripts/build_web_content.py', 'scripts/webcontent/**/*.py') }}
+                  restore-keys: |
+                      web-content-${{ steps.ffmpeg.outputs.tag }}-
 
             # --require-video makes a missing or unusable ffmpeg fail the deploy rather than
             # warn: a published build silently losing its cutscenes is the bug this had.

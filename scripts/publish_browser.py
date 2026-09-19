@@ -29,6 +29,7 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
@@ -72,8 +73,14 @@ def main(argv: list[str] | None = None) -> int:
     threaded = arguments.work / "browser-threaded"
     single = arguments.work / "browser-single"
 
-    publish(threaded, arguments, single_threaded=False)
-    publish(single, arguments, single_threaded=True)
+    # Concurrently, because most of each publish is the emscripten link, which runs on one
+    # core for a minute or more. Side by side the pair costs about what the slower one does.
+    publish_all(
+        [
+            (threaded, publish_command(threaded, arguments, single_threaded=False)),
+            (single, publish_command(single, arguments, single_threaded=True)),
+        ]
+    )
 
     site = arguments.output
     if site.exists():
@@ -85,21 +92,16 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def publish(
+def publish_command(
     destination: Path, arguments: argparse.Namespace, single_threaded: bool
-) -> None:
-    """Publishes one runtime into its own output and intermediate tree.
+) -> list[str]:
+    """Returns the publish of one runtime into its own output and intermediate tree.
 
     The two builds disagree about the emscripten link, so they cannot share an obj
     directory: the second would reuse the first's native objects and quietly produce a
-    runtime that is neither. Separate artifacts paths are what keeps them apart.
+    runtime that is neither. Separate artifacts paths are what keeps them apart, and also
+    what lets them run at the same time.
     """
-    name = "single-threaded" if single_threaded else "threaded"
-    print(f"publishing the {name} runtime")
-
-    if destination.exists():
-        shutil.rmtree(destination)
-
     command = [
         "dotnet",
         "publish",
@@ -115,8 +117,54 @@ def publish(
         # Only the framework tree survives from this publish, so the content payload it
         # would otherwise copy is 30MB written to be deleted.
         command += ["-p:CtrdxSingleThreaded=true", "-p:CtrdxSkipContent=true"]
+    return command
 
-    subprocess.run(command, check=True, cwd=REPOSITORY_ROOT)
+
+def publish_all(publishes: list[tuple[Path, list[str]]]) -> None:
+    """Runs every publish at once, prefixing each output line with the tree it builds.
+
+    All of them are waited for even after one fails, so no build is left writing into a
+    tree the next run is about to delete.
+    """
+    for destination, _ in publishes:
+        if destination.exists():
+            shutil.rmtree(destination)
+
+    lock = threading.Lock()
+    width = max(len(destination.name) for destination, _ in publishes)
+
+    def relay(name: str, stream) -> None:
+        for line in stream:
+            with lock:
+                sys.stdout.write(f"[{name:<{width}}] {line}")
+                sys.stdout.flush()
+
+    running = []
+    for destination, command in publishes:
+        print(f"publishing {destination.name}", flush=True)
+        process = subprocess.Popen(
+            command,
+            cwd=REPOSITORY_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        reader = threading.Thread(
+            target=relay, args=(destination.name, process.stdout), daemon=True
+        )
+        reader.start()
+        running.append((destination.name, process, reader))
+
+    failed = []
+    for name, process, reader in running:
+        process.wait()
+        reader.join()
+        if process.returncode != 0:
+            failed.append(f"{name} (exit {process.returncode})")
+    if failed:
+        raise SystemExit(f"publish failed: {', '.join(failed)}")
 
 
 def merge_fallback(site: Path, fallback: Path) -> None:
