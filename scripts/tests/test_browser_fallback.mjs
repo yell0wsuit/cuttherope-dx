@@ -272,6 +272,53 @@ test("worker install caches common shell without downloading either runtime", as
     assert.deepEqual(downloaded, ["https://example.test/game/index.html"]);
     assert.equal(vm.runInContext("shellHashes.size", context), 3);
 });
+function isolatedCoiContext(controller, registerCalls) {
+    const registration = { id: "existing" };
+    return vm.createContext({
+        console,
+        crossOriginIsolated: true,
+        sessionStorage: { removeItem() {} },
+        navigator: {
+            serviceWorker: {
+                controller,
+                getRegistration() {
+                    return Promise.resolve(registration);
+                },
+                register() {
+                    registerCalls.push("register");
+                    return Promise.resolve({ id: "registered" });
+                },
+            },
+        },
+    });
+}
+test("isolated controlled page hands over its worker before boot completes", async () => {
+    const registerCalls = [];
+    const context = isolatedCoiContext({}, registerCalls);
+    vm.runInContext(source("wwwroot/coi.js"), context);
+    assert.equal((await context.ctrdxServiceWorkerRegistration).id, "existing");
+    context.ctrdxInstallWorker();
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(registerCalls, []);
+});
+test("isolated uncontrolled page still waits for boot to register", async () => {
+    const registerCalls = [];
+    const context = isolatedCoiContext(null, registerCalls);
+    vm.runInContext(source("wwwroot/coi.js"), context);
+    let settled = false;
+    context.ctrdxServiceWorkerRegistration.then(() => {
+        settled = true;
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(settled, false);
+    context.ctrdxInstallWorker();
+    assert.equal(
+        (await context.ctrdxServiceWorkerRegistration).id,
+        "registered",
+    );
+    assert.deepEqual(registerCalls, ["register"]);
+});
+
 async function captureContext() {
     const listeners = {};
     const printed = [];
@@ -341,4 +388,49 @@ test("capture records failed loads and unhandled rejections", async () => {
         /\[Error\] Browser\.Resource failed to load <script> https:\/\/example\.test\/main\.js$/,
     );
     assert.match(sink.lines[1], /\[Error\] Browser\.Rejection TypeError: nope/);
+});
+test("update watch checks at once and offers a worker already installing", async () => {
+    let updates = 0,
+        shown = 0,
+        onStateChange;
+    const installing = {
+        state: "installing",
+        addEventListener(name, fn) {
+            onStateChange = fn;
+        },
+    };
+    const registration = {
+        waiting: null,
+        installing,
+        addEventListener() {},
+        update() {
+            updates++;
+            return Promise.resolve();
+        },
+    };
+    const dialog = {
+        open: false,
+        showModal() {
+            shown++;
+        },
+    };
+    const context = vm.createContext({
+        console,
+        navigator: { serviceWorker: { controller: {} } },
+        document: {
+            addEventListener() {},
+            getElementById: (id) => (id === "update" ? dialog : {}),
+        },
+        addEventListener() {},
+        removeEventListener() {},
+        ctrdxServiceWorkerRegistration: Promise.resolve(registration),
+    });
+    vm.runInContext(source("wwwroot/pwa.js"), context);
+    await new Promise((resolve) => setImmediate(resolve));
+
+    assert.equal(updates, 1);
+    assert.equal(shown, 0);
+    installing.state = "installed";
+    onStateChange();
+    assert.equal(shown, 1);
 });

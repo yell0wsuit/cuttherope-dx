@@ -85,6 +85,28 @@
                     deliverRegistration = resolve;
                 },
             );
+
+            // The worker already controlling this page is handed over at once, so pwa.js can look
+            // for an update while the game is still loading rather than only once it has. That
+            // puts no controller swap in the way of startup: a new version installs and then
+            // waits for the player to accept it, because this page keeps the old one in use.
+            // An uncontrolled page gets no such guarantee - a new version would activate and
+            // claim it straight away - so it keeps waiting for boot to finish.
+            const delivered =
+                "serviceWorker" in navigator &&
+                navigator.serviceWorker.controller
+                    ? navigator.serviceWorker.getRegistration("./").then(
+                          (registration) => {
+                              if (!registration) {
+                                  return false;
+                              }
+                              deliverRegistration(registration);
+                              return true;
+                          },
+                          () => false,
+                      )
+                    : Promise.resolve(false);
+
             globalThis.ctrdxInstallWorker = () => {
                 globalThis.ctrdxInstallWorker = () => {};
                 if (!("serviceWorker" in navigator)) {
@@ -92,14 +114,23 @@
                     return;
                 }
 
-                const registration = registerWorker();
-                // Handled here as well as in pwa.js: the page is already isolated, so failing
-                // to register costs offline caching and nothing else, and an unhandled
-                // rejection would reach the boot error screen.
-                registration.catch((error) =>
-                    console.warn("service worker registration failed:", error),
-                );
-                deliverRegistration(registration);
+                void delivered.then((early) => {
+                    if (early) {
+                        return;
+                    }
+
+                    const registration = registerWorker();
+                    // Handled here as well as in pwa.js: the page is already isolated, so
+                    // failing to register costs offline caching and nothing else, and an
+                    // unhandled rejection would reach the boot error screen.
+                    registration.catch((error) =>
+                        console.warn(
+                            "service worker registration failed:",
+                            error,
+                        ),
+                    );
+                    deliverRegistration(registration);
+                });
             };
             finishReady(true);
             return;

@@ -29,22 +29,21 @@ function watch(registration) {
         promptForUpdate(registration.waiting);
     }
 
+    // The browser's own check on navigation can have found a new version before this ran, in
+    // which case updatefound has already fired and the worker is part way through installing.
+    if (registration.installing) {
+        followInstall(registration.installing);
+    }
     registration.addEventListener("updatefound", () => {
-        const installing = registration.installing;
-        if (installing === null) {
-            return;
+        if (registration.installing) {
+            followInstall(registration.installing);
         }
-        installing.addEventListener("statechange", () => {
-            // Without a controller this is the first install rather than an update, and it
-            // activates on its own — there is nothing for the player to decide.
-            if (
-                installing.state === "installed" &&
-                navigator.serviceWorker.controller
-            ) {
-                promptForUpdate(installing);
-            }
-        });
     });
+
+    // Asked for now rather than left to the browser, which schedules its navigation check on its
+    // own terms. A new version then has the whole load to download in, and the prompt can be up
+    // before the player is.
+    registration.update().catch(() => {});
 
     // The browser only checks for a new worker on navigation, and this page is meant to be
     // left open. Checking when the tab comes back into view covers the long sessions.
@@ -58,6 +57,26 @@ function watch(registration) {
             registration.update().catch(() => {});
         }
     });
+}
+
+/**
+ * Offers an installing worker to the player once it has finished installing.
+ *
+ * @param {ServiceWorker} installing
+ */
+function followInstall(installing) {
+    const offer = () => {
+        // Without a controller this is the first install rather than an update, and it
+        // activates on its own — there is nothing for the player to decide.
+        if (
+            installing.state === "installed" &&
+            navigator.serviceWorker.controller
+        ) {
+            promptForUpdate(installing);
+        }
+    };
+    offer();
+    installing.addEventListener("statechange", offer);
 }
 
 /**
