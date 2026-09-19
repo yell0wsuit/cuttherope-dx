@@ -1,4 +1,5 @@
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
@@ -330,13 +331,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Plays the sound effect for the candy attaching to the ant conveyor.</summary>
         private static void PlayAntConveyorAttachSound()
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.ExpAntsTakeCandy);
+            SoundMgr.PlaySound(Resources.Snd.ExpAntsTakeCandy);
         }
 
         /// <summary>Plays the sound effect for the candy detaching from the ant conveyor.</summary>
         private static void PlayAntConveyorDetachSound()
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.ExpAntsDropCandy);
+            SoundMgr.PlaySound(Resources.Snd.ExpAntsDropCandy);
         }
     }
 }

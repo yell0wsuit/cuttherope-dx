@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -218,7 +219,7 @@ namespace CutTheRopeDX.GameMain
                     if (UnbindObjectFromTransporters(item))
                     {
                         movingBelt.BindObject(item);
-                        CTRSoundMgr.PlaySound(Resources.Snd.TransporterMove);
+                        SoundMgr.PlaySound(Resources.Snd.TransporterMove);
                     }
                 }
             }

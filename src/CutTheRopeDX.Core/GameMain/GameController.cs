@@ -5,6 +5,7 @@ using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
@@ -78,7 +79,7 @@ namespace CutTheRopeDX.GameMain
 
             root.SetMap(map);
             exitCode = EXIT_CODE_CUSTOM_RELOAD;
-            CTRSoundMgr.StopAll();
+            SoundMgr.StopAll();
             Deactivate();
         }
 
@@ -98,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             PostFlurryLevelEvent("LEVEL_STARTED");
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
-            CTRSoundMgr.StopMusic();
+            SoundMgr.StopMusic();
             PlayMusic();
             InitGameView();
             ShowView(0);
@@ -360,7 +361,7 @@ namespace CutTheRopeDX.GameMain
             //{
             //RootController.SetHacked();
             //}
-            CTRSoundMgr.PlaySound(Resources.Snd.Win);
+            SoundMgr.PlaySound(Resources.Snd.Win);
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);
@@ -466,7 +467,7 @@ namespace CutTheRopeDX.GameMain
             if (root.GetLevel() == Preferences.GetLevelsInPackCount(root.GetPack()) - 1)
             {
                 exitCode = 2;
-                CTRSoundMgr.StopAll();
+                SoundMgr.StopAll();
                 return true;
             }
             return false;
@@ -517,7 +518,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             RootController root = Application.SharedRootController();
-            CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+            SoundMgr.PlaySound(Resources.Snd.Tap);
             View view = GetView(0);
             switch (n)
             {
@@ -543,19 +544,19 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == GameControllerButtonId.LevelSelect:
                     exitCode = 1;
-                    CTRSoundMgr.StopAll();
+                    SoundMgr.StopAll();
                     LevelQuit();
                     RootController.LogEvent("IM_LEVEL_SELECT_PRESSED");
                     return;
                 case var id when id == GameControllerButtonId.MainMenu:
                     if (CustomLevelSession.IsActive)
                     {
-                        CTRSoundMgr.StopAll();
+                        SoundMgr.StopAll();
                         PlatformServices.Host?.Exit();
                         return;
                     }
                     exitCode = 0;
-                    CTRSoundMgr.StopAll();
+                    SoundMgr.StopAll();
                     LevelQuit();
                     RootController.LogEvent("IM_MAIN_MENU");
                     return;
@@ -575,7 +576,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     break;
                 case var id when id == GameControllerButtonId.NextLevel:
-                    CTRSoundMgr.StopLoopedSounds();
+                    SoundMgr.StopLoopedSounds();
                     if (!boxCloseHandled)
                     {
                         BoxClosed();
@@ -596,7 +597,7 @@ namespace CutTheRopeDX.GameMain
                         if (flag)
                         {
                             RootController.LogEvent("IM_MUSIC_OFF_PRESSED");
-                            CTRSoundMgr.StopMusic();
+                            SoundMgr.StopMusic();
                             return;
                         }
                         RootController.LogEvent("IM_MUSIC_ON_PRESSED");
@@ -609,11 +610,11 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetBooleanForKey(!flag2, "SOUND_ON", true);
                         if (flag2)
                         {
-                            CTRSoundMgr.SuspendSoundEffects();
+                            SoundMgr.SuspendSoundEffects();
                             RootController.LogEvent("IM_SOUND_OFF_PRESSED");
                             return;
                         }
-                        CTRSoundMgr.RestoreSoundEffects();
+                        SoundMgr.RestoreSoundEffects();
                         RootController.LogEvent("IM_SOUND_ON_PRESSED");
                         return;
                     }
@@ -658,21 +659,21 @@ namespace CutTheRopeDX.GameMain
                 case GameControllerInputCommand.Ignore:
                     return;
                 case GameControllerInputCommand.OpenPause:
-                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(Resources.Snd.Tap);
                     EnterOverlayMode(GameControllerOverlayMode.Paused);
                     RootController.LogEvent("IG_MENU_PRESSED");
                     RootController.LogEvent("IM_SHOWN");
                     return;
                 case GameControllerInputCommand.Resume:
-                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(Resources.Snd.Tap);
                     EnterOverlayMode(GameControllerOverlayMode.Gameplay);
                     RootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case GameControllerInputCommand.ExitResults:
                     navigationExitActive = true;
-                    CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(Resources.Snd.Tap);
                     exitCode = EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT;
-                    CTRSoundMgr.StopAll();
+                    SoundMgr.StopAll();
                     if (!boxCloseHandled)
                     {
                         BoxClosed();
@@ -759,12 +760,12 @@ namespace CutTheRopeDX.GameMain
             }
             else if (paused && !gameplayAudioPaused)
             {
-                CTRSoundMgr.Pause();
+                SoundMgr.Pause();
                 gameplayAudioPaused = true;
             }
             else if (gameplay && gameplayAudioPaused)
             {
-                CTRSoundMgr.Unpause();
+                SoundMgr.Unpause();
                 gameplayAudioPaused = false;
             }
 
@@ -1214,7 +1215,7 @@ namespace CutTheRopeDX.GameMain
             RootController root = Application.SharedRootController();
             if (SpecialEvents.IsXmas)
             {
-                CTRSoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
+                SoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
             }
             else
             {
@@ -1225,7 +1226,7 @@ namespace CutTheRopeDX.GameMain
                         string[] musicList = PackConfig.GetMusicListOrDefault(root.GetPack());
                         if (musicList.Length > 0)
                         {
-                            CTRSoundMgr.PlayRandomMusic(musicList);
+                            SoundMgr.PlayRandomMusic(musicList);
                         }
                         else
                         {
@@ -1234,7 +1235,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         break;
                     case var p when p == MusicPackNames.Original:
-                        CTRSoundMgr.PlayRandomMusic(MusicPacks.Original);
+                        SoundMgr.PlayRandomMusic(MusicPacks.Original);
                         break;
                     default:
                         GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);

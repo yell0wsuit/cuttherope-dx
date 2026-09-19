@@ -111,7 +111,7 @@ namespace CutTheRopeDX.GameMain
             FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, animRoot, -1, -1);
             FlashXmlTargetAnimationBackend.PlayTimeline(animParts, 0);
             FlashXmlTargetAnimationBackend.PlayRootTimeline(animRoot, 0);
-            CTRSoundMgr.PlaySound(Resources.Snd.ZeptoLogoBubbles);
+            SoundMgr.PlaySound(Resources.Snd.ZeptoLogoBubbles);
             EnsureDisclaimerText();
 
             if (animRoot.GetTimeline(0) is { } rootTimeline)
@@ -175,7 +175,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (currentPhase == Phase.Animating)
             {
-                CTRSoundMgr.StopSounds();
+                SoundMgr.StopSounds();
                 animFinished = true;
                 return true;
             }

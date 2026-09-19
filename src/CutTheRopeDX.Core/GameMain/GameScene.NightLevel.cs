@@ -1,6 +1,7 @@
 using System;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -187,7 +188,7 @@ namespace CutTheRopeDX.GameMain
 
                     if (t.NightSleep.AdvanceSound(delta, NightSleepSoundInterval))
                     {
-                        CTRSoundMgr.PlayRandomOmNomSound(
+                        SoundMgr.PlayRandomOmNomSound(
                             t.controller?.SkinDefinition,
                             Resources.Snd.MonsterSleep1,
                             Resources.Snd.MonsterSleep2,

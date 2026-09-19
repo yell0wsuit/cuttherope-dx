@@ -396,9 +396,9 @@ namespace CutTheRopeDX.GameMain
             cloudParticles?.StopSystem();
             particles = null;
             cloudParticles = null;
-            CTRSoundMgr.StopSound(startSound);
+            SoundMgr.StopSound(startSound);
             startSound = null;
-            CTRSoundMgr.StopLoopedSound(flyLoopSound);
+            SoundMgr.StopLoopedSound(flyLoopSound);
             flyLoopSound = null;
         }
 
@@ -515,7 +515,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// This rocket's own looping fly sound instance. Held so it can be stopped individually
-        /// via <see cref="CTRSoundMgr.StopLoopedSound"/> without silencing other rockets' loops or
+        /// via <see cref="SoundMgr.StopLoopedSound"/> without silencing other rockets' loops or
         /// unrelated one-shot effects. <see langword="null"/> when looped sounds are disabled or
         /// the sound failed to start.
         /// </summary>

@@ -1689,14 +1689,14 @@ namespace CutTheRopeDX.GameMain
                 PreLevelSelect();
             }
             ShowView(viewToShow);
-            CTRSoundMgr.StopMusic();
+            SoundMgr.StopMusic();
             if (SpecialEvents.IsXmas)
             {
-                CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
+                SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
             }
             else
             {
-                CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
+                SoundMgr.PlayMusic(Resources.Music.MenuMusic);
             }
         }
 
@@ -1718,7 +1718,7 @@ namespace CutTheRopeDX.GameMain
             if (PackConfig.OutroVideo != null)
             {
                 packContainer.PlaceToScrollPoint(root.GetPack() + 1);
-                CTRSoundMgr.StopMusic();
+                SoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
                 Application.SharedMovieMgr().PlayURL(PackConfig.OutroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
             }
@@ -1753,11 +1753,11 @@ namespace CutTheRopeDX.GameMain
             {
                 if (SpecialEvents.IsXmas)
                 {
-                    CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
+                    SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
                 }
                 else
                 {
-                    CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
+                    SoundMgr.PlayMusic(Resources.Music.MenuMusic);
                 }
             }
             if (IsSinglePack)
@@ -1813,7 +1813,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
-            CTRSoundMgr.StopMusic();
+            SoundMgr.StopMusic();
             RootController root = Application.SharedRootController();
             root.SetBox(Preferences.GetBoxForPack(pack));
             root.SetPack(pack);
@@ -1824,7 +1824,7 @@ namespace CutTheRopeDX.GameMain
             {
                 replayingIntroMovie = true;
                 ShowView(7);
-                CTRSoundMgr.StopMusic();
+                SoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
                 Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                 return;
@@ -1855,7 +1855,7 @@ namespace CutTheRopeDX.GameMain
 
             if (n.Value != -1)
             {
-                CTRSoundMgr.PlaySound(Resources.Snd.Tap);
+                SoundMgr.PlaySound(Resources.Snd.Tap);
             }
 
             if (n.IsLevelButton())
@@ -1924,7 +1924,7 @@ namespace CutTheRopeDX.GameMain
                         if (Preferences.GetScoreForPackLevel(0, 0) == 0 && PackConfig.IntroVideo != null)
                         {
                             ShowView(7);
-                            CTRSoundMgr.StopMusic();
+                            SoundMgr.StopMusic();
                             Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
                             Application.SharedMovieMgr().PlayURL(PackConfig.IntroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
                             return;
@@ -1945,7 +1945,7 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == MenuButtonId.SurvivalMode:
                     {
-                        CTRSoundMgr.StopMusic();
+                        SoundMgr.StopMusic();
                         pack = 0;
                         Application.SharedRootController().SetViewTransition(-1);
                         RootController root = Application.SharedRootController();
@@ -1968,11 +1968,11 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetBooleanForKey(!soundWasOn, "SOUND_ON", true);
                         if (soundWasOn)
                         {
-                            CTRSoundMgr.SuspendSoundEffects();
+                            SoundMgr.SuspendSoundEffects();
                         }
                         else
                         {
-                            CTRSoundMgr.RestoreSoundEffects();
+                            SoundMgr.RestoreSoundEffects();
                         }
                         return;
                     }
@@ -1982,16 +1982,16 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetBooleanForKey(!flag6, "MUSIC_ON", true);
                         if (flag6)
                         {
-                            CTRSoundMgr.StopMusic();
+                            SoundMgr.StopMusic();
                             return;
                         }
                         if (SpecialEvents.IsXmas)
                         {
-                            CTRSoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
+                            SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
                         }
                         else
                         {
-                            CTRSoundMgr.PlayMusic(Resources.Music.MenuMusic);
+                            SoundMgr.PlayMusic(Resources.Music.MenuMusic);
                         }
                         return;
                     }

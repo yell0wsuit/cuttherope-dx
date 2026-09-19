@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -117,10 +118,10 @@ namespace CutTheRopeDX.GameMain
             // Christmas bell that otherwise rings over the seasonal greeting.
             if (!scriptedGreeting)
             {
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
+                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
                 if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
                 {
-                    CTRSoundMgr.PlaySound(Resources.Snd.XmasBell);
+                    SoundMgr.PlaySound(Resources.Snd.XmasBell);
                 }
             }
         }
@@ -188,7 +189,7 @@ namespace CutTheRopeDX.GameMain
 
             // Initiator turns now; the other follows a fixed beat later.
             targets[firstIndex].controller?.PlayGreetingTurn(firstState);
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targets[firstIndex].controller?.SkinDefinition);
+            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targets[firstIndex].controller?.SkinDefinition);
 
             dd.CallObjectSelectorParamafterDelay(
                 new DelayedDispatcher.DispatchFunc(Selector_showSecondChatGreeting), null, ChatGreetingGapSeconds);
@@ -224,7 +225,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             second.controller?.PlayGreetingTurn(state);
-            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.controller?.SkinDefinition);
+            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.controller?.SkinDefinition);
         }
 
         /// <inheritdoc />
@@ -573,7 +574,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="param">Unused timeline payload.</param>
         private void Selector_gameWon(FrameworkTypes param)
         {
-            CTRSoundMgr.EnableLoopedSounds(false);
+            SoundMgr.EnableLoopedSounds(false);
             if (!gameplayFlow.CompleteWinTransition())
             {
                 // A restart claimed the level while the win was still presenting. Leave the result

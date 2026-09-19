@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -151,7 +152,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="candyPoint">Candy physics point to capture.</param>
         public void CaptureCandy(ConstraintedPoint candyPoint)
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.LanternTeleportIn);
+            SoundMgr.PlaySound(Resources.Snd.LanternTeleportIn);
 
             SharedCandyPoint = candyPoint;
             candyPoint.disableGravity = true;
@@ -297,7 +298,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void InitiateReleasingCandy()
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.LanternTeleportOut);
+            SoundMgr.PlaySound(Resources.Snd.LanternTeleportOut);
             foreach (Lantern lantern in GetAllLanterns())
             {
                 lantern.idleForm.PlayTimeline((int)LanternActivation.Deactivation);

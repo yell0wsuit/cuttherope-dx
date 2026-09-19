@@ -5,6 +5,7 @@ using System.Linq;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -89,7 +90,7 @@ namespace CutTheRopeDX.GameMain
                         if (!body.Splashes)
                         {
                             waterLayer.AddWaterParticlesAtXY(body.Visual.x, waterSurfaceY + ActivePhysicsConstants.WaterSplashParticleYOffset);
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
+                            SoundMgr.PlaySound(Resources.Snd.ExpWaterSplash);
                         }
                         body.Splashes = true;
                     }
@@ -153,7 +154,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             mount.Remount(grab);
                             grab.UpdateKickState();
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
+                            SoundMgr.PlaySound(Resources.Snd.ExpSuckerLand);
                             int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
                             Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
                             if (wallClimberCount >= 50)
@@ -360,7 +361,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (merging.TryAdvanceMerge(ActivePhysicsConstants.CandyPartsMergeSpeed, delta))
                     {
-                        CTRSoundMgr.PlaySound(Resources.Snd.CandyLink);
+                        SoundMgr.PlaySound(Resources.Snd.CandyLink);
                         _ = candies[0].Lifecycle.TryCompleteMerge();
                         int candiesUnitedCount = Preferences.GetIntForKey("PREFS_CANDIES_UNITED") + 1;
                         Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
@@ -553,7 +554,7 @@ namespace CutTheRopeDX.GameMain
                         _ = aniPool.AddChild(animation2);
                         conveyors.Remove(star);
                         _ = stars.Remove(star);
-                        CTRSoundMgr.PlaySound(starsCollected switch
+                        SoundMgr.PlaySound(starsCollected switch
                         {
                             1 => Resources.Snd.Star1,
                             2 => Resources.Snd.Star2,
@@ -566,7 +567,7 @@ namespace CutTheRopeDX.GameMain
                             if (!timeFrozen && controller?.IsIdleLoopPlaying() == true)
                             {
                                 controller.PlayExcited();
-                                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, controller.SkinDefinition);
+                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, controller.SkinDefinition);
                             }
                         }
                         break;
@@ -615,7 +616,7 @@ namespace CutTheRopeDX.GameMain
                         body.BubbleAnimation.visible = visualState.ShowNormalBubble;
                         body.GhostBubbleAnimation.visible = visualState.ShowGhostBubble;
                     }
-                    CTRSoundMgr.PlaySound(Resources.Snd.Bubble);
+                    SoundMgr.PlaySound(Resources.Snd.Bubble);
                     bubble3.popped = true;
                     bubble3.RemoveChildWithID(0);
                     conveyors.Remove(bubble3);
@@ -703,7 +704,7 @@ namespace CutTheRopeDX.GameMain
                     if (ctx.Lifecycle.CanEnterTransport && inRange)
                     {
                         OperateBambooTube(bambooTube, ctx);
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
+                        SoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
                     }
                 }
 
@@ -941,11 +942,11 @@ namespace CutTheRopeDX.GameMain
 
                             if (SpecialEvents.IsXmas)
                             {
-                                CTRSoundMgr.PlaySound(Resources.Snd.TeleportXmas);
+                                SoundMgr.PlaySound(Resources.Snd.TeleportXmas);
                             }
                             else
                             {
-                                CTRSoundMgr.PlaySound(Resources.Snd.Teleport);
+                                SoundMgr.PlaySound(Resources.Snd.Teleport);
                             }
 
                             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_teleport), session, 0.1f);
@@ -1211,8 +1212,8 @@ namespace CutTheRopeDX.GameMain
                                 ExhaustRocketForCandy(ctx);
                             }
 
-                            rocket.startSound = CTRSoundMgr.PlaySoundTracked(Resources.Snd.ExpRocketStart);
-                            rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                            rocket.startSound = SoundMgr.PlaySoundTracked(Resources.Snd.ExpRocketStart);
+                            rocket.flyLoopSound = SoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                             _ = ctx.Lifecycle.Attachments.BindRocket(rocket);
                             rocket.isOperating = -1;
                             rocket.startCandyRotation = body.Main.rotation;
@@ -1369,7 +1370,7 @@ namespace CutTheRopeDX.GameMain
                         damping *= ActivePhysicsConstants.WaterRocketDampingMultiplier;
                         if (ctx.Lifecycle.Attachments.Rocket.state == Rocket.STATE_ROCKET_FLY)
                         {
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
+                            SoundMgr.PlaySound(Resources.Snd.ExpRocketInWater);
                             ctx.Lifecycle.Attachments.Rocket.state = Rocket.STATE_ROCKET_EXAUST;
                             ctx.Lifecycle.Attachments.Rocket.StopAnimation();
                         }
@@ -1516,7 +1517,7 @@ namespace CutTheRopeDX.GameMain
                             if (t.Feeding.TryOpenMouth(closeDelay: 1f))
                             {
                                 t.controller?.PlayMouthOpening();
-                                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
                             }
                         }
                     }
@@ -1529,7 +1530,7 @@ namespace CutTheRopeDX.GameMain
                         if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
                         {
                             t.controller?.PlayMouthClosing();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
+                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
@@ -1575,7 +1576,7 @@ namespace CutTheRopeDX.GameMain
                             body.Visual.visible = false;
                             _ = t.Feeding.TryBeginChewing();
                             t.controller?.PlayChewing();
-                            CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.controller?.SkinDefinition);
+                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.controller?.SkinDefinition);
                             SchedulePostEatSleep(t);
                             break;
                         }
@@ -1859,10 +1860,10 @@ namespace CutTheRopeDX.GameMain
             grab.SetRope(bungee);
             ropes.Register(bungee, grab);
 
-            CTRSoundMgr.PlaySound(Resources.Snd.RopeGet);
+            SoundMgr.PlaySound(Resources.Snd.RopeGet);
             if (grab.mover != null)
             {
-                CTRSoundMgr.PlaySound(Resources.Snd.Buzz);
+                SoundMgr.PlaySound(Resources.Snd.Buzz);
             }
             return true;
         }
@@ -1951,7 +1952,7 @@ namespace CutTheRopeDX.GameMain
                         PlayMechanicalHandClapEffectAt(otherHand.ClawPosition());
                         hand.AnimateClap();
                         otherHand.AnimateClap();
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandClap);
+                        SoundMgr.PlaySound(Resources.Snd.ExpHandClap);
                     }
                 }
 
@@ -2024,7 +2025,7 @@ namespace CutTheRopeDX.GameMain
                     DropMouseCandyForPoint(grabbedBody.Point);
                     RestoreCandyProperties(ctx);
                     hand.AnimateCatchWithCandyPartsandAnimationsPool(ctx.HandCatchVisuals(), ctx.HandCatchScale, aniPool);
-                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
+                    SoundMgr.PlaySound(Resources.Snd.ExpHandCatch);
                 }
 
                 // A hand whose candy was taken stays releasing while the taker's claw is still in
@@ -2037,7 +2038,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (hand.TrySettleToIdle(distance) == HandSettle.SettledOwingDropSound)
                 {
-                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                    SoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }
 

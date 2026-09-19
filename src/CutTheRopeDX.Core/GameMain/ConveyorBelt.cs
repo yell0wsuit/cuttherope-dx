@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -544,7 +545,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (wrapped)
                 {
-                    CTRSoundMgr.PlaySound(Resources.Snd.TransporterDrop);
+                    SoundMgr.PlaySound(Resources.Snd.TransporterDrop);
                     objectsDistributed = false;
                 }
 
@@ -880,7 +881,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private static void PlayManualMoveSound()
         {
-            CTRSoundMgr.PlayRandomSound(Resources.Snd.Conv01, Resources.Snd.Conv02, Resources.Snd.Conv03, Resources.Snd.Conv04);
+            SoundMgr.PlayRandomSound(Resources.Snd.Conv01, Resources.Snd.Conv02, Resources.Snd.Conv03, Resources.Snd.Conv04);
         }
 
         /// <summary>

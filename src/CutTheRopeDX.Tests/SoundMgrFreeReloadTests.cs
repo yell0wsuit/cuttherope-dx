@@ -109,8 +109,8 @@ namespace CutTheRopeDX.Tests
 
             try
             {
-                ISoundInstance loop = manager.PlaySoundLooped(Resources.Snd.Electric);
-                ISoundInstance other = manager.PlaySoundLooped(Resources.Snd.TransporterMove);
+                ISoundInstance loop = manager.PlaySoundLoopedCore(Resources.Snd.Electric);
+                ISoundInstance other = manager.PlaySoundLoopedCore(Resources.Snd.TransporterMove);
                 Assert.Equal(AudioPlaybackState.Playing, loop.State);
                 Assert.Equal(AudioPlaybackState.Playing, other.State);
 

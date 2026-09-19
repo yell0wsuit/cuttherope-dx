@@ -5,9 +5,9 @@ using System.Diagnostics;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
 
 using Microsoft.Extensions.Logging;
@@ -239,7 +239,7 @@ namespace CutTheRopeDX.Commons
         {
             if (!gPaused)
             {
-                CTRSoundMgr.Pause();
+                SoundMgr.Pause();
                 Application.SharedMovieMgr().Pause();
                 gPaused = true;
                 Application.ApplicationWillResignActive();
@@ -254,7 +254,7 @@ namespace CutTheRopeDX.Commons
         {
             if (gPaused)
             {
-                CTRSoundMgr.Unpause();
+                SoundMgr.Unpause();
                 Application.SharedMovieMgr().Resume();
                 Texture2D.SuspendAll();
                 Texture2D.ResumeAll();

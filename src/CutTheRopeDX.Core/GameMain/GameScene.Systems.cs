@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -69,7 +70,7 @@ namespace CutTheRopeDX.GameMain
                 s.prevPos = VectRotateAround(s.prevPos, b.angle, b.x, b.y);
                 s.ApplyImpulseDelta(impulse, delta);
                 b.PlayTimeline(0);
-                CTRSoundMgr.PlaySound(Resources.Snd.Bouncer);
+                SoundMgr.PlaySound(Resources.Snd.Bouncer);
             }
         }
 
@@ -208,7 +209,7 @@ namespace CutTheRopeDX.GameMain
         {
             p.PlayTimeline(0);
             tutorialDirector.Fire(TutorialEvent.PumpFire);
-            CTRSoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
+            SoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
             PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES(p.angle) - DEG_90, grid, flowLength);
@@ -368,7 +369,7 @@ namespace CutTheRopeDX.GameMain
                         2 => Resources.Snd.RopeBleak3,
                         _ => Resources.Snd.RopeBleak4
                     };
-                    CTRSoundMgr.PlaySound(ropeSound);
+                    SoundMgr.PlaySound(ropeSound);
                     rope.SetCut(j);
                     if (im)
                     {
@@ -484,7 +485,7 @@ namespace CutTheRopeDX.GameMain
             {
                 RootController.PostAchievementName("1058341284", ACHIEVEMENT_STRING("\"Spider Tammer\""));
             }
-            CTRSoundMgr.PlaySound(Resources.Snd.SpiderFall);
+            SoundMgr.PlaySound(Resources.Snd.SpiderFall);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -536,7 +537,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             tutorialDirector.Fire(TutorialEvent.SpiderSteal, capturedBody);
-            CTRSoundMgr.PlaySound(Resources.Snd.SpiderWin);
+            SoundMgr.PlaySound(Resources.Snd.SpiderWin);
             GameObject capturedCandy = capturedBody.Visual;
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();

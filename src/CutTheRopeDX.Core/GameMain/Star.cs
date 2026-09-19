@@ -3,6 +3,7 @@ using System;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
@@ -263,7 +264,7 @@ namespace CutTheRopeDX.GameMain
                     lightUpAnim.PlayTimeline(0);
 
                     // Play star light sound
-                    CTRSoundMgr.PlayRandomSound(Resources.Snd.StarLight1, Resources.Snd.StarLight2);
+                    SoundMgr.PlayRandomSound(Resources.Snd.StarLight1, Resources.Snd.StarLight2);
                 }
             }
             else if (lightDownAnim != null && !isInitial)

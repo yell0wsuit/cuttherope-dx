@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests
         private static (GameController Controller, GameScene Scene) Load()
         {
             _ = HeadlessGame.Boot();
-            CTRSoundMgr.StopAll();
+            SoundMgr.StopAll();
             GameController controller = HeadlessGame.LoadLevelWithController(pack: 1, level: 4);
             return (controller, (GameScene)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_GAME_SCENE));
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -637,7 +638,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 t.controller?.PlaySad();
-                CTRSoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, t.controller?.SkinDefinition);
+                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, t.controller?.SkinDefinition);
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
@@ -734,7 +735,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="by">World-space Y position for the pop effect.</param>
         public void PopBubbleAtXY(float bx, float by)
         {
-            CTRSoundMgr.PlaySound(Resources.Snd.BubbleBreak);
+            SoundMgr.PlaySound(Resources.Snd.BubbleBreak);
             Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
@@ -779,7 +780,7 @@ namespace CutTheRopeDX.GameMain
             s_chainCutEffect.SpawnInto(aniPool, x, y, 0);
             SpawnChainCutDebris(x, y, swingAngleDegrees);
             SpawnChainFlashLight(x, y, swingAngleDegrees);
-            CTRSoundMgr.PlaySound(Resources.Snd.ChainCut);
+            SoundMgr.PlaySound(Resources.Snd.ChainCut);
         }
 
         /// <summary>
@@ -890,7 +891,7 @@ namespace CutTheRopeDX.GameMain
             candyBreak.y = by;
             candyBreak.StartSystem(5);
             _ = aniPool.AddChild(candyBreak);
-            CTRSoundMgr.PlaySound(Resources.Snd.CandyBreak);
+            SoundMgr.PlaySound(Resources.Snd.CandyBreak);
         }
 
         /// <summary>
@@ -1129,7 +1130,7 @@ namespace CutTheRopeDX.GameMain
                     hand.ReleaseCandyAfterDropSound();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
                     _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
-                    CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                    SoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                 }
             }
         }
@@ -1142,7 +1143,7 @@ namespace CutTheRopeDX.GameMain
         {
             gravityState.Toggle();
             tutorialDirector.Fire(TutorialEvent.GravityFlip);
-            CTRSoundMgr.PlaySound(gravityState.IsInverted
+            SoundMgr.PlaySound(gravityState.IsInverted
                 ? Resources.Snd.GravityOn
                 : Resources.Snd.GravityOff);
         }

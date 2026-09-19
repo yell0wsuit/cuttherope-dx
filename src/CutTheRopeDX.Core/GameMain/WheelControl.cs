@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 
 using static CutTheRopeDX.Framework.FrameworkTypes;
@@ -84,7 +85,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRSoundMgr.PlaySound(Resources.Snd.Wheel);
+            SoundMgr.PlaySound(Resources.Snd.Wheel);
             float rotateDelta = Grab.GetRotateAngleForStartEndCenter(lastTouch, point, Vect(grab.x, grab.y));
             if (rotateDelta > DEG_180)
             {

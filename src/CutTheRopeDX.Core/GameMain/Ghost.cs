@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -236,7 +237,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             morphingBubbles.StartSystem(GHOST_MORPHING_BUBBLES_COUNT);
-            CTRSoundMgr.PlaySound(Resources.Snd.GhostPuff);
+            SoundMgr.PlaySound(Resources.Snd.GhostPuff);
         }
 
         /// <summary>

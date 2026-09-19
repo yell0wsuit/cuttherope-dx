@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -152,17 +153,17 @@ namespace CutTheRopeDX.GameMain
                     case 0:
                         steamState++;
                         valveTimelineIndex = 0;
-                        CTRSoundMgr.PlaySound(Resources.Snd.SteamStart2);
+                        SoundMgr.PlaySound(Resources.Snd.SteamStart2);
                         break;
                     case 1:
                         steamState++;
                         valveTimelineIndex = 0;
-                        CTRSoundMgr.PlaySound(Resources.Snd.SteamStart);
+                        SoundMgr.PlaySound(Resources.Snd.SteamStart);
                         break;
                     case 2:
                         steamState = 0;
                         valveTimelineIndex = 1;
-                        CTRSoundMgr.PlaySound(Resources.Snd.SteamEnd);
+                        SoundMgr.PlaySound(Resources.Snd.SteamEnd);
                         break;
                     default:
                         break;

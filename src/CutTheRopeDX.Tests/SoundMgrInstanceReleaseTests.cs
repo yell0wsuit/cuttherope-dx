@@ -51,8 +51,8 @@ namespace CutTheRopeDX.Tests
             TrackedInstance oneShot = harness.PlayOneShot();
             TrackedInstance looped = harness.PlayLooped();
 
-            harness.Manager.StopSound(oneShot);
-            harness.Manager.StopLoopedSound(looped);
+            harness.Manager.StopSoundCore(oneShot);
+            harness.Manager.StopLoopedSoundCore(looped);
 
             Assert.True(oneShot.Disposed);
             Assert.True(looped.Disposed);
@@ -95,12 +95,12 @@ namespace CutTheRopeDX.Tests
 
             public TrackedInstance PlayOneShot()
             {
-                return (TrackedInstance)Manager.PlaySoundTracked(Resources.Snd.Bouncer);
+                return (TrackedInstance)Manager.PlaySoundTrackedCore(Resources.Snd.Bouncer);
             }
 
             public TrackedInstance PlayLooped()
             {
-                return (TrackedInstance)Manager.PlaySoundLooped(Resources.Snd.Electric);
+                return (TrackedInstance)Manager.PlaySoundLoopedCore(Resources.Snd.Electric);
             }
 
             public void Dispose()

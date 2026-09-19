@@ -1,6 +1,7 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -92,7 +93,7 @@ namespace CutTheRopeDX.GameMain
                 RootController.PostAchievementName(AchievementSnailTamer);
             }
 
-            CTRSoundMgr.PlaySound(Resources.Snd.ExpSnailIn);
+            SoundMgr.PlaySound(Resources.Snd.ExpSnailIn);
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace CutTheRopeDX.GameMain
             rotationTrack.relative = true;
             PlayTimeline(timelineId);
 
-            CTRSoundMgr.PlaySound(Resources.Snd.ExpSnailOut);
+            SoundMgr.PlaySound(Resources.Snd.ExpSnailOut);
         }
 
         /// <summary>

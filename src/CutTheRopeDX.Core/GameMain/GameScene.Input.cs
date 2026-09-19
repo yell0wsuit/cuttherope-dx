@@ -3,6 +3,7 @@ using System;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -266,7 +267,7 @@ namespace CutTheRopeDX.GameMain
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                             grab.SetRope(bungee);
                             ropes.Register(bungee, grab);
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpGun);
+                            SoundMgr.PlaySound(Resources.Snd.ExpGun);
 
                             // Track achievement
                             int ropesShoot = Preferences.GetIntForKey("PREFS_ROPES_SHOOT") + 1;
@@ -334,7 +335,7 @@ namespace CutTheRopeDX.GameMain
                         hand.ReleaseCandyAfterDropSound();
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
                         _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+                        SoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
                         return true;
                     }
 
@@ -352,7 +353,7 @@ namespace CutTheRopeDX.GameMain
                             hand.rotatingSegment = segment;
                             hand.ArmClap();
                             handledHandInput = true;
-                            CTRSoundMgr.PlaySound(Resources.Snd.ExpHandRotate);
+                            SoundMgr.PlaySound(Resources.Snd.ExpHandRotate);
                             break;
                         }
                     }
@@ -654,7 +655,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         mount.Kick(bungee);
                         bungee.UpdateKickState();
-                        CTRSoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
+                        SoundMgr.PlaySound(Resources.Snd.ExpSuckerDrop);
                         int wallClimberCount = Preferences.GetIntForKey("PREFS_WALL_CLIMBER") + 1;
                         Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
                         if (wallClimberCount >= 50)
@@ -774,7 +775,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (rotatedCircle.soundPlaying != scratchSoundState && scratchSoundState != -1)
                         {
-                            CTRSoundMgr.PlaySound(scratchSoundState == 1 ? Resources.Snd.ScratchOut : Resources.Snd.ScratchIn);
+                            SoundMgr.PlaySound(scratchSoundState == 1 ? Resources.Snd.ScratchOut : Resources.Snd.ScratchIn);
                             rotatedCircle.soundPlaying = scratchSoundState;
                         }
                         for (int j = 0; j < bungees.Count; j++)

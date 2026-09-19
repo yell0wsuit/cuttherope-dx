@@ -100,7 +100,7 @@ namespace CutTheRopeDX.GameMain
             electroOn = false;
             PlayTimeline(0);
             electroTimer = offTime;
-            CTRSoundMgr.StopLoopedSound(sndElectric);
+            SoundMgr.StopLoopedSound(sndElectric);
             sndElectric = null;
         }
 
@@ -112,13 +112,13 @@ namespace CutTheRopeDX.GameMain
             electroOn = true;
             PlayTimeline(1);
             electroTimer = onTime;
-            sndElectric = CTRSoundMgr.PlaySoundLooped(Resources.Snd.Electric);
+            sndElectric = SoundMgr.PlaySoundLooped(Resources.Snd.Electric);
         }
 
         /// <summary>Stops the electric loop without changing the electrified cycle state.</summary>
         public void SuspendElectricLoop()
         {
-            CTRSoundMgr.StopLoopedSound(sndElectric);
+            SoundMgr.StopLoopedSound(sndElectric);
             sndElectric = null;
         }
 
@@ -127,7 +127,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (electro && electroOn && sndElectric == null)
             {
-                sndElectric = CTRSoundMgr.PlaySoundLooped(Resources.Snd.Electric);
+                sndElectric = SoundMgr.PlaySoundLooped(Resources.Snd.Electric);
             }
         }
 
@@ -223,10 +223,10 @@ namespace CutTheRopeDX.GameMain
                 delegateRotateAllSpikesWithID(toggled);
                 if (spikesNormal)
                 {
-                    CTRSoundMgr.PlaySound(Resources.Snd.SpikeRotateIn);
+                    SoundMgr.PlaySound(Resources.Snd.SpikeRotateIn);
                     return;
                 }
-                CTRSoundMgr.PlaySound(Resources.Snd.SpikeRotateOut);
+                SoundMgr.PlaySound(Resources.Snd.SpikeRotateOut);
             }
         }
 

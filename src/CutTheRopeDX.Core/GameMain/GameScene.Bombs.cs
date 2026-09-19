@@ -4,6 +4,7 @@ using System.Linq;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -168,7 +169,7 @@ namespace CutTheRopeDX.GameMain
 
             Vector center = bombCtx.WholeBody.Point.pos;
             SpawnExplosionEffectAtXY(center.X, center.Y);
-            CTRSoundMgr.PlaySound(Resources.Snd.Explosion);
+            SoundMgr.PlaySound(Resources.Snd.Explosion);
 
             ApplyBlastAt(center, bombCtx, delta);
             ReleaseRopesForBody(bombCtx.WholeBody);

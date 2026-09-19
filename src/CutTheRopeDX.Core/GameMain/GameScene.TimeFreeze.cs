@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -52,14 +53,14 @@ namespace CutTheRopeDX.GameMain
                 switcher.ShowFrozen();
                 pauseSwitcherWaves?.PlayFadeIn();
                 StopLoopingMoverSounds();
-                CTRSoundMgr.PlaySound(Resources.Snd.PauseDown);
+                SoundMgr.PlaySound(Resources.Snd.PauseDown);
             }
             else
             {
                 switcher.ShowRunning();
                 pauseSwitcherWaves?.PlayFadeOut();
                 RestartLoopingMoverSounds();
-                CTRSoundMgr.PlaySound(Resources.Snd.PauseUp);
+                SoundMgr.PlaySound(Resources.Snd.PauseUp);
             }
 
             tutorialDirector.Fire(timeFrozen ? TutorialEvent.TimeFreeze : TutorialEvent.TimeUnfreeze);
@@ -156,7 +157,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                CTRSoundMgr.StopLoopedSound(rocket.flyLoopSound);
+                SoundMgr.StopLoopedSound(rocket.flyLoopSound);
                 rocket.flyLoopSound = null;
             }
         }
@@ -180,7 +181,7 @@ namespace CutTheRopeDX.GameMain
                     && rocket.flyLoopSound == null
                     && RocketBoundCandy(rocket) != null)
                 {
-                    rocket.flyLoopSound = CTRSoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
+                    rocket.flyLoopSound = SoundMgr.PlaySoundLooped(Resources.Snd.ExpRocketFlyLooped);
                 }
             }
         }

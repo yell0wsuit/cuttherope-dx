@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -291,7 +292,7 @@ namespace CutTheRopeDX.GameMain
                 AttachExistingCandy(carry);
             }
 
-            CTRSoundMgr.PlaySound(Resources.Snd.MouseRustle);
+            SoundMgr.PlaySound(Resources.Snd.MouseRustle);
         }
 
         /// <summary>
@@ -331,7 +332,7 @@ namespace CutTheRopeDX.GameMain
                 sprites.Value.Container.PlayTimeline((int)MouseAnimationId.Bounce);
             }
 
-            CTRSoundMgr.PlaySound(Resources.Snd.MouseIdle);
+            SoundMgr.PlaySound(Resources.Snd.MouseIdle);
         }
 
         /// <summary>
@@ -362,7 +363,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (ReleaseCarriedCandy())
             {
-                CTRSoundMgr.PlaySound(Resources.Snd.MouseTap);
+                SoundMgr.PlaySound(Resources.Snd.MouseTap);
             }
         }
 

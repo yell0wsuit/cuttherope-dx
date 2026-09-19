@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -14,7 +15,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void InitializeGameState()
         {
-            CTRSoundMgr.EnableLoopedSounds(true);
+            SoundMgr.EnableLoopedSounds(true);
             aniPool.RemoveAllChilds();
             particlesAniPool.RemoveAllChilds();
             staticAniPool.RemoveAllChilds();
@@ -29,7 +30,7 @@ namespace CutTheRopeDX.GameMain
             }
             waterLevel = 0f;
             waterSpeed = 0f;
-            CTRSoundMgr.StopLoopedSounds();
+            SoundMgr.StopLoopedSounds();
 
             // Initialize object collections
             bungees = [];

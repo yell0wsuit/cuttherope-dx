@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 
 namespace CutTheRopeDX.GameMain
@@ -82,7 +83,7 @@ namespace CutTheRopeDX.GameMain
             hand.cPoint.RemoveConstraint(point);
             hand.ReleaseCandyAfterDropSound();
             hand.AnimateReleaseWithAnimationsPool(aniPool);
-            CTRSoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
+            SoundMgr.PlaySound(Resources.Snd.ExpHandDrop);
         }
 
         private void ReleaseTransportAttachments(

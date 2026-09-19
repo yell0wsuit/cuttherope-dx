@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 
 using static CutTheRopeDX.Framework.Helpers.MathHelper;
@@ -92,7 +93,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             State = SpiderRiderState.Walking;
-            CTRSoundMgr.PlaySound(Resources.Snd.SpiderActivate);
+            SoundMgr.PlaySound(Resources.Snd.SpiderActivate);
             Animation?.PlayTimeline(0);
         }
 

@@ -310,7 +310,7 @@ namespace CutTheRopeDX.Framework.Core
                 return value;
             }
 
-            string path = ResourceMgr.XNA_ResName(resourceName);
+            string path = XNA_ResName(resourceName);
             float scaleX = GetNormalScaleX(resourceName);
             float scaleY = GetNormalScaleY(resourceName);
             switch (resType)
@@ -349,7 +349,7 @@ namespace CutTheRopeDX.Framework.Core
         {
             localizedName = string.IsNullOrEmpty(resourceName)
                 ? resourceName
-                : ResourceMgr.HandleLocalizedResource(resourceName);
+                : HandleLocalizedResource(resourceName);
 
             return !string.IsNullOrEmpty(localizedName) && Resources.IsValidResourceName(localizedName);
         }

@@ -33,15 +33,15 @@ namespace CutTheRopeDX.Tests
                 Assert.Equal(AudioPlaybackState.Playing, backend.MusicState);
                 Assert.Equal(0, backend.PauseMusicCalls);
 
-                manager.Pause();
+                manager.PauseCore();
                 Assert.Equal(AudioPlaybackState.Paused, backend.MusicState);
                 Assert.Equal(1, backend.PauseMusicCalls);
 
-                manager.Unpause();
+                manager.UnpauseCore();
                 Assert.Equal(AudioPlaybackState.Playing, backend.MusicState);
                 Assert.Equal(1, backend.ResumeMusicCalls);
 
-                manager.Unpause();
+                manager.UnpauseCore();
                 Assert.Equal(AudioPlaybackState.Playing, backend.MusicState);
                 Assert.Equal(1, backend.ResumeMusicCalls);
             }
