@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.GameMain.Tutorials;
@@ -29,7 +30,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         {
             CreatedNodes.Add(node);
             SignColors.Add(color);
-            return new CTRGameObject { x = x, y = y };
+            return new GameObject { x = x, y = y };
         }
     }
 

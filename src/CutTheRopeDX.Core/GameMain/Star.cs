@@ -11,7 +11,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Collectible star object with optional timed and night-mode visual states.
     /// </summary>
-    internal sealed class Star : CTRGameObject, ITransporterItem, ITransporterBindAware
+    internal sealed class Star : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>Glow quad index for the normal idle star texture.</summary>
         private const int ImgObjStarIdleGlow = 0;

@@ -1,5 +1,5 @@
 using System;
-using System.Globalization;
+using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
 
@@ -9,6 +9,7 @@ namespace CutTheRopeDX.Framework.Helpers
 {
     /// <summary>
     /// Moves a point along a cyclic path with optional per-point speed settings and continuous rotation.
+    /// Paths are parsed from level data, supporting both circular ("R…") and polyline ("x,y,…") definitions.
     /// </summary>
     internal class Mover : FrameworkTypes
     {
@@ -54,8 +55,62 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
+        /// Builds a started mover from an authored <c>path</c>, or <see langword="null"/> when none
+        /// is authored. Shared so a tutorial text prompt travels exactly like any other object given
+        /// the same attributes, speed scale included.
+        /// </summary>
+        /// <param name="xml">Element carrying <c>path</c>, <c>moveSpeed</c> and <c>rotateSpeed</c>.</param>
+        /// <param name="start">World position the path is relative to.</param>
+        /// <param name="angle">Starting angle in degrees.</param>
+        /// <returns>The started mover, or <see langword="null"/>.</returns>
+        public static Mover FromXml(XElement xml, Vector start, float angle)
+        {
+            string pathString = xml.Attribute("path")?.Value ?? string.Empty;
+            if (pathString.Length == 0)
+            {
+                return null;
+            }
+
+            Mover mover = new(
+                PathPointCapacity(pathString),
+                ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value) * ActivePhysicsConstants.MoverSpeedScale,
+                ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value))
+            {
+                angle_ = angle,
+            };
+            mover.angle_initial = mover.angle_;
+            mover.SetPathFromStringandStart(pathString, start);
+            mover.Start();
+            return mover;
+        }
+
+        /// <summary>
+        /// Returns the number of path points <see cref="SetPathFromStringandStart"/> will emit for
+        /// <paramref name="p"/>. Callers size the mover from this: <see cref="AddPathPoint"/>
+        /// indexes its array unguarded, so a capacity derived from the unscaled radius overruns.
+        /// </summary>
+        /// <param name="p">The path string from level data.</param>
+        /// <returns>The path point capacity required for <paramref name="p"/>.</returns>
+        public static int PathPointCapacity(string p)
+        {
+            return string.IsNullOrEmpty(p) || p[0] != 'R'
+                ? 100
+                : MAX(1, CirclePathRadius(p) / 2) + 1;
+        }
+
+        /// <summary>Scales the radius of a circular ("R…") path into world units.</summary>
+        /// <param name="p">The path string from level data.</param>
+        /// <returns>The scaled circle radius.</returns>
+        private static int CirclePathRadius(string p)
+        {
+            int radius = (int)RTD(ParseIntOrZero(p[2..]));
+            return (int)RTD(radius * ActivePhysicsConstants.MoverPathScale);
+        }
+
+        /// <summary>
         /// Builds a path from a serialized string and prepends the supplied start point.
-        /// Supports circular path syntax starting with <c>R</c>.
+        /// Circular paths (<c>R</c> followed by <c>C</c> for clockwise and a radius) and polyline
+        /// offsets are both scaled by <see cref="ActivePhysicsConstants.MoverPathScale"/>.
         /// </summary>
         /// <param name="p">Serialized path description.</param>
         /// <param name="s">Starting position for the generated path.</param>
@@ -64,23 +119,23 @@ namespace CutTheRopeDX.Framework.Helpers
             if (p[0] == 'R')
             {
                 bool clockwise = p[1] == 'C';
-                int radius = ParseIntOrZero(p[2..]);
-                int pointsCount = radius / 2;
-                if (pointsCount <= 0)
+                int radius = CirclePathRadius(p);
+                int pointCount = radius / 2;
+                if (pointCount <= 0)
                 {
                     AddPathPoint(s);
                     return;
                 }
-                float angleStep = MathF.Tau / pointsCount;
+                float angleStep = MathF.Tau / pointCount;
                 if (!clockwise)
                 {
                     angleStep = 0f - angleStep;
                 }
                 float theta = 0f;
-                for (int i = 0; i < pointsCount; i++)
+                for (int i = 0; i < pointCount; i++)
                 {
-                    float x = s.X + (radius * MathF.Cos(theta));
-                    float y = s.Y + (radius * MathF.Sin(theta));
+                    float x = s.X + (radius * Cosf(theta));
+                    float y = s.Y + (radius * Sinf(theta));
                     AddPathPoint(Vect(x, y));
                     theta += angleStep;
                 }
@@ -96,7 +151,9 @@ namespace CutTheRopeDX.Framework.Helpers
             {
                 string xOffsetString = list[j];
                 string yOffsetString = list[j + 1];
-                AddPathPoint(Vect(s.X + (string.IsNullOrEmpty(xOffsetString) ? 0f : float.Parse(xOffsetString, CultureInfo.InvariantCulture)), s.Y + (string.IsNullOrEmpty(yOffsetString) ? 0f : float.Parse(yOffsetString, CultureInfo.InvariantCulture))));
+                AddPathPoint(Vect(
+                    s.X + (ParseFloatOrZero(xOffsetString) * ActivePhysicsConstants.MoverPathScale),
+                    s.Y + (ParseFloatOrZero(yOffsetString) * ActivePhysicsConstants.MoverPathScale)));
             }
         }
 

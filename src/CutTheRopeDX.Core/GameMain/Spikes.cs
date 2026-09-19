@@ -11,7 +11,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Spike hazard that can be static, rotatable by a button group, or electrified with timed on/off cycles.
     /// </summary>
-    internal sealed class Spikes : CTRGameObject, ITimelineDelegate, IButtonDelegation
+    internal sealed class Spikes : GameObject, ITimelineDelegate, IButtonDelegation
     {
         /// <summary>
         /// Initializes spikes at a level position with the configured width, angle, and toggle group.

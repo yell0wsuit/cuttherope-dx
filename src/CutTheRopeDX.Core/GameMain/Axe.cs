@@ -10,7 +10,7 @@ namespace CutTheRopeDX.GameMain
     /// Time Travel axe blade. It is a candy-like physics body for ropes, transport, and rockets,
     /// but its gameplay role is a hazard and chain cutter.
     /// </summary>
-    internal sealed class Axe : CTRGameObject, ITransporterItem, ITransporterBindAware
+    internal sealed class Axe : GameObject, ITransporterItem, ITransporterBindAware
     {
         private const int BaseQuad = 0;
         private const int BladeQuad = 1;

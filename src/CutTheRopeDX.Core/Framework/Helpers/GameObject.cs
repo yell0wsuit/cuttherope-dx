@@ -136,30 +136,16 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <summary>
-        /// Parses mover path and speed attributes from the XML element.
+        /// Parses the rotation and mover path attributes from level XML.
         /// </summary>
         /// <param name="xml">XML element containing mover attributes.</param>
         public virtual void ParseMover(XElement xml)
         {
             rotation = ParseFloatOrZero(xml.Attribute("angle")?.Value);
-            string pathString = xml.Attribute("path")?.Value ?? string.Empty;
-            if (pathString != null && pathString.Length != 0)
+            Mover parsed = Mover.FromXml(xml, Vect(x, y), rotation);
+            if (parsed != null)
             {
-                int moverCapacity = 100;
-                if (pathString[0] == 'R')
-                {
-                    moverCapacity = (ParseIntOrZero(pathString[2..]) / 2) + 1;
-                }
-                float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
-                float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
-                Mover parsedMover = new(moverCapacity, moveSpeed, rotateSpeed)
-                {
-                    angle_ = rotation
-                };
-                parsedMover.angle_initial = parsedMover.angle_;
-                parsedMover.SetPathFromStringandStart(pathString, Vect(x, y));
-                SetMover(parsedMover);
-                parsedMover.Start();
+                SetMover(parsed);
             }
         }
 

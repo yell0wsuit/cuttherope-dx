@@ -6,7 +6,6 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
-using CutTheRopeDX.GameMain;
 using CutTheRopeDX.GameMain.Tutorials;
 
 using Xunit;
@@ -262,7 +261,7 @@ namespace CutTheRopeDX.Tests.Tutorials
             LoadResult result = Load(
                 "<tutorial04 locale=\"en\" x=\"10\" y=\"20\" angle=\"4\" "
                 + "path=\"10,0\" moveSpeed=\"2\" rotateSpeed=\"3\" />");
-            CTRGameObject visual = Assert.IsType<CTRGameObject>(Assert.Single(result.Prompts).Visual);
+            GameObject visual = Assert.IsType<GameObject>(Assert.Single(result.Prompts).Visual);
 
             Assert.NotNull(visual.mover);
             Assert.Equal(2, visual.mover.pathLen);

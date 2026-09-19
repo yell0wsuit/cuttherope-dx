@@ -11,7 +11,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Lantern object that can capture the candy, hold it in a shared lantern state, and release it on touch.
     /// </summary>
-    internal sealed class Lantern : CTRGameObject
+    internal sealed class Lantern : GameObject
     {
         /// <summary>
         /// Initializes the lantern at a level position and creates its idle, active, fire, and candy visuals.

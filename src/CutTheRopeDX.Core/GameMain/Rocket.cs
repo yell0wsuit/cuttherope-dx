@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
@@ -15,7 +16,7 @@ namespace CutTheRopeDX.GameMain
     /// Represents a rocket game object that can be rotated by touch input, fly along a path,
     /// and produce spark and cloud particle effects from its exhaust.
     /// </summary>
-    internal sealed class Rocket : CTRGameObject, ITimelineDelegate
+    internal sealed class Rocket : GameObject, ITimelineDelegate
     {
         /// <summary>
         /// Creates a new <see cref="Rocket"/> instance initialized with the specified texture.
@@ -197,17 +198,17 @@ namespace CutTheRopeDX.GameMain
             string path = xml.Attribute("path")?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(path))
             {
-                int pathPoints = CTRMover.PathPointCapacity(path);
+                int pathPoints = Mover.PathPointCapacity(path);
                 float moveSpeed = ParseFloatOrZero(xml.Attribute("moveSpeed")?.Value);
                 float rotateSpeed = ParseFloatOrZero(xml.Attribute("rotateSpeed")?.Value);
-                CTRMover ctrMover = new(pathPoints, moveSpeed, rotateSpeed)
+                Mover parsedMover = new(pathPoints, moveSpeed, rotateSpeed)
                 {
                     angle_ = rotation
                 };
-                ctrMover.angle_initial = ctrMover.angle_;
-                ctrMover.SetPathFromStringandStart(path, Vect(x, y));
-                SetMover(ctrMover);
-                ctrMover.Start();
+                parsedMover.angle_initial = parsedMover.angle_;
+                parsedMover.SetPathFromStringandStart(path, Vect(x, y));
+                SetMover(parsedMover);
+                parsedMover.Start();
             }
         }
 

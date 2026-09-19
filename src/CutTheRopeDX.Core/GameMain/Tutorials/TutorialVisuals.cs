@@ -2,6 +2,7 @@ using System.Xml.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.Helpers;
 
@@ -36,7 +37,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="node">Element carrying <c>path</c>, <c>moveSpeed</c> and <c>rotateSpeed</c>.</param>
         internal void ParseMover(XElement node)
         {
-            mover = CTRMover.FromXml(node, Vect(x, y), rotation);
+            mover = Mover.FromXml(node, Vect(x, y), rotation);
         }
 
         /// <inheritdoc />
@@ -54,11 +55,11 @@ namespace CutTheRopeDX.GameMain.Tutorials
             rotation = mover.angle_;
         }
 
-        private CTRMover mover;
+        private Mover mover;
     }
 
     /// <summary>Image visual for an XML-authored tutorial prompt.</summary>
-    internal sealed class TutorialSign : CTRGameObject
+    internal sealed class TutorialSign : GameObject
     {
         /// <summary>
         /// Whether a quad's art is drawn in its own colors. Every quad below this one is black ink

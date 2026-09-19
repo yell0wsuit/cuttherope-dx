@@ -2,6 +2,7 @@ using System;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -10,7 +11,7 @@ namespace CutTheRopeDX.GameMain
     /// A bouncy surface that makes the candy bounce on contact.
     /// Can be small (1-unit) or large (2-unit) and optionally ride a transporter belt.
     /// </summary>
-    internal class Bouncer : CTRGameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
+    internal class Bouncer : GameObject, ITransporterItem, ITransporterBindAware, ITransporterSideSwitchAware
     {
         /// <summary>
         /// Initialises the bouncer at the given position with a width class and rotation angle.

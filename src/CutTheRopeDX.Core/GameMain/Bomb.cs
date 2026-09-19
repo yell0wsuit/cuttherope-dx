@@ -11,7 +11,7 @@ namespace CutTheRopeDX.GameMain
     /// and rockets, but its gameplay role is an explosive: anything that touches it, cuts across it,
     /// or detonates beside it sets it off, and the blast shoves every nearby body away.
     /// </summary>
-    internal sealed class Bomb : CTRGameObject, ITransporterItem, ITransporterBindAware
+    internal sealed class Bomb : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>Quad holding the intact bomb; the remaining quads are its debris fragments.</summary>
         private const int BodyQuad = 0;

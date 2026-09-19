@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -7,7 +8,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Magic hat teleporter object, rendered as a Christmas sock during the seasonal theme.
     /// </summary>
-    internal sealed class Sock : CTRGameObject, ITransporterItem, ITransporterBindAware
+    internal sealed class Sock : GameObject, ITransporterItem, ITransporterBindAware
     {
         /// <summary>Scale factor used to convert magic hat offsets into world units.</summary>
         private const float ScalingCompensation = 3f;

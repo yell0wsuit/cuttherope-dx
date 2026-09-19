@@ -194,7 +194,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void APlainPathMovesTextTheSameWayItMovesASign()
         {
             // Identical XML has to travel identically whichever visual carries it, which means text
-            // needs the same CTRMover and its speed scale, not a mover of its own.
+            // needs the same Mover and its speed scale, not a mover of its own.
             (float text, float sign) = TravelOfTextAndSign(
                 new XAttribute("path", "90,0"),
                 new XAttribute("moveSpeed", "100"));

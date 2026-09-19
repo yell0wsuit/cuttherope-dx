@@ -1,5 +1,6 @@
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Physics;
 using CutTheRopeDX.Framework.Visual;
 
@@ -9,7 +10,7 @@ namespace CutTheRopeDX.GameMain
     /// Rotatable bamboo tube teleporter. The candy enters one hole and exits the other.
     /// The tube can be rotated by dragging its ring zone or tapped in the centre to spin CCW.
     /// </summary>
-    internal sealed class BambooTube : CTRGameObject
+    internal sealed class BambooTube : GameObject
     {
         /// <summary>
         /// Initialises the tube at <paramref name="position"/> with an initial
