@@ -406,17 +406,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Width of the world the camera shows at once, in world units: the 320-unit screen every
-        /// level was composed against, at the map scale of three. Locking the width rather than
-        /// fitting the level to the window keeps the picture the size it was drawn at on every
-        /// window shape, and is what gives a level wider than one screen somewhere to scroll.
+        /// Minimum visible world width: 320 authored units at the map scale of three.
+        /// Tall screens keep this width so wider levels retain horizontal scrolling.
         /// </summary>
         private const float LockedViewWidth = 960f;
 
         /// <summary>
         /// Height of the screen levels were composed against, in world units: 480 authored units
-        /// at the map scale of three. Only the opening pan reads it, because whether a level pans
-        /// is a property of the level rather than of the window it happens to be played in.
+        /// at the map scale of three. Wider screens preserve this height to avoid magnifying
+        /// and cropping the level; the opening pan also uses it as the authored reference.
         /// </summary>
         private const float AuthoredScreenHeight = 1440f;
 
@@ -424,9 +422,9 @@ namespace CutTheRopeDX.GameMain
         /// The region of world the camera shows at once, in world units.
         /// </summary>
         /// <remarks>
-        /// Only the width is fixed, so the height is whatever the window's shape makes of it.
-        /// Nothing here is scaled to contain the level: the window is the whole of what the camera
-        /// shows, which is what leaves a level larger than one screen somewhere to scroll.
+        /// Fit the authored 320 by 480 screen, revealing extra world on the longer axis. This
+        /// preserves normal scale on wide screens and horizontal scrolling on tall screens.
+        /// The full level size does not affect the scale.
         /// </remarks>
         /// <param name="snapshot">The viewport to measure against.</param>
         /// <returns>The window's extent, horizontally and vertically.</returns>
@@ -436,9 +434,13 @@ namespace CutTheRopeDX.GameMain
 
             // Before the first real viewport arrives there is no shape to read, so stand in the
             // screen the levels were composed against rather than divide by nothing.
-            return viewport.w > 0f
-                ? Vect(LockedViewWidth, viewport.h * LockedViewWidth / viewport.w)
-                : Vect(LockedViewWidth, AuthoredScreenHeight);
+            if (viewport.w <= 0f || viewport.h <= 0f)
+            {
+                return Vect(LockedViewWidth, AuthoredScreenHeight);
+            }
+
+            float scale = MathF.Min(viewport.w / LockedViewWidth, viewport.h / AuthoredScreenHeight);
+            return Vect(viewport.w / scale, viewport.h / scale);
         }
 
         /// <summary>
@@ -522,10 +524,8 @@ namespace CutTheRopeDX.GameMain
         /// Places the region of the level the camera shows for the current viewport.
         /// </summary>
         /// <remarks>
-        /// The width of that region is fixed at <see cref="LockedViewWidth"/>, so the picture is
-        /// the size it was composed at whatever shape the window is, and a level wider than one
-        /// screen scrolls instead of shrinking. Fitting the level to the viewport instead is why a
-        /// level authored twice the usual width had no horizontal scroll range on any window.
+        /// The region comes from fitting the authored screen rather than the full level.
+        /// Wider levels scroll when they exceed the space exposed by the current viewport.
         /// </remarks>
         /// <param name="snapshot">The viewport to place against.</param>
         private void ApplyCameraFit(ViewportLayoutSnapshot snapshot)
@@ -546,7 +546,7 @@ namespace CutTheRopeDX.GameMain
             float anchorY = GameplayCamera.Anchor(camera.pos.Y, cameraBounds.y, scrollable.Y);
 
             camera.ApplyFit(new CameraFit(
-                viewport.w / LockedViewWidth,
+                viewport.w / window.X,
                 new Rectangle(
                     ScrollOrigin(cameraBounds.x, cameraBounds.w, window.X, scrollable.X, anchorX),
                     ScrollOrigin(cameraBounds.y, cameraBounds.h, window.Y, scrollable.Y, anchorY),
