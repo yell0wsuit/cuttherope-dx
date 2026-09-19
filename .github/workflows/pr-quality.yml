@@ -12,6 +12,7 @@ on:
             - "global.json"
             - "nuget.config"
             - ".github/workflows/pr-quality.yml"
+            - ".github/actions/**"
             # The headless suite sizes sprites from the checked-in image manifest, and the
             # packaging and web-content scripts are covered by their own tests. A change to
             # either that matched nothing above used to reach main without being built at all.
@@ -33,10 +34,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v7
 
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v6
-              with:
-                  dotnet-version: "10.x"
+            - uses: ./.github/actions/setup-dotnet
 
             # The solution-wide build includes CutTheRopeDX.Browser, which targets
             # net10.0-browser and cannot restore or build without this workload.
@@ -70,6 +68,8 @@ jobs:
               uses: actions/setup-python@v6
               with:
                   python-version: "3.13"
+                  cache: pip
+                  cache-dependency-path: scripts/requirements-dev.txt
 
             - name: Install dependencies
               run: pip install -r scripts/requirements-dev.txt

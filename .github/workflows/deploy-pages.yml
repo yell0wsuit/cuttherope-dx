@@ -16,9 +16,6 @@ concurrency:
     group: pages
     cancel-in-progress: true
 
-env:
-    DOTNET_VERSION: "10.x"
-
 jobs:
     # Shared with the release workflow, so the asset download is defined in one place.
     content:
@@ -30,33 +27,18 @@ jobs:
         steps:
             - uses: actions/checkout@v7
 
-            - name: Set up .NET
-              uses: actions/setup-dotnet@v6
-              with:
-                  dotnet-version: ${{ env.DOTNET_VERSION }}
+            - uses: ./.github/actions/setup-dotnet
 
             # Required for the browser-wasm publish (native relink; WasmNativeStrip).
             - name: Install wasm-tools workload
               run: dotnet workload install wasm-tools
 
-            # Avoids re-downloading NuGet packages every run. No packages.lock.json in this
-            # repo, so key off the project/props files instead.
-            - name: Cache NuGet packages
-              uses: actions/cache@v6
-              with:
-                  path: ~/.nuget/packages
-                  key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj', 'Directory.Packages.props', 'Directory.Build.props') }}
-                  restore-keys: nuget-${{ runner.os }}-
-
             - name: Restore fetched assets
               uses: actions/cache/restore@v6
               with:
-                  path: |
-                      content/images
-                      content/sounds
-                      content/fonts
-                      content/video_hd
+                  path: ${{ needs.content.outputs.cache-path }}
                   key: ${{ needs.content.outputs.cache-key }}
+                  enableCrossOsArchive: true
                   # The content job just populated this; a miss means something is wrong and
                   # publishing an assetless game would only hide it.
                   fail-on-cache-miss: true

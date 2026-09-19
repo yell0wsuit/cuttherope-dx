@@ -14,42 +14,49 @@ on:
             cache-key:
                 description: "Key of the cache holding the fetched content/ tree."
                 value: ${{ jobs.fetch.outputs.cache-key }}
+            cache-path:
+                description: "Paths the cache holds. A restore must name exactly these to match."
+                value: ${{ jobs.fetch.outputs.cache-path }}
 
 permissions:
     contents: read
-
-env:
-    DOTNET_VERSION: "10.x"
 
 jobs:
     fetch:
         runs-on: ubuntu-latest
         outputs:
             cache-key: ${{ steps.key.outputs.value }}
+            cache-path: ${{ steps.key.outputs.path }}
         steps:
             - uses: actions/checkout@v7
 
-            - uses: actions/setup-dotnet@v6
-              with:
-                  dotnet-version: ${{ env.DOTNET_VERSION }}
+            - uses: ./.github/actions/setup-dotnet
 
             # The manifest names every asset and its hash, so it alone decides what a fetch
             # would produce; the fetch code is included so a change in how assets are laid
-            # down also invalidates.
+            # down also invalidates. The paths go out too: they are part of the cache's
+            # identity, so a caller listing them differently would silently always miss.
             - name: Compute cache key
               id: key
               run: |
                   echo "value=raw-content-${{ hashFiles('content/file_manifest.json', 'content/Builder/Assets/**/*.cs', 'content/Builder/Commands/**/*.cs') }}" >> "$GITHUB_OUTPUT"
+                  {
+                      echo "path<<EOF"
+                      echo "content/images"
+                      echo "content/sounds"
+                      echo "content/fonts"
+                      echo "content/video_hd"
+                      echo "EOF"
+                  } >> "$GITHUB_OUTPUT"
 
+            # Cross-OS so the Windows packaging job can restore what this Linux job saves;
+            # without it Windows looks for a Windows-only cache version and always misses.
             - uses: actions/cache@v6
               id: cache
               with:
-                  path: |
-                      content/images
-                      content/sounds
-                      content/fonts
-                      content/video_hd
+                  path: ${{ steps.key.outputs.path }}
                   key: ${{ steps.key.outputs.value }}
+                  enableCrossOsArchive: true
 
             - name: Fetch and verify assets
               run: |

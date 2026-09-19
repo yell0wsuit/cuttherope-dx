@@ -1,0 +1,28 @@
+name: Set up .NET
+description: Installs the .NET SDK and restores the NuGet package cache.
+
+# Every job that restores NuGet packages goes through here, so the SDK version and the cache
+# key are decided in one place.
+#
+# The key carries the job name because jobs restore different package sets (browser-wasm,
+# the macOS workload, AOT compilers, ...). A key shared across jobs would give the second job
+# an exact hit on a cache missing its own packages, and an exact hit is never re-saved, so it
+# would download them on every run. The OS-only restore key still lets a new job, or one
+# whose project files changed, start from whatever this OS already has.
+#
+# No packages.lock.json in this repo: versions are pinned centrally in Directory.Packages.props,
+# so the project and props files decide what a restore produces.
+runs:
+    using: composite
+    steps:
+        - uses: actions/setup-dotnet@v6
+          with:
+              dotnet-version: "10.x"
+
+        - uses: actions/cache@v6
+          with:
+              path: ~/.nuget/packages
+              key: nuget-${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json', 'nuget.config') }}
+              restore-keys: |
+                  nuget-${{ runner.os }}-${{ github.job }}-
+                  nuget-${{ runner.os }}-
