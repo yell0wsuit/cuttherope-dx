@@ -230,13 +230,13 @@ namespace CutTheRopeDX.GameMain
         /// <see langword="null"/> when the whole rope is cuttable. A wheel and a gun each protect
         /// their own tap zone so operating them cannot sever the rope they control.
         /// </summary>
-        public CTRRectangle? CutExclusionZone =>
+        public Rectangle? CutExclusionZone =>
             Wheel != null
-                ? new CTRRectangle(
+                ? new Rectangle(
                     x - WheelControl.TapHalfExtent, y - WheelControl.TapHalfExtent,
                     WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)
                 : Source is GunSource
-                    ? new CTRRectangle(
+                    ? new Rectangle(
                         x - GUN_CUT_RADIUS, y - GUN_CUT_RADIUS,
                         GUN_CUT_RADIUS * 2f, GUN_CUT_RADIUS * 2f)
                     : null;
@@ -462,11 +462,11 @@ namespace CutTheRopeDX.GameMain
             Vector quadOffset = GetQuadOffset(Resources.Img.ObjBee, 0);
             if (VectEqual(quadOffset, vectZero))
             {
-                CTRTexture2D beeTexture = Application.GetTexture(Resources.Img.ObjBee);
+                Texture2D beeTexture = Application.GetTexture(Resources.Img.ObjBee);
                 if (beeTexture.preCutSize.X != vectUndefined.X && beeTexture.preCutSize.Y != vectUndefined.Y)
                 {
                     Vector bodyOffset = beeTexture.quadOffsets[BeeQuad];
-                    CTRRectangle bodyRect = beeTexture.quadRects[BeeQuad];
+                    Rectangle bodyRect = beeTexture.quadRects[BeeQuad];
                     quadOffset = Vect(bodyOffset.X + (bodyRect.w / 2f) + 6f, bodyOffset.Y + bodyRect.h + 4f);
                 }
             }

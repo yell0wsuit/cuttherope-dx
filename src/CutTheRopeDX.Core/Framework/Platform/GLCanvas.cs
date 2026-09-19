@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Gets the current scaled view bounds in desktop window coordinates.
         /// </summary>
-        public CTRRectangle Bounds
+        public Rectangle Bounds
         {
             get
             {
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// </summary>
         public void SetDefaultProjection()
         {
-            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
             isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
             Renderer.SetViewport(XOffset, YOffset, BackingWidth, BackingHeight);
@@ -274,7 +274,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Cached rectangle reused when returning <see cref="Bounds"/>.
         /// </summary>
-        private CTRRectangle _bounds;
+        private Rectangle _bounds;
 
         /// <summary>
         /// Whether the current view is fullscreen.

@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
             _ = presentation.SetSurfaceSize(width, height);
 
             ViewportLayoutSnapshot snapshot = presentation.Snapshot;
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
 
             float viewX = snapshot.RenderViewport.w / 2f;
             float viewY = snapshot.RenderViewport.h / 2f;

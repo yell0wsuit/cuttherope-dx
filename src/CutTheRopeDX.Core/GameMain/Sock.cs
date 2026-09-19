@@ -23,7 +23,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the magic hat.</param>
         /// <returns>The initialized magic hat.</returns>
-        public static Sock Sock_create(CTRTexture2D t)
+        public static Sock Sock_create(Texture2D t)
         {
             return (Sock)new Sock().InitWithTexture(t);
         }

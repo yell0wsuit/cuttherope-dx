@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the bubble.</param>
         /// <returns>The initialized bubble.</returns>
-        public static Bubble Bubble_create(CTRTexture2D t)
+        public static Bubble Bubble_create(Texture2D t)
         {
             return (Bubble)new Bubble().InitWithTexture(t);
         }

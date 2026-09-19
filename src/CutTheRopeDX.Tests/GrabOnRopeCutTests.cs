@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests
             hook.Wheel = new WheelControl();
 
             Assert.True(hook.CutExclusionZone.HasValue);
-            CTRRectangle zone = hook.CutExclusionZone.Value;
+            Rectangle zone = hook.CutExclusionZone.Value;
             Assert.Equal(100f - WheelControl.TapHalfExtent, zone.x);
             Assert.Equal(WheelControl.TapHalfExtent * 2f, zone.w);
         }
@@ -46,7 +46,7 @@ namespace CutTheRopeDX.Tests
             hook.Source = new GunSource();
 
             Assert.True(hook.CutExclusionZone.HasValue);
-            CTRRectangle zone = hook.CutExclusionZone.Value;
+            Rectangle zone = hook.CutExclusionZone.Value;
             Assert.Equal(100f - Grab.GUN_CUT_RADIUS, zone.x);
             Assert.Equal(Grab.GUN_CUT_RADIUS * 2f, zone.w);
         }

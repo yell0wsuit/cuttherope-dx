@@ -29,9 +29,9 @@ namespace CutTheRopeDX.Tests
 
         private sealed class ProbeController : ViewController
         {
-            public CTRRectangle Box => DesignBox;
+            public Rectangle Box => DesignBox;
 
-            public CTRRectangle Fitted => FittedBox;
+            public Rectangle Fitted => FittedBox;
 
             public static float Scale => FittedScale;
 
@@ -44,9 +44,9 @@ namespace CutTheRopeDX.Tests
         /// <summary>A controller that declares its own fixed box instead of the default.</summary>
         private sealed class FixedBoxController : ViewController
         {
-            protected override CTRRectangle DesignBox => new(0f, 0f, 2560f, 1440f);
+            protected override Rectangle DesignBox => new(0f, 0f, 2560f, 1440f);
 
-            public CTRRectangle Fitted => FittedBox;
+            public Rectangle Fitted => FittedBox;
 
             public static float Scale => FittedScale;
         }

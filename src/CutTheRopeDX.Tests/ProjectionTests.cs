@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(2560, 1080, () =>
             {
                 GLCanvas canvas = FrameworkTypes.Canvas;
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
                 Assert.Equal(visible.w, GLCanvas.ProjectionWidth, 0.01);
                 Assert.Equal(visible.h, GLCanvas.ProjectionHeight, 0.01);
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(720, 1280, () =>
             {
                 GLCanvas canvas = FrameworkTypes.Canvas;
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
                 Assert.Equal(visible.w, GLCanvas.ProjectionWidth, 0.01);
                 Assert.Equal(visible.h, GLCanvas.ProjectionHeight, 0.01);
@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(3840, 1080, () =>
             {
                 GLCanvas canvas = FrameworkTypes.Canvas;
-                CTRRectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
+                Rectangle render = ScreenPresentation.Instance.Snapshot.RenderViewport;
 
                 Assert.Equal((int)render.x, GLCanvas.XOffset);
                 Assert.Equal((int)render.y, GLCanvas.YOffset);

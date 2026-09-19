@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Framework.Helpers
     /// <summary>
     /// Provides math utilities, vector operations, random number generation, collision tests, and fast trigonometry lookups.
     /// </summary>
-    internal class CTRMathHelper
+    internal class MathHelper
     {
         /// <summary>Random float in the range [-1, 1].</summary>
         public static float RND_MINUS1_1 => ((float)Arc4random() / ARC4RANDOM_MAX * 2f) - 1f;
@@ -378,9 +378,9 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <param name="r1">The clipping rectangle.</param>
         /// <param name="r2">The rectangle to clip.</param>
         /// <returns>The intersection rectangle relative to <paramref name="r1"/>.</returns>
-        public static CTRRectangle RectInRectIntersection(CTRRectangle r1, CTRRectangle r2)
+        public static Rectangle RectInRectIntersection(Rectangle r1, Rectangle r2)
         {
-            CTRRectangle result = r2;
+            Rectangle result = r2;
             result.x = r2.x - r1.x;
             result.y = r2.y - r1.y;
             if (result.x < 0f)

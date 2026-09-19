@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Framework.Visual
             int quadIndex = RND(image.texture.quadsCount - 1);
             Quad2D textureQuad = image.texture.quads[quadIndex];
             Quad3D vertexQuad = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            CTRRectangle textureRect = image.texture.quadRects[quadIndex];
+            Rectangle textureRect = image.texture.quadRects[quadIndex];
             drawer.SetTextureQuadatVertexQuadatIndex(textureQuad, vertexQuad, particleCount);
             base.InitParticle(ref particle);
             particle.width = textureRect.w * particle.size;

@@ -195,7 +195,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>Loaded texture resource.</returns>
         /// <exception cref="ArgumentException">Thrown when <paramref name="textureResourceName"/> is <see langword="null"/> or empty.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the texture could not be loaded.</exception>
-        internal static CTRTexture2D GetTexture(string textureResourceName)
+        internal static Texture2D GetTexture(string textureResourceName)
         {
             if (string.IsNullOrEmpty(textureResourceName))
             {
@@ -204,7 +204,7 @@ namespace CutTheRopeDX.Framework.Core
 
             object resource = SharedResourceMgr().LoadResource(textureResourceName, ResourceMgr.ResourceType.IMAGE);
 
-            if (resource is CTRTexture2D texture)
+            if (resource is Texture2D texture)
             {
                 return texture;
             }

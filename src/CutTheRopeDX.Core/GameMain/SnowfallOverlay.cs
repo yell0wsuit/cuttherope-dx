@@ -95,7 +95,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Texture containing snowflake sprite frames.
         /// </summary>
-        private CTRTexture2D texture;
+        private Texture2D texture;
 
         /// <summary>
         /// Whether the snowfall effect is currently active.
@@ -175,13 +175,13 @@ namespace CutTheRopeDX.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
 
             Vector[] offsets = texture.quadOffsets;
-            CTRRectangle[] rects = texture.quadRects;
+            Rectangle[] rects = texture.quadRects;
             Vector preCut = texture.preCutSize;
 
             for (int i = 0; i < snowflakes.Count; i++)
             {
                 Snowflake flake = snowflakes[i];
-                CTRRectangle rect = rects[flake.FrameIndex];
+                Rectangle rect = rects[flake.FrameIndex];
                 Vector offset = offsets[flake.FrameIndex];
 
                 // Calculate scaled dimensions with safety checks for invalid texture data
@@ -212,7 +212,7 @@ namespace CutTheRopeDX.GameMain
                 Renderer.PushMatrix();
                 Renderer.Translate(drawX, drawY, 0f);
                 Renderer.Scale(flake.Scale, flake.Scale, 1f);
-                CTRTexture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
+                Texture2D.DrawQuadAtPoint(texture, flake.FrameIndex, vectZero);
                 Renderer.PopMatrix();
             }
 

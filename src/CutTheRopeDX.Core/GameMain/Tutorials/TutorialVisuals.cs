@@ -79,7 +79,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="x">World-space X position.</param>
         /// <param name="y">World-space Y position.</param>
         /// <returns>The initialized tutorial sign.</returns>
-        internal static TutorialSign Create(CTRTexture2D texture, int quad, float x, float y)
+        internal static TutorialSign Create(Texture2D texture, int quad, float x, float y)
         {
             TutorialSign sign = new();
             _ = sign.InitWithTexture(texture);
@@ -103,7 +103,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <inheritdoc />
         public BaseElement CreateSign(XElement node, int quad, float x, float y, RGBAColor? color)
         {
-            CTRTexture2D atlas = Application.GetTexture(Resources.Img.TutorialSigns);
+            Texture2D atlas = Application.GetTexture(Resources.Img.TutorialSigns);
 
             // A recolored frame stands alone, so it is drawn as its own first and only quad.
             return color is null

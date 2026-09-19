@@ -88,13 +88,13 @@ namespace CutTheRopeDX.GameMain
                             // the offset from the camera window rather than the design width is
                             // what lets a wider window reveal more of the level instead of adding
                             // bars beside it.
-                            cameraWindow = new CTRRectangle(
+                            cameraWindow = new Rectangle(
                                 0f,
                                 0f,
                                 MathF.Min(mapWidth, SCREEN_WIDTH),
                                 MathF.Min(mapHeight, SCREEN_HEIGHT));
                             offsetX = (SCREEN_WIDTH - mapWidth) / 2f;
-                            cameraBounds = new CTRRectangle(offsetX, 0f, mapWidth, mapHeight);
+                            cameraBounds = new Rectangle(offsetX, 0f, mapWidth, mapHeight);
                             levelName = item2.Attribute("levelName")?.Value ?? null;
 
                             if (PackConfig.GetEarthBg(rc.GetPack()))

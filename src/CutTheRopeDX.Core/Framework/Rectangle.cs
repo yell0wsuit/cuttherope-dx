@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Framework
     /// <param name="yParam">Y position.</param>
     /// <param name="width">Width.</param>
     /// <param name="height">Height.</param>
-    internal struct CTRRectangle(float xParam, float yParam, float width, float height)
+    internal struct Rectangle(float xParam, float yParam, float width, float height)
     {
         /// <summary>
         /// Returns <see langword="true"/> if any component is non-zero.

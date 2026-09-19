@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests
                         BaseElement.CalculateTopLeft(popup.ContentRoot);
                         BaseElement.CalculateTopLeft(panel);
 
-                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         float centerX = panel.drawX + (panel.width / 2f);
                         float centerY = panel.drawY + (panel.height / 2f);
 

@@ -25,8 +25,8 @@ namespace CutTheRopeDX.Framework.Platform
     internal readonly record struct ViewportLayoutSnapshot(
         int SurfaceWidth,
         int SurfaceHeight,
-        CTRRectangle RenderViewport,
-        CTRRectangle VisibleBounds,
+        Rectangle RenderViewport,
+        Rectangle VisibleBounds,
         float Scale,
         float DevicePixelRatio,
         LayoutOrientation Orientation)
@@ -51,9 +51,9 @@ namespace CutTheRopeDX.Framework.Platform
         /// </remarks>
         /// <param name="logical">Rectangle in logical space.</param>
         /// <returns>The same rectangle in render target pixels.</returns>
-        public CTRRectangle ToRenderTarget(CTRRectangle logical)
+        public Rectangle ToRenderTarget(Rectangle logical)
         {
-            return new CTRRectangle(
+            return new Rectangle(
                 logical.x * Scale,
                 logical.y * Scale,
                 logical.w * Scale,

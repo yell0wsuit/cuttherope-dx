@@ -318,7 +318,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// to it just to keep it current.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        public virtual void Relayout(CTRRectangle visible)
+        public virtual void Relayout(Rectangle visible)
         {
             int processed = 0;
             int childId = 0;

@@ -53,7 +53,7 @@ namespace CutTheRopeDX.GameMain
             width = bodySprite.width;
             height = bodySprite.height;
             anchor = parentAnchor = 18;
-            bb = new CTRRectangle(0f, 0f, width, height);
+            bb = new Rectangle(0f, 0f, width, height);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
             rotatedBB = false;
             topLeftCalculated = false;

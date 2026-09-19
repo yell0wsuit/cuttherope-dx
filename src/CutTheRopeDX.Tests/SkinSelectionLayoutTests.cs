@@ -55,7 +55,7 @@ namespace CutTheRopeDX.Tests
         {
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface);
+                Rectangle visible = VisibleFor(surface);
                 SkinSelectionLayout layout = LayoutFor(surface.Width, surface.Height);
 
                 Assert.True(
@@ -88,7 +88,7 @@ namespace CutTheRopeDX.Tests
         {
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface);
+                Rectangle visible = VisibleFor(surface);
                 SkinSelectionLayout layout = LayoutFor(surface.Width, surface.Height);
                 float half = TabWidth * layout.Scale / 2f;
 
@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests
             // stop above it, or the bottom row is drawn behind it.
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface);
+                Rectangle visible = VisibleFor(surface);
                 SkinSelectionLayout layout = LayoutFor(surface.Width, surface.Height, ChromeSide, ChromeSide);
 
                 if ((visible.w - layout.GridWidth) / 2f >= ChromeSide)
@@ -146,7 +146,7 @@ namespace CutTheRopeDX.Tests
         {
             // A wide screen draws the grid as a column in the middle, nowhere near the button, so
             // no height is given up for it.
-            CTRRectangle visible = VisibleFor(new LayoutSurface("Native", 2560, 1440));
+            Rectangle visible = VisibleFor(new LayoutSurface("Native", 2560, 1440));
             SkinSelectionLayout withChrome = LayoutFor(2560, 1440, ChromeSide, ChromeSide);
             SkinSelectionLayout without = LayoutFor(2560, 1440, 0f, 0f);
 
@@ -192,7 +192,7 @@ namespace CutTheRopeDX.Tests
         /// <summary>The region a surface exposes.</summary>
         /// <param name="surface">Surface to measure.</param>
         /// <returns>The visible bounds.</returns>
-        private static CTRRectangle VisibleFor(LayoutSurface surface)
+        private static Rectangle VisibleFor(LayoutSurface surface)
         {
             return ViewportLayout.Compute(surface.Width, surface.Height).VisibleBounds;
         }

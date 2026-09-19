@@ -22,11 +22,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="chrome">Rectangles the grid must not overlap, in logical space.</param>
         /// <returns>The scale to draw the grid at.</returns>
         public static float ScaleFor(
-            CTRRectangle visible,
+            Rectangle visible,
             float desired,
             float gridWidth,
             float gridHeight,
-            params CTRRectangle[] chrome)
+            params Rectangle[] chrome)
         {
             if (gridWidth <= 0f || gridHeight <= 0f || chrome == null)
             {
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             float scale = desired;
-            foreach (CTRRectangle rectangle in chrome)
+            foreach (Rectangle rectangle in chrome)
             {
                 if (rectangle.w <= 0f || rectangle.h <= 0f)
                 {
@@ -57,10 +57,10 @@ namespace CutTheRopeDX.GameMain
         /// <param name="rectangle">Rectangle to clear.</param>
         /// <returns>The scale that clears it.</returns>
         private static float Clearing(
-            CTRRectangle visible,
+            Rectangle visible,
             float gridWidth,
             float gridHeight,
-            CTRRectangle rectangle)
+            Rectangle rectangle)
         {
             float centerX = visible.w / 2f;
             float centerY = visible.h / 2f;

@@ -1,6 +1,6 @@
 using CutTheRopeDX.Framework.Core;
 
-using static CutTheRopeDX.Framework.Helpers.CTRMathHelper;
+using static CutTheRopeDX.Framework.Helpers.MathHelper;
 
 namespace CutTheRopeDX.GameMain
 {

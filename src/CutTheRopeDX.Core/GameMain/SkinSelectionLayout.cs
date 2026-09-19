@@ -55,7 +55,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="chromeHeight">Room the chrome in the bottom corner takes up the screen.</param>
         /// <returns>The layout for that viewport.</returns>
         public static SkinSelectionLayout For(
-            CTRRectangle visible,
+            Rectangle visible,
             float scale,
             float tabWidth,
             float tabHeight,

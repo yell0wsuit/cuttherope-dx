@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <inheritdoc />
-        public override void Relayout(CTRRectangle visible)
+        public override void Relayout(Rectangle visible)
         {
             Resize(visible);
             base.Relayout(visible);
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Commons
         /// which is exactly the case where the parameter would not have been needed.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        public void Resize(CTRRectangle visible)
+        public void Resize(Rectangle visible)
         {
             // Only the popup itself follows the viewport; the design box inside it keeps its own
             // size and is centered on whatever that comes to.

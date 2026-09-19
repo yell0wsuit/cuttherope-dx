@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests
 
             WithLevelSelect(width, height, (left, right, visible) =>
             {
-                CTRRectangle drawn = Union(Drawn(left), Drawn(right));
+                Rectangle drawn = Union(Drawn(left), Drawn(right));
 
                 // Within a unit rather than exactly: the mirrored half is nudged half a unit down
                 // the way the artwork was authored, to hide the seam between the two.
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
 
             WithLevelSelect(width, height, (left, right, visible) =>
             {
-                CTRRectangle drawn = Union(Drawn(left), Drawn(right));
+                Rectangle drawn = Union(Drawn(left), Drawn(right));
 
                 Assert.True(drawn.x <= 0f, $"the cover starts at {drawn.x}");
                 Assert.True(drawn.y <= 0f, $"the cover starts at {drawn.y}");
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="width">Surface width to run at.</param>
         /// <param name="height">Surface height to run at.</param>
         /// <param name="body">Work to run against the laid-out halves.</param>
-        private static void WithLevelSelect(int width, int height, Action<Image, Image, CTRRectangle> body)
+        private static void WithLevelSelect(int width, int height, Action<Image, Image, Rectangle> body)
         {
             LayoutSurfaces.WithSurface(width, height, () =>
             {
@@ -88,9 +88,9 @@ namespace CutTheRopeDX.Tests
         /// <summary>Where an element scaled about its own center is drawn.</summary>
         /// <param name="element">Element to measure.</param>
         /// <returns>The drawn rectangle.</returns>
-        private static CTRRectangle Drawn(BaseElement element)
+        private static Rectangle Drawn(BaseElement element)
         {
-            return new CTRRectangle(
+            return new Rectangle(
                 element.drawX + (element.width * (1f - element.scaleX) / 2f),
                 element.drawY + (element.height * (1f - element.scaleY) / 2f),
                 element.width * element.scaleX,
@@ -101,11 +101,11 @@ namespace CutTheRopeDX.Tests
         /// <param name="a">First rectangle.</param>
         /// <param name="b">Second rectangle.</param>
         /// <returns>Their union.</returns>
-        private static CTRRectangle Union(CTRRectangle a, CTRRectangle b)
+        private static Rectangle Union(Rectangle a, Rectangle b)
         {
             float x = MathF.Min(a.x, b.x);
             float y = MathF.Min(a.y, b.y);
-            return new CTRRectangle(
+            return new Rectangle(
                 x,
                 y,
                 MathF.Max(a.x + a.w, b.x + b.w) - x,

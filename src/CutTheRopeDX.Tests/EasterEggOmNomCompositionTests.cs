@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void LeavesTheDesignViewportUntouched()
         {
-            (float x, float y, float scale) = EasterEggOmNom.Composition(new CTRRectangle(0f, 0f, 2560f, 1440f));
+            (float x, float y, float scale) = EasterEggOmNom.Composition(new Rectangle(0f, 0f, 2560f, 1440f));
 
             Assert.Equal(0f, x);
             Assert.Equal(0f, y);
@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void FitsAPortraitViewportByWidthAndRestsOnTheBottom()
         {
-            (float x, float y, float scale) = EasterEggOmNom.Composition(new CTRRectangle(0f, 0f, 1440f, 2560f));
+            (float x, float y, float scale) = EasterEggOmNom.Composition(new Rectangle(0f, 0f, 1440f, 2560f));
 
             Assert.Equal(0.5625f, scale, 4);
             Assert.Equal(0f, x, 2);
@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void CentersAnUltrawideViewportAtFullSize()
         {
-            (float x, float y, float scale) = EasterEggOmNom.Composition(new CTRRectangle(0f, 0f, 3440f, 1440f));
+            (float x, float y, float scale) = EasterEggOmNom.Composition(new Rectangle(0f, 0f, 3440f, 1440f));
 
             Assert.Equal(1f, scale, 4);
             Assert.Equal((3440f - 2560f) / 2f, x, 2);
@@ -47,7 +47,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(1f, 337f)]
         public void OffsetKeepsHimWithinTheDesignWidth(float position, float expected)
         {
-            CTRRectangle screen = new(0f, 0f, 2560f, 1440f);
+            Rectangle screen = new(0f, 0f, 2560f, 1440f);
 
             float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), position);
 
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(1f, 777f)]
         public void OffsetReachesBothEdgesOfAnUltrawideViewport(float position, float expected)
         {
-            CTRRectangle screen = new(0f, 0f, 3440f, 1440f);
+            Rectangle screen = new(0f, 0f, 3440f, 1440f);
 
             float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), position);
 
@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void OffsetOnPortraitMatchesTheDesignRangeInCompositionUnits()
         {
-            CTRRectangle screen = new(0f, 0f, 1440f, 2560f);
+            Rectangle screen = new(0f, 0f, 1440f, 2560f);
 
             float offset = EasterEggOmNom.HorizontalOffset(screen, EasterEggOmNom.Composition(screen), 1f);
 
@@ -96,7 +96,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void FollowsTheViewportOrigin()
         {
-            (float x, float y, float scale) = EasterEggOmNom.Composition(new CTRRectangle(10f, 20f, 2560f, 1440f));
+            (float x, float y, float scale) = EasterEggOmNom.Composition(new Rectangle(10f, 20f, 2560f, 1440f));
 
             Assert.Equal(10f, x);
             Assert.Equal(20f, y);

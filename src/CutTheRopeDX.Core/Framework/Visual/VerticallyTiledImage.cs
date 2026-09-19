@@ -8,7 +8,7 @@ namespace CutTheRopeDX.Framework.Visual
     internal sealed class VerticallyTiledImage : Image
     {
         /// <inheritdoc />
-        public override Image InitWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(Texture2D t)
         {
             if (base.InitWithTexture(t) != null)
             {
@@ -36,8 +36,8 @@ namespace CutTheRopeDX.Framework.Visual
             }
             else
             {
-                CTRRectangle r = texture.quadRects[tiles[0]];
-                CTRRectangle r2 = texture.quadRects[tiles[2]];
+                Rectangle r = texture.quadRects[tiles[0]];
+                Rectangle r2 = texture.quadRects[tiles[2]];
                 r.h = MathF.Min(r.h, height / 2f);
                 r2.h = MathF.Min(r2.h, height - r.h);
                 r2.y += texture.quadRects[tiles[2]].h - r2.h;

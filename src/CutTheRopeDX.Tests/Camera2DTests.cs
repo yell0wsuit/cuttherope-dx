@@ -75,8 +75,8 @@ namespace CutTheRopeDX.Tests
         {
             Camera2D camera = new();
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 3600f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 3600f, 1440f),
                 anchorX: 0.5f,
                 anchorY: 0.5f);
 

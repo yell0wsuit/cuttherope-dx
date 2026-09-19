@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Tests
             LastBlendDestination = dfactor;
         }
 
-        public void BindTexture(CTRTexture2D t) { }
+        public void BindTexture(Texture2D t) { }
 
         public void SetScissor(float x, float y, float width, float height) { }
 

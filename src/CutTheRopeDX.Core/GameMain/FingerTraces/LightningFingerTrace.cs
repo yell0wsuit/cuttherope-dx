@@ -248,7 +248,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 return;
             }
 
-            CTRTexture2D texture = Application.GetTexture(Resources.Img.FingerTraces);
+            Texture2D texture = Application.GetTexture(Resources.Img.FingerTraces);
             EnsureBuffers(quads.Count);
 
             for (int i = 0; i < quads.Count; i++)

@@ -142,7 +142,7 @@ namespace CutTheRopeDX.Tests
             throw new NotSupportedException(Message);
         }
 
-        public void BindTexture(CTRTexture2D t)
+        public void BindTexture(Texture2D t)
         {
             throw new NotSupportedException(Message);
         }

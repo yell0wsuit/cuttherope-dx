@@ -16,11 +16,11 @@ namespace CutTheRopeDX.Tests
         public void AWiderViewportRevealsMoreWorldRatherThanAddingBars()
         {
             CameraFit sixteenNine = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 960f, 1440f),
-                new CTRRectangle(0f, 0f, 2560f, 1440f), 0.5f, 0.5f);
+                new Rectangle(0f, 0f, 960f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f), 0.5f, 0.5f);
             CameraFit ultrawide = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 960f, 1440f),
-                new CTRRectangle(0f, 0f, 3413f, 1440f), 0.5f, 0.5f);
+                new Rectangle(0f, 0f, 960f, 1440f),
+                new Rectangle(0f, 0f, 3413f, 1440f), 0.5f, 0.5f);
 
             Assert.Equal(sixteenNine.Scale, ultrawide.Scale, 0.001);
             Assert.True(ultrawide.VisibleWorld.w > sixteenNine.VisibleWorld.w);
@@ -30,8 +30,8 @@ namespace CutTheRopeDX.Tests
         public void APortraitViewportScalesTheLevelDownToFit()
         {
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 960f, 1440f),
-                new CTRRectangle(0f, 0f, 1440f, 2560f), 0.5f, 0.5f);
+                new Rectangle(0f, 0f, 960f, 1440f),
+                new Rectangle(0f, 0f, 1440f, 2560f), 0.5f, 0.5f);
 
             // Width is the limiting axis at 9:16, so the level fills the width and the extra
             // height becomes revealed world above and below.

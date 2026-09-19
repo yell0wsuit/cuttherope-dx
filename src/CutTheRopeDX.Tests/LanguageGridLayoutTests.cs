@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Tests
                     try
                     {
                         controller.ShowView(MenuController.VIEW_LANGUAGE_SELECT);
-                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         BaseElement row = FirstRow(controller);
 
                         Assert.Equal(MenuController.LanguageColumns(), row.ChildsCount());

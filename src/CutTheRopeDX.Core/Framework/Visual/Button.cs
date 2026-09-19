@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="down">Texture for the pressed state.</param>
         /// <param name="bID">Typed button identifier.</param>
         /// <returns>A new <see cref="Button"/> initialized with the given textures and identifier.</returns>
-        public static Button CreateWithTextureUpDownID(CTRTexture2D up, CTRTexture2D down, ButtonId bID)
+        public static Button CreateWithTextureUpDownID(Texture2D up, Texture2D down, ButtonId bID)
         {
             Image up2 = Image.Image_create(up);
             Image down2 = Image.Image_create(down);
@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Framework.Visual
             touchRightInc = 0f;
             touchTopInc = 0f;
             touchBottomInc = 0f;
-            forcedTouchZone = new CTRRectangle(-1f, -1f, -1f, -1f);
+            forcedTouchZone = new Rectangle(-1f, -1f, -1f, -1f);
             return this;
         }
 
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// Overrides the default touch zone with a fixed rectangle.
         /// </summary>
         /// <param name="r">Rectangle defining the forced touch zone.</param>
-        public virtual void ForceTouchRect(CTRRectangle r)
+        public virtual void ForceTouchRect(Rectangle r)
         {
             forcedTouchZone = r;
         }
@@ -221,7 +221,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Forced touch zone rectangle, or (-1,-1,-1,-1) to use the default.
         /// </summary>
-        public CTRRectangle forcedTouchZone;
+        public Rectangle forcedTouchZone;
 
         /// <summary>
         /// Represents the press state of a button.

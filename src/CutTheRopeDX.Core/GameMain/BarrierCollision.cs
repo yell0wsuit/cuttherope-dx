@@ -16,11 +16,11 @@ namespace CutTheRopeDX.GameMain
             float bbX = px - radius;
             float bbY = py - radius;
             float bbSize = radius * 2f;
-            return CTRMathHelper.LineInRect(t1x, t1y, t2x, t2y, bbX, bbY, bbSize, bbSize)
-                || CTRMathHelper.LineInRect(b1x, b1y, b2x, b2y, bbX, bbY, bbSize, bbSize)
+            return MathHelper.LineInRect(t1x, t1y, t2x, t2y, bbX, bbY, bbSize, bbSize)
+                || MathHelper.LineInRect(b1x, b1y, b2x, b2y, bbX, bbY, bbSize, bbSize)
                 || (includeSweep
-                    && (CTRMathHelper.LineInLine(prevX, prevY, px, py, t1x, t1y, t2x, t2y)
-                        || CTRMathHelper.LineInLine(prevX, prevY, px, py, b1x, b1y, b2x, b2y)));
+                    && (MathHelper.LineInLine(prevX, prevY, px, py, t1x, t1y, t2x, t2y)
+                        || MathHelper.LineInLine(prevX, prevY, px, py, b1x, b1y, b2x, b2y)));
         }
     }
 }

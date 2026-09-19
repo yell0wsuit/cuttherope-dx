@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="t">Texture to tile.</param>
         /// <returns>A new tiled image instance.</returns>
-        private static TiledImage TiledImage_create(CTRTexture2D t)
+        private static TiledImage TiledImage_create(Texture2D t)
         {
             return (TiledImage)new TiledImage().InitWithTexture(t);
         }

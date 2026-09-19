@@ -23,7 +23,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="texture">Texture used by the animation.</param>
         /// <returns>The initialized candy-in-ghost-bubble animation.</returns>
-        public static CandyInGhostBubbleAnimation CIGBAnimation_create(CTRTexture2D texture)
+        public static CandyInGhostBubbleAnimation CIGBAnimation_create(Texture2D texture)
         {
             return (CandyInGhostBubbleAnimation)new CandyInGhostBubbleAnimation().InitWithTexture(texture);
         }

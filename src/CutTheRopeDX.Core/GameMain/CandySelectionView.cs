@@ -605,7 +605,7 @@ namespace CutTheRopeDX.GameMain
             currentContainer.y = layout.WindowTop;
 
             Vector scroll = currentContainer.GetScroll();
-            scroll.Y = CTRMathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, currentContainer.GetMaxScroll().Y);
+            scroll.Y = MathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, currentContainer.GetMaxScroll().Y);
             currentContainer.SetScroll(scroll);
         }
 
@@ -1164,7 +1164,7 @@ namespace CutTheRopeDX.GameMain
         /// Covers the visible bounds with the selection background.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private static void CoverBackground(CTRRectangle visible)
+        private static void CoverBackground(Rectangle visible)
         {
             backgroundImage.scaleX = backgroundImage.scaleY =
                 LayoutMath.Cover(backgroundImage.width, backgroundImage.height, visible).Scale;
@@ -1188,7 +1188,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
             backgroundRoot.width = (int)visible.w;
             backgroundRoot.height = (int)visible.h;
             CoverBackground(visible);
@@ -1317,7 +1317,7 @@ namespace CutTheRopeDX.GameMain
             omNomWarmupState = null;
             omNomXmlPreparseTask = null;
 
-            CTRRectangle visibleBounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            Rectangle visibleBounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
             BaseElement background = new()
             {
                 width = (int)visibleBounds.w,

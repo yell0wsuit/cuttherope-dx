@@ -27,8 +27,8 @@ namespace CutTheRopeDX.Tests
             _ = presentation.SetSurfaceSize(width, height);
 
             ViewportLayoutSnapshot snapshot = presentation.Snapshot;
-            CTRRectangle render = snapshot.RenderViewport;
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle render = snapshot.RenderViewport;
+            Rectangle visible = snapshot.VisibleBounds;
 
             int surfaceX = (int)(render.x + (render.w / 2f));
             int surfaceY = (int)(render.y + (render.h / 2f));
@@ -51,8 +51,8 @@ namespace CutTheRopeDX.Tests
             _ = presentation.SetSurfaceSize(width, height);
 
             ViewportLayoutSnapshot snapshot = presentation.Snapshot;
-            CTRRectangle render = snapshot.RenderViewport;
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle render = snapshot.RenderViewport;
+            Rectangle visible = snapshot.VisibleBounds;
 
             float topLeftX = presentation.TransformViewToGameX(
                 presentation.TransformWindowToViewX((int)render.x));
@@ -81,8 +81,8 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(width, height, () =>
             {
                 ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
-                CTRRectangle render = snapshot.RenderViewport;
-                CTRRectangle visible = snapshot.VisibleBounds;
+                Rectangle render = snapshot.RenderViewport;
+                Rectangle visible = snapshot.VisibleBounds;
 
                 float surfaceX = render.x + (render.w / 2f);
                 float surfaceY = render.y + (render.h / 2f);

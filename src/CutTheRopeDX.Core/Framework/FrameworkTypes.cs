@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Framework
     /// Base class for most framework types, providing screen-coordinate transforms,
     /// resolution helpers, and the disposable pattern.
     /// </summary>
-    internal class FrameworkTypes : CTRMathHelper, IDisposable
+    internal class FrameworkTypes : MathHelper, IDisposable
     {
         /// <inheritdoc />
         public void Dispose()
@@ -63,16 +63,16 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Creates a <see cref="CTRRectangle"/> from position and size.
+        /// Creates a <see cref="Rectangle"/> from position and size.
         /// </summary>
         /// <param name="xParam">X position.</param>
         /// <param name="yParam">Y position.</param>
         /// <param name="width">Width.</param>
         /// <param name="height">Height.</param>
-        /// <returns>A new <see cref="CTRRectangle"/> with the given position and size.</returns>
-        public static CTRRectangle MakeRectangle(float xParam, float yParam, float width, float height)
+        /// <returns>A new <see cref="Rectangle"/> with the given position and size.</returns>
+        public static Rectangle MakeRectangle(float xParam, float yParam, float width, float height)
         {
-            return new CTRRectangle(xParam, yParam, width, height);
+            return new Rectangle(xParam, yParam, width, height);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace CutTheRopeDX.Framework
         /// size to this; world logic stays on <see cref="SCREEN_WIDTH"/> and
         /// <see cref="SCREEN_HEIGHT"/>, which describe the fixed space levels are authored in.
         /// </summary>
-        protected static CTRRectangle VisibleBounds =>
+        protected static Rectangle VisibleBounds =>
             ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
         /// <summary>

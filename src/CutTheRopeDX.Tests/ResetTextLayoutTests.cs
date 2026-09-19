@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
-                    CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                     Text text = ResetText();
 
                     Assert.True(

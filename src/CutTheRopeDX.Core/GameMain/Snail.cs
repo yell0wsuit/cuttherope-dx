@@ -49,7 +49,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="texture">Texture used by the snail.</param>
         /// <returns>The initialized snail.</returns>
-        private static Snail Snail_create(CTRTexture2D texture)
+        private static Snail Snail_create(Texture2D texture)
         {
             return (Snail)new Snail().InitWithTexture(texture);
         }
@@ -154,7 +154,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
-        public override Image InitWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(Texture2D t)
         {
             if (base.InitWithTexture(t) == null)
             {

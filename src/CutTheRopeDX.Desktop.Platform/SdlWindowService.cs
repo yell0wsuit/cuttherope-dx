@@ -261,7 +261,7 @@ namespace CutTheRopeDX.Desktop.Platform
 
         public Vector2 MapWindowToView(float x, float y)
         {
-            CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            Rectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
             return MapWindowToView(x, y, WindowWidth, WindowHeight, PixelWidth, PixelHeight, viewport.x, viewport.y);
         }
         public static Vector2 MapWindowToView(float x, float y, int windowWidth, int windowHeight, int pixelWidth, int pixelHeight, float marginX, float marginY)

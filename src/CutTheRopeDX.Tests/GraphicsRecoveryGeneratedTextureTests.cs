@@ -31,7 +31,7 @@ namespace CutTheRopeDX.Tests
             using Probe probe = new(unrelatedTexture);
             using TutorialSignTints tints = new();
 
-            CTRTexture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
+            Texture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
             Handle before = Assert.IsType<Handle>(tinted.textureHandle_);
             Assert.Null(tinted._resName);
             Assert.Equal(1, probe.TintCalls);
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests
             using Probe probe = new(unrelatedTexture);
             using TutorialSignTints tints = new();
 
-            CTRTexture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
+            Texture2D tinted = tints.Tinted(probe.Atlas, 4, Red);
 
             _ = GraphicsRecovery.Complete(GraphicsRecovery.Begin());
 
@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests
         public void ACapturedFrameIsStillDroppedBecauseNothingCanProduceItAgain()
         {
             using Probe probe = new();
-            CTRTexture2D capture = new CTRTexture2D().InitWithHandle(new Handle(8, 8), 8, 8);
+            Texture2D capture = new Texture2D().InitWithHandle(new Handle(8, 8), 8, 8);
             try
             {
                 Handle before = (Handle)capture.textureHandle_;
@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests
         {
             private const string AtlasPath = "graphics-recovery-test-atlas";
             private readonly IAssetPlatform inner;
-            private readonly CTRTexture2D unrelated;
+            private readonly Texture2D unrelated;
             private Handle atlasHandle;
 
             public Probe(bool unrelatedTexture = false)
@@ -101,20 +101,20 @@ namespace CutTheRopeDX.Tests
                 inner = AssetPlatform.Current;
                 AssetPlatform.Current = this;
                 atlasHandle = new Handle(256, 956);
-                Atlas = new CTRTexture2D().InitWithHandle(atlasHandle, 256, 956);
+                Atlas = new Texture2D().InitWithHandle(atlasHandle, 256, 956);
                 Atlas._resName = AtlasPath;
                 Atlas.SetQuadsCapacity(11);
-                Atlas.SetQuadAt(new CTRRectangle(1f, 243f, 246f, 235f), 4);
+                Atlas.SetQuadAt(new Rectangle(1f, 243f, 246f, 235f), 4);
                 if (unrelatedTexture)
                 {
                     // Global recovery also rebuilds textures owned by other scenes or tests.
-                    unrelated = new CTRTexture2D().InitWithHandle(new Handle(8, 8), 8, 8);
+                    unrelated = new Texture2D().InitWithHandle(new Handle(8, 8), 8, 8);
                     unrelated.Regenerate = () => AssetPlatform.Current.TintedRegion(
                         null, 0, 0, 8, 8, Red);
                 }
             }
 
-            public CTRTexture2D Atlas { get; }
+            public Texture2D Atlas { get; }
 
             public int TintCalls { get; private set; }
 

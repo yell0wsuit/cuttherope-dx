@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Tests
         public void TheDesignShapeIsDrawnExactlyAsItWasAuthored()
         {
             SplashLayout layout = LayoutFor(2560, 1440);
-            CTRRectangle visible = VisibleFor(2560, 1440);
+            Rectangle visible = VisibleFor(2560, 1440);
 
             Assert.Equal(AuthoredScale, layout.DisclaimerScale, 0.0001);
             Assert.Equal(visible.w * 0.9f, layout.DisclaimerWrapWidth, 0.01);
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Tests
             // text out past both edges of the screen.
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface.Width, surface.Height);
+                Rectangle visible = VisibleFor(surface.Width, surface.Height);
                 SplashLayout layout = LayoutFor(surface.Width, surface.Height);
                 float drawnColumn = layout.DisclaimerWrapWidth * layout.DisclaimerScale;
 
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
         {
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface.Width, surface.Height);
+                Rectangle visible = VisibleFor(surface.Width, surface.Height);
                 SplashLayout layout = LayoutFor(surface.Width, surface.Height);
 
                 Assert.InRange(layout.DisclaimerBottom, 0f, visible.h);
@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests
         {
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface.Width, surface.Height);
+                Rectangle visible = VisibleFor(surface.Width, surface.Height);
                 SplashLayout layout = LayoutFor(surface.Width, surface.Height);
 
                 Assert.True(
@@ -109,7 +109,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="width">Surface width in pixels.</param>
         /// <param name="height">Surface height in pixels.</param>
         /// <returns>The visible bounds.</returns>
-        private static CTRRectangle VisibleFor(int width, int height)
+        private static Rectangle VisibleFor(int width, int height)
         {
             return ViewportLayout.Compute(width, height).VisibleBounds;
         }

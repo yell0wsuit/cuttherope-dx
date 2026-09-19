@@ -21,7 +21,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 View view = new();
 
                 Assert.True(

@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void OneQuadAndColorAreBuiltOnce()
         {
             using TutorialSignTints tints = new();
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
 
             Assert.Same(tints.Tinted(atlas, 4, Red), tints.Tinted(atlas, 4, Red));
         }
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void EachColorGetsItsOwnCopyOfTheFrame()
         {
             using TutorialSignTints tints = new();
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
 
             Assert.NotSame(tints.Tinted(atlas, 4, Red), tints.Tinted(atlas, 4, Green));
         }
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void EachQuadGetsItsOwnCopyOfTheFrame()
         {
             using TutorialSignTints tints = new();
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
 
             Assert.NotSame(tints.Tinted(atlas, 4, Red), tints.Tinted(atlas, 2, Red));
         }
@@ -47,9 +47,9 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void TheCopyIsTheFrameStandingAloneAsQuadZero()
         {
             using TutorialSignTints tints = new();
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
 
-            CTRTexture2D tinted = tints.Tinted(atlas, 4, Red);
+            Texture2D tinted = tints.Tinted(atlas, 4, Red);
 
             Assert.Equal(1, tinted.quadsCount);
             Assert.Equal(0f, tinted.quadRects[0].x);
@@ -62,10 +62,10 @@ namespace CutTheRopeDX.Tests.Tutorials
         public void TheCopyKeepsTheFramesTrimOffsetSoItDrawsWhereTheAtlasWould()
         {
             using TutorialSignTints tints = new();
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
             atlas.quadOffsets[4] = new Vector(7f, -3f);
 
-            CTRTexture2D tinted = tints.Tinted(atlas, 4, Red);
+            Texture2D tinted = tints.Tinted(atlas, 4, Red);
 
             Assert.Equal(7f, tinted.quadOffsets[0].X);
             Assert.Equal(-3f, tinted.quadOffsets[0].Y);
@@ -74,9 +74,9 @@ namespace CutTheRopeDX.Tests.Tutorials
         [Fact]
         public void DisposingReleasesTheCopiesInsteadOfHandingThemOutAgain()
         {
-            CTRTexture2D atlas = Atlas();
+            Texture2D atlas = Atlas();
             TutorialSignTints tints = new();
-            CTRTexture2D before = tints.Tinted(atlas, 4, Red);
+            Texture2D before = tints.Tinted(atlas, 4, Red);
             tints.Dispose();
 
             using TutorialSignTints rebuilt = new();
@@ -88,12 +88,12 @@ namespace CutTheRopeDX.Tests.Tutorials
         /// Stands in for the loaded sign atlas: the real frame rectangles, with no platform texture
         /// behind them because nothing is drawn here.
         /// </summary>
-        private static CTRTexture2D Atlas()
+        private static Texture2D Atlas()
         {
-            CTRTexture2D atlas = new CTRTexture2D().InitWithHandle(null, 256, 956);
+            Texture2D atlas = new Texture2D().InitWithHandle(null, 256, 956);
             atlas.SetQuadsCapacity(11);
-            atlas.SetQuadAt(new CTRRectangle(1f, 480f, 184f, 152f), 2);
-            atlas.SetQuadAt(new CTRRectangle(1f, 243f, 246f, 235f), 4);
+            atlas.SetQuadAt(new Rectangle(1f, 480f, 184f, 152f), 2);
+            atlas.SetQuadAt(new Rectangle(1f, 243f, 246f, 235f), 4);
             return atlas;
         }
     }

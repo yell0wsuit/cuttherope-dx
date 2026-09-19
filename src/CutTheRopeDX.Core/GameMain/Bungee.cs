@@ -464,7 +464,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="points">Number of bezier samples per control-point segment.</param>
         private static void DrawChain(Bungee b, Vector[] pts, int count, int points)
         {
-            CTRTexture2D texture = Application.GetTexture(Resources.Img.ObjExpChain);
+            Texture2D texture = Application.GetTexture(Resources.Img.ObjExpChain);
             if (texture?.quadRects == null || texture.quads == null || texture.quadsCount < 2)
             {
                 DrawBungee(b, pts, count, points);
@@ -995,7 +995,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRTexture2D texture;
+            Texture2D texture;
             try
             {
                 texture = Application.GetTexture(Resources.Img.XmasLights);
@@ -1005,7 +1005,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle[] rects = texture.quadRects;
+            Rectangle[] rects = texture.quadRects;
             int rectCount = texture.quadsCount > 0 ? texture.quadsCount : rects?.Length ?? 0;
             if (rectCount == 0)
             {
@@ -1052,7 +1052,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 int rectIndex = lightFrames[lightIdx] % rectCount;
-                CTRRectangle rect = rects[rectIndex];
+                Rectangle rect = rects[rectIndex];
 
                 DrawHelper.DrawImagePart(texture, rect, x - (rect.w / 2f), y - (rect.h / 2f));
 
@@ -1221,7 +1221,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Stable per-bungee seed driving which chain links are masked. Generated once on first
-        /// access (via the shared <see cref="CTRMathHelper" /> RNG) so the masking pattern stays
+        /// access (via the shared <see cref="MathHelper" /> RNG) so the masking pattern stays
         /// fixed for the rope's lifetime.
         /// </summary>
         private int ChainColorSeed => chainColorSeed ??= (int)Arc4random();

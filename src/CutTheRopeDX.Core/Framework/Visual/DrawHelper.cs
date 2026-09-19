@@ -19,9 +19,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="image">Texture to draw.</param>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
-        public static void DrawImage(CTRTexture2D image, float x, float y)
+        public static void DrawImage(Texture2D image, float x, float y)
         {
-            CTRTexture2D.DrawAtPoint(image, Vect(x, y));
+            Texture2D.DrawAtPoint(image, Vect(x, y));
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="rect">Source rectangle within the texture.</param>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
-        public static void DrawImagePart(CTRTexture2D image, CTRRectangle rect, float x, float y)
+        public static void DrawImagePart(Texture2D image, Rectangle rect, float x, float y)
         {
-            CTRTexture2D.DrawRectAtPoint(image, rect, Vect(x, y));
+            Texture2D.DrawRectAtPoint(image, rect, Vect(x, y));
         }
 
         /// <summary>
@@ -43,14 +43,14 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="quadIndex">Quad index, or -1 for full image.</param>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
-        public static void DrawImageQuad(CTRTexture2D image, int quadIndex, float x, float y)
+        public static void DrawImageQuad(Texture2D image, int quadIndex, float x, float y)
         {
             if (quadIndex == -1)
             {
                 DrawImage(image, x, y);
                 return;
             }
-            CTRTexture2D.DrawQuadAtPoint(image, quadIndex, Vect(x, y));
+            Texture2D.DrawQuadAtPoint(image, quadIndex, Vect(x, y));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="y">Y position.</param>
         /// <param name="width">Width of the tiled area.</param>
         /// <param name="height">Height of the tiled area.</param>
-        public static void DrawImageTiledCool(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
+        public static void DrawImageTiledCool(Texture2D image, int quadIndex, float x, float y, float width, float height)
         {
             DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
         }
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="y">Y position.</param>
         /// <param name="width">Width of the tiled area.</param>
         /// <param name="height">Height of the tiled area.</param>
-        public static void DrawImageTiled(CTRTexture2D image, int quadIndex, float x, float y, float width, float height)
+        public static void DrawImageTiled(Texture2D image, int quadIndex, float x, float y, float width, float height)
         {
             DrawImageTiledInternal(image, quadIndex, x, y, width, height, allowLegacyFallback: true);
         }
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="width">Width of the tiled area.</param>
         /// <param name="height">Height of the tiled area.</param>
         /// <param name="allowLegacyFallback">Whether to use the per-tile fallback if batching is not possible.</param>
-        private static void DrawImageTiledInternal(CTRTexture2D image, int quadIndex, float x, float y, float width, float height, bool allowLegacyFallback)
+        private static void DrawImageTiledInternal(Texture2D image, int quadIndex, float x, float y, float width, float height, bool allowLegacyFallback)
         {
             float texX = 0f;
             float texY = 0f;
@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="width">Destination tiled width.</param>
         /// <param name="height">Destination tiled height.</param>
         /// <returns><see langword="true"/> when the tile batch was submitted; otherwise <see langword="false"/>.</returns>
-        private static bool TryDrawImageTiledBatch(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
+        private static bool TryDrawImageTiledBatch(Texture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             int tileColumns = (int)MathF.Ceiling(width / tileWidth);
             int tileRows = (int)MathF.Ceiling(height / tileHeight);
@@ -226,7 +226,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="y">Destination Y position.</param>
         /// <param name="width">Destination tiled width.</param>
         /// <param name="height">Destination tiled height.</param>
-        private static void DrawImageTiledFallback(CTRTexture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
+        private static void DrawImageTiledFallback(Texture2D image, float texX, float texY, float tileWidth, float tileHeight, float x, float y, float width, float height)
         {
             for (float currentY = 0f; currentY < height; currentY += tileHeight)
             {
@@ -242,7 +242,7 @@ namespace CutTheRopeDX.Framework.Visual
                     {
                         remainingHeight = tileHeight;
                     }
-                    CTRRectangle rect = MakeRectangle(texX, texY, remainingWidth, remainingHeight);
+                    Rectangle rect = MakeRectangle(texX, texY, remainingWidth, remainingHeight);
                     DrawImagePart(image, rect, x + currentX, y + currentY);
                 }
             }
@@ -254,7 +254,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="texture">Texture to compute coordinates for.</param>
         /// <param name="rect">Source rectangle in pixel coordinates.</param>
         /// <returns>UV coordinates normalized to the texture size.</returns>
-        public static Quad2D GetTextureCoordinates(CTRTexture2D texture, CTRRectangle rect)
+        public static Quad2D GetTextureCoordinates(Texture2D texture, Rectangle rect)
         {
             return Quad2D.MakeQuad2D(
                 texture._invWidth * rect.x,
@@ -752,7 +752,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="x">Draw X position (top-left).</param>
         /// <param name="y">Draw Y position (top-left).</param>
         /// <param name="fraction">Visible fraction (0 = invisible, 1 = fully visible).</param>
-        public static void DrawRadialClippedQuad(CTRTexture2D texture, int quadIndex, float x, float y, float fraction)
+        public static void DrawRadialClippedQuad(Texture2D texture, int quadIndex, float x, float y, float fraction)
         {
             if (fraction <= 0f)
             {

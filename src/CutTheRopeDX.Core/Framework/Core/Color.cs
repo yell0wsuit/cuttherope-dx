@@ -37,10 +37,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="a">Alpha channel, 0–1.</param>
         public Color(float r, float g, float b, float a)
             : this(
-                (byte)Helpers.CTRMathHelper.Clamp(r * 255, byte.MinValue, byte.MaxValue),
-                (byte)Helpers.CTRMathHelper.Clamp(g * 255, byte.MinValue, byte.MaxValue),
-                (byte)Helpers.CTRMathHelper.Clamp(b * 255, byte.MinValue, byte.MaxValue),
-                (byte)Helpers.CTRMathHelper.Clamp(a * 255, byte.MinValue, byte.MaxValue))
+                (byte)Helpers.MathHelper.Clamp(r * 255, byte.MinValue, byte.MaxValue),
+                (byte)Helpers.MathHelper.Clamp(g * 255, byte.MinValue, byte.MaxValue),
+                (byte)Helpers.MathHelper.Clamp(b * 255, byte.MinValue, byte.MaxValue),
+                (byte)Helpers.MathHelper.Clamp(a * 255, byte.MinValue, byte.MaxValue))
         {
         }
 

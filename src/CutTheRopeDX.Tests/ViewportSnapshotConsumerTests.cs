@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Tests
             _ = presentation.SetSurfaceSize(width, height);
 
             // Take the center of the drawn rectangle in surface pixels.
-            CTRRectangle render = presentation.Snapshot.RenderViewport;
-            CTRRectangle visible = presentation.Snapshot.VisibleBounds;
+            Rectangle render = presentation.Snapshot.RenderViewport;
+            Rectangle visible = presentation.Snapshot.VisibleBounds;
             float surfaceX = render.x + (render.w / 2f);
             float surfaceY = render.y + (render.h / 2f);
 

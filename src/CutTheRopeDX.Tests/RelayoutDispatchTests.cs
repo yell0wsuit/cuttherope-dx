@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests
                 PlainController controller = new();
                 controller.LayOut(ScreenPresentation.Instance.Snapshot);
 
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 Assert.Equal((int)visible.w, controller.View.width);
                 Assert.Equal((int)visible.h, controller.View.height);
                 Assert.False(string.IsNullOrEmpty(name));

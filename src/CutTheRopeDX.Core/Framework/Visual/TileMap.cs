@@ -79,7 +79,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="t">Texture containing the tile.</param>
         /// <param name="q">Quad index within the texture, or -1 for full image.</param>
         /// <param name="ti">Tile ID used in the matrix.</param>
-        public void AddTileQuadwithID(CTRTexture2D t, int q, int ti)
+        public void AddTileQuadwithID(Texture2D t, int q, int ti)
         {
             // If texture has no quads (e.g., background images), use full image dimensions
             if (t.quadsCount == 0 || q == -1)
@@ -195,7 +195,7 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 return;
             }
-            CTRRectangle rectangle = RectInRectIntersection(new CTRRectangle(mapX, mapY, tileMapWidth, tileMapHeight), new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
+            Rectangle rectangle = RectInRectIntersection(new Rectangle(mapX, mapY, tileMapWidth, tileMapHeight), new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
             Vector vector = Vect(MathF.Max(0f, rectangle.x), MathF.Max(0f, rectangle.y));
             Vector vector2 = Vect((int)vector.X / tileWidth, (int)vector.Y / tileHeight);
             float rowStartY = mapY + (vector2.Y * tileHeight);
@@ -222,8 +222,8 @@ namespace CutTheRopeDX.Framework.Visual
                 int k = (int)vector2.Y;
                 while (k <= maxVisibleRow && vector3.Y < cameraY + cameraViewHeight)
                 {
-                    CTRRectangle rectangle2 = RectInRectIntersection(new CTRRectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight), new CTRRectangle(vector3.X, vector3.Y, tileWidth, tileHeight));
-                    CTRRectangle r = new(cameraX - vector3.X + rectangle2.x, cameraY - vector3.Y + rectangle2.y, rectangle2.w, rectangle2.h);
+                    Rectangle rectangle2 = RectInRectIntersection(new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight), new Rectangle(vector3.X, vector3.Y, tileWidth, tileHeight));
+                    Rectangle r = new(cameraX - vector3.X + rectangle2.x, cameraY - vector3.Y + rectangle2.y, rectangle2.w, rectangle2.h);
                     int tileColumn = j;
                     int tileRow = k;
                     if (repeatedVertically == Repeat.EDGES)
@@ -269,7 +269,7 @@ namespace CutTheRopeDX.Framework.Visual
                     {
                         TileEntry tileEntry = tiles[tileIndex];
                         ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
-                        CTRTexture2D texture = imageMultiDrawer2.image.texture;
+                        Texture2D texture = imageMultiDrawer2.image.texture;
                         if (tileEntry.quad != -1 && texture.quadRects != null)
                         {
                             r.x += texture.quadRects[tileEntry.quad].x;

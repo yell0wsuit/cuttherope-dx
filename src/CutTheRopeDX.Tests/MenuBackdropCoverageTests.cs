@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests
                     // chain, which a controller built for a test is not on.
                     controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
-                    CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                     Image backdrop = Backdrop(controller, viewId);
                     Assert.True(
                         backdrop.scaleX * backdrop.width >= visible.w,

@@ -136,13 +136,13 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(GhostBubbleAnimation);
 
             // Set bounding box based on bottle dimensions (the main visual element)
-            CTRRectangle bottleRect = bottle.texture.quadRects[ImgObjLighterBottle];
+            Rectangle bottleRect = bottle.texture.quadRects[ImgObjLighterBottle];
             int boundWidth = (int)bottleRect.w;
             int boundHeight = (int)bottleRect.h;
             width = boundWidth;
             height = boundHeight;
             anchor = parentAnchor = 18;
-            bb = new CTRRectangle(0f, 0f, width, height);
+            bb = new Rectangle(0f, 0f, width, height);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
             rotatedBB = false;
             topLeftCalculated = false;

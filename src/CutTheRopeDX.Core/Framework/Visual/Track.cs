@@ -323,7 +323,7 @@ namespace CutTheRopeDX.Framework.Visual
                     {
                         for (int i = 0; i < kf.value.action.actionSet.Count; i++)
                         {
-                            CTRAction action = kf.value.action.actionSet[i];
+                            TimelineAction action = kf.value.action.actionSet[i];
                             _ = action.actionTarget.HandleAction(action.data);
                         }
                         return;
@@ -967,7 +967,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Collected action sets from action keyframes.
         /// </summary>
-        public List<List<CTRAction>> actionSets;
+        public List<List<TimelineAction>> actionSets;
 
         /// <summary>
         /// Types of properties a track can animate.

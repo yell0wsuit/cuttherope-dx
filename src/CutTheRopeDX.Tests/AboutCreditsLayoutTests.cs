@@ -122,7 +122,7 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                     WithAboutView((container, back) =>
                     {
-                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         float reserved = container.GetMaxScroll().Y + container.height - DrawnExtent(container);
 
                         // The window is centered, so its bottom edge is half the slack below the
@@ -153,7 +153,7 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                     WithAboutView((container, _) =>
                     {
-                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         Assert.True(
                             container.height > visible.h * 0.75f,
                             $"{surface.Name}: a {container.height} window on a {visible.h} viewport");

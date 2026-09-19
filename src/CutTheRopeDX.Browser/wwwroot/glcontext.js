@@ -63,7 +63,7 @@ export function transferCanvasToThread(canvasId, threadId) {
 }
 
 // A lost context cannot be rebuilt in place yet: the GPU objects Core holds - every
-// CTRTexture2D handle, the backend's render target - outlive the context that made them, and
+// Texture2D handle, the backend's render target - outlive the context that made them, and
 // nothing re-resolves them. Reloading is what recovers, so the player is handed the reload
 // rather than told to go and find it.
 //

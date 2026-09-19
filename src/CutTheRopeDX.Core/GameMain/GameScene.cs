@@ -359,7 +359,7 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         /// <param name="texture">Background texture to measure.</param>
         /// <returns>A safe cover scale for the background texture.</returns>
-        private float GetBackgroundCoverScale(CTRTexture2D texture)
+        private float GetBackgroundCoverScale(Texture2D texture)
         {
             if (texture == null || texture._realWidth <= 0 || texture._realHeight <= 0)
             {
@@ -374,8 +374,8 @@ namespace CutTheRopeDX.GameMain
 
             // The region of world a screen of this shape exposes, which is the viewport taken back
             // through the camera's own scale. Covering that is an ordinary cover fit against it.
-            CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-            CTRRectangle worldWindow = new(0f, 0f, visible.w / cameraScale, visible.h / cameraScale);
+            Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            Rectangle worldWindow = new(0f, 0f, visible.w / cameraScale, visible.h / cameraScale);
             float scale = LayoutMath.Cover(texture._realWidth, texture._realHeight, worldWindow).Scale;
             return scale <= 0f || float.IsNaN(scale) || float.IsInfinity(scale) ? 1f : scale;
         }
@@ -417,9 +417,9 @@ namespace CutTheRopeDX.GameMain
         /// position that shows the whole level on that axis.
         /// </remarks>
         /// <returns>The origin of the range and its extent on each axis.</returns>
-        private CTRRectangle CameraTrackingRange()
+        private Rectangle CameraTrackingRange()
         {
-            return new CTRRectangle(
+            return new Rectangle(
                 cameraBounds.x,
                 cameraBounds.y,
                 MathF.Max(0f, mapWidth - SCREEN_WIDTH),
@@ -432,7 +432,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The clamped position.</returns>
         private Vector BoundedCameraPosition(float x, float y)
         {
-            CTRRectangle range = CameraTrackingRange();
+            Rectangle range = CameraTrackingRange();
             return Vect(
                 FIT_TO_BOUNDARIES(x, range.x, range.x + range.w),
                 FIT_TO_BOUNDARIES(y, range.y, range.y + range.h));
@@ -451,7 +451,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Exposed world beyond the window, horizontally and vertically.</returns>
         private Vector CameraSlack(ViewportLayoutSnapshot snapshot)
         {
-            CTRRectangle viewport = snapshot.VisibleBounds;
+            Rectangle viewport = snapshot.VisibleBounds;
             float scale = MathF.Min(viewport.w / cameraWindow.w, viewport.h / cameraWindow.h);
             return Vect((viewport.w / scale) - cameraWindow.w, (viewport.h / scale) - cameraWindow.h);
         }
@@ -504,7 +504,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle viewport = snapshot.VisibleBounds;
+            Rectangle viewport = snapshot.VisibleBounds;
             Vector slack = CameraSlack(snapshot);
             Vector scrollable = CameraScrollable();
 
@@ -514,7 +514,7 @@ namespace CutTheRopeDX.GameMain
             float anchorX = GameplayCamera.Anchor(camera.pos.X, cameraBounds.x, scrollable.X, slack.X);
             float anchorY = GameplayCamera.Anchor(camera.pos.Y, cameraBounds.y, scrollable.Y, slack.Y);
 
-            CTRRectangle window = new(
+            Rectangle window = new(
                 cameraBounds.x + (scrollable.X * anchorX),
                 cameraBounds.y + (scrollable.Y * anchorY),
                 cameraWindow.w,
@@ -532,7 +532,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle viewport = snapshot.VisibleBounds;
+            Rectangle viewport = snapshot.VisibleBounds;
             easterEggScreen = viewport;
             if (pauseSwitcherWaves != null)
             {
@@ -967,7 +967,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Primary background texture used for computing scale.
         /// </summary>
-        private readonly CTRTexture2D backTexture;
+        private readonly Texture2D backTexture;
 
         /// <summary>
         /// Cached background scale derived from internal screen width.
@@ -1029,7 +1029,7 @@ namespace CutTheRopeDX.GameMain
         private readonly EasterEggOmNom easterEgg = new();
 
         /// <summary>The visible screen region the easter egg's dim covers.</summary>
-        private CTRRectangle easterEggScreen = new(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT);
+        private Rectangle easterEggScreen = new(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /// <summary>True while a press that began on Om Nom is waiting for its release.</summary>
         private bool overOmNom;
@@ -1329,14 +1329,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The level's extent in world units. The camera fits this region into the viewport.
         /// </summary>
-        private CTRRectangle cameraBounds;
+        private Rectangle cameraBounds;
 
         /// <summary>
         /// The region the camera can show at once, in world units. Equal to the level extent on
         /// an axis the level does not exceed, and to the design size on an axis it does, which is
         /// the axis the camera scrolls along.
         /// </summary>
-        private CTRRectangle cameraWindow;
+        private Rectangle cameraWindow;
 
         // private bool spiderTookCandy;
 

@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The width and height of the <paramref name="quad"/> as a vector.</returns>
         public static Vector GetQuadSize(string textureResourceName, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
+            Texture2D texture2D = Application.GetTexture(textureResourceName);
             return texture2D.quadRects != null
                 ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
                 : Vect(texture2D._realWidth, texture2D._realHeight);
@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The offset of the <paramref name="quad"/>, or (0, 0) if no offsets are defined.</returns>
         public static Vector GetQuadOffset(string textureResourceName, int quad)
         {
-            CTRTexture2D texture = Application.GetTexture(textureResourceName);
+            Texture2D texture = Application.GetTexture(textureResourceName);
             return texture.quadOffsets != null ? texture.quadOffsets[quad] : Vect(0, 0);
         }
 
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The center point of the <paramref name="quad"/> in texture space.</returns>
         public static Vector GetQuadCenter(string textureResourceName, int quad)
         {
-            CTRTexture2D texture2D = Application.GetTexture(textureResourceName);
+            Texture2D texture2D = Application.GetTexture(textureResourceName);
             Vector offset = texture2D.quadOffsets != null ? texture2D.quadOffsets[quad] : Vect(0, 0);
             Vector size = texture2D.quadRects != null
                 ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="t">Texture to create the image from.</param>
         /// <returns>A new <see cref="Image"/> bound to <paramref name="t"/>.</returns>
-        public static Image Image_create(CTRTexture2D t)
+        public static Image Image_create(Texture2D t)
         {
             return new Image().InitWithTexture(t);
         }
@@ -132,7 +132,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="t">Texture to initialize with.</param>
         /// <returns>This image instance for chaining.</returns>
         /// <exception cref="InvalidOperationException">Thrown when <paramref name="t"/> is <see langword="null"/>.</exception>
-        public virtual Image InitWithTexture(CTRTexture2D t)
+        public virtual Image InitWithTexture(Texture2D t)
         {
             texture = t ?? throw new InvalidOperationException("Failed to initialize Image: texture is null. The texture resource may not exist or failed to load.");
             restoreCutTransparency = false;
@@ -353,7 +353,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// The texture used for drawing this image.
         /// </summary>
-        public CTRTexture2D texture;
+        public Texture2D texture;
 
         /// <summary>
         /// Whether to restore trimmed transparency offsets when drawing quads.

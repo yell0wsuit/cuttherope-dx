@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Tests
         {
             LayoutSurfaces.WithSurface(2560, 1440, () =>
             {
-                CTRRectangle box = ReadDesignBox();
+                Rectangle box = ReadDesignBox();
 
                 Assert.Equal(2560f, box.w, 0.01);
                 Assert.Equal(1440f, box.h, 0.01);
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.Tests
             // The same ratio at a different size must give the same box.
             LayoutSurfaces.WithSurface(1280, 720, () =>
             {
-                CTRRectangle box = ReadDesignBox();
+                Rectangle box = ReadDesignBox();
 
                 Assert.Equal(2560f, box.w, 0.01);
                 Assert.Equal(1440f, box.h, 0.01);
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
             LayoutSurfaces.WithSurface(720, 1280, () =>
             {
                 // The box is the authored one whatever the shape; only the scale moves.
-                CTRRectangle box = ReadDesignBox();
+                Rectangle box = ReadDesignBox();
                 Assert.Equal(2560f, box.w, 0.01);
                 Assert.Equal(1440f, box.h, 0.01);
 
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Tests
                     $"a portrait viewport should draw larger than {designScale}, got {ReadFittedScale()}");
 
                 // Wider than the viewport, and centered, so the overhang is even.
-                CTRRectangle fitted = ReadFittedBox();
+                Rectangle fitted = ReadFittedBox();
                 Assert.Equal((1440f - fitted.w) / 2f, fitted.x, 0.01);
             });
         }
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(3840, 1080, () =>
             {
-                CTRRectangle box = ReadDesignBox();
+                Rectangle box = ReadDesignBox();
 
                 Assert.Equal(2560f, box.w, 0.01);
                 Assert.Equal(1440f, box.h, 0.01);
@@ -101,7 +101,7 @@ namespace CutTheRopeDX.Tests
                 float drawnX = centerX + ((child.drawX - centerX) * group.scaleX);
                 float drawnY = centerY + ((child.drawY - centerY) * group.scaleY);
 
-                CTRRectangle fitted = ReadFittedBox();
+                Rectangle fitted = ReadFittedBox();
                 float scale = ReadFittedScale();
 
                 Assert.Equal(fitted.x + (912f * scale), drawnX, 0.01);
@@ -132,16 +132,16 @@ namespace CutTheRopeDX.Tests
             return new ProbeController();
         }
 
-        private static CTRRectangle ReadDesignBox()
+        private static Rectangle ReadDesignBox()
         {
-            return (CTRRectangle)typeof(ViewController)
+            return (Rectangle)typeof(ViewController)
                 .GetProperty("DesignBox", BindingFlags.Instance | BindingFlags.NonPublic)
                 .GetValue(Probe());
         }
 
-        private static CTRRectangle ReadFittedBox()
+        private static Rectangle ReadFittedBox()
         {
-            return (CTRRectangle)typeof(ViewController)
+            return (Rectangle)typeof(ViewController)
                 .GetProperty("FittedBox", BindingFlags.Instance | BindingFlags.NonPublic)
                 .GetValue(Probe());
         }

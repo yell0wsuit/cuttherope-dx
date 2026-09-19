@@ -324,7 +324,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Binds a texture for subsequent rendering operations.
         /// </summary>
-        public static void BindTexture(CTRTexture2D t)
+        public static void BindTexture(Texture2D t)
         {
             if (PlatformServices.Render is not { } r)
             {

@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Browser
         private static void OnPointer(double x, double y, int phase)
         {
             ViewportLayoutSnapshot snapshot = ScreenPresentation.Instance.Snapshot;
-            CTRRectangle render = snapshot.RenderViewport;
+            Rectangle render = snapshot.RenderViewport;
 
             // Surface pixels relative to the drawn region. Touches are reported in this space
             // rather than in logical units: Core divides what it is handed by the viewport scale

@@ -63,7 +63,7 @@ namespace CutTheRopeDX.GameMain
             // which puts the candy anchor far away and prevents hand grabs.
             if (VectLength(offset) > 80f)
             {
-                CTRTexture2D texture = Application.GetTexture(Resources.Img.ObjRoboHand);
+                Texture2D texture = Application.GetTexture(Resources.Img.ObjRoboHand);
                 if (texture != null && texture.preCutSize.X > 0f && texture.preCutSize.Y > 0f)
                 {
                     const float legacyAnchorX = 51f / 96f;

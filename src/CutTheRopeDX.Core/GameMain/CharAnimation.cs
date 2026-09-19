@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the character animation.</param>
         /// <returns>The initialized character animation.</returns>
-        public static CharAnimation CharAnimation_create(CTRTexture2D t)
+        public static CharAnimation CharAnimation_create(Texture2D t)
         {
             return (CharAnimation)new CharAnimation().InitWithTexture(t);
         }

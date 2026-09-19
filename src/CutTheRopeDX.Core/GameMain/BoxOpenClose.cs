@@ -176,7 +176,7 @@ namespace CutTheRopeDX.GameMain
         /// that the panel's group hangs from the viewport's own origin.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        public void RelayoutBox(CTRRectangle visible)
+        public void RelayoutBox(Rectangle visible)
         {
             width = (int)visible.w;
             height = (int)visible.h;
@@ -195,14 +195,14 @@ namespace CutTheRopeDX.GameMain
         /// The group scales about its own origin, so the fit is a scale and a centering offset.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void CoverFitAnimations(CTRRectangle visible)
+        private void CoverFitAnimations(Rectangle visible)
         {
             if (openCloseAnims == null)
             {
                 return;
             }
 
-            CTRRectangle covered = LayoutMath.CoverInside(
+            Rectangle covered = LayoutMath.CoverInside(
                 ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
             float scale = covered.w / ViewportLayout.DesignWidth;
             openCloseAnims.scaleX = openCloseAnims.scaleY = scale;
@@ -912,7 +912,7 @@ namespace CutTheRopeDX.GameMain
             /// </summary>
             /// <param name="t">Texture used by the confetti particle.</param>
             /// <returns>The initialized confetti particle.</returns>
-            public static Confetti Confetti_create(CTRTexture2D t)
+            public static Confetti Confetti_create(Texture2D t)
             {
                 return (Confetti)new Confetti().InitWithTexture(t);
             }

@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Tests
             GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
             // The pinned map for this level is 960x1440 at origin (800, 0).
-            CTRRectangle bounds = ReadRectangle(scene, "cameraBounds");
+            Rectangle bounds = ReadRectangle(scene, "cameraBounds");
 
             Assert.Equal(800f, bounds.x, 0.01);
             Assert.Equal(0f, bounds.y, 0.01);
@@ -140,8 +140,8 @@ namespace CutTheRopeDX.Tests
             // FitCamera over a 960x1440 level in a 2560x1440 viewport must land the level exactly
             // where offsetX = (2560 - 960) / 2 put it.
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 960f, 1440f),
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 960f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
                 0.5f,
                 0.5f);
 
@@ -166,12 +166,12 @@ namespace CutTheRopeDX.Tests
             return Assert.IsType<float>(field?.GetValue(scene));
         }
 
-        private static CTRRectangle ReadRectangle(GameScene scene, string fieldName)
+        private static Rectangle ReadRectangle(GameScene scene, string fieldName)
         {
             FieldInfo field = typeof(GameScene).GetField(
                 fieldName,
                 BindingFlags.Instance | BindingFlags.NonPublic);
-            return Assert.IsType<CTRRectangle>(field?.GetValue(scene));
+            return Assert.IsType<Rectangle>(field?.GetValue(scene));
         }
 
         public static TheoryData<string, int, int> Surfaces()

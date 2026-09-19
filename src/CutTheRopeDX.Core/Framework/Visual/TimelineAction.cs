@@ -5,12 +5,12 @@ namespace CutTheRopeDX.Framework.Visual
     /// <summary>
     /// Represents a single action that can be dispatched to a <see cref="BaseElement"/> during timeline playback.
     /// </summary>
-    internal sealed class CTRAction : FrameworkTypes
+    internal sealed class TimelineAction : FrameworkTypes
     {
         /// <summary>
-        /// Initializes a new <see cref="CTRAction"/> with empty action data.
+        /// Initializes a new <see cref="TimelineAction"/> with empty action data.
         /// </summary>
-        public CTRAction()
+        public TimelineAction()
         {
             data = new ActionData();
         }
@@ -23,9 +23,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="p">Primary integer parameter.</param>
         /// <param name="sp">Secondary integer parameter.</param>
         /// <returns>The created action instance.</returns>
-        public static CTRAction CreateAction(BaseElement target, string action, int p, int sp)
+        public static TimelineAction CreateAction(BaseElement target, string action, int p, int sp)
         {
-            CTRAction action2 = new()
+            TimelineAction action2 = new()
             {
                 actionTarget = target
             };
@@ -45,9 +45,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="p">Primary float parameter.</param>
         /// <param name="sp">Secondary float parameter.</param>
         /// <returns>The created action instance.</returns>
-        public static CTRAction CreateAction(BaseElement target, string action, float p, float sp)
+        public static TimelineAction CreateAction(BaseElement target, string action, float p, float sp)
         {
-            CTRAction action2 = new()
+            TimelineAction action2 = new()
             {
                 actionTarget = target
             };

@@ -25,15 +25,15 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="viewport">Rectangle to center within.</param>
         /// <param name="scale">Uniform scale the box is drawn at.</param>
         /// <returns>The placed, centered rectangle.</returns>
-        public static CTRRectangle PlaceBox(
+        public static Rectangle PlaceBox(
             float designWidth,
             float designHeight,
-            CTRRectangle viewport,
+            Rectangle viewport,
             float scale)
         {
             float width = designWidth * scale;
             float height = designHeight * scale;
-            return new CTRRectangle(
+            return new Rectangle(
                 viewport.x + ((viewport.w - width) / 2f),
                 viewport.y + ((viewport.h - height) / 2f),
                 width,
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="designHeight">Height of the design box.</param>
         /// <param name="viewport">Rectangle to fit inside.</param>
         /// <returns>The containing scale.</returns>
-        public static float Contain(float designWidth, float designHeight, CTRRectangle viewport)
+        public static float Contain(float designWidth, float designHeight, Rectangle viewport)
         {
             return MathF.Min(viewport.w / designWidth, viewport.h / designHeight);
         }
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="designHeight">Height of the design box.</param>
         /// <param name="viewport">Rectangle to fit inside.</param>
         /// <returns>The fitted, centered rectangle.</returns>
-        public static CTRRectangle FitInside(float designWidth, float designHeight, CTRRectangle viewport)
+        public static Rectangle FitInside(float designWidth, float designHeight, Rectangle viewport)
         {
             return PlaceBox(designWidth, designHeight, viewport, Contain(designWidth, designHeight, viewport));
         }
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="designHeight">Height of the design box.</param>
         /// <param name="viewport">Rectangle to cover.</param>
         /// <returns>The covering, centered rectangle.</returns>
-        public static CTRRectangle CoverInside(float designWidth, float designHeight, CTRRectangle viewport)
+        public static Rectangle CoverInside(float designWidth, float designHeight, Rectangle viewport)
         {
             return PlaceBox(
                 designWidth,
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="imageHeight">Natural image height.</param>
         /// <param name="viewport">Rectangle to cover.</param>
         /// <returns>The covering scale and its driving axis.</returns>
-        public static CoverFit Cover(float imageWidth, float imageHeight, CTRRectangle viewport)
+        public static CoverFit Cover(float imageWidth, float imageHeight, Rectangle viewport)
         {
             float horizontal = viewport.w / imageWidth;
             float vertical = viewport.h / imageHeight;
@@ -114,7 +114,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="insetY">Vertical distance from the anchored edge.</param>
         /// <returns>The element's top-left position.</returns>
         public static Vector AnchorPosition(
-            CTRRectangle viewport,
+            Rectangle viewport,
             LayoutEdge edge,
             float elementWidth,
             float elementHeight,
@@ -198,8 +198,8 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="anchorY">Vertical position within the slack, 0 to 1.</param>
         /// <returns>The camera scale and the visible world region.</returns>
         public static CameraFit FitCamera(
-            CTRRectangle levelBounds,
-            CTRRectangle viewport,
+            Rectangle levelBounds,
+            Rectangle viewport,
             float anchorX,
             float anchorY)
         {
@@ -210,7 +210,7 @@ namespace CutTheRopeDX.Framework.Platform
             float slackY = visibleHeight - levelBounds.h;
             return new CameraFit(
                 scale,
-                new CTRRectangle(
+                new Rectangle(
                     levelBounds.x - (slackX * anchorX),
                     levelBounds.y - (slackY * anchorY),
                     visibleWidth,

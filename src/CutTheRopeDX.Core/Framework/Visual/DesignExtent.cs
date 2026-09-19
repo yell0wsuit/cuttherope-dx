@@ -27,11 +27,11 @@ namespace CutTheRopeDX.Framework.Visual
         /// </remarks>
         /// <param name="group">Element holding the design-space content.</param>
         /// <returns>The painted extent, or an empty rectangle when nothing under it paints.</returns>
-        public static CTRRectangle Measure(BaseElement group)
+        public static Rectangle Measure(BaseElement group)
         {
             if (group == null)
             {
-                return new CTRRectangle(0f, 0f, 0f, 0f);
+                return new Rectangle(0f, 0f, 0f, 0f);
             }
 
             float left = float.MaxValue;
@@ -45,8 +45,8 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             return right <= left || bottom <= top
-                ? new CTRRectangle(0f, 0f, 0f, 0f)
-                : new CTRRectangle(
+                ? new Rectangle(0f, 0f, 0f, 0f)
+                : new Rectangle(
                     left - group.drawX,
                     top - group.drawY,
                     right - left,

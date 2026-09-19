@@ -22,7 +22,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="scale">Scale the group holding the buttons is drawn at.</param>
         /// <param name="buttonWidth">Authored width of one button.</param>
         /// <returns>The number of buttons per row.</returns>
-        public static int ColumnsFor(CTRRectangle visible, float scale, float buttonWidth)
+        public static int ColumnsFor(Rectangle visible, float scale, float buttonWidth)
         {
             float pitch = buttonWidth + ButtonSpacing;
             if (scale <= 0f || pitch <= 0f)

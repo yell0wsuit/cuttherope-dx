@@ -58,10 +58,10 @@ namespace CutTheRopeDX.GameMain
                     string p2ResourceName = boxBackgrounds.Skip(1).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
                     if (!string.IsNullOrWhiteSpace(p2ResourceName))
                     {
-                        CTRTexture2D p2Texture = Application.GetTexture(p2ResourceName);
-                        CTRRectangle p2Rect = p2Texture.quadRects != null
+                        Texture2D p2Texture = Application.GetTexture(p2ResourceName);
+                        Rectangle p2Rect = p2Texture.quadRects != null
                             ? p2Texture.quadRects[0]
-                            : new CTRRectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
+                            : new Rectangle(0, 0, p2Texture._realWidth, p2Texture._realHeight);
 
                         // Enable blending for p2 to avoid dark seams where alpha overlaps p1.
                         Renderer.Enable(Renderer.GL_BLEND);

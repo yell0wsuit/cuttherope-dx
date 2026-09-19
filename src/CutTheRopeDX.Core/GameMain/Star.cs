@@ -51,7 +51,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the star.</param>
         /// <returns>The initialized star.</returns>
-        public static Star Star_create(CTRTexture2D t)
+        public static Star Star_create(Texture2D t)
         {
             return (Star)new Star().InitWithTexture(t);
         }
@@ -155,7 +155,7 @@ namespace CutTheRopeDX.GameMain
                 timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.25f));
                 AddTimelinewithID(timeline2, 1);
             }
-            bb = new CTRRectangle(22f, 20f, 30f, 30f);
+            bb = new Rectangle(22f, 20f, 30f, 30f);
 
             Timeline timeline3 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
             timeline3.AddKeyFrame(KeyFrame.MakePos((int)x, (int)y, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0f));

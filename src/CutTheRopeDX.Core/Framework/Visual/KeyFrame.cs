@@ -21,7 +21,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="actions">Actions to execute at this keyframe.</param>
         /// <param name="time">Time offset in seconds.</param>
         /// <returns>A new action keyframe.</returns>
-        public static KeyFrame MakeAction(List<CTRAction> actions, float time)
+        public static KeyFrame MakeAction(List<TimelineAction> actions, float time)
         {
             KeyFrameValue keyFrameValue = new();
             keyFrameValue.action.actionSet = actions;
@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>A new action keyframe wrapping a single <paramref name="action"/>.</returns>
         public static KeyFrame MakeSingleAction(BaseElement target, string action, int p, int sp, float time)
         {
-            return MakeAction([CTRAction.CreateAction(target, action, p, sp)], time);
+            return MakeAction([TimelineAction.CreateAction(target, action, p, sp)], time);
         }
 
         /// <summary>

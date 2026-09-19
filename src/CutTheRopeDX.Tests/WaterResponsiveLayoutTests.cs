@@ -108,7 +108,7 @@ namespace CutTheRopeDX.Tests
             scene.RelayoutCamera();
 
             Camera2D camera = Read<Camera2D>(scene, "camera");
-            CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+            Rectangle viewport = ScreenPresentation.Instance.Snapshot.VisibleBounds;
             float visibleLeft = camera.RenderPos.X;
             float visibleRight = visibleLeft + (viewport.w / camera.Scale);
             float visibleBottom = camera.RenderPos.Y + (viewport.h / camera.Scale);

@@ -6,5 +6,5 @@ namespace CutTheRopeDX.Framework.Platform
     /// </summary>
     /// <param name="Scale">Uniform world-to-viewport scale.</param>
     /// <param name="VisibleWorld">Region of world space the viewport exposes.</param>
-    internal readonly record struct CameraFit(float Scale, CTRRectangle VisibleWorld);
+    internal readonly record struct CameraFit(float Scale, Rectangle VisibleWorld);
 }

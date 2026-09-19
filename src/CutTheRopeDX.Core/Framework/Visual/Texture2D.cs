@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Framework.Visual
     /// <summary>
     /// Manages a 2D texture with optional quad-based sprite regions, scaling, and a global linked list for bulk suspend/resume.
     /// </summary>
-    internal sealed class CTRTexture2D : FrameworkTypes
+    internal sealed class Texture2D : FrameworkTypes
     {
         /// <summary>
         /// Draws a rectangular region of <paramref name="texture"/> at <paramref name="point"/>.
@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="texture">Texture to draw from.</param>
         /// <param name="rect">Source rectangle within the texture.</param>
         /// <param name="point">Screen position to draw at.</param>
-        public static void DrawRectAtPoint(CTRTexture2D texture, CTRRectangle rect, Vector point)
+        public static void DrawRectAtPoint(Texture2D texture, Rectangle rect, Vector point)
         {
             float texLeft = texture._invWidth * rect.x;
             float texTop = texture._invHeight * rect.y;
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// Returns this texture instance (identity helper for renderer binding).
         /// </summary>
         /// <returns>This texture instance.</returns>
-        public CTRTexture2D Name()
+        public Texture2D Name()
         {
             return this;
         }
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             quadsCount = capacity;
             quads = new Quad2D[quadsCount];
-            quadRects = new CTRRectangle[quadsCount];
+            quadRects = new Rectangle[quadsCount];
             quadOffsets = new Vector[quadsCount];
         }
 
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="rect">Source rectangle within the texture.</param>
         /// <param name="quadIndex">Index of the quad to set.</param>
-        public void SetQuadAt(CTRRectangle rect, int quadIndex)
+        public void SetQuadAt(Rectangle rect, int quadIndex)
         {
             quads[quadIndex] = DrawHelper.GetTextureCoordinates(this, rect);
             quadRects[quadIndex] = rect;
@@ -100,7 +100,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="texture">Texture containing the quad.</param>
         /// <param name="quadIndex">Index of the quad to draw.</param>
         /// <param name="point">Screen position to draw at.</param>
-        public static void DrawQuadAtPoint(CTRTexture2D texture, int quadIndex, Vector point)
+        public static void DrawQuadAtPoint(Texture2D texture, int quadIndex, Vector point)
         {
             Quad2D quad2D = texture.quads[quadIndex];
             float w = texture.quadRects[quadIndex].w;
@@ -118,7 +118,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="texture">Texture to draw.</param>
         /// <param name="point">Screen position to draw at.</param>
-        public static void DrawAtPoint(CTRTexture2D texture, Vector point)
+        public static void DrawAtPoint(Texture2D texture, Vector point)
         {
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.BindTexture(texture.Name());
@@ -207,7 +207,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="path">Resource path to load from.</param>
         /// <returns>The initialized texture instance, or <see langword="null"/> if loading fails.</returns>
-        public CTRTexture2D InitWithPath(string path)
+        public Texture2D InitWithPath(string path)
         {
             _resName = path;
             // _localTexParams = _texParams;
@@ -283,9 +283,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// entries say which is which.
         /// </remarks>
         /// <returns>The registered textures.</returns>
-        public static IEnumerable<CTRTexture2D> Registered()
+        public static IEnumerable<Texture2D> Registered()
         {
-            for (CTRTexture2D texture = root; texture != null; texture = texture.next)
+            for (Texture2D texture = root; texture != null; texture = texture.next)
             {
                 yield return texture;
             }
@@ -296,7 +296,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         public static void SuspendAll()
         {
-            for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
+            for (Texture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
                 Suspend();
             }
@@ -307,7 +307,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         public static void ResumeAll()
         {
-            for (CTRTexture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
+            for (Texture2D texture2D = root; texture2D != null; texture2D = texture2D.next)
             {
                 Resume();
             }
@@ -319,7 +319,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="w">Width of the render target in pixels.</param>
         /// <param name="h">Height of the render target in pixels.</param>
         /// <returns>The initialized texture instance.</returns>
-        public CTRTexture2D InitFromPixels(int w, int h)
+        public Texture2D InitFromPixels(int w, int h)
         {
             _lowypoint = -1;
             // _localTexParams = _defaultTexParams;
@@ -359,7 +359,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// handle to read, and owning the handle rather than a content path is what makes
         /// <see cref="Dispose(bool)"/> release it directly.
         /// </remarks>
-        public CTRTexture2D InitWithHandle(ITextureHandle handle, int w, int h)
+        public Texture2D InitWithHandle(ITextureHandle handle, int w, int h)
         {
             Reg();
             textureHandle_ = handle;
@@ -471,7 +471,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Per-quad source rectangles within the texture.
         /// </summary>
-        public CTRRectangle[] quadRects;
+        public Rectangle[] quadRects;
 
         /// <summary>
         /// Number of quads defined for this texture.
@@ -522,22 +522,22 @@ namespace CutTheRopeDX.Framework.Visual
         /// <summary>
         /// Head of the global texture linked list.
         /// </summary>
-        private static CTRTexture2D root;
+        private static Texture2D root;
 
         /// <summary>
         /// Tail of the global texture linked list.
         /// </summary>
-        private static CTRTexture2D tail;
+        private static Texture2D tail;
 
         /// <summary>
         /// Next texture in the global linked list.
         /// </summary>
-        private CTRTexture2D next;
+        private Texture2D next;
 
         /// <summary>
         /// Previous texture in the global linked list.
         /// </summary>
-        private CTRTexture2D prev;
+        private Texture2D prev;
 
         /// <summary>
         /// Pixel format types for texture storage.

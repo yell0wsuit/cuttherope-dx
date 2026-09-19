@@ -16,7 +16,7 @@ namespace CutTheRopeDX.Tests
         {
             // A 600x900 design box in a 2000x900 viewport: height-limited, so the box keeps
             // full height and is centered across the extra width.
-            CTRRectangle fit = LayoutMath.FitInside(600f, 900f, new CTRRectangle(0f, 0f, 2000f, 900f));
+            Rectangle fit = LayoutMath.FitInside(600f, 900f, new Rectangle(0f, 0f, 2000f, 900f));
 
             Assert.Equal(900f, fit.h, 0.01);
             Assert.Equal(600f, fit.w, 0.01);
@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void FitInsideCentersVerticallyWhenTheViewportIsTaller()
         {
-            CTRRectangle fit = LayoutMath.FitInside(600f, 900f, new CTRRectangle(0f, 0f, 600f, 1800f));
+            Rectangle fit = LayoutMath.FitInside(600f, 900f, new Rectangle(0f, 0f, 600f, 1800f));
 
             Assert.Equal(600f, fit.w, 0.01);
             Assert.Equal(900f, fit.h, 0.01);
@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void FitInsideHonorsTheViewportOrigin()
         {
-            CTRRectangle fit = LayoutMath.FitInside(100f, 100f, new CTRRectangle(50f, 20f, 400f, 200f));
+            Rectangle fit = LayoutMath.FitInside(100f, 100f, new Rectangle(50f, 20f, 400f, 200f));
 
             Assert.Equal(200f, fit.w, 0.01);
             Assert.Equal(200f, fit.h, 0.01);
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Tests
         {
             // A 2560x1440 image in a 3413x1440 viewport has to grow to 3413 wide; the height
             // overflows as a result, which is what covering means.
-            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 3413f, 1440f));
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new Rectangle(0f, 0f, 3413f, 1440f));
 
             Assert.Equal(3413f / 2560f, fit.Scale, 0.001);
             Assert.Equal(LayoutAxis.Horizontal, fit.DrivingAxis);
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void CoverScalesToTheHeightWhenHeightIsTheShortfall()
         {
-            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 2560f));
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new Rectangle(0f, 0f, 1440f, 2560f));
 
             Assert.Equal(2560f / 1440f, fit.Scale, 0.001);
             Assert.Equal(LayoutAxis.Vertical, fit.DrivingAxis);
@@ -69,7 +69,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void CoverOfAnExactlyMatchingViewportIsUnitScale()
         {
-            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new CTRRectangle(0f, 0f, 2560f, 1440f));
+            CoverFit fit = LayoutMath.Cover(2560f, 1440f, new Rectangle(0f, 0f, 2560f, 1440f));
 
             Assert.Equal(1f, fit.Scale, 0.001);
         }
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         public void AnchorPositionPlacesBottomLeftInsideTheInset()
         {
             Vector p = LayoutMath.AnchorPosition(
-                new CTRRectangle(0f, 0f, 1000f, 800f),
+                new Rectangle(0f, 0f, 1000f, 800f),
                 LayoutEdge.BottomLeft,
                 elementWidth: 100f,
                 elementHeight: 50f,
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.Tests
         public void AnchorPositionPlacesTopRightInsideTheInset()
         {
             Vector p = LayoutMath.AnchorPosition(
-                new CTRRectangle(0f, 0f, 1000f, 800f),
+                new Rectangle(0f, 0f, 1000f, 800f),
                 LayoutEdge.TopRight,
                 elementWidth: 100f,
                 elementHeight: 50f,
@@ -108,7 +108,7 @@ namespace CutTheRopeDX.Tests
         public void AnchorPositionCentersTheElement()
         {
             Vector p = LayoutMath.AnchorPosition(
-                new CTRRectangle(0f, 0f, 1000f, 800f),
+                new Rectangle(0f, 0f, 1000f, 800f),
                 LayoutEdge.MiddleCenter,
                 elementWidth: 100f,
                 elementHeight: 50f,
@@ -132,8 +132,8 @@ namespace CutTheRopeDX.Tests
         {
             // A 2560x1440 level in a 2560x1440 viewport fits exactly at 1:1.
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
                 anchorX: 0.5f,
                 anchorY: 0.5f);
 
@@ -148,8 +148,8 @@ namespace CutTheRopeDX.Tests
             // The level is unchanged but the viewport is wider, so the same scale exposes more
             // world horizontally. This is what makes wide screens show more instead of bars.
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 3600f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 3600f, 1440f),
                 anchorX: 0.5f,
                 anchorY: 0.5f);
 
@@ -164,8 +164,8 @@ namespace CutTheRopeDX.Tests
         public void FitCameraAnchorSlidesTheVisibleWindow()
         {
             CameraFit fit = LayoutMath.FitCamera(
-                new CTRRectangle(0f, 0f, 2560f, 1440f),
-                new CTRRectangle(0f, 0f, 3600f, 1440f),
+                new Rectangle(0f, 0f, 2560f, 1440f),
+                new Rectangle(0f, 0f, 3600f, 1440f),
                 anchorX: 0f,
                 anchorY: 0.5f);
 
@@ -177,7 +177,7 @@ namespace CutTheRopeDX.Tests
         {
             // A 2560x1440 design box in a 1440x1440 viewport: height drives the cover, so the box
             // stays at scale one and the width it overflows by hangs off both sides equally.
-            CTRRectangle cover = LayoutMath.CoverInside(2560f, 1440f, new CTRRectangle(0f, 0f, 1440f, 1440f));
+            Rectangle cover = LayoutMath.CoverInside(2560f, 1440f, new Rectangle(0f, 0f, 1440f, 1440f));
 
             Assert.Equal(2560f, cover.w, 0.01);
             Assert.Equal(1440f, cover.h, 0.01);
@@ -190,8 +190,8 @@ namespace CutTheRopeDX.Tests
         {
             // The rule every cover-fitted layer depends on: a viewport of the design shape must
             // reduce to the authored placement, or the shipped composition moves.
-            CTRRectangle cover = LayoutMath.CoverInside(
-                2560f, 1440f, new CTRRectangle(0f, 0f, 2560f, 1440f));
+            Rectangle cover = LayoutMath.CoverInside(
+                2560f, 1440f, new Rectangle(0f, 0f, 2560f, 1440f));
 
             Assert.Equal(2560f, cover.w, 0.01);
             Assert.Equal(1440f, cover.h, 0.01);
@@ -205,10 +205,10 @@ namespace CutTheRopeDX.Tests
         [InlineData(720f, 1280f)]
         public void ContainNeverOverflowsAndCoverNeverUnderfills(float width, float height)
         {
-            CTRRectangle viewport = new(0f, 0f, width, height);
+            Rectangle viewport = new(0f, 0f, width, height);
 
-            CTRRectangle contained = LayoutMath.FitInside(2560f, 1440f, viewport);
-            CTRRectangle covered = LayoutMath.CoverInside(2560f, 1440f, viewport);
+            Rectangle contained = LayoutMath.FitInside(2560f, 1440f, viewport);
+            Rectangle covered = LayoutMath.CoverInside(2560f, 1440f, viewport);
 
             Assert.True(contained.w <= width + 0.01f && contained.h <= height + 0.01f);
             Assert.True(covered.w >= width - 0.01f && covered.h >= height - 0.01f);
@@ -217,7 +217,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void PlaceBoxHonorsTheViewportOrigin()
         {
-            CTRRectangle placed = LayoutMath.PlaceBox(100f, 100f, new CTRRectangle(50f, 20f, 400f, 200f), 2f);
+            Rectangle placed = LayoutMath.PlaceBox(100f, 100f, new Rectangle(50f, 20f, 400f, 200f), 2f);
 
             Assert.Equal(200f, placed.w, 0.01);
             Assert.Equal(200f, placed.h, 0.01);

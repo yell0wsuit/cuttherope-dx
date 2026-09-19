@@ -219,7 +219,7 @@ namespace CutTheRopeDX.GameMain
             // The splash is a single stage centered on screen, so it measures against what the
             // viewport exposes rather than the fixed design size. The two are the same thing at
             // the design shape, and the stage sat off toward one corner at every other.
-            CTRRectangle visible = VisibleBounds;
+            Rectangle visible = VisibleBounds;
             SplashLayout layout = SplashLayout.For(visible, animStageWidth, animStageHeight);
             float scale = layout.Stage.w / animStageWidth;
 
@@ -377,7 +377,7 @@ namespace CutTheRopeDX.GameMain
                 switch (controller.currentPhase)
                 {
                     case Phase.Loading:
-                        CTRTexture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
+                        Texture2D barTex = Application.GetTexture(Resources.Img.ZeptoLabLogoLoading);
                         float barW = barTex.quadRects[0].w;
                         float barH = barTex.quadRects[0].h;
                         float barX = (VisibleBounds.w - barW) / 2f;

@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the pump.</param>
         /// <returns>The initialized pump.</returns>
-        public static Pump Pump_create(CTRTexture2D t)
+        public static Pump Pump_create(Texture2D t)
         {
             return (Pump)new Pump().InitWithTexture(t);
         }

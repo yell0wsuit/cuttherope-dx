@@ -20,7 +20,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// </summary>
         /// <param name="texture">Texture to create the object from.</param>
         /// <returns>A new game object initialized with <paramref name="texture"/>.</returns>
-        private static GameObject GameObject_create(CTRTexture2D texture)
+        private static GameObject GameObject_create(Texture2D texture)
         {
             GameObject gameObject = new();
             _ = gameObject.InitWithTexture(texture);
@@ -41,11 +41,11 @@ namespace CutTheRopeDX.Framework.Helpers
         }
 
         /// <inheritdoc />
-        public override Image InitWithTexture(CTRTexture2D texture)
+        public override Image InitWithTexture(Texture2D texture)
         {
             if (base.InitWithTexture(texture) != null)
             {
-                bb = new CTRRectangle(0f, 0f, width, height);
+                bb = new Rectangle(0f, 0f, width, height);
                 rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
                 anchor = 18;
                 rotatedBB = false;
@@ -177,7 +177,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// </summary>
         public virtual void SetBBFromFirstQuad()
         {
-            bb = new CTRRectangle(MathF.Round(texture.quadOffsets[0].X), MathF.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
+            bb = new Rectangle(MathF.Round(texture.quadOffsets[0].X), MathF.Round(texture.quadOffsets[0].Y), texture.quadRects[0].w, texture.quadRects[0].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);
         }
 
@@ -341,7 +341,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <summary>
         /// Axis-aligned bounding box relative to the element origin.
         /// </summary>
-        public CTRRectangle bb;
+        public Rectangle bb;
 
         /// <summary>
         /// Rotated bounding box quad, updated when <see cref="rotatedBB"/> is <see langword="true"/>.

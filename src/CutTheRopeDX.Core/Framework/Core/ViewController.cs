@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Framework.Core
         /// composition instead of enlarging it. A scene whose content wants a different shape
         /// overrides this getter; it never writes one.
         /// </remarks>
-        protected virtual CTRRectangle DesignBox => new(
+        protected virtual Rectangle DesignBox => new(
             0f, 0f, ViewportLayout.DesignWidth, ViewportLayout.DesignHeight);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Framework.Core
         /// be scaled down for the sake of two empty margins. What overflows is margin; the
         /// background covers it separately.
         /// </remarks>
-        protected CTRRectangle FittedBox => FittedBoxAt(FittedScale);
+        protected Rectangle FittedBox => FittedBoxAt(FittedScale);
 
         /// <summary>
         /// Uniform scale from design-box coordinates to logical space. A function of the viewport
@@ -56,9 +56,9 @@ namespace CutTheRopeDX.Framework.Core
         /// </summary>
         /// <param name="scale">Uniform scale from design-box coordinates to logical space.</param>
         /// <returns>The placed, centered design box in logical space.</returns>
-        private CTRRectangle FittedBoxAt(float scale)
+        private Rectangle FittedBoxAt(float scale)
         {
-            CTRRectangle design = DesignBox;
+            Rectangle design = DesignBox;
             return LayoutMath.PlaceBox(
                 design.w,
                 design.h,
@@ -104,8 +104,8 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
-            CTRRectangle design = DesignBox;
-            CTRRectangle fitted = FittedBoxAt(scale);
+            Rectangle design = DesignBox;
+            Rectangle fitted = FittedBoxAt(scale);
 
             group.width = (int)design.w;
             group.height = (int)design.h;
@@ -168,7 +168,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The pointer position in design space.</returns>
         protected Vector PointerToDesignSpace(float logicalX, float logicalY)
         {
-            CTRRectangle fitted = FittedBox;
+            Rectangle fitted = FittedBox;
             float scale = fitted.w / DesignBox.w;
             return Vect((logicalX - fitted.x) / scale, (logicalY - fitted.y) / scale);
         }
@@ -288,7 +288,7 @@ namespace CutTheRopeDX.Framework.Core
                 return;
             }
 
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
             foreach (View view in views.Values)
             {
                 if (view != null)

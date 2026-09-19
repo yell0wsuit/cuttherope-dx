@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
     /// <summary>Covers what the easter egg emits, and when it emits nothing at all.</summary>
     public sealed class EasterEggOmNomDrawTests
     {
-        private static readonly CTRRectangle Screen = new(-100f, 0f, 2760f, 1440f);
+        private static readonly Rectangle Screen = new(-100f, 0f, 2760f, 1440f);
 
         private static void WithRecorder(System.Action<RecordingRenderBackend> body)
         {

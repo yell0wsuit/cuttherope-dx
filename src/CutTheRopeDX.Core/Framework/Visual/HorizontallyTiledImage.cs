@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Framework.Visual
     internal sealed class HorizontallyTiledImage : Image
     {
         /// <inheritdoc />
-        public override Image InitWithTexture(CTRTexture2D t)
+        public override Image InitWithTexture(Texture2D t)
         {
             if (base.InitWithTexture(t) != null)
             {
@@ -38,8 +38,8 @@ namespace CutTheRopeDX.Framework.Visual
             }
             else
             {
-                CTRRectangle r = texture.quadRects[tiles[0]];
-                CTRRectangle r2 = texture.quadRects[tiles[2]];
+                Rectangle r = texture.quadRects[tiles[0]];
+                Rectangle r2 = texture.quadRects[tiles[2]];
                 r.w = MathF.Min(r.w, width / 2f);
                 r2.w = MathF.Min(r2.w, width - r.w);
                 r2.x += texture.quadRects[tiles[2]].w - r2.w;
@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         /// <param name="t">Texture to use.</param>
         /// <returns>A new horizontally tiled image instance.</returns>
-        public static HorizontallyTiledImage HorizontallyTiledImage_create(CTRTexture2D t)
+        public static HorizontallyTiledImage HorizontallyTiledImage_create(Texture2D t)
         {
             return (HorizontallyTiledImage)new HorizontallyTiledImage().InitWithTexture(t);
         }

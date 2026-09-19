@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 Image plate = Plate();
 
                 Assert.True(
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                 Image plate = Plate();
                 Text label = (Text)plate.GetChildWithName("mapNameLabel");
                 Assert.NotNull(label);

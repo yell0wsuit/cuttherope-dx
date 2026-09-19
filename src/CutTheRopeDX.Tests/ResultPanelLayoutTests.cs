@@ -125,7 +125,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="width">Surface width to lay out for.</param>
         /// <param name="height">Surface height to lay out for.</param>
         /// <param name="body">Work to run against the panel and the viewport it was laid out for.</param>
-        private static void WithPanel(int width, int height, System.Action<BaseElement, CTRRectangle> body)
+        private static void WithPanel(int width, int height, System.Action<BaseElement, Rectangle> body)
         {
             _ = HeadlessGame.Boot();
 

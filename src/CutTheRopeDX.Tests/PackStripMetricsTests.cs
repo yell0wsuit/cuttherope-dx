@@ -46,7 +46,7 @@ namespace CutTheRopeDX.Tests
         {
             foreach (LayoutSurface surface in LayoutSurfaces.All)
             {
-                CTRRectangle visible = VisibleFor(surface);
+                Rectangle visible = VisibleFor(surface);
                 PackStripLayout strip = LayoutFor(surface.Width, surface.Height);
 
                 Assert.True(
@@ -114,18 +114,18 @@ namespace CutTheRopeDX.Tests
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
                     PackStripLayout strip = MenuController.PackStrip();
-                    CTRRectangle window = FrameworkTypes.MakeRectangle(
+                    Rectangle window = FrameworkTypes.MakeRectangle(
                         0f,
                         0f,
                         strip.StripWidth,
                         ScreenPresentation.Instance.Snapshot.VisibleBounds.h);
                     float boxLeftAtRest = strip.SelectedBoxLeft;
 
-                    CTRRectangle hole = MenuController.MonsterSlot.RevealWindow(
+                    Rectangle hole = MenuController.MonsterSlot.RevealWindow(
                         boxLeftAtRest,
                         strip.Scale,
                         window);
-                    CTRRectangle unclipped = MenuController.MonsterSlot.RevealWindow(
+                    Rectangle unclipped = MenuController.MonsterSlot.RevealWindow(
                         boxLeftAtRest,
                         strip.Scale,
                         FrameworkTypes.MakeRectangle(-window.w, 0f, window.w * 3f, window.h));
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.Tests
         /// <summary>The region a surface exposes.</summary>
         /// <param name="surface">Surface to measure.</param>
         /// <returns>The visible bounds.</returns>
-        private static CTRRectangle VisibleFor(LayoutSurface surface)
+        private static Rectangle VisibleFor(LayoutSurface surface)
         {
             return ViewportLayout.Compute(surface.Width, surface.Height).VisibleBounds;
         }

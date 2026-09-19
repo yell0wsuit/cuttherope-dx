@@ -18,7 +18,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Parsed frame rectangles in atlas texture coordinates.
         /// </summary>
-        public List<CTRRectangle> Rects { get; } = [];
+        public List<Rectangle> Rects { get; } = [];
 
         /// <summary>
         /// Per-frame offsets applied when drawing trimmed sprites.
@@ -196,7 +196,7 @@ namespace CutTheRopeDX.Framework.Core
             float y = ReadFloat(frameElement, "y");
             float width = ReadFloat(frameElement, "w");
             float height = ReadFloat(frameElement, "h");
-            CTRRectangle rect = new(x, y, width, height);
+            Rectangle rect = new(x, y, width, height);
             atlas.Rects.Add(rect);
             rectSizes.Add((rect.w, rect.h));
 

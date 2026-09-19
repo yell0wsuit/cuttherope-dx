@@ -117,7 +117,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Draws the current frame in screen space.</summary>
         /// <param name="screen">The visible screen region the dim covers.</param>
-        public void Draw(CTRRectangle screen)
+        public void Draw(Rectangle screen)
         {
             if (!animation.IsActive)
             {
@@ -144,7 +144,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
         }
 
-        private void DrawDim(CTRRectangle screen, float alpha)
+        private void DrawDim(Rectangle screen, float alpha)
         {
             Color color = RGBAColor.MakeRGBA(0f, 0f, 0f, DimOpacity * alpha).ToColor();
             float right = screen.x + screen.w;
@@ -163,7 +163,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="screen">The visible screen region.</param>
         /// <returns>Where the composition's origin lands, and the uniform scale it is drawn at.</returns>
-        internal static (float X, float Y, float Scale) Composition(CTRRectangle screen)
+        internal static (float X, float Y, float Scale) Composition(Rectangle screen)
         {
             float scale = LayoutMath.Contain(
                 ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, screen);
@@ -181,7 +181,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="position">0 for flush left, 1 for flush right.</param>
         /// <returns>The horizontal offset from where the composition places him.</returns>
         internal static float HorizontalOffset(
-            CTRRectangle screen, (float X, float Y, float Scale) composition, float position)
+            Rectangle screen, (float X, float Y, float Scale) composition, float position)
         {
             if (composition.Scale <= 0f)
             {
@@ -198,7 +198,7 @@ namespace CutTheRopeDX.GameMain
             return most < least ? (least + most) / 2f : least + ((most - least) * position);
         }
 
-        private void DrawOmNom(EasterEggOmNomFrame frame, CTRRectangle screen)
+        private void DrawOmNom(EasterEggOmNomFrame frame, Rectangle screen)
         {
             (float X, float Y, float Scale) composition = Composition(screen);
             float offset = HorizontalOffset(screen, composition, Position);

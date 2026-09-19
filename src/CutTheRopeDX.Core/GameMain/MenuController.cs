@@ -141,7 +141,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageIDDelegate(string resourceName, ButtonId bid, IButtonDelegation d)
         {
-            CTRTexture2D texture = Application.GetTexture(resourceName);
+            Texture2D texture = Application.GetTexture(resourceName);
             Image up = Image.Image_create(texture);
             Image image = Image.Image_create(texture);
             image.scaleX = 1.2f;
@@ -188,7 +188,7 @@ namespace CutTheRopeDX.GameMain
             Image image2 = Image.Image_createWithResIDQuad(resourceName, q2);
             Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
             button.delegateButtonDelegate = d;
-            CTRTexture2D texture = Application.GetTexture(resourceName);
+            Texture2D texture = Application.GetTexture(resourceName);
             button.ForceTouchRect(MakeRectangle(texture.quadOffsets[q1].X, texture.quadOffsets[q1].Y, texture.quadRects[q1].w, texture.quadRects[q1].h));
             return button;
         }
@@ -208,7 +208,7 @@ namespace CutTheRopeDX.GameMain
             Image down = Image.Image_createWithResIDQuad(resourceName, quad);
             Button button = new Button().InitWithUpElementDownElementandID(up, down, bid);
             button.delegateButtonDelegate = d;
-            CTRTexture2D texture = Application.GetTexture(resourceName);
+            Texture2D texture = Application.GetTexture(resourceName);
             button.ForceTouchRect(MakeRectangle(texture.quadOffsets[quad].X, texture.quadOffsets[quad].Y, texture.quadRects[quad].w, texture.quadRects[quad].h));
             return button;
         }
@@ -690,7 +690,7 @@ namespace CutTheRopeDX.GameMain
                 baseElement2.height = baseElement.height;
                 _ = baseElement.AddChild(baseElement2);
                 mainMenuSocial = baseElement2;
-                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
+                Texture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
                 Button button = CreateButton2WithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 3, 3, MenuButtonId.OpenTwitter, this);
                 button.anchor = 9;
                 button.parentAnchor = 36;
@@ -1194,7 +1194,7 @@ namespace CutTheRopeDX.GameMain
             packContainer.x = (VisibleBounds.w / 2f) - (packContainer.width / 2);
             hBox.anchor = hBox.parentAnchor = 12;
             _ = baseElement.AddChild(hBox);
-            CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
+            Texture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
             BaseElement baseElement2 = new()
             {
                 width = (int)MathF.Round(strip.LeadingSpacer),
@@ -2623,8 +2623,8 @@ namespace CutTheRopeDX.GameMain
             public override bool OnTouchDownXY(float tx, float ty)
             {
                 _ = base.OnTouchDownXY(tx, ty);
-                CTRRectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
-                CTRRectangle rectangle = RectInRectIntersection(VisibleBounds, r);
+                Rectangle r = MakeRectangle(drawX + bbc.x, drawY + bbc.y, width + bbc.w, height + bbc.h);
+                Rectangle rectangle = RectInRectIntersection(VisibleBounds, r);
                 if (PointInRect(tx, ty, r.x, r.y, r.w, r.h) && rectangle.w > r.w / 2)
                 {
                     delegateValue.OnButtonPressed(bid);
@@ -2637,7 +2637,7 @@ namespace CutTheRopeDX.GameMain
             public MenuButtonId bid;
 
             /// <summary>Touch rectangle adjustment applied relative to the element bounds.</summary>
-            public CTRRectangle bbc;
+            public Rectangle bbc;
 
             /// <summary>Delegate that receives touch activation events.</summary>
             public IButtonDelegation delegateValue;
@@ -2663,7 +2663,7 @@ namespace CutTheRopeDX.GameMain
             /// <returns>A new <see cref="MonsterSlot"/> instance.</returns>
             public static MonsterSlot Create(RGBAColor color, PackStripLayout strip)
             {
-                CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
+                Texture2D texture = Application.GetTexture(Resources.Img.MenuPackUI);
                 MonsterSlot slot = new()
                 {
                     width = (int)MathF.Round(texture.preCutSize.X * strip.Scale),
@@ -2688,7 +2688,7 @@ namespace CutTheRopeDX.GameMain
             /// <param name="scale">Scale the strip is drawn at.</param>
             /// <param name="strip">The scrolling strip's rectangle, in logical space.</param>
             /// <returns>The window, empty when the hole is outside the strip.</returns>
-            public static CTRRectangle RevealWindow(float boxLeft, float scale, CTRRectangle strip)
+            public static Rectangle RevealWindow(float boxLeft, float scale, Rectangle strip)
             {
                 float left = MathF.Max(boxLeft + (RevealInset * scale), strip.x);
                 float right = MathF.Min(boxLeft + ((RevealInset + RevealWidth) * scale), strip.x + strip.w);
@@ -2716,8 +2716,8 @@ namespace CutTheRopeDX.GameMain
                     FillColor);
 
                 // Apply scissor clipping to reveal Om Nom during scroll animation
-                CTRRectangle strip = MakeRectangle(c.drawX, c.drawY, c.width, c.height);
-                CTRRectangle window = RevealWindow(drawX, scale, strip);
+                Rectangle strip = MakeRectangle(c.drawX, c.drawY, c.width, c.height);
+                Rectangle window = RevealWindow(drawX, scale, strip);
                 if (window.w <= 0f)
                 {
                     return;

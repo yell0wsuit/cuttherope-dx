@@ -153,7 +153,7 @@ namespace CutTheRopeDX.Desktop
                 }
             }
 
-            CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            Rectangle viewport = ScreenPresentation.Instance.Snapshot.RenderViewport;
             device.Canvas.DrawBitmap(
                 frame.Bitmap,
                 SKRect.Create(viewport.x, viewport.y, viewport.w, viewport.h),

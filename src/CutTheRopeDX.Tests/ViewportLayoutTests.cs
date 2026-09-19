@@ -148,10 +148,10 @@ namespace CutTheRopeDX.Tests
             // that origin at zero now, so the offset is put in by hand here.
             ViewportLayoutSnapshot offset = ViewportLayout.Compute(1280, 720) with
             {
-                RenderViewport = new CTRRectangle(90f, 40f, 1280f, 720f)
+                RenderViewport = new Rectangle(90f, 40f, 1280f, 720f)
             };
 
-            CTRRectangle target = offset.ToRenderTarget(new CTRRectangle(0f, 0f, 100f, 50f));
+            Rectangle target = offset.ToRenderTarget(new Rectangle(0f, 0f, 100f, 50f));
 
             Assert.Equal(0f, target.x);
             Assert.Equal(0f, target.y);
@@ -164,7 +164,7 @@ namespace CutTheRopeDX.Tests
         {
             ViewportLayoutSnapshot snapshot = ViewportLayout.Compute(1280, 720);
 
-            CTRRectangle target = snapshot.ToRenderTarget(new CTRRectangle(10f, 20f, 30f, 40f));
+            Rectangle target = snapshot.ToRenderTarget(new Rectangle(10f, 20f, 30f, 40f));
 
             Assert.Equal(10f * snapshot.Scale, target.x, 0.0001);
             Assert.Equal(20f * snapshot.Scale, target.y, 0.0001);

@@ -113,7 +113,7 @@ namespace CutTheRopeDX.Tests
                     types: [typeof(GameObject)],
                     modifiers: null);
 
-                CTRRectangle bounds = (CTRRectangle)getBounds.Invoke(null, [differentlySizedSkin]);
+                Rectangle bounds = (Rectangle)getBounds.Invoke(null, [differentlySizedSkin]);
                 float centerOffsetX = bounds.x + (bounds.w / 2f) - (differentlySizedSkin.width / 2f);
                 float centerOffsetY = bounds.y + (bounds.h / 2f) - (differentlySizedSkin.height / 2f);
 

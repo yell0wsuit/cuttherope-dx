@@ -23,15 +23,15 @@ namespace CutTheRopeDX.Tests
         {
             // The shape the game was drawn for: the grid is a block in the middle of a wide screen
             // and the corners are nowhere near it.
-            CTRRectangle visible = new(0f, 0f, 2560f, 1440f);
+            Rectangle visible = new(0f, 0f, 2560f, 1440f);
 
             float scale = LevelGridFit.ScaleFor(
                 visible,
                 1f,
                 1130f,
                 1235f,
-                new CTRRectangle(2450f, 40f, 84f, 55f),
-                new CTRRectangle(0f, 1214f, 226f, 226f));
+                new Rectangle(2450f, 40f, 84f, 55f),
+                new Rectangle(0f, 1214f, 226f, 226f));
 
             Assert.Equal(1f, scale, 0.0001);
         }
@@ -46,15 +46,15 @@ namespace CutTheRopeDX.Tests
         [InlineData(3413, 1440)]
         public void TheGridAtItsFittedScaleClearsBothCorners(int width, int height)
         {
-            CTRRectangle visible = new(0f, 0f, width, height);
-            CTRRectangle star = new(visible.w - 114f, 40f, 84f, 55f);
-            CTRRectangle button = new(0f, visible.h - 226f, 226f, 226f);
+            Rectangle visible = new(0f, 0f, width, height);
+            Rectangle star = new(visible.w - 114f, 40f, 84f, 55f);
+            Rectangle button = new(0f, visible.h - 226f, 226f, 226f);
             const float gridWidth = 1130f;
             const float gridHeight = 1235f;
 
             float scale = LevelGridFit.ScaleFor(visible, 1.5f, gridWidth, gridHeight, star, button);
 
-            CTRRectangle grid = new(
+            Rectangle grid = new(
                 (visible.w - (gridWidth * scale)) / 2f,
                 (visible.h - (gridHeight * scale)) / 2f,
                 gridWidth * scale,
@@ -69,16 +69,16 @@ namespace CutTheRopeDX.Tests
         {
             // Clearing a corner needs separation on one axis, not both, so a window with room
             // above and below the grid gives up less than one that has room only to the sides.
-            CTRRectangle button = new(0f, 0f, 226f, 226f);
+            Rectangle button = new(0f, 0f, 226f, 226f);
 
             float tall = LevelGridFit.ScaleFor(
-                new CTRRectangle(0f, 0f, 1440f, 2560f),
+                new Rectangle(0f, 0f, 1440f, 2560f),
                 1.5f,
                 1130f,
                 1235f,
                 button with { y = 2560f - 226f });
             float square = LevelGridFit.ScaleFor(
-                new CTRRectangle(0f, 0f, 1440f, 1440f),
+                new Rectangle(0f, 0f, 1440f, 1440f),
                 1.5f,
                 1130f,
                 1235f,
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.Tests
                         controller.ShowView(MenuController.VIEW_LEVEL_SELECT);
                         View view = controller.GetView(MenuController.VIEW_LEVEL_SELECT);
 
-                        CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                        Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                         BaseElement group = FindFittedGroup(view);
                         BaseElement star = view.GetChildWithName("starText");
 
@@ -130,7 +130,7 @@ namespace CutTheRopeDX.Tests
                             return;
                         }
 
-                        CTRRectangle grid = GridRect(group, visible);
+                        Rectangle grid = GridRect(group, visible);
 
                         Assert.False(
                             Overlaps(grid, DrawnRect(star, visible, topRight: true)),
@@ -151,7 +151,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="group">The fitted group holding the grid.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
         /// <returns>The grid's drawn rectangle.</returns>
-        private static CTRRectangle GridRect(BaseElement group, CTRRectangle visible)
+        private static Rectangle GridRect(BaseElement group, Rectangle visible)
         {
             BaseElement stack = group.GetChild(0);
             float widest = 0f;
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.Tests
 
             float width = widest * group.scaleX;
             float height = stack.height * group.scaleY;
-            return new CTRRectangle(
+            return new Rectangle(
                 (visible.w - width) / 2f,
                 (visible.h - height) / 2f,
                 width,
@@ -174,20 +174,20 @@ namespace CutTheRopeDX.Tests
         /// <param name="visible">The logical region the viewport exposes.</param>
         /// <param name="topRight">Whether it sits in the top-right corner rather than bottom-left.</param>
         /// <returns>The element's drawn rectangle.</returns>
-        private static CTRRectangle DrawnRect(BaseElement element, CTRRectangle visible, bool topRight)
+        private static Rectangle DrawnRect(BaseElement element, Rectangle visible, bool topRight)
         {
             float width = element.width * element.scaleX;
             float height = element.height * element.scaleY;
             return topRight
-                ? new CTRRectangle(visible.w - width - 30f, 40f, width, height)
-                : new CTRRectangle(0f, visible.h - height, width, height);
+                ? new Rectangle(visible.w - width - 30f, 40f, width, height)
+                : new Rectangle(0f, visible.h - height, width, height);
         }
 
         /// <summary>Whether two rectangles share any area.</summary>
         /// <param name="a">First rectangle.</param>
         /// <param name="b">Second rectangle.</param>
         /// <returns><see langword="true"/> when they overlap.</returns>
-        private static bool Overlaps(CTRRectangle a, CTRRectangle b)
+        private static bool Overlaps(Rectangle a, Rectangle b)
         {
             return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
         }

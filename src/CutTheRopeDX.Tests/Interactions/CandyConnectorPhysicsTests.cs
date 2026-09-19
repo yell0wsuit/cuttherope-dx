@@ -6,7 +6,7 @@ using CutTheRopeDX.GameMain;
 
 using Xunit;
 
-using static CutTheRopeDX.Framework.Helpers.CTRMathHelper;
+using static CutTheRopeDX.Framework.Helpers.MathHelper;
 
 namespace CutTheRopeDX.Tests.Interactions
 {

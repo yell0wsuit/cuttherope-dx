@@ -39,8 +39,8 @@ namespace CutTheRopeDX.Tests
                     BaseElement group = FindFittedGroup(controller.GetView(viewId));
                     Assert.NotNull(group);
 
-                    CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-                    CTRRectangle drawn = DrawnContent(group);
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle drawn = DrawnContent(group);
                     string where = $"{viewName} at {surfaceName}";
 
                     Assert.True(
@@ -84,8 +84,8 @@ namespace CutTheRopeDX.Tests
                     BaseElement group = FindFittedGroup(controller.GetView(MenuController.VIEW_LEVEL_SELECT));
                     Assert.NotNull(group);
 
-                    CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-                    CTRRectangle drawn = DrawnContent(group);
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle drawn = DrawnContent(group);
 
                     Assert.True(
                         drawn.y >= FittedContentFit.EdgeMargin - 0.5f,
@@ -104,15 +104,15 @@ namespace CutTheRopeDX.Tests
         /// <summary>Where a fitted group's content is drawn, in logical space.</summary>
         /// <param name="group">The fitted group holding the content.</param>
         /// <returns>The drawn rectangle.</returns>
-        private static CTRRectangle DrawnContent(BaseElement group)
+        private static Rectangle DrawnContent(BaseElement group)
         {
             // The inverse of the placement rule: a group is scaled about its own center, and the
             // half-box that takes back out is what puts design coordinate x at origin + x * scale.
             float scale = group.scaleX;
             float originX = group.x + ((group.width >> 1) * (1f - scale));
             float originY = group.y + ((group.height >> 1) * (1f - scale));
-            CTRRectangle content = DesignExtent.Measure(group);
-            return new CTRRectangle(
+            Rectangle content = DesignExtent.Measure(group);
+            return new Rectangle(
                 originX + (content.x * scale),
                 originY + (content.y * scale),
                 content.w * scale,

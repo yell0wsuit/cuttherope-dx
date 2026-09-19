@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
         {
             WithScene(width, height, StillLevel, (background, visibleWorld) =>
             {
-                CTRRectangle drawn = background.WorldRect;
+                Rectangle drawn = background.WorldRect;
 
                 Assert.True(
                     drawn.x <= visibleWorld.x + EdgeTolerance
@@ -115,11 +115,11 @@ namespace CutTheRopeDX.Tests
                 _ = HeadlessGame.Boot();
                 GameScene scene = HeadlessGame.LoadLevel(StillPack, ScrollingLevel);
                 scene.Update(0.016f);
-                CTRRectangle before = ReadBackground(scene).WorldRect;
+                Rectangle before = ReadBackground(scene).WorldRect;
 
                 // The camera of a level this tall is still travelling at frame 60.
                 HeadlessGame.StepFrames(scene, 60);
-                CTRRectangle after = ReadBackground(scene).WorldRect;
+                Rectangle after = ReadBackground(scene).WorldRect;
 
                 // Anchored to the world, not to the camera: a background that moved with the
                 // camera would leave the level's second screen and its own second half apart.
@@ -205,7 +205,7 @@ namespace CutTheRopeDX.Tests
             int width,
             int height,
             int level,
-            Action<Background, CTRRectangle> body)
+            Action<Background, Rectangle> body)
         {
             _ = HeadlessGame.Boot();
 
@@ -218,8 +218,8 @@ namespace CutTheRopeDX.Tests
                 scene.Update(0.016f);
 
                 Camera2D camera = Read<Camera2D>(scene, "camera");
-                CTRRectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
-                CTRRectangle visibleWorld = new(
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle visibleWorld = new(
                     camera.RenderPos.X,
                     camera.RenderPos.Y,
                     visible.w / camera.Scale,
@@ -235,12 +235,12 @@ namespace CutTheRopeDX.Tests
         private static Background ReadBackground(GameScene scene)
         {
             TileMap back = Read<TileMap>(scene, "back");
-            CTRTexture2D texture = Read<CTRTexture2D>(scene, "backTexture");
+            Texture2D texture = Read<Texture2D>(scene, "backTexture");
             float scale = Read<float>(scene, "backgroundScale");
             Camera2D camera = Read<Camera2D>(scene, "camera");
 
             return new Background(
-                new CTRRectangle(
+                new Rectangle(
                     back.x * scale,
                     back.y * scale,
                     texture._realWidth * scale,
@@ -289,7 +289,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="FilledWidth">Width of world the tile map fills before it clips.</param>
         /// <param name="FilledHeight">Height of world the tile map fills before it clips.</param>
         private sealed record Background(
-            CTRRectangle WorldRect,
+            Rectangle WorldRect,
             float Scale,
             float FilledWidth,
             float FilledHeight)

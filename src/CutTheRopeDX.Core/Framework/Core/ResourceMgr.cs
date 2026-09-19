@@ -332,7 +332,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="scaleX">Horizontal texture scale.</param>
         /// <param name="scaleY">Vertical texture scale.</param>
         /// <returns>Loaded texture resource.</returns>
-        public virtual CTRTexture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
+        public virtual Texture2D LoadTextureImageInfo(string resourceName, string path, XElement i, bool isWvga, float scaleX, float scaleY)
         {
             TextureAtlasConfig atlasConfig = GetTextureAtlasConfig(resourceName);
             float aspectRatioScaleX = GetAspectRatioScaleX();
@@ -348,14 +348,14 @@ namespace CutTheRopeDX.Framework.Core
             string pngPath = ImageContentPath(resourceName);
             if (useAntialias)
             {
-                CTRTexture2D.SetAntiAliasTexParameters();
+                Texture2D.SetAntiAliasTexParameters();
             }
             else
             {
-                CTRTexture2D.SetAliasTexParameters();
+                Texture2D.SetAliasTexParameters();
             }
 
-            CTRTexture2D texture2D = new CTRTexture2D().InitWithPath(pngPath) ?? throw new FileNotFoundException(
+            Texture2D texture2D = new Texture2D().InitWithPath(pngPath) ?? throw new FileNotFoundException(
                     $"Resource '{resourceName}' is missing the PNG. Did you forget to add {resourceName}.png?",
                     pngPath);
 
@@ -477,7 +477,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="isWvga">Whether WVGA scaling rules should be applied.</param>
         /// <param name="scaleX">Horizontal texture scale.</param>
         /// <param name="scaleY">Vertical texture scale.</param>
-        private static void ApplyTexturePackerInfo(CTRTexture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
+        private static void ApplyTexturePackerInfo(Texture2D texture, ParsedTexturePackerAtlas atlas, bool isWvga, float scaleX, float scaleY)
         {
             texture.preCutSize = vectUndefined;
             if (atlas == null || atlas.Rects.Count == 0)
@@ -488,7 +488,7 @@ namespace CutTheRopeDX.Framework.Core
             float[] quadData = new float[atlas.Rects.Count * 4];
             for (int i = 0; i < atlas.Rects.Count; i++)
             {
-                CTRRectangle rect = atlas.Rects[i];
+                Rectangle rect = atlas.Rects[i];
                 int index = i * 4;
                 quadData[index] = rect.x;
                 quadData[index + 1] = rect.y;
@@ -542,7 +542,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="data">Flat quad rectangle data array.</param>
         /// <param name="scaleX">Horizontal texture scale.</param>
         /// <param name="scaleY">Vertical texture scale.</param>
-        private static void SetQuadsInfo(CTRTexture2D texture, float[] data, float scaleX, float scaleY)
+        private static void SetQuadsInfo(Texture2D texture, float[] data, float scaleX, float scaleY)
         {
             int quadCount = data.Length / 4;
             texture.SetQuadsCapacity(quadCount);
@@ -550,7 +550,7 @@ namespace CutTheRopeDX.Framework.Core
             for (int i = 0; i < quadCount; i++)
             {
                 int quadDataIndex = i * 4;
-                CTRRectangle rect = MakeRectangle(data[quadDataIndex], data[quadDataIndex + 1], data[quadDataIndex + 2], data[quadDataIndex + 3]);
+                Rectangle rect = MakeRectangle(data[quadDataIndex], data[quadDataIndex + 1], data[quadDataIndex + 2], data[quadDataIndex + 3]);
                 if (lowestPoint < rect.h + rect.y)
                 {
                     lowestPoint = (int)Ceil(rect.h + rect.y);
@@ -565,7 +565,7 @@ namespace CutTheRopeDX.Framework.Core
             {
                 texture._lowypoint = lowestPoint;
             }
-            CTRTexture2D.OptimizeMemory();
+            Texture2D.OptimizeMemory();
         }
 
         /// <summary>
@@ -576,7 +576,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="offsetDataSize">Number of float entries stored in <paramref name="data"/>.</param>
         /// <param name="scaleX">Horizontal texture scale.</param>
         /// <param name="scaleY">Vertical texture scale.</param>
-        private static void SetOffsetsInfo(CTRTexture2D texture, float[] data, int offsetDataSize, float scaleX, float scaleY)
+        private static void SetOffsetsInfo(Texture2D texture, float[] data, int offsetDataSize, float scaleX, float scaleY)
         {
             int offsetCount = offsetDataSize / 2;
             for (int i = 0; i < offsetCount; i++)

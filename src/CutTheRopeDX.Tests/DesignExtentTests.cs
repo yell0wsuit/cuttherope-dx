@@ -25,7 +25,7 @@ namespace CutTheRopeDX.Tests
             _ = stack.AddChild(Painted(737, 176));
             _ = group.AddChild(stack);
 
-            CTRRectangle content = DesignExtent.Measure(group);
+            Rectangle content = DesignExtent.Measure(group);
 
             Assert.Equal(737f, content.w, 0.5);
             Assert.Equal(357f, content.h, 0.5);
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests
             image.y = 55f;
             _ = group.AddChild(image);
 
-            CTRRectangle content = DesignExtent.Measure(group);
+            Rectangle content = DesignExtent.Measure(group);
 
             Assert.Equal(869f, content.x, 0.5);
             Assert.Equal(55f, content.y, 0.5);
@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Tests
             _ = new Button().InitWithUpElementDownElementandID(up, down, MenuButtonId.Play);
             _ = group.AddChild(up.parent);
 
-            CTRRectangle content = DesignExtent.Measure(group);
+            Rectangle content = DesignExtent.Measure(group);
 
             Assert.Equal(737f, content.w, 0.5);
         }
@@ -74,7 +74,7 @@ namespace CutTheRopeDX.Tests
             image.scaleX = image.scaleY = 0.5f;
             _ = group.AddChild(image);
 
-            CTRRectangle content = DesignExtent.Measure(group);
+            Rectangle content = DesignExtent.Measure(group);
 
             Assert.Equal(400f, content.w, 0.5);
             Assert.Equal(200f, content.h, 0.5);
@@ -86,7 +86,7 @@ namespace CutTheRopeDX.Tests
             FittedGroup group = new() { width = 2560, height = 1440 };
             _ = group.AddChild(new VBox().InitWithOffsetAlignWidth(5f, 2, 2560f));
 
-            CTRRectangle content = DesignExtent.Measure(group);
+            Rectangle content = DesignExtent.Measure(group);
 
             Assert.Equal(0f, content.w, 0.0001);
             Assert.Equal(0f, content.h, 0.0001);

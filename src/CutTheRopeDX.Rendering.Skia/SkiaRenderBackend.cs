@@ -298,7 +298,7 @@ namespace CutTheRopeDX.Rendering.Skia
         /// drawn. Sampling it would read native memory the driver has already reclaimed, and the
         /// draws that would have used it are dropped until recovery has loaded the asset again.
         /// </remarks>
-        public void BindTexture(CTRTexture2D t)
+        public void BindTexture(Texture2D t)
         {
             SkiaTexture texture = t?.textureHandle_ as SkiaTexture;
             bool rejected = texture != null && registry?.IsCurrent(texture.Generation) == false;
@@ -567,7 +567,7 @@ namespace CutTheRopeDX.Rendering.Skia
                 return;
             }
             using SKImage snapshot = _renderTarget.Snapshot();
-            CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.RenderViewport;
+            Rectangle bounds = ScreenPresentation.Instance.Snapshot.RenderViewport;
             SKRect destination = SKRect.Create(bounds.x, bounds.y, bounds.w, bounds.h);
             surface.Canvas.Clear(SKColors.Black);
             surface.Canvas.DrawImage(

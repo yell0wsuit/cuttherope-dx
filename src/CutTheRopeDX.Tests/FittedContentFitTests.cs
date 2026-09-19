@@ -15,17 +15,17 @@ namespace CutTheRopeDX.Tests
     public sealed class FittedContentFitTests
     {
         /// <summary>The main menu's content in design coordinates: logo, then the button column.</summary>
-        private static readonly CTRRectangle MenuContent = new(869f, 55f, 822f, 1300f);
+        private static readonly Rectangle MenuContent = new(869f, 55f, 822f, 1300f);
 
         /// <summary>The design box that content is authored in.</summary>
-        private static readonly CTRRectangle DesignBox = new(0f, 0f, 2560f, 1440f);
+        private static readonly Rectangle DesignBox = new(0f, 0f, 2560f, 1440f);
 
         [Fact]
         public void ContentWithRoomToSpareIsDrawnAtTheScaleItAskedFor()
         {
             // The shape the game was drawn for, where every layout rule must reduce to the
             // constant it was authored with.
-            CTRRectangle visible = new(0f, 0f, 2560f, 1440f);
+            Rectangle visible = new(0f, 0f, 2560f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, MenuContent, 1f, 48f);
 
@@ -37,7 +37,7 @@ namespace CutTheRopeDX.Tests
         {
             // A window at the widest supported shape, where the scale curve asks for 1.15 and the
             // menu's 1300-unit-tall content, centered, would run 45 units off both ends.
-            CTRRectangle visible = new(0f, 0f, 4176f, 1440f);
+            Rectangle visible = new(0f, 0f, 4176f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, MenuContent, 1.15f, 48f);
 
@@ -51,8 +51,8 @@ namespace CutTheRopeDX.Tests
         {
             // Content wider than it is tall, in a window that is short of room across rather than
             // down: the axis that binds is whichever runs out first, not always the vertical one.
-            CTRRectangle content = new(780f, 620f, 1000f, 200f);
-            CTRRectangle visible = new(0f, 0f, 1440f, 3600f);
+            Rectangle content = new(780f, 620f, 1000f, 200f);
+            Rectangle visible = new(0f, 0f, 1440f, 3600f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, content, 1.55f, 48f);
 
@@ -65,8 +65,8 @@ namespace CutTheRopeDX.Tests
             // A fitted group is centered on the viewport and scaled about its own center, so what
             // reaches an edge first is the content's far side from that center - not its height.
             // Measuring the extent alone would let this one grow half again as large.
-            CTRRectangle lopsided = new(1180f, 1140f, 200f, 200f);
-            CTRRectangle visible = new(0f, 0f, 4176f, 1440f);
+            Rectangle lopsided = new(1180f, 1140f, 200f, 200f);
+            Rectangle visible = new(0f, 0f, 4176f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, lopsided, 1.15f, 48f);
 
@@ -79,8 +79,8 @@ namespace CutTheRopeDX.Tests
             // Content authored taller than the margin allows is drawn as it always was. Giving
             // back growth is one thing; shrinking the shipped composition on the shape it was
             // drawn for is another, and no window makes that the better picture.
-            CTRRectangle tall = new(1180f, 0f, 200f, 1440f);
-            CTRRectangle visible = new(0f, 0f, 2560f, 1440f);
+            Rectangle tall = new(1180f, 0f, 200f, 1440f);
+            Rectangle visible = new(0f, 0f, 2560f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, tall, 1f, 48f);
 
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Tests
             // not a floor under the caller's scale. A scene that has already held itself down -
             // the level grid, whose widest row would otherwise run off the sides - asked for that
             // scale for a reason, and raising it back to one puts the grid straight off screen.
-            CTRRectangle visible = new(0f, 0f, 1440f, 1440f);
+            Rectangle visible = new(0f, 0f, 1440f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, MenuContent, 0.833f, 48f);
 
@@ -106,8 +106,8 @@ namespace CutTheRopeDX.Tests
         {
             // A scene whose group holds nothing that paints has nothing to measure, and must not
             // be scaled by a division by zero.
-            CTRRectangle empty = new(0f, 0f, 0f, 0f);
-            CTRRectangle visible = new(0f, 0f, 4176f, 1440f);
+            Rectangle empty = new(0f, 0f, 0f, 0f);
+            Rectangle visible = new(0f, 0f, 4176f, 1440f);
 
             float scale = FittedContentFit.ScaleFor(visible, DesignBox, empty, 1.15f, 48f);
 

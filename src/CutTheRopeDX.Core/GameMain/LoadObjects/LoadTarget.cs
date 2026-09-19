@@ -54,7 +54,7 @@ namespace CutTheRopeDX.GameMain
             int requestedQuad = isPaddington ? PaddingtonSupportQuad : sittingPlatform;
 
             // Clamp quad index to valid range; fall back to first quad for invalid values.
-            CTRTexture2D supportTexture = Application.GetTexture(supportResource);
+            Texture2D supportTexture = Application.GetTexture(supportResource);
             int quadIndex = (requestedQuad >= 0 && requestedQuad < supportTexture.quadRects.Length) ? requestedQuad : 0;
 
             support = Image.Image_createWithResIDQuad(supportResource, quadIndex);

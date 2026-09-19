@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="texture">Texture used by the bubble.</param>
         /// <returns>The initialized ghost bubble.</returns>
-        public static GhostBubble Create(CTRTexture2D texture)
+        public static GhostBubble Create(Texture2D texture)
         {
             return (GhostBubble)new GhostBubble().InitWithTexture(texture);
         }

@@ -183,7 +183,7 @@ namespace CutTheRopeDX.GameMain
                 // point. Both ends and the midpoint they are chosen by are the level's own: a
                 // level wider than the design box is centered on it, so its near end is a negative
                 // world X and neither end is at the origin.
-                CTRRectangle range = CameraTrackingRange();
+                Rectangle range = CameraTrackingRange();
                 float cameraStartX;
                 float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)

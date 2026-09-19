@@ -140,7 +140,7 @@ namespace CutTheRopeDX.Framework.Platform
         /// <summary>
         /// Binds a texture for subsequent rendering operations.
         /// </summary>
-        void BindTexture(CTRTexture2D t);
+        void BindTexture(Texture2D t);
 
         /// <summary>
         /// Sets the scissor rectangle for clipping, scaled to match the current viewport.

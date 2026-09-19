@@ -12,9 +12,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// Captures the current screen contents into a new texture.
         /// </summary>
         /// <returns>A texture containing the captured frame.</returns>
-        public static CTRTexture2D Grab()
+        public static Texture2D Grab()
         {
-            return new CTRTexture2D().InitFromPixels((int)VisibleBounds.w, (int)VisibleBounds.h);
+            return new Texture2D().InitFromPixels((int)VisibleBounds.w, (int)VisibleBounds.h);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <param name="t">Grabbed texture to draw.</param>
         /// <param name="x">X position.</param>
         /// <param name="y">Y position.</param>
-        public static void DrawGrabbedImage(CTRTexture2D t, int x, int y)
+        public static void DrawGrabbedImage(Texture2D t, int x, int y)
         {
             if (t != null)
             {

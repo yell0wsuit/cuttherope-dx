@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="DisclaimerWrapWidth">Width the disclaimer wraps within, before that scale.</param>
     /// <param name="DisclaimerBottom">Where the bottom of the disclaimer belongs.</param>
     internal readonly record struct SplashLayout(
-        CTRRectangle Stage,
+        Rectangle Stage,
         float DisclaimerScale,
         float DisclaimerWrapWidth,
         float DisclaimerBottom)
@@ -30,11 +30,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="stageWidth">Width of the animation's own stage.</param>
         /// <param name="stageHeight">Height of the animation's own stage.</param>
         /// <returns>The layout for that viewport.</returns>
-        public static SplashLayout For(CTRRectangle visible, float stageWidth, float stageHeight)
+        public static SplashLayout For(Rectangle visible, float stageWidth, float stageHeight)
         {
             // Contained rather than covered, because a splash that overflows is a splash with its
             // logo cropped.
-            CTRRectangle stage = LayoutMath.FitInside(stageWidth, stageHeight, visible);
+            Rectangle stage = LayoutMath.FitInside(stageWidth, stageHeight, visible);
 
             // How much taller the stage is drawn than on the design shape, which is one wherever
             // the fit is driven by the viewport's height - every landscape shape - and larger on

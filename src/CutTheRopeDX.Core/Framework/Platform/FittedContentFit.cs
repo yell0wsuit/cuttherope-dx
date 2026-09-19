@@ -44,9 +44,9 @@ namespace CutTheRopeDX.Framework.Platform
         /// <param name="margin">Logical units to keep between the content and each edge.</param>
         /// <returns>The scale to draw the content at.</returns>
         public static float ScaleFor(
-            CTRRectangle visible,
-            CTRRectangle designBox,
-            CTRRectangle content,
+            Rectangle visible,
+            Rectangle designBox,
+            Rectangle content,
             float desired,
             float margin)
         {

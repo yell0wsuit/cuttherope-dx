@@ -64,7 +64,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using FakeSkiaSurface surface = new();
             using SkiaRenderBackend renderer = new(surface, registry);
             using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
-            CTRTexture2D wrapper = new() { textureHandle_ = texture };
+            Texture2D wrapper = new() { textureHandle_ = texture };
 
             _ = registry.Invalidate();
             surface.Canvas.Clear(SKColors.Black);
@@ -85,7 +85,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using FakeSkiaSurface surface = new();
             using SkiaRenderBackend renderer = new(surface, registry);
             using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
-            CTRTexture2D wrapper = new() { textureHandle_ = texture };
+            Texture2D wrapper = new() { textureHandle_ = texture };
 
             surface.Canvas.Clear(SKColors.Black);
             renderer.BindTexture(wrapper);
@@ -104,7 +104,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using FakeSkiaSurface surface = new();
             using SkiaRenderBackend renderer = new(surface);
             using SkiaTexture texture = Red(SkiaResourceRegistry.DeviceIndependent);
-            CTRTexture2D wrapper = new() { textureHandle_ = texture };
+            Texture2D wrapper = new() { textureHandle_ = texture };
 
             surface.Canvas.Clear(SKColors.Black);
             renderer.BindTexture(wrapper);
@@ -124,7 +124,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using FakeSkiaSurface surface = new();
             using SkiaRenderBackend renderer = new(surface, registry);
             using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
-            CTRTexture2D wrapper = new() { textureHandle_ = texture };
+            Texture2D wrapper = new() { textureHandle_ = texture };
 
             surface.Canvas.Clear(SKColors.Black);
             renderer.BindTexture(wrapper);
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
 
             surface.Canvas.Clear(SKColors.Black);
-            renderer.BindTexture(new CTRTexture2D { textureHandle_ = texture });
+            renderer.BindTexture(new Texture2D { textureHandle_ = texture });
             renderer.SetColor(new Color(255, 255, 255, 255));
             renderer.DrawTriangleStrip(Quad(), 4);
             renderer.EndFrame();
@@ -176,7 +176,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             _ = registry.Invalidate();
             renderer.Rebind(replacement);
             using SkiaTexture texture = Red(registry.TrackDurable("images/menu"));
-            renderer.BindTexture(new CTRTexture2D { textureHandle_ = texture });
+            renderer.BindTexture(new Texture2D { textureHandle_ = texture });
             renderer.SetColor(new Color(255, 255, 255, 255));
             renderer.DrawTriangleStrip(Quad(), 4);
             renderer.EndFrame();

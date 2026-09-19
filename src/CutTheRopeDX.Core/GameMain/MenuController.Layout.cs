@@ -115,14 +115,14 @@ namespace CutTheRopeDX.GameMain
         /// therefore the scroll points, follow from it, so a viewport of a different shape needs
         /// the view built again rather than nudged.
         /// </summary>
-        private CTRRectangle packSelectBuiltFor;
+        private Rectangle packSelectBuiltFor;
 
         /// <inheritdoc />
         protected override void Relayout(ViewportLayoutSnapshot snapshot)
         {
             base.Relayout(snapshot);
 
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
 
             foreach (MenuBackdrop backdrop in backdrops.Values)
             {
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="backdrop">Backdrop to lay out.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private static void LayOutBackdrop(MenuBackdrop backdrop, CTRRectangle visible)
+        private static void LayOutBackdrop(MenuBackdrop backdrop, Rectangle visible)
         {
             backdrop.Root.width = (int)visible.w;
             backdrop.Root.height = (int)visible.h;
@@ -171,7 +171,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="element">Element to span, or <see langword="null"/>.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private static void Span(BaseElement element, CTRRectangle visible)
+        private static void Span(BaseElement element, Rectangle visible)
         {
             if (element == null)
             {
@@ -204,7 +204,7 @@ namespace CutTheRopeDX.GameMain
         /// against is the whole of the conversion.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void LayOutCenteredScenes(CTRRectangle visible)
+        private void LayOutCenteredScenes(Rectangle visible)
         {
             // The main menu composes inside its design box, so the whole composition scales and
             // moves as one rather than each end being pinned to an edge on its own.
@@ -230,7 +230,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
             float scale = FullScreenScale(visible, 1f);
             float seam = visible.w / 2f;
             float coverWidth = levelsCoverLeft.width;
@@ -322,17 +322,17 @@ namespace CutTheRopeDX.GameMain
         /// <param name="starText">Label to measure, or <see langword="null"/> when the scene has none.</param>
         /// <param name="visible">The logical region the viewport exposes.</param>
         /// <returns>The label's drawn rectangle, empty when there is no label.</returns>
-        private static CTRRectangle StarTotalRect(BaseElement starText, CTRRectangle visible)
+        private static Rectangle StarTotalRect(BaseElement starText, Rectangle visible)
         {
             if (starText == null)
             {
-                return new CTRRectangle(0f, 0f, 0f, 0f);
+                return new Rectangle(0f, 0f, 0f, 0f);
             }
 
             float scale = FittedScale;
             float width = starText.width * scale;
             float height = starText.height * scale;
-            return new CTRRectangle(
+            return new Rectangle(
                 visible.w - width + StarTotalInsetX,
                 StarTotalInsetY,
                 width,
@@ -361,11 +361,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="button">Button to measure, or <see langword="null"/> when the scene has none.</param>
         /// <param name="snapshot">The viewport to measure against.</param>
         /// <returns>The room the button takes in that corner, empty when there is no button.</returns>
-        private static CTRRectangle CornerChromeRect(Button button, ViewportLayoutSnapshot snapshot)
+        private static Rectangle CornerChromeRect(Button button, ViewportLayoutSnapshot snapshot)
         {
             if (button == null)
             {
-                return new CTRRectangle(0f, 0f, 0f, 0f);
+                return new Rectangle(0f, 0f, 0f, 0f);
             }
 
             ChromeRoom room = HudMetrics.RoomFor(
@@ -373,7 +373,7 @@ namespace CutTheRopeDX.GameMain
                 button.width,
                 button.height,
                 HudMetrics.IsTouchHost);
-            return new CTRRectangle(
+            return new Rectangle(
                 0f,
                 snapshot.VisibleBounds.h - room.Height,
                 room.Width,
@@ -386,7 +386,7 @@ namespace CutTheRopeDX.GameMain
         /// same scale as the cover they sit on.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void PlaceLevelSpines(CTRRectangle visible)
+        private void PlaceLevelSpines(Rectangle visible)
         {
             float scale = FullScreenScale(visible, 1f);
             float coverTopEdge = LevelCoverTopEdge(visible, levelsCoverLeft.height, scale);
@@ -409,7 +409,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="coverHeight">The cover's authored height.</param>
         /// <param name="scale">Scale the cover is drawn at.</param>
         /// <returns>The cover's drawn top edge, at or above the top of the screen.</returns>
-        private static float LevelCoverTopEdge(CTRRectangle visible, float coverHeight, float scale)
+        private static float LevelCoverTopEdge(Rectangle visible, float coverHeight, float scale)
         {
             return (visible.h - (coverHeight * scale)) / 2f;
         }
@@ -425,7 +425,7 @@ namespace CutTheRopeDX.GameMain
         private static void PlaceLevelSpine(
             Image spine,
             int quad,
-            CTRRectangle visible,
+            Rectangle visible,
             float scale,
             float coverTopEdge)
         {
@@ -447,7 +447,7 @@ namespace CutTheRopeDX.GameMain
         /// does not place correctly.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void LayOutPackSelect(CTRRectangle visible)
+        private void LayOutPackSelect(Rectangle visible)
         {
             if (GetView(VIEW_PACK_SELECT) == null
                 || (packSelectBuiltFor.w == visible.w && packSelectBuiltFor.h == visible.h))
@@ -566,7 +566,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="visible">The logical region the viewport exposes.</param>
         /// <param name="authoredScale">The scale the layer ships with.</param>
         /// <returns>The scale to draw the layer at.</returns>
-        private static float FullScreenScale(CTRRectangle visible, float authoredScale)
+        private static float FullScreenScale(Rectangle visible, float authoredScale)
         {
             float growth = MathF.Max(
                 1f,
@@ -613,12 +613,12 @@ namespace CutTheRopeDX.GameMain
 
             // The button is scaled about its own center, so the forced touch rectangle - which the
             // back button carries to match its art rather than its bounding box - moves with it.
-            CTRTexture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
+            Texture2D texture = Application.GetTexture(Resources.Img.MenuExtraButtons);
             Vector offset = texture.quadOffsets[0];
-            CTRRectangle quad = texture.quadRects[0];
+            Rectangle quad = texture.quadRects[0];
             float centerX = button.width / 2f;
             float centerY = button.height / 2f;
-            button.ForceTouchRect(new CTRRectangle(
+            button.ForceTouchRect(new Rectangle(
                 centerX + ((offset.X - centerX) * scale),
                 centerY + ((offset.Y - centerY) * scale),
                 quad.w * scale,

@@ -22,7 +22,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">The texture to apply to the rocket.</param>
         /// <returns>A new <see cref="Rocket"/> initialized with the given texture.</returns>
-        private static Rocket Rocket_create(CTRTexture2D t)
+        private static Rocket Rocket_create(Texture2D t)
         {
             return (Rocket)new Rocket().InitWithTexture(t);
         }
@@ -41,7 +41,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
-        public override Image InitWithTexture(CTRTexture2D tx)
+        public override Image InitWithTexture(Texture2D tx)
         {
             if (base.InitWithTexture(tx) != null)
             {

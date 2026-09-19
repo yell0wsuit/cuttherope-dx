@@ -332,7 +332,7 @@ namespace CutTheRopeDX.GameMain
                     bool hit;
                     if (r == null)
                     {
-                        CTRRectangle? exclusion = entry.Owner?.CutExclusionZone;
+                        Rectangle? exclusion = entry.Owner?.CutExclusionZone;
                         bool outsideExclusion = exclusion == null
                             || !LineInRect(v1.X, v1.Y, v2.X, v2.Y, exclusion.Value.x, exclusion.Value.y, exclusion.Value.w, exclusion.Value.h);
                         hit = outsideExclusion

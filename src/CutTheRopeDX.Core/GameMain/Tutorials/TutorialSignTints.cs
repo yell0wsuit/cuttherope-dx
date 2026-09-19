@@ -22,15 +22,15 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="quad">Zero-based tutorial-sign quad.</param>
         /// <param name="color">Color the frame's ink wears.</param>
         /// <returns>A single-quad texture holding the recolored frame.</returns>
-        internal CTRTexture2D Tinted(CTRTexture2D atlas, int quad, RGBAColor color)
+        internal Texture2D Tinted(Texture2D atlas, int quad, RGBAColor color)
         {
             TintKey key = new(quad, color.RedColor, color.GreenColor, color.BlueColor);
-            if (tinted.TryGetValue(key, out CTRTexture2D cached))
+            if (tinted.TryGetValue(key, out Texture2D cached))
             {
                 return cached;
             }
 
-            CTRRectangle frame = atlas.quadRects[quad];
+            Rectangle frame = atlas.quadRects[quad];
             int width = (int)frame.w;
             int height = (int)frame.h;
             ITextureHandle Build()
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
                     color);
             }
 
-            CTRTexture2D texture = new CTRTexture2D().InitWithHandle(Build(), width, height);
+            Texture2D texture = new Texture2D().InitWithHandle(Build(), width, height);
 
             // The copy has no content path, so recovery cannot reload it the way it reloads the
             // atlas. It can still be made again from exactly what made it the first time, and
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             // for the rest of the level.
             texture.Regenerate = Build;
             texture.SetQuadsCapacity(1);
-            texture.SetQuadAt(new CTRRectangle(0f, 0f, width, height), 0);
+            texture.SetQuadAt(new Rectangle(0f, 0f, width, height), 0);
             if (atlas.quadOffsets is not null)
             {
                 // The copy stands alone, but it has to draw where the frame did inside the atlas.
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (CTRTexture2D texture in tinted.Values)
+            foreach (Texture2D texture in tinted.Values)
             {
                 // Unregistered by hand: these are built per level rather than cached by resource
                 // name, so nothing else would ever take them back out of the global texture list.
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain.Tutorials
             tinted.Clear();
         }
 
-        private readonly Dictionary<TintKey, CTRTexture2D> tinted = [];
+        private readonly Dictionary<TintKey, Texture2D> tinted = [];
 
         private readonly record struct TintKey(int Quad, float Red, float Green, float Blue);
     }

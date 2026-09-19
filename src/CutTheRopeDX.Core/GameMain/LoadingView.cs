@@ -86,15 +86,15 @@ namespace CutTheRopeDX.GameMain
             // Without it the two halves meet wherever the design width happens to fall on the
             // viewport rather than in the middle of it, and a taller viewport is left uncovered
             // below the design height.
-            CTRRectangle visible = VisibleBounds;
-            CTRRectangle cover = LayoutMath.CoverInside(
+            Rectangle visible = VisibleBounds;
+            Rectangle cover = LayoutMath.CoverInside(
                 ViewportLayout.DesignWidth, ViewportLayout.DesignHeight, visible);
             float coverScale = cover.w / ViewportLayout.DesignWidth;
             Renderer.PushMatrix();
             Renderer.Translate(cover.x, cover.y, 0f);
             Renderer.Scale(coverScale, coverScale, 1f);
 
-            CTRTexture2D texture = Application.GetTexture(boxCover);
+            Texture2D texture = Application.GetTexture(boxCover);
             Renderer.SetColor(s_Color1);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float leftQuadX = (SCREEN_WIDTH / 2f) - quadSize.X;
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Translate(-mirrorPivotX, -SCREEN_HEIGHT / 2f, 0f);
             DrawHelper.DrawImageQuad(texture, 0, SCREEN_WIDTH / 2f, 0.5f);
             Renderer.PopMatrix();
-            CTRTexture2D texture2 = Application.GetTexture(Resources.Img.MenuLevelUi);
+            Texture2D texture2 = Application.GetTexture(Resources.Img.MenuLevelUi);
             if (!game)
             {
                 Renderer.Enable(Renderer.GL_SCISSOR_TEST);

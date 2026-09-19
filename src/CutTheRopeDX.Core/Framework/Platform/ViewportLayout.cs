@@ -58,14 +58,14 @@ namespace CutTheRopeDX.Framework.Platform
         {
             // The whole surface, whatever shape it is: what the game draws into is what the host
             // gives it.
-            CTRRectangle render = new(0f, 0f, surfaceWidth, surfaceHeight);
+            Rectangle render = new(0f, 0f, surfaceWidth, surfaceHeight);
             float scale = MathF.Min(render.w, render.h) / LogicalShortSide;
 
             return new ViewportLayoutSnapshot(
                 surfaceWidth,
                 surfaceHeight,
                 render,
-                new CTRRectangle(0f, 0f, render.w / scale, render.h / scale),
+                new Rectangle(0f, 0f, render.w / scale, render.h / scale),
                 scale,
                 devicePixelRatio,
                 surfaceWidth >= surfaceHeight

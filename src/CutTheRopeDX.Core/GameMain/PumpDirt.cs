@@ -99,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             Quad2D qt = imageGrid.texture.quads[quadIndex];
             Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
             drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
-            CTRRectangle rectangle = imageGrid.texture.quadRects[quadIndex];
+            Rectangle rectangle = imageGrid.texture.quadRects[quadIndex];
             particle.width = rectangle.w * particle.size;
             particle.height = rectangle.h * particle.size;
         }

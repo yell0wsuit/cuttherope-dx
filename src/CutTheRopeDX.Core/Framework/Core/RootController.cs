@@ -511,12 +511,12 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Captured image of the previous view during transitions.
         /// </summary>
-        private CTRTexture2D prevScreenImage;
+        private Texture2D prevScreenImage;
 
         /// <summary>
         /// Captured image of the next view during transitions.
         /// </summary>
-        private CTRTexture2D nextScreenImage;
+        private Texture2D nextScreenImage;
 
         // private readonly Grabber screenGrabber = new();
 

@@ -31,7 +31,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="scale">Uniform scale to draw the strip at.</param>
         /// <param name="boxWidth">Authored width of one box, including its quad offset padding.</param>
         /// <returns>The layout for that viewport.</returns>
-        public static PackStripLayout For(CTRRectangle visible, float scale, float boxWidth)
+        public static PackStripLayout For(Rectangle visible, float scale, float boxWidth)
         {
             float scaledBoxWidth = boxWidth * scale;
             int fit = scaledBoxWidth > 0f

@@ -99,7 +99,7 @@ namespace CutTheRopeDX.Framework.Platform
             CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
 
             int dropped = Application.SharedRootController().DropTransitionCaptures();
-            foreach (CTRTexture2D texture in CTRTexture2D.Registered())
+            foreach (Texture2D texture in Texture2D.Registered())
             {
                 if (texture._resName != null)
                 {
@@ -135,7 +135,7 @@ namespace CutTheRopeDX.Framework.Platform
         {
             int reloaded = 0;
             int rebuilt = 0;
-            foreach (CTRTexture2D texture in CTRTexture2D.Registered())
+            foreach (Texture2D texture in Texture2D.Registered())
             {
                 if (texture._resName == null)
                 {
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.Framework.Platform
             // recolored sign frames read the sign atlas, which the loop above is what puts back.
             // Rebuilding happens inside the texture the scene is already holding, so whoever is
             // drawing it keeps the reference it was handed.
-            foreach (CTRTexture2D texture in CTRTexture2D.Registered())
+            foreach (Texture2D texture in Texture2D.Registered())
             {
                 if (texture._resName != null || texture.Regenerate == null)
                 {

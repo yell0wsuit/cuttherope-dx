@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests
             GameObject body = new()
             {
                 drawY = 200f,
-                bb = new CTRRectangle(10f, 25f, 30f, 40f)
+                bb = new Rectangle(10f, 25f, 30f, 40f)
             };
             CandyContext ctx = Context(visual: body);
 

@@ -150,8 +150,8 @@ namespace CutTheRopeDX.Tests
             try
             {
                 root.transitionTime = 12.5f;
-                SetCapture(root, "prevScreenImage", new CTRTexture2D());
-                SetCapture(root, "nextScreenImage", new CTRTexture2D());
+                SetCapture(root, "prevScreenImage", new Texture2D());
+                SetCapture(root, "nextScreenImage", new Texture2D());
 
                 Assert.Equal(2, root.DropTransitionCaptures());
 
@@ -171,15 +171,15 @@ namespace CutTheRopeDX.Tests
             _ = HeadlessGame.Boot();
             _ = Scenario.New().Candy(160, 100).OmNom(160, 400).Build();
 
-            int fileBacked = CTRTexture2D.Registered().Count(texture => texture._resName != null);
-            int captures = CTRTexture2D.Registered().Count(texture => texture._resName == null);
+            int fileBacked = Texture2D.Registered().Count(texture => texture._resName != null);
+            int captures = Texture2D.Registered().Count(texture => texture._resName == null);
             Assert.True(fileBacked > 0, "the scenario should have loaded at least one image");
 
             GraphicsRecoveryPlan plan = GraphicsRecovery.Begin();
             GraphicsRecoveryReport report = GraphicsRecovery.Complete(plan);
 
             Assert.Equal(fileBacked, report.ReloadedAssets);
-            Assert.Equal(captures, CTRTexture2D.Registered().Count(texture => texture._resName == null));
+            Assert.Equal(captures, Texture2D.Registered().Count(texture => texture._resName == null));
         }
 
         /// <summary>Runs a whole loss and recovery over whatever is currently on screen.</summary>
@@ -212,7 +212,7 @@ namespace CutTheRopeDX.Tests
             return (int)field.GetValue(controller);
         }
 
-        private static void SetCapture(RootController root, string name, CTRTexture2D capture)
+        private static void SetCapture(RootController root, string name, Texture2D capture)
         {
             FieldInfo field = typeof(RootController).GetField(
                 name, BindingFlags.Instance | BindingFlags.NonPublic);

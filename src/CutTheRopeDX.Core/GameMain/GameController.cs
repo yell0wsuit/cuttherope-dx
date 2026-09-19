@@ -1051,7 +1051,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRRectangle visible = snapshot.VisibleBounds;
+            Rectangle visible = snapshot.VisibleBounds;
 
             // Reposition the HUD buttons using the same edge offsets applied at construction,
             // otherwise the restart button collapses onto the pause button and they overlap.
@@ -1112,7 +1112,7 @@ namespace CutTheRopeDX.GameMain
         /// than the sheet keeps overhanging the sides as it always has.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void PlacePausePlate(CTRRectangle visible)
+        private void PlacePausePlate(Rectangle visible)
         {
             if (pauseMenuPlate == null || pauseMenuPlate.width <= 0)
             {
@@ -1173,7 +1173,7 @@ namespace CutTheRopeDX.GameMain
         /// the authored offset wherever there is room, which includes the shipped shape.
         /// </remarks>
         /// <param name="visible">The logical region the viewport exposes.</param>
-        private void PlaceBestScoreLabel(CTRRectangle visible)
+        private void PlaceBestScoreLabel(Rectangle visible)
         {
             if (mapNameLabel == null)
             {

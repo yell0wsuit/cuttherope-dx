@@ -243,7 +243,7 @@ namespace CutTheRopeDX.Commons
                 Application.SharedMovieMgr().Pause();
                 gPaused = true;
                 CTRApp.ApplicationWillResignActive();
-                CTRTexture2D.SuspendAll();
+                Texture2D.SuspendAll();
             }
         }
 
@@ -256,8 +256,8 @@ namespace CutTheRopeDX.Commons
             {
                 CTRSoundMgr.Unpause();
                 Application.SharedMovieMgr().Resume();
-                CTRTexture2D.SuspendAll();
-                CTRTexture2D.ResumeAll();
+                Texture2D.SuspendAll();
+                Texture2D.ResumeAll();
                 gPaused = false;
                 CTRApp.ApplicationDidBecomeActive();
             }

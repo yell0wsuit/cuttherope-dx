@@ -28,7 +28,7 @@ namespace CutTheRopeDX.GameMain
         public static float Anchor(float tracked, float origin, float scrollable, float slack)
         {
             return HasTravel(scrollable, slack)
-                ? CTRMathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f)
+                ? MathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f)
                 : 0.5f;
         }
 

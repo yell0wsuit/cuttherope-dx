@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="t">Texture used by the Om Nom character animation container.</param>
         /// <returns>The initialized Om Nom character animation container.</returns>
-        private static CharAnimations CharAnimations_create(CTRTexture2D t)
+        private static CharAnimations CharAnimations_create(Texture2D t)
         {
             CharAnimations charAnimations = new();
             _ = charAnimations.InitWithTexture(t);
@@ -124,18 +124,18 @@ namespace CutTheRopeDX.GameMain
             Animation animation = GetAnimation(resourceName1);
             Animation animation2 = GetAnimation(resourceName2);
             Timeline timeline = animation.GetTimeline(a1);
-            List<CTRAction> dynamicArray = [];
+            List<TimelineAction> dynamicArray = [];
             // Check if resourceName1 refers to the base animation (CharAnimations)
             bool isBaseAnimation = resourceName1 == Resources.Img.CharAnimations;
-            dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
+            dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
             if (animation != animation2)
             {
-                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                dynamicArray.Add(CTRAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                dynamicArray.Add(CTRAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }

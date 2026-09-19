@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Tests
             {
                 LayoutSurfaces.WithSurface(surface.Width, surface.Height, () =>
                 {
-                    CTRRectangle bounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle bounds = ScreenPresentation.Instance.Snapshot.VisibleBounds;
                     _ = observed.Add($"{bounds.w}x{bounds.h}");
                 });
             }
