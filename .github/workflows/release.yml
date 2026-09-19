@@ -74,7 +74,6 @@ jobs:
                   key: ${{ needs.assets.outputs.cache-key }}
                   enableCrossOsArchive: true
 
-            - run: pip install py7zr tqdm
             - run: python distribution/release_windows.py "${{ needs.version.outputs.version }}"
 
             - uses: actions/upload-artifact@v7

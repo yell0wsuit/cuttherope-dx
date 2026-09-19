@@ -126,18 +126,43 @@ def test_a_partial_installation_is_completed_rather_than_skipped(tmp_path, elect
     assert (installed / "libEGL.dll").read_text() != "half an install"
 
 
-def test_the_module_imports_without_the_packaging_extras(monkeypatch):
-    """py7zr and tqdm are needed to build a release, not to import the script."""
-    monkeypatch.setitem(sys.modules, "py7zr", None)
-    monkeypatch.setitem(sys.modules, "tqdm", None)
-
-    load_release_windows()
-
-
-def test_packaging_asks_for_the_extras_it_needs(monkeypatch, tmp_path):
-    """The build still stops with the install line when the archiver is absent."""
-    monkeypatch.setitem(sys.modules, "py7zr", None)
-    monkeypatch.setitem(sys.modules, "tqdm", None)
+def test_packaging_asks_for_7zip_when_it_is_missing(monkeypatch, tmp_path):
+    """The build stops with the install line when no 7-Zip can be found."""
+    monkeypatch.setattr(rw.shutil, "which", lambda name: None)
+    monkeypatch.setenv("ProgramFiles", str(tmp_path))
+    monkeypatch.setenv("ProgramW6432", str(tmp_path))
 
     with pytest.raises(SystemExit):
         rw.package(tmp_path, "1.0.0.0", "x64")
+
+
+def test_packaging_uses_every_core_and_ships_only_release_files(monkeypatch, tmp_path):
+    """7-Zip runs multithreaded, from the output folder, on the shipped files alone."""
+    output = tmp_path / "publish"
+    (output / "ffmpeg").mkdir(parents=True)
+    (output / "CutTheRope-DX.exe").write_bytes(b"game")
+    (output / "CutTheRope-DX.pdb").write_bytes(b"symbols")
+    (output / "ffmpeg" / "avcodec-62.dll").write_bytes(b"codec")
+    release = tmp_path / "release"
+    release.mkdir()
+    (release / "CutTheRopeDX-v1.0.0-Windows-x64.7z").write_bytes(b"stale")
+    monkeypatch.setattr(rw, "RELEASE_DIR", release)
+    monkeypatch.setattr(rw, "find_7z", lambda: "7z")
+
+    seen = {}
+
+    def fake_run(args, cwd, check):
+        seen["args"], seen["cwd"] = args, cwd
+        seen["stale"] = (release / "CutTheRopeDX-v1.0.0-Windows-x64.7z").exists()
+        listed = Path(args[-1].removeprefix("@")).read_text(encoding="utf-8")
+        seen["listed"] = listed.split()
+        Path(args[-2]).write_bytes(b"archive")
+
+    monkeypatch.setattr(rw.subprocess, "run", fake_run)
+
+    rw.package(output, "1.0.0", "x64")
+
+    assert "-mmt=on" in seen["args"]
+    assert seen["cwd"] == output
+    assert seen["stale"] is False
+    assert sorted(seen["listed"]) == ["CutTheRope-DX.exe", str(Path("ffmpeg/avcodec-62.dll"))]

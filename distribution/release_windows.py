@@ -14,6 +14,7 @@ the same shape and are built by their own scripts.
 """
 
 import hashlib
+import os
 import shutil
 import subprocess
 import sys
@@ -290,24 +291,33 @@ def is_shipped(output_dir: Path, path: Path) -> bool:
     )
 
 
-def packaging_tools():
-    """The archiver and the progress bar, which only the packaging step needs.
+def find_7z() -> str:
+    """The 7-Zip command line, which only the packaging step needs.
 
-    They are imported here rather than at the top of the file so that importing this
-    module - to build another platform, or to test it - does not need them installed.
+    7-Zip rather than py7zr because py7zr compresses on a single thread: its LZMA goes
+    through Python's lzma module, which has no multithreaded encoder, and the release
+    archive spent about four minutes there on CI. 7-Zip ships with the GitHub Windows
+    runners; a desktop install is usually not on PATH, so its default location is
+    checked too.
     """
-    try:
-        import py7zr
-        from tqdm import tqdm
-    except ImportError:
-        print("Required: pip install py7zr tqdm", file=sys.stderr)
-        sys.exit(1)
-    return py7zr, tqdm
+    for name in ("7z", "7za"):
+        found = shutil.which(name)
+        if found:
+            return found
+    for root in filter(None, (os.environ.get("ProgramFiles"), os.environ.get("ProgramW6432"))):
+        candidate = Path(root) / "7-Zip" / "7z.exe"
+        if candidate.is_file():
+            return str(candidate)
+    print(
+        "Required: 7-Zip (https://www.7-zip.org). Install it with: winget install 7zip.7zip",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 
 def package(output_dir: Path, version: str, arch_label: str):
     """Compress the build output into a .7z archive."""
-    py7zr, tqdm = packaging_tools()
+    seven_zip = find_7z()
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
     # "+" in a prerelease version is not kept in GitHub asset names, so file names use "_".
     archive_name = f"CutTheRopeDX-v{version.replace('+', '_')}-Windows-{arch_label}.7z"
@@ -320,16 +330,28 @@ def package(output_dir: Path, version: str, arch_label: str):
             f"Excluding {len(published) - len(files)} "
             "debug/documentation file(s) from the archive"
         )
-    sizes = [f.stat().st_size for f in files]
+
+    # "7z a" adds to an archive that already exists, so a rebuild would otherwise
+    # carry the previous build's files along.
+    archive_path.unlink(missing_ok=True)
 
     print(f"\nPackaging {archive_name}...")
-    with py7zr.SevenZipFile(
-        archive_path, "w", filters=[{"id": py7zr.FILTER_LZMA, "preset": 9}]
-    ) as archive:
-        with tqdm(total=sum(sizes), unit="B", unit_scale=True) as pbar:
-            for file, size in zip(files, sizes, strict=True):
-                archive.write(file, str(file.relative_to(output_dir)))
-                pbar.update(size)
+    with tempfile.TemporaryDirectory() as temp:
+        list_file = Path(temp) / "files.txt"
+        list_file.write_text(
+            "\n".join(str(f.relative_to(output_dir)) for f in files) + "\n",
+            encoding="utf-8",
+        )
+        # Relative paths, run from the output directory, so the archive holds the
+        # release's layout rather than this machine's.
+        subprocess.run(
+            [
+                seven_zip, "a", "-t7z", "-m0=LZMA2", "-mx=9", "-mmt=on",
+                "-scsUTF-8", "-bsp1", str(archive_path), f"@{list_file}",
+            ],
+            cwd=output_dir,
+            check=True,
+        )
 
     size_mb = archive_path.stat().st_size / (1024 * 1024)
     print(f"Created {archive_path} ({size_mb:.1f} MB)")
@@ -382,7 +404,7 @@ def main():
     version, use_aot, arch = resolve_options()
     # Ask for the archiver before the build rather than after it, so a missing
     # dependency costs a second instead of a full publish and two downloads.
-    packaging_tools()
+    find_7z()
     config = ARCHITECTURES[arch]
     runtime_id = config["rid"]
     btbn_arch = config["btbn"]
