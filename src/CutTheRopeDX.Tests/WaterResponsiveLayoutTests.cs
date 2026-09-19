@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
                 GameScene scene = BuildWaterScene();
                 WaterElement water = Read<WaterElement>(scene, "waterLayer");
 
-                CtrRenderer.OnSurfaceChanged(640, 1600);
+                GameLifecycle.OnSurfaceChanged(640, 1600);
                 scene.RelayoutCamera();
 
                 Camera2D camera = Read<Camera2D>(scene, "camera");
@@ -69,7 +69,7 @@ namespace CutTheRopeDX.Tests
                 GameScene scene = BuildWaterScene();
                 WaterElement water = Read<WaterElement>(scene, "waterLayer");
 
-                CtrRenderer.OnSurfaceChanged(640, 1600);
+                GameLifecycle.OnSurfaceChanged(640, 1600);
                 scene.RelayoutCamera();
 
                 WaterBubbles bubbles = Read<WaterBubbles>(water, "bubbles");
@@ -104,7 +104,7 @@ namespace CutTheRopeDX.Tests
             int height,
             float authoredWaterline)
         {
-            CtrRenderer.OnSurfaceChanged(width, height);
+            GameLifecycle.OnSurfaceChanged(width, height);
             scene.RelayoutCamera();
 
             Camera2D camera = Read<Camera2D>(scene, "camera");

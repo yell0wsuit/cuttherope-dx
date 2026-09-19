@@ -219,7 +219,7 @@ namespace CutTheRopeDX.Desktop.Platform
             {
                 SavePreferences();
             }
-            CtrRenderer.OnSurfaceChanged(pixelWidth, pixelHeight, DevicePixelRatio);
+            GameLifecycle.OnSurfaceChanged(pixelWidth, pixelHeight, DevicePixelRatio);
         }
         /// <summary>Decides what a reading of the window's flags says about the maximized state to keep.</summary>
         /// <param name="saved">The maximized state kept so far.</param>

@@ -236,7 +236,7 @@ namespace CutTheRopeDX.Desktop
         {
             return string.Join(
                 Environment.NewLine,
-                SdlDesktopHost.CtrDXProductName,
+                SdlDesktopHost.ProductName,
                 Configuration + " version",
                 "Version: " + SdlDesktopHost.Version,
                 "OS: " + DeviceReport.OperatingSystem,

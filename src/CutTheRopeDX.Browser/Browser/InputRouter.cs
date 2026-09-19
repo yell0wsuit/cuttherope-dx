@@ -97,7 +97,7 @@ namespace CutTheRopeDX.Browser
                 return;
             }
 
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(
+            GameLifecycle.ProcessTouches(
                 [new TouchLocation(0, state.Value, new Vector2(viewX, viewY))]);
         }
 

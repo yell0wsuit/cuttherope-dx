@@ -182,7 +182,7 @@ namespace CutTheRopeDX.Tests
             {
                 GameScene scene = HeadlessGame.LoadLevel(pack: 7, level: 0);
 
-                CtrRenderer.OnSurfaceChanged(1868, 1674);
+                GameLifecycle.OnSurfaceChanged(1868, 1674);
                 scene.RelayoutCamera();
                 scene.RelayoutHud();
 

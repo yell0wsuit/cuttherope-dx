@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
                     float builtLandscape = ReadBuiltForScale(controller);
                     Assert.Equal(ContentFit.Scale, builtLandscape, 0.0001);
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
                     controller.ShowView(MenuController.VIEW_ABOUT);
 
                     Assert.Equal(ContentFit.Scale, ReadBuiltForScale(controller), 0.0001);

@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
             _ = HeadlessGame.Boot();
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                CtrRenderer.OnSurfaceChanged(width, height);
+                GameLifecycle.OnSurfaceChanged(width, height);
 
                 Assert.Equal(width, FrameworkTypes.REAL_SCREEN_WIDTH);
                 Assert.Equal(height, FrameworkTypes.REAL_SCREEN_HEIGHT);

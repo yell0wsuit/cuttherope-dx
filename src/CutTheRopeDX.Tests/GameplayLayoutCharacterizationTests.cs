@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Tests
 
             LayoutSurfaces.WithSurface(width, height, () =>
             {
-                CtrRenderer.OnSurfaceChanged(width, height);
+                GameLifecycle.OnSurfaceChanged(width, height);
                 GameScene scene = HeadlessGame.LoadLevel(0, 0);
 
                 Assert.Equal(960f, ReadFloat(scene, "mapWidth"));

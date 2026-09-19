@@ -17,7 +17,7 @@ namespace CutTheRopeDX.Commons
     /// <summary>
     /// Bridges the game's shared runtime to the platform rendering and lifecycle callbacks.
     /// </summary>
-    internal sealed class CtrRenderer : FrameworkTypes
+    internal sealed class GameLifecycle : FrameworkTypes
     {
         /// <summary>
         /// Marks the rendering surface as created so the runtime can finish initialization on the next frame.
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.Commons
         {
             if (state is 2 or 5)
             {
-                Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                PauseRuntime();
                 state = 3;
             }
         }
@@ -97,7 +97,7 @@ namespace CutTheRopeDX.Commons
         {
             if (state != 1)
             {
-                Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy();
+                DestroyRuntime();
                 state = 1;
             }
         }
@@ -107,7 +107,7 @@ namespace CutTheRopeDX.Commons
         /// </summary>
         public static void Update()
         {
-            Java_com_zeptolab_ctr_CtrRenderer_nativeTick(16f);
+            Tick(16f);
         }
 
         /// <summary>
@@ -128,8 +128,8 @@ namespace CutTheRopeDX.Commons
                     {
                         if (DateTimeJavaHelper.CurrentTimeMillis() - onResumeTimeStamp >= 500L)
                         {
-                            Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
-                            Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
+                            ResumeRuntime();
+                            RenderFrame();
                             didRenderFrame = true;
                             state = 2;
                         }
@@ -177,8 +177,8 @@ namespace CutTheRopeDX.Commons
                         }
                         if (state == 2)
                         {
-                            Java_com_zeptolab_ctr_CtrRenderer_nativeRender();
-                            Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(fps);
+                            RenderFrame();
+                            DrawFps(fps);
                             didRenderFrame = true;
                         }
                     }
@@ -201,12 +201,12 @@ namespace CutTheRopeDX.Commons
         /// Initializes the shared application runtime with the selected language.
         /// </summary>
         /// <param name="language">The language to assign to the runtime before launch.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeInit(Language language)
+        public static void InitRuntime(Language language)
         {
             if (gApp != null)
             {
                 ILogger logger = Log.For(LogCategories.Application);
-                CtrRendererLog.AlreadyInitialized(logger);
+                GameLifecycleLog.AlreadyInitialized(logger);
                 return;
             }
             LanguageHelper.Current = language;
@@ -218,12 +218,12 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Destroys the shared application runtime and saves any pending preferences.
         /// </summary>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDestroy()
+        public static void DestroyRuntime()
         {
             if (gApp == null)
             {
                 ILogger logger = Log.For(LogCategories.Application);
-                CtrRendererLog.NotInitialized(logger);
+                GameLifecycleLog.NotInitialized(logger);
                 return;
             }
             Application.SharedSoundMgr().StopAllSounds();
@@ -235,7 +235,7 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Suspends audio, movie playback, textures, and app state.
         /// </summary>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativePause()
+        public static void PauseRuntime()
         {
             if (!gPaused)
             {
@@ -250,7 +250,7 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Resumes audio, movie playback, textures, and app state after a pause.
         /// </summary>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeResume()
+        public static void ResumeRuntime()
         {
             if (gPaused)
             {
@@ -266,7 +266,7 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Clears the frame and delegates drawing to the root controller.
         /// </summary>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeRender()
+        public static void RenderFrame()
         {
             Renderer.SetClearColor(Color.Black);
             Renderer.Clear(0);
@@ -300,7 +300,7 @@ namespace CutTheRopeDX.Commons
         /// Forwards touch input from the platform layer to the shared canvas.
         /// </summary>
         /// <param name="touches">The touch locations reported for the current frame.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess(IList<TouchLocation> touches)
+        public static void ProcessTouches(IList<TouchLocation> touches)
         {
             if (touches.Count > 0)
             {
@@ -314,7 +314,7 @@ namespace CutTheRopeDX.Commons
         /// Forwards the back-button action to the shared canvas.
         /// </summary>
         /// <returns><see langword="true"/> if the canvas handled the action; otherwise, <see langword="false"/>.</returns>
-        public static bool Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed()
+        public static bool BackPressed()
         {
             GLCanvas gLCanvas = Application.SharedCanvas();
             return gLCanvas != null && gLCanvas.BackButtonPressed();
@@ -324,7 +324,7 @@ namespace CutTheRopeDX.Commons
         /// Forwards the menu-button action to the shared canvas.
         /// </summary>
         /// <returns><see langword="true"/> if the canvas handled the action; otherwise, <see langword="false"/>.</returns>
-        public static bool Java_com_zeptolab_ctr_CtrRenderer_nativeMenuPressed()
+        public static bool MenuPressed()
         {
             GLCanvas gLCanvas = Application.SharedCanvas();
             return gLCanvas != null && gLCanvas.MenuButtonPressed();
@@ -334,7 +334,7 @@ namespace CutTheRopeDX.Commons
         /// Draws the current frames-per-second counter on the shared canvas.
         /// </summary>
         /// <param name="fps">The frames-per-second value to display.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeDrawFps(int fps)
+        public static void DrawFps(int fps)
         {
             GLCanvas gLCanvas = Application.SharedCanvas();
             gLCanvas?.DrawFPS(fps);
@@ -344,7 +344,7 @@ namespace CutTheRopeDX.Commons
         /// Advances timers and the root controller by the specified frame delta.
         /// </summary>
         /// <param name="delta">The frame delta in milliseconds.</param>
-        public static void Java_com_zeptolab_ctr_CtrRenderer_nativeTick(float delta)
+        public static void Tick(float delta)
         {
             if (gApp != null && !gPaused)
             {
@@ -411,7 +411,7 @@ namespace CutTheRopeDX.Commons
     }
 
     /// <summary>Log messages for the shared runtime's lifecycle.</summary>
-    internal static partial class CtrRendererLog
+    internal static partial class GameLifecycleLog
     {
         [LoggerMessage(
             Level = LogLevel.Warning,

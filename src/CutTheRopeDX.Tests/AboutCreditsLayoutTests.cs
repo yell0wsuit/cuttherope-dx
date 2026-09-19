@@ -181,7 +181,7 @@ namespace CutTheRopeDX.Tests
                     ScrollableContainer container = Credits(controller);
                     container.SetScroll(container.GetMaxScroll());
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
                     controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
                     container = Credits(controller);

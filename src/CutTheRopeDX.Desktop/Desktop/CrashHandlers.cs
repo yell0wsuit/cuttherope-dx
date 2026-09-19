@@ -82,7 +82,7 @@ namespace CutTheRopeDX.Desktop
 
                 // After the flush, so the log the player is invited to open is already complete.
                 CrashDialog.Show(
-                    SdlDesktopHost.CtrDXProductName,
+                    SdlDesktopHost.ProductName,
                     Describe(args.ExceptionObject),
                     logDirectory);
             }

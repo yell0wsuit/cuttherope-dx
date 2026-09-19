@@ -11,7 +11,7 @@ namespace CutTheRopeDX
     /// and the headless host call this, so the two cannot drift — if they did, headless tests
     /// would stop reflecting the real game.
     /// </summary>
-    internal static class CtrBootstrap
+    internal static class GameBootstrap
     {
         /// <summary>
         /// Installs the asset platform and brings the engine up to the point where the root
@@ -34,9 +34,9 @@ namespace CutTheRopeDX
             AssetPlatform.Current = platform;
             SoundMgr.SetBackend(audioBackend);
             Preferences.LoadPreferences();
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeInit(language);
-            CtrRenderer.OnSurfaceCreated();
-            CtrRenderer.OnSurfaceChanged(surfaceWidth, surfaceHeight, devicePixelRatio);
+            GameLifecycle.InitRuntime(language);
+            GameLifecycle.OnSurfaceCreated();
+            GameLifecycle.OnSurfaceChanged(surfaceWidth, surfaceHeight, devicePixelRatio);
         }
     }
 }

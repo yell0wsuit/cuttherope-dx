@@ -95,7 +95,7 @@ BrowserAssetPlatform assets = new(surface);
 
 ScreenPresentation.Instance =
     new ScreenPresentation((int)ViewportLayout.DesignWidth, (int)ViewportLayout.DesignHeight);
-CutTheRopeDX.CtrBootstrap.Initialize(
+CutTheRopeDX.GameBootstrap.Initialize(
     assets,
     audio,
     size[0],

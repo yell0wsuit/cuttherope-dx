@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Desktop
         internal static readonly string Version = ResolveVersion();
 
         /// <summary>The Cut the Rope DX name shown in the title.</summary>
-        internal const string CtrDXProductName = "Cut the Rope DX";
+        internal const string ProductName = "Cut the Rope DX";
 
         /// <summary>
         /// How many devices may be built without one of them drawing anything before the run is
@@ -188,7 +188,7 @@ namespace CutTheRopeDX.Desktop
                 _ => throw new ArgumentException($"Unknown SDL renderer '{renderer}'."),
             };
             // Names the game to the OS instead of the executable.
-            _ = SDL.SetAppMetadata(CtrDXProductName, Version, "page.yell0wsuit.cuttherope.dx");
+            _ = SDL.SetAppMetadata(ProductName, Version, "page.yell0wsuit.cuttherope.dx");
             if (!SDL.Init(SDL.InitFlags.Video | SDL.InitFlags.Events | SDL.InitFlags.Gamepad))
             {
                 throw new InvalidOperationException(SDL.GetError());
@@ -233,21 +233,21 @@ namespace CutTheRopeDX.Desktop
             Preferences.LoadPreferences();
             input = new()
             {
-                Touch = touch => CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTouchProcess([touch]),
-                MouseMoved = position => Application.SharedRootController().MouseMoved(CtrRenderer.TransformX(position.X), CtrRenderer.TransformY(position.Y)),
+                Touch = touch => GameLifecycle.ProcessTouches([touch]),
+                MouseMoved = position => Application.SharedRootController().MouseMoved(GameLifecycle.TransformX(position.X), GameLifecycle.TransformY(position.Y)),
                 Wheel = delta => Application.SharedRootController().HandleMouseWheel(delta),
-                Back = () => { Application.SharedMovieMgr().Stop(); _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed(); },
+                Back = () => { Application.SharedMovieMgr().Stop(); _ = GameLifecycle.BackPressed(); },
                 FocusChanged = focused =>
                 {
                     ILogger focusLogger = Log.For(LogCategories.SdlHost);
                     SdlDesktopHostLog.FocusChanged(focusLogger, focused);
                     if (focused)
                     {
-                        CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
+                        GameLifecycle.ResumeRuntime();
                     }
                     else
                     {
-                        CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                        GameLifecycle.PauseRuntime();
                     }
 
                     // A run working to a frame budget keeps stepping whatever the window manager
@@ -279,7 +279,7 @@ namespace CutTheRopeDX.Desktop
             assets = new(PlatformServices.Content, device.Context, registry);
             _ = SDL.GetWindowSize(device.Window, out int width, out int height);
             _ = SDL.GetWindowSizeInPixels(device.Window, out int pixels, out int ignored);
-            CtrBootstrap.Initialize(assets, audio, width, height, LanguageHelper.FromSystemCulture(), (float)pixels / width);
+            GameBootstrap.Initialize(assets, audio, width, height, LanguageHelper.FromSystemCulture(), (float)pixels / width);
             window.RefreshSurface();
             clock.Start();
             loop.Reset(clock.Elapsed);
@@ -306,7 +306,7 @@ namespace CutTheRopeDX.Desktop
 
         private void Update(float delta)
         {
-            CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeTick(delta);
+            GameLifecycle.Tick(delta);
             input.EndUpdate();
             if (clock.Elapsed >= nextSave)
             {
@@ -385,7 +385,7 @@ namespace CutTheRopeDX.Desktop
             device.Canvas.Clear(SKColors.Black);
             drewMovie = false;
             Renderer.BeginFrame();
-            try { CtrRenderer.OnDrawFrame(); }
+            try { GameLifecycle.OnDrawFrame(); }
             finally { Renderer.EndFrame(); }
 
             // The native cursor stands in for the sprite the old host drew here, so it is
@@ -567,7 +567,7 @@ namespace CutTheRopeDX.Desktop
             window = null;
             PlatformServices.Window = null;
             CrashDialog.Show(
-                CtrDXProductName,
+                ProductName,
                 $"{reason}\n\nThe game cannot continue and has to be closed. Your progress is unaffected.",
                 LoggingSetup.DirectoryFor(Preferences.SaveDirectory));
             Exit();
@@ -807,7 +807,7 @@ namespace CutTheRopeDX.Desktop
         }
 
         /// <summary>
-        /// Builds the window title: the CTRDX product name, the running version, and the renderer drawing it.
+        /// Builds the window title: the product name, the running version, and the renderer drawing it.
         /// </summary>
         /// <remarks>
         /// The renderer is not settled at startup: a device loss can bring the game back on a
@@ -819,7 +819,7 @@ namespace CutTheRopeDX.Desktop
         /// <returns>The title to give the window.</returns>
         internal static string TitleFor(GraphicsBackendKind renderer)
         {
-            return $"{CtrDXProductName} v{Version} | {renderer}";
+            return $"{ProductName} v{Version} | {renderer}";
         }
 
         /// <summary>

@@ -510,7 +510,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Pressed)
                 {
-                    return view.OnTouchDownXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchDownXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;
@@ -560,7 +560,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Released)
                 {
-                    return view.OnTouchUpXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchUpXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;
@@ -589,7 +589,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Moved)
                 {
-                    return view.OnTouchMoveXY(CtrRenderer.TransformX(touchLocation.Position.X), CtrRenderer.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchMoveXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
                 }
             }
             return false;

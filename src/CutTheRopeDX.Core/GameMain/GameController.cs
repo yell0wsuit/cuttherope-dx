@@ -824,7 +824,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchDownXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchDownXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
                     }
                 }
             }
@@ -859,7 +859,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchUpXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchUpXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
                     }
                     else
                     {
@@ -897,7 +897,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchMoveXYIndex(CtrRenderer.TransformX(touch.Position.X), CtrRenderer.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchMoveXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
                     }
                 }
             }
@@ -1233,8 +1233,8 @@ namespace CutTheRopeDX.GameMain
                                 Log.For(LogCategories.GameMusic), root.GetPack());
                         }
                         break;
-                    case var p when p == MusicPackNames.CtROriginal:
-                        CTRSoundMgr.PlayRandomMusic(MusicPacks.CtROriginal);
+                    case var p when p == MusicPackNames.Original:
+                        CTRSoundMgr.PlayRandomMusic(MusicPacks.Original);
                         break;
                     default:
                         GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);

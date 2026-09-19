@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Tests
                 GameController controller = HeadlessGame.LoadLevelWithController(0, 14);
                 controller.OnButtonPressed(GameControllerButtonId.Pause);
 
-                CtrRenderer.OnSurfaceChanged(720, 1280);
+                GameLifecycle.OnSurfaceChanged(720, 1280);
                 controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
                 value = read(controller);

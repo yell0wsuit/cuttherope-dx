@@ -59,7 +59,7 @@ namespace CutTheRopeDX.Browser
                         _contextLostReported = true;
                         Console.WriteLine(
                             "ctrdx-context-lost: simulation paused; reload required");
-                        CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                        GameLifecycle.PauseRuntime();
                         // Forced: no further frame is coming, so a save still backing off from
                         // an earlier failure would never get another chance.
                         Preferences.Update(force: true);
@@ -127,7 +127,7 @@ namespace CutTheRopeDX.Browser
                 // desktop host reaches the same place from the other side: its back key is read
                 // in Update, and its key edges latch per read rather than per frame.
                 HandleBackKey();
-                CtrRenderer.Update();
+                GameLifecycle.Update();
                 Preferences.Update();
                 Host?.EndStep();
                 _accumulator -= StepSeconds;
@@ -137,7 +137,7 @@ namespace CutTheRopeDX.Browser
             _ = Application.SharedRootController();
 
             PlatformServices.Render.BeginFrame();
-            CtrRenderer.OnDrawFrame();
+            GameLifecycle.OnDrawFrame();
             Present();
         }
 
@@ -170,11 +170,11 @@ namespace CutTheRopeDX.Browser
                 // The blurred interval is time the player did not see. Restarting the clock
                 // drops it rather than letting the loop burn catch-up steps on it.
                 _lastTimestampMs = 0;
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeResume();
+                GameLifecycle.ResumeRuntime();
             }
             else
             {
-                CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativePause();
+                GameLifecycle.PauseRuntime();
                 // Resigning active requests a save. Every full fixed step also saves, so the
                 // only remaining exposure is a change made during the final partial frame.
                 // Forced, because the page may be suspended before another step runs.
@@ -218,7 +218,7 @@ namespace CutTheRopeDX.Browser
 
             _ = HostShim.ResizeCanvas(width, height);
             Surface.Resize(width, height);
-            CtrRenderer.OnSurfaceChanged(width, height, ratio);
+            GameLifecycle.OnSurfaceChanged(width, height, ratio);
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ namespace CutTheRopeDX.Browser
             if (Host?.IsKeyPressed(KeyCode.Escape) == true)
             {
                 Application.SharedMovieMgr().Stop();
-                _ = CtrRenderer.Java_com_zeptolab_ctr_CtrRenderer_nativeBackPressed();
+                _ = GameLifecycle.BackPressed();
             }
         }
 

@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
         {
             try
             {
-                CtrRenderer.OnSurfaceChanged(width, height);
+                GameLifecycle.OnSurfaceChanged(width, height);
                 body();
             }
             finally
@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests
                 // Restore through the resize entry point rather than by writing the presentation
                 // directly, so the restore takes the same path a real host's resize does and
                 // reaches everything that path reaches.
-                CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+                GameLifecycle.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
             }
         }
     }

@@ -329,7 +329,7 @@ namespace CutTheRopeDX.Framework.Visual
             float transitionTime = Application.SharedRootController().transitionTime;
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes
-            CtrRenderer.OnDrawFrame();
+            GameLifecycle.OnDrawFrame();
             ITextureHandle renderTargetHandle = Renderer.DetachRenderTarget();
             Renderer.ResetRenderTarget();
             Application.SharedRootController().transitionTime = transitionTime;

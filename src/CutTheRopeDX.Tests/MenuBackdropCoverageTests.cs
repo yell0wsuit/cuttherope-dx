@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.ShowView(viewId);
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
 
                     // The real resize path reaches a controller through the root's active child
                     // chain, which a controller built for a test is not on.

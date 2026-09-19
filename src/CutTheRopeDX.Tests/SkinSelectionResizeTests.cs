@@ -30,7 +30,7 @@ namespace CutTheRopeDX.Tests
                     Assert.Equal(4, ColumnsOnScreen(controller));
                     BaseElement firstSlot = FirstSlot(controller);
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
                     controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
                     Assert.Equal(3, ColumnsOnScreen(controller));
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.Tests
                     Assert.Equal(4, ColumnsOnScreen(controller));
                     BaseElement firstSlot = FirstSlot(controller);
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
                     controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
                     Assert.Equal(3, ColumnsOnScreen(controller));
@@ -89,7 +89,7 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.ShowView(MenuController.VIEW_CANDY_SELECT);
 
-                    CtrRenderer.OnSurfaceChanged(720, 1280);
+                    GameLifecycle.OnSurfaceChanged(720, 1280);
                     controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
 
                     ScrollableContainer window = Window(controller);

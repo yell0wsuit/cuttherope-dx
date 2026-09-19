@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         {
             ScreenPresentation.Instance = new ScreenPresentation(
                 HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
-            CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+            GameLifecycle.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
         }
 
         private sealed class ProbeApplication : Application
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Tests
         {
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(1600, 900);
+            GameLifecycle.OnSurfaceChanged(1600, 900);
 
             Assert.Equal(1600, ScreenPresentation.Instance.Snapshot.SurfaceWidth);
             Assert.Equal(900, ScreenPresentation.Instance.Snapshot.SurfaceHeight);
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
         {
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(1600, 900);
+            GameLifecycle.OnSurfaceChanged(1600, 900);
 
             Assert.Equal(1600f, FrameworkTypes.REAL_SCREEN_WIDTH);
             Assert.Equal(900f, FrameworkTypes.REAL_SCREEN_HEIGHT);
@@ -80,8 +80,8 @@ namespace CutTheRopeDX.Tests
             // it is published, so there is no second value a host could leave behind.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(1600, 900);
-            CtrRenderer.OnSurfaceChanged(1024, 768);
+            GameLifecycle.OnSurfaceChanged(1600, 900);
+            GameLifecycle.OnSurfaceChanged(1024, 768);
 
             Assert.Equal(ScreenPresentation.Instance.Snapshot.SurfaceWidth, (int)FrameworkTypes.REAL_SCREEN_WIDTH);
             Assert.Equal(ScreenPresentation.Instance.Snapshot.SurfaceHeight, (int)FrameworkTypes.REAL_SCREEN_HEIGHT);
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.Tests
             // different shape must not move them, or every level's authored geometry moves with it.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(720, 1280);
+            GameLifecycle.OnSurfaceChanged(720, 1280);
 
             Assert.Equal(ViewportLayout.DesignWidth, FrameworkTypes.SCREEN_WIDTH);
             Assert.Equal(ViewportLayout.DesignHeight, FrameworkTypes.SCREEN_HEIGHT);
@@ -104,10 +104,10 @@ namespace CutTheRopeDX.Tests
         public void RepeatingTheSameSizeLeavesTheSnapshotUntouched()
         {
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
-            CtrRenderer.OnSurfaceChanged(1600, 900);
+            GameLifecycle.OnSurfaceChanged(1600, 900);
             ViewportLayoutSnapshot afterFirst = ScreenPresentation.Instance.Snapshot;
 
-            CtrRenderer.OnSurfaceChanged(1600, 900);
+            GameLifecycle.OnSurfaceChanged(1600, 900);
 
             Assert.Equal(afterFirst, ScreenPresentation.Instance.Snapshot);
         }
@@ -120,7 +120,7 @@ namespace CutTheRopeDX.Tests
             // snapshot rather than written during the transition.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(2560, 1440);
+            GameLifecycle.OnSurfaceChanged(2560, 1440);
 
             Assert.Equal(2560f, FrameworkTypes.REAL_SCREEN_WIDTH);
             Assert.Equal(1440f, FrameworkTypes.REAL_SCREEN_HEIGHT);
@@ -135,7 +135,7 @@ namespace CutTheRopeDX.Tests
                 ProbeApplication.Root = null;
                 ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-                CtrRenderer.OnSurfaceChanged(1600, 900);
+                GameLifecycle.OnSurfaceChanged(1600, 900);
 
                 Assert.Null(ProbeApplication.Root);
             }
@@ -155,11 +155,11 @@ namespace CutTheRopeDX.Tests
                 ProbeApplication.Root = root;
                 ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-                CtrRenderer.OnSurfaceChanged(1600, 900);
+                GameLifecycle.OnSurfaceChanged(1600, 900);
 
                 Assert.Equal(1, root.RelayoutCount);
 
-                CtrRenderer.OnSurfaceChanged(1600, 900);
+                GameLifecycle.OnSurfaceChanged(1600, 900);
 
                 Assert.Equal(1, root.RelayoutCount);
                 Assert.Equal(1600f, FrameworkTypes.REAL_SCREEN_WIDTH);
@@ -203,7 +203,7 @@ namespace CutTheRopeDX.Tests
             // and then corrects itself, which reads as a flicker rather than as a bug.
             ScreenPresentation.Instance = new ScreenPresentation(2560, 1440);
 
-            CtrRenderer.OnSurfaceChanged(1280, 720, 2f);
+            GameLifecycle.OnSurfaceChanged(1280, 720, 2f);
 
             Assert.Equal(2f, ScreenPresentation.Instance.Snapshot.DevicePixelRatio);
         }

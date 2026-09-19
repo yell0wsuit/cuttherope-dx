@@ -2,7 +2,7 @@ namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Logical-resolution presentation state: fixed game resolution, current surface size, and
-    /// coordinate transforms. <c>CtrRenderer</c> publishes its snapshot for every host through
+    /// coordinate transforms. <c>GameLifecycle</c> publishes its snapshot for every host through
     /// the engine's single surface-change transition.
     /// </summary>
     /// <param name="gameWidth">Logical game width.</param>

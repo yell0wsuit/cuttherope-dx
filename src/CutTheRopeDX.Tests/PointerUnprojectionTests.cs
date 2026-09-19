@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         /// </summary>
         public void Dispose()
         {
-            CtrRenderer.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
+            GameLifecycle.OnSurfaceChanged(HeadlessHost.DefaultWidth, HeadlessHost.DefaultHeight);
         }
 
         private sealed class ProbeController : ViewController
