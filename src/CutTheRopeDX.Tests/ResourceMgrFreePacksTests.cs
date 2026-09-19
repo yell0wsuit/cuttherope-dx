@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
     /// <summary>Freeing several packs together.</summary>
     public sealed class ResourceMgrFreePacksTests : IDisposable
     {
-        private readonly CTRResourceMgr resources;
+        private readonly ResourceMgr resources;
         private readonly LoadRecorder platform;
 
         public ResourceMgrFreePacksTests()

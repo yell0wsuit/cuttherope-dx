@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
@@ -49,7 +50,7 @@ namespace CutTheRopeDX.Framework.Media
         /// <param name="soundResourceName">Logical sound resource name to remove from the cache.</param>
         public void FreeSound(string soundResourceName)
         {
-            string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
+            string localizedName = ResourceMgr.HandleLocalizedResource(soundResourceName);
             if (string.IsNullOrEmpty(localizedName) || !loadedSounds.Remove(localizedName, out ISoundEffect sound))
             {
                 return;
@@ -72,7 +73,7 @@ namespace CutTheRopeDX.Framework.Media
                 return null;
             }
 
-            string localizedName = CTRResourceMgr.HandleLocalizedResource(soundResourceName);
+            string localizedName = ResourceMgr.HandleLocalizedResource(soundResourceName);
             if (string.IsNullOrEmpty(localizedName))
             {
                 return null;
@@ -91,7 +92,7 @@ namespace CutTheRopeDX.Framework.Media
 
             try
             {
-                string soundPath = ContentPaths.GetSoundEffectPath(CTRResourceMgr.XNA_ResName(localizedName));
+                string soundPath = ContentPaths.GetSoundEffectPath(ResourceMgr.XNA_ResName(localizedName));
                 ISoundEffect loaded = _backend.LoadSound(soundPath);
                 loadedSounds.Add(localizedName, loaded);
                 return loaded;
@@ -205,14 +206,14 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            string localizedName = CTRResourceMgr.HandleLocalizedResource(musicResourceName);
+            string localizedName = ResourceMgr.HandleLocalizedResource(musicResourceName);
             if (string.IsNullOrEmpty(localizedName))
             {
                 return;
             }
 
             StopMusic();
-            string musicPath = ContentPaths.GetMusicPath(CTRResourceMgr.XNA_ResName(localizedName));
+            string musicPath = ContentPaths.GetMusicPath(ResourceMgr.XNA_ResName(localizedName));
             try
             {
                 _backend.PlayMusic(_backend.LoadMusic(musicPath), true);

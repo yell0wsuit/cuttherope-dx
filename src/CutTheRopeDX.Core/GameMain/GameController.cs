@@ -150,7 +150,7 @@ namespace CutTheRopeDX.GameMain
                 gameSceneDelegate = this
             };
             _ = gameView.AddChildwithID(gameScene, 0);
-            int hudQuadOffset = CTRResourceMgr.GetHudButtonQuadOffset();
+            int hudQuadOffset = ResourceMgr.GetHudButtonQuadOffset();
             Button button = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, hudQuadOffset, GameControllerButtonId.Pause, this);
             button.anchor = button.parentAnchor = 12;
             button.x = -8f;

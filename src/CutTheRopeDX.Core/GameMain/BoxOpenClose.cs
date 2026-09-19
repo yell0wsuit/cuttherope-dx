@@ -336,7 +336,7 @@ namespace CutTheRopeDX.GameMain
             image4.anchor = 18;
             Image.SetElementPositionWithQuadOffset(image4, Resources.Img.MenuResults, 4);
             AddPanelPiece(image4);
-            stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, CTRResourceMgr.GetResultStampQuad());
+            stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, ResourceMgr.GetResultStampQuad());
             Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
             timeline2.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));

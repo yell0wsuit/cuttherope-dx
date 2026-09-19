@@ -32,7 +32,7 @@ namespace CutTheRopeDX.Tests
             Resources.Img.MenuPackUI,
         ];
 
-        private readonly CTRResourceMgr resources;
+        private readonly ResourceMgr resources;
         private readonly RecordingPlatform platform;
         private readonly IResourceMgrDelegate previousDelegate;
         private readonly CompletionRecorder completion = new();

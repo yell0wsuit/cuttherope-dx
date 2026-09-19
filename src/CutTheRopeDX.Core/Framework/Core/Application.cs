@@ -26,7 +26,7 @@ namespace CutTheRopeDX.Framework.Core
         /// Returns the shared resource manager instance.
         /// </summary>
         /// <returns>Shared resource manager.</returns>
-        public static CTRResourceMgr SharedResourceMgr()
+        public static ResourceMgr SharedResourceMgr()
         {
             return resourceMgr;
         }
@@ -110,9 +110,9 @@ namespace CutTheRopeDX.Framework.Core
         /// Creates the resource manager used by the application.
         /// </summary>
         /// <returns>New resource manager instance.</returns>
-        public virtual CTRResourceMgr CreateResourceMgr()
+        public virtual ResourceMgr CreateResourceMgr()
         {
-            return new CTRResourceMgr();
+            return new ResourceMgr();
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace CutTheRopeDX.Framework.Core
                 return texture;
             }
 
-            string localizedName = CTRResourceMgr.HandleLocalizedResource(textureResourceName);
+            string localizedName = ResourceMgr.HandleLocalizedResource(textureResourceName);
             string resolvedName = string.Equals(textureResourceName, localizedName, StringComparison.Ordinal)
                 ? textureResourceName
                 : string.IsNullOrEmpty(localizedName)
@@ -245,7 +245,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Shared resource manager instance.
         /// </summary>
-        private static readonly CTRResourceMgr resourceMgr = new();
+        private static readonly ResourceMgr resourceMgr = new();
 
         /// <summary>
         /// Shared root controller instance.

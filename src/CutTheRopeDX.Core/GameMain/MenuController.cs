@@ -1403,7 +1403,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="packIndex">Pack the selector settled on.</param>
         private void PrepareCoverFor(int packIndex)
         {
-            CTRResourceMgr resources = Application.SharedResourceMgr();
+            ResourceMgr resources = Application.SharedResourceMgr();
             string cover = PackConfig.GetBoxCoverOrDefault(packIndex);
             if (preparedCover != null && preparedCover != cover)
             {
@@ -1798,11 +1798,11 @@ namespace CutTheRopeDX.GameMain
         public void PreLevelSelect()
         {
             levelLaunchPending = false;
-            CTRResourceMgr cTRResourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             string[] array = PackConfig.GetBoxCovers(pack);
-            cTRResourceMgr.InitLoading();
-            cTRResourceMgr.LoadPack(array);
-            cTRResourceMgr.LoadImmediately();
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(array);
+            resourceMgr.LoadImmediately();
             if (GetView(6) != null)
             {
                 DeleteView(6);
@@ -1879,12 +1879,12 @@ namespace CutTheRopeDX.GameMain
                     string newLocale = langCodes[langIndex];
                     Application.SharedAppSettings().SetString((int)ApplicationSettings.AppSettings.APP_SETTING_LOCALE, newLocale);
                     Preferences.SetStringForKey(newLocale, "PREFS_LOCALE", true);
-                    CTRResourceMgr ctrresourceMgr2 = Application.SharedResourceMgr();
-                    ctrresourceMgr2.FreePack(PackLocalizationMenu);
-                    ctrresourceMgr2.ClearCachedFonts();
-                    ctrresourceMgr2.InitLoading();
-                    ctrresourceMgr2.LoadPack(PackLocalizationMenu);
-                    ctrresourceMgr2.LoadImmediately();
+                    ResourceMgr resourceMgr = Application.SharedResourceMgr();
+                    resourceMgr.FreePack(PackLocalizationMenu);
+                    resourceMgr.ClearCachedFonts();
+                    resourceMgr.InitLoading();
+                    resourceMgr.LoadPack(PackLocalizationMenu);
+                    resourceMgr.LoadImmediately();
                     DeleteView(VIEW_PACK_SELECT);
                     CreatePackSelect();
                     DeleteView(VIEW_MAIN_MENU);
@@ -1949,10 +1949,10 @@ namespace CutTheRopeDX.GameMain
                         pack = 0;
                         Application.SharedRootController().SetViewTransition(-1);
                         CTRRootController ctrrootController = (CTRRootController)Application.SharedRootController();
-                        CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
-                        ctrresourceMgr.InitLoading();
-                        ctrresourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
-                        ctrresourceMgr.LoadImmediately();
+                        ResourceMgr resourceMgr = Application.SharedResourceMgr();
+                        resourceMgr.InitLoading();
+                        resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
+                        resourceMgr.LoadImmediately();
                         ctrrootController.SetSurvival(true);
                         ctrrootController.SetBox(CTRPreferences.GetBoxForPack(pack));
                         ctrrootController.SetPack(pack);

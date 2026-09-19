@@ -129,14 +129,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="url">Movie URL reported by the movie manager, or <see langword="null"/> when loading starts directly.</param>
         public void MoviePlaybackFinished(string url)
         {
-            CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
-            ctrresourceMgr.resourcesDelegate = this;
-            ctrresourceMgr.InitLoading();
-            ctrresourceMgr.LoadPack(PackCommon);
-            ctrresourceMgr.LoadPack(PackCommonImages);
-            ctrresourceMgr.LoadPack(CTRRootController.PackMenu);
-            ctrresourceMgr.LoadPack(PackLocalizationMenu);
-            ctrresourceMgr.StartLoading();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.resourcesDelegate = this;
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(PackCommon);
+            resourceMgr.LoadPack(PackCommonImages);
+            resourceMgr.LoadPack(CTRRootController.PackMenu);
+            resourceMgr.LoadPack(PackLocalizationMenu);
+            resourceMgr.StartLoading();
         }
 
         /// <inheritdoc />

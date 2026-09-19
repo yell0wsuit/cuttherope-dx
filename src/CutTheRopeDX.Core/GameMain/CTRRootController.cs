@@ -86,7 +86,7 @@ namespace CutTheRopeDX.GameMain
             string[] levelResources = LevelResourceScanner.GetRequiredResources(map);
             TrackSessionResources(levelResources);
 
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(levelResources);
             resourceMgr.LoadImmediately();
@@ -130,10 +130,10 @@ namespace CutTheRopeDX.GameMain
             : base(parent)
         {
             loadedMap = null;
-            CTRResourceMgr ctrresourceMgr = Application.SharedResourceMgr();
-            ctrresourceMgr.InitLoading();
-            ctrresourceMgr.LoadPack(PackStartup);
-            ctrresourceMgr.LoadImmediately();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
+            resourceMgr.InitLoading();
+            resourceMgr.LoadPack(PackStartup);
+            resourceMgr.LoadImmediately();
 
             if (CustomLevelSession.IsActive)
             {
@@ -188,7 +188,7 @@ namespace CutTheRopeDX.GameMain
         /// loading screen, and re-enters gameplay.
         /// </summary>
         /// <param name="resourceMgr">Shared resource manager.</param>
-        private void ReloadCustomLevelThroughLoadingScreen(CTRResourceMgr resourceMgr)
+        private void ReloadCustomLevelThroughLoadingScreen(ResourceMgr resourceMgr)
         {
             DeleteChild(3);
 
@@ -213,7 +213,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void BeginCustomLevelLoad()
         {
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
             ResetGameplayResourceSession();
             EnsureCurrentMapLoaded();
@@ -234,7 +234,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Removes the menu child controller and frees menu resources.</summary>
         public void DeleteMenu()
         {
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             DeleteChild(1);
             Application.SharedMovieMgr().delegateMovieMgrDelegate = null;
             resourceMgr.FreePack(PackMenu);
@@ -275,7 +275,7 @@ namespace CutTheRopeDX.GameMain
         public override void OnChildDeactivated(int n)
         {
             base.OnChildDeactivated(n);
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             switch (n)
             {
                 case 0:
@@ -748,7 +748,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             resourceMgr.QueuePrefetchPack(remainingResources);
 
             if (prefetchDrainTimer < 0)
@@ -762,7 +762,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void DrainPrefetchQueue()
         {
-            CTRResourceMgr resourceMgr = Application.SharedResourceMgr();
+            ResourceMgr resourceMgr = Application.SharedResourceMgr();
             if (resourceMgr.PrefetchNextResource(out string loadedName))
             {
                 if (!string.IsNullOrWhiteSpace(loadedName))
