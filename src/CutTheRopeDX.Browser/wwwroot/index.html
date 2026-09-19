@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <script src="./console-capture.js"></script>
         <script src="./coi.js"></script>
 
         <!-- Resolves to the directory this page is served from, so the app works from a domain
@@ -446,11 +447,13 @@
                 showExportStatus("Collecting…", false);
                 try {
                     const { exportZip } = await import("./log.js");
+                    // console-capture.js may still be handing its first entries to the store.
+                    await globalThis.ctrdxCaptureSettled?.();
                     const saved = await exportZip();
                     showExportStatus(
                         saved === 0
                             ? "No logs recorded yet."
-                            : `Exported ${saved} ${saved === 1 ? "session" : "sessions"}.`,
+                            : `Exported ${saved} ${saved === 1 ? "log" : "logs"}.`,
                         true,
                     );
                 } catch (error) {

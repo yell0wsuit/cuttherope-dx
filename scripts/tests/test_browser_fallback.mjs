@@ -272,3 +272,73 @@ test("worker install caches common shell without downloading either runtime", as
     assert.deepEqual(downloaded, ["https://example.test/game/index.html"]);
     assert.equal(vm.runInContext("shellHashes.size", context), 3);
 });
+async function captureContext() {
+    const listeners = {};
+    const printed = [];
+    const sink = { header: null, lines: [] };
+    const context = vm.createContext({
+        console: {
+            warn: (...args) => printed.push(["warn", ...args]),
+            error: (...args) => printed.push(["error", ...args]),
+        },
+        addEventListener(name, fn) {
+            listeners[name] = fn;
+        },
+        location: { href: "https://example.test/" },
+        navigator: { language: "en" },
+        Error,
+    });
+    context.loadLogStub = async () => ({
+        beginBrowser(header) {
+            sink.header = header;
+        },
+        appendBrowser(line) {
+            sink.lines.push(line);
+        },
+    });
+    // vm's own dynamic-import hook needs --experimental-vm-modules, which CI does not pass, so
+    // the one import the capture makes is pointed at a stub instead.
+    const body = source("wwwroot/console-capture.js");
+    assert.ok(body.includes('import("./log.js")'));
+    vm.runInContext(
+        body.replace('import("./log.js")', "globalThis.loadLogStub()"),
+        context,
+    );
+    return { context, listeners, printed, sink };
+}
+test("capture records console warnings and errors with their stacks", async () => {
+    const { context, printed, sink } = await captureContext();
+    const error = new Error("boom");
+    context.console.warn("careful", { a: 1 });
+    context.console.error("failed:", error);
+    context.console.warn("ctrdx-log: could not persist entries");
+    await context.ctrdxCaptureSettled();
+
+    assert.equal(printed.length, 3);
+    assert.match(sink.header, /browser log/);
+    assert.equal(sink.lines.length, 2);
+    assert.match(
+        sink.lines[0],
+        /\[Warning\] Browser\.Console careful \{"a":1\}$/,
+    );
+    assert.match(
+        sink.lines[1],
+        /\[Error\] Browser\.Console failed: Error: boom/,
+    );
+    assert.ok(sink.lines[1].includes(error.stack.split("\n")[1]));
+});
+test("capture records failed loads and unhandled rejections", async () => {
+    const { context, listeners, sink } = await captureContext();
+    listeners.error({
+        target: { tagName: "SCRIPT", src: "https://example.test/main.js" },
+    });
+    listeners.unhandledrejection({ reason: new TypeError("nope") });
+    await context.ctrdxCaptureSettled();
+
+    assert.equal(sink.lines.length, 2);
+    assert.match(
+        sink.lines[0],
+        /\[Error\] Browser\.Resource failed to load <script> https:\/\/example\.test\/main\.js$/,
+    );
+    assert.match(sink.lines[1], /\[Error\] Browser\.Rejection TypeError: nope/);
+});

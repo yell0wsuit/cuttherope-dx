@@ -5,23 +5,52 @@
 // the worker appends, the page reads. Nothing here is on the frame path - entries are buffered
 // and written in batches, because a transaction per line would cost more than the logging is
 // worth.
+//
+// A run keeps two records. The game's holds what the managed code logs; the page's holds what
+// the browser itself reports - console warnings and errors, uncaught exceptions, rejected
+// promises, assets that failed to load - collected by console-capture.js. On a phone there is no
+// developer console to read those from, and a boot that fails before the game logs anything
+// leaves them as the only account of what happened.
 
 const DB_NAME = "ctrdx-logs";
 const STORE = "sessions";
 const DB_VERSION = 1;
 
-// Ten runs, matching what the desktop build keeps beside its save data.
+// Ten runs, matching what the desktop build keeps beside its save data. Counted for each kind of
+// record separately, so a run of page errors cannot push the game's own logs out.
 const MAX_SESSIONS = 10;
+
+// Appended to the page record's identifier. It sorts right after the game record of a run that
+// started in the same second, and the exported file name says which one it is.
+const BROWSER_SUFFIX = "-browser";
 
 // Long enough that a quiet run writes rarely, short enough that a browser closed without warning
 // loses little. Warnings and worse bypass it entirely.
 const FLUSH_DELAY_MS = 2000;
 
-let sessionId = null;
-let pending = [];
-let flushTimer = null;
+/**
+ * One record's write state.
+ *
+ * In the single-threaded runtime the game imports this same module instance on the page, so the
+ * game and the page write through one copy of this file. Keeping each record's buffer and write
+ * chain apart is what keeps them from appending into each other's session.
+ *
+ * @param {string} suffix Appended to the session identifier.
+ */
+function createRecord(suffix) {
+    return {
+        suffix,
+        id: null,
+        pending: [],
+        flushTimer: null,
+        flushChain: Promise.resolve(),
+    };
+}
+
+const gameRecord = createRecord("");
+const browserRecord = createRecord(BROWSER_SUFFIX);
+
 let dbPromise = null;
-let flushChain = Promise.resolve();
 
 function openDatabase() {
     if (dbPromise === null) {
@@ -75,15 +104,7 @@ export function describeDevice() {
 
 /** Starts this run's session. Safe to call more than once; only the first takes effect. */
 export function begin(header) {
-    if (sessionId !== null) {
-        return sessionId;
-    }
-
-    sessionId = formatSessionId(new Date());
-    pending.push(header + "\n" + describeDevice());
-    void flush();
-    void prune();
-    return sessionId;
+    return startRecord(gameRecord, header);
 }
 
 /**
@@ -93,59 +114,98 @@ export function begin(header) {
  * @param {boolean} urgent Whether to write through rather than wait for the batch.
  */
 export function append(line, urgent) {
-    if (sessionId === null) {
-        begin("");
+    queueEntry(gameRecord, line, urgent);
+}
+
+/** Writes whatever the game has buffered. */
+export function flush() {
+    return flushRecord(gameRecord);
+}
+
+/** Starts this page's browser record. Safe to call more than once; only the first takes effect. */
+export function beginBrowser(header) {
+    return startRecord(browserRecord, header);
+}
+
+/**
+ * Adds one entry to the page's browser record.
+ *
+ * @param {string} line The formatted entry.
+ * @param {boolean} urgent Whether to write through rather than wait for the batch.
+ */
+export function appendBrowser(line, urgent) {
+    queueEntry(browserRecord, line, urgent);
+}
+
+function startRecord(record, header) {
+    if (record.id !== null) {
+        return record.id;
     }
 
-    pending.push(line);
+    record.id = formatSessionId(new Date()) + record.suffix;
+    record.pending.push(header + "\n" + describeDevice());
+    void flushRecord(record);
+    void prune(record);
+    return record.id;
+}
+
+function queueEntry(record, line, urgent) {
+    if (record.id === null) {
+        startRecord(record, "");
+    }
+
+    record.pending.push(line);
     if (urgent) {
-        void flush();
+        void flushRecord(record);
         return;
     }
 
-    if (flushTimer === null) {
-        flushTimer = setTimeout(() => {
-            flushTimer = null;
-            void flush();
+    if (record.flushTimer === null) {
+        record.flushTimer = setTimeout(() => {
+            record.flushTimer = null;
+            void flushRecord(record);
         }, FLUSH_DELAY_MS);
     }
 }
 
 /**
- * Writes whatever is buffered. A storage failure drops the batch rather than the run.
+ * Writes whatever a record has buffered. A storage failure drops the batch rather than the run.
  *
  * Appending is a read followed by a write, so two of these in flight both read the same stored
  * text and whichever puts last erases the other's batch. Every urgent entry starts its own
  * flush, and every warning and error is urgent, so two warnings in one frame is enough to lose
  * the first - the entries the log exists to keep. Writes are chained so only one runs at a time.
- * The session record has a single writer, so ordering them here is enough to make the append safe.
+ * Each record has a single writer, so ordering them here is enough to make the append safe.
  */
-export function flush() {
-    flushChain = flushChain.then(writeBatch, writeBatch);
-    return flushChain;
+function flushRecord(record) {
+    const write = () => writeBatch(record);
+    record.flushChain = record.flushChain.then(write, write);
+    return record.flushChain;
 }
 
-async function writeBatch() {
-    if (pending.length === 0 || sessionId === null) {
+async function writeBatch(record) {
+    if (record.pending.length === 0 || record.id === null) {
         return;
     }
 
-    const batch = pending;
-    pending = [];
-    if (flushTimer !== null) {
-        clearTimeout(flushTimer);
-        flushTimer = null;
+    const batch = record.pending;
+    record.pending = [];
+    if (record.flushTimer !== null) {
+        clearTimeout(record.flushTimer);
+        record.flushTimer = null;
     }
 
     try {
         const db = await openDatabase();
         const store = transaction(db, "readwrite");
-        const existing = await request(store.get(sessionId));
+        const existing = await request(store.get(record.id));
         const text = (existing?.text ?? "") + batch.join("\n") + "\n";
         await request(
-            transaction(db, "readwrite").put({ id: sessionId, text }),
+            transaction(db, "readwrite").put({ id: record.id, text }),
         );
     } catch (error) {
+        // The ctrdx-log prefix is what console-capture.js leaves out, so a store that cannot be
+        // written does not feed its own failure back into itself.
         console.warn("ctrdx-log: could not persist entries", error);
     }
 }
@@ -157,11 +217,17 @@ function request(operation) {
     });
 }
 
-/** Drops the oldest runs so the database cannot grow without limit. */
-async function prune() {
+/** Drops the oldest runs of a record's kind so the database cannot grow without limit. */
+async function prune(record) {
     try {
         const db = await openDatabase();
-        const ids = await request(transaction(db, "readonly").getAllKeys());
+        const ids = (
+            await request(transaction(db, "readonly").getAllKeys())
+        ).filter(
+            (id) =>
+                String(id).endsWith(BROWSER_SUFFIX) ===
+                (record === browserRecord),
+        );
         // The run that just started is not stored yet, so it is counted here rather than
         // waited for: without it this keeps MAX_SESSIONS and then adds one more.
         const doomed = ids
@@ -297,16 +363,19 @@ export async function buildZip(files) {
 }
 
 /**
- * Writes every stored run into a zip and hands it to the browser to save.
+ * Writes every stored record into a zip and hands it to the browser to save.
  *
- * This runs on the page, whose module instance has never appended anything, so it cannot reach
- * the buffer the worker is filling: up to one batch delay of the running session's unflushed
- * entries is not in the archive. Only Information and below can be missing, because a warning or
- * worse is written through when it is logged rather than waiting for the batch.
+ * This runs on the page. Whatever this module instance has buffered is written first: the page's
+ * browser record always, and the game's too in the single-threaded runtime, where the game shares
+ * this instance. The threaded runtime's game buffers on its worker, out of reach, so up to one
+ * batch delay of the running session's unflushed entries is not in the archive there. Only
+ * Information and below can be missing, because a warning or worse is written through when it is
+ * logged rather than waiting for the batch.
  *
- * @returns {Promise<number>} How many runs the archive holds.
+ * @returns {Promise<number>} How many log files the archive holds.
  */
 export async function exportZip() {
+    await Promise.all([flushRecord(browserRecord), flushRecord(gameRecord)]);
     const sessions = await readAll();
     if (sessions.length === 0) {
         return 0;
