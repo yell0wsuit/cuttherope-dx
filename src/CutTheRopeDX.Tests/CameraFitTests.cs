@@ -10,8 +10,8 @@ using Xunit;
 namespace CutTheRopeDX.Tests
 {
     /// <summary>
-    /// Covers gameplay camera policy: the camera shows a fixed 960 world units of width on every
-    /// window shape, and a level larger than that scrolls rather than being shrunk to fit inside it.
+    /// Covers gameplay camera policy: tall screens show 960 world units of width, while
+    /// wider screens preserve the authored height and reveal more horizontal space.
     /// </summary>
     public sealed class CameraFitTests
     {
@@ -21,12 +21,12 @@ namespace CutTheRopeDX.Tests
         /// <summary>Level index of the wide level within <see cref="WidePack"/>.</summary>
         private const int WideLevel = 1;
 
-        /// <summary>The world width the camera shows at once, on every window shape.</summary>
+        /// <summary>The world width the camera shows at once on tall screens.</summary>
         private const float LockedViewWidth = 960f;
 
         [Theory]
         [MemberData(nameof(Surfaces))]
-        public void TheVisibleWidthIsLockedOnEveryWindowShape(string name, int width, int height)
+        public void TheCameraPreservesTheAuthoredFrameOnEveryWindowShape(string name, int width, int height)
         {
             _ = HeadlessGame.Boot();
 
@@ -38,17 +38,17 @@ namespace CutTheRopeDX.Tests
 
                 ApplyFit(scene);
 
-                // The scale is whatever it takes to spread 960 world units across the window.
-                Assert.Equal(viewport.w, LockedViewWidth * camera.Scale, 0.01);
+                float expectedScale = System.MathF.Min(viewport.w / LockedViewWidth, viewport.h / 1440f);
+                Assert.Equal(expectedScale, camera.Scale, 0.001);
                 Assert.False(string.IsNullOrEmpty(name));
             });
         }
 
         [Theory]
-        [InlineData(2560, 1440)]
-        [InlineData(1000, 1000)]
+        [InlineData(320, 480)]
+        [InlineData(400, 1280)]
         [InlineData(720, 1280)]
-        public void AWideLevelScrollsHorizontallyOnEveryWindowShape(int width, int height)
+        public void AWideLevelScrollsHorizontallyOnTallScreens(int width, int height)
         {
             _ = HeadlessGame.Boot();
 
@@ -67,20 +67,20 @@ namespace CutTheRopeDX.Tests
                 float atRightEdge = camera.RenderPos.X;
 
                 // The level is 1920 world units wide against a 960-unit screen, so the camera
-                // travels the 960 units between its two edges whatever shape the window is.
+                // travels the 960 units between its two edges on tall screens.
                 Assert.Equal(bounds.x, atLeftEdge, 0.001);
                 Assert.Equal(bounds.x + bounds.w - LockedViewWidth, atRightEdge, 0.001);
             });
         }
 
         [Fact]
-        public void ANarrowLevelFillsTheWindowWidthExactly()
+        public void ANarrowLevelRemainsCenteredAtNormalScaleOnAWideScreen()
         {
             _ = HeadlessGame.Boot();
 
             LayoutSurfaces.WithSurface(2560, 1440, () =>
             {
-                // Pack 0 level 0 is authored 320 wide: exactly the locked screen width.
+                // Pack 0 level 0 is authored 320 wide.
                 GameScene scene = HeadlessGame.LoadLevel(0, 0);
                 Camera2D camera = ReadCamera(scene);
                 CTRRectangle bounds = ReadCameraBounds(scene);
@@ -88,10 +88,36 @@ namespace CutTheRopeDX.Tests
                 camera.MoveToXYImmediate(bounds.x + bounds.w, 0f, true);
                 ApplyFit(scene);
 
-                // Nowhere to scroll horizontally, and the level's own edges are the screen's.
-                Assert.Equal(bounds.x, camera.RenderPos.X, 0.001);
+                // The complete level remains centered in the design frame.
+                Assert.Equal(0f, camera.RenderPos.X, 0.001);
                 Assert.Equal(LockedViewWidth, bounds.w, 0.001);
-                Assert.Equal(2560f / LockedViewWidth, camera.Scale, 0.001);
+                Assert.Equal(1f, camera.Scale, 0.001);
+            });
+        }
+
+        [Theory]
+        [InlineData(1280, 720)]
+        [InlineData(2560, 1440)]
+        [InlineData(3840, 2160)]
+        public void A640WidthLevelFitsAtNormalScaleOnSixteenNine(int width, int height)
+        {
+            _ = HeadlessGame.Boot();
+            LayoutSurfaces.WithSurface(width, height, () =>
+            {
+                GameScene scene = HeadlessGame.LoadLevel(WidePack, WideLevel);
+                Camera2D camera = ReadCamera(scene);
+                CTRRectangle viewport = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                CTRRectangle bounds = ReadCameraBounds(scene);
+
+                Assert.Equal(1920f, bounds.w);
+                ApplyFit(scene);
+
+                Assert.Equal(1f, camera.Scale, 0.001);
+                Assert.Equal(0f, camera.RenderPos.X, 0.001);
+                Assert.Equal(0f, camera.RenderPos.Y, 0.001);
+                Assert.True(camera.RenderPos.X <= bounds.x);
+                Assert.True(camera.RenderPos.X + (viewport.w / camera.Scale) >= bounds.x + bounds.w);
+                Assert.Equal(1440f, viewport.h / camera.Scale, 0.001);
             });
         }
 
