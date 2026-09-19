@@ -447,6 +447,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
                 VkDevice = device,
                 VkQueue = queue,
                 GraphicsQueueIndex = queueFamily,
+                MaxAPIVersion = Vk.ApiVersion11,
                 GetProcedureAddress = procedure,
             });
             Context = Own(GRContext.CreateVulkan(backend)
