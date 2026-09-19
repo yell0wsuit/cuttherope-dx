@@ -169,6 +169,29 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
+        /// Saves preferences and suspends the root controller when the application loses focus.
+        /// </summary>
+        public static void ApplicationWillResignActive()
+        {
+            Preferences.RequestSave();
+            if (root != null && !root.IsSuspended())
+            {
+                root.Suspend();
+            }
+        }
+
+        /// <summary>
+        /// Resumes the root controller when the application becomes active again.
+        /// </summary>
+        public static void ApplicationDidBecomeActive()
+        {
+            if (root != null && root.IsSuspended())
+            {
+                root.Resume();
+            }
+        }
+
+        /// <summary>
         /// Creates the movie manager used by the application.
         /// </summary>
         /// <returns>New movie manager instance.</returns>

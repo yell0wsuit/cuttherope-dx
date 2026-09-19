@@ -211,7 +211,7 @@ namespace CutTheRopeDX.Commons
             }
             LanguageHelper.Current = language;
             FmInit();
-            gApp = new CTRApp();
+            gApp = new Application();
             gApp.ApplicationDidFinishLaunching();
         }
 
@@ -242,7 +242,7 @@ namespace CutTheRopeDX.Commons
                 CTRSoundMgr.Pause();
                 Application.SharedMovieMgr().Pause();
                 gPaused = true;
-                CTRApp.ApplicationWillResignActive();
+                Application.ApplicationWillResignActive();
                 Texture2D.SuspendAll();
             }
         }
@@ -259,7 +259,7 @@ namespace CutTheRopeDX.Commons
                 Texture2D.SuspendAll();
                 Texture2D.ResumeAll();
                 gPaused = false;
-                CTRApp.ApplicationDidBecomeActive();
+                Application.ApplicationDidBecomeActive();
             }
         }
 
@@ -392,7 +392,7 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Holds the shared application instance owned by the renderer bridge.
         /// </summary>
-        private static CTRApp gApp;
+        private static Application gApp;
 
         /// <summary>
         /// Indicates whether the runtime is currently paused.
