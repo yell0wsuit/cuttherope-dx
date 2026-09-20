@@ -993,6 +993,7 @@ namespace CutTheRopeDX.GameMain
             // The offscreen release coordinates cancel buttons, but would give a dragged
             // conveyor a large fling delta. Cancel belt capture before sending those releases.
             gs.CancelConveyorDrags();
+            gs.CancelPendingRocketTaps();
             for (int i = 0; i < 5; i++)
             {
                 touchAddressMap[i] = 0;

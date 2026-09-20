@@ -62,6 +62,24 @@ namespace CutTheRopeDX.GameMain
             conveyors?.CancelAllDrags();
         }
 
+        /// <summary>Cancels held rocket taps so a synthetic release cannot turn them.</summary>
+        public void CancelPendingRocketTaps()
+        {
+            if (rockets == null)
+            {
+                return;
+            }
+
+            foreach (Rocket rocket in rockets)
+            {
+                // Actual rotation drags still finish through the normal snap-to-angle path.
+                if (rocket != null && !rocket.rotateHandled)
+                {
+                    rocket.isOperating = -1;
+                }
+            }
+        }
+
         /// <summary>Releases captured controls when play ends without firing their release actions.</summary>
         private void CancelTouchesForLevelEnd()
         {
