@@ -7,4 +7,41 @@
                              Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
     </ItemGroup>
   </Target>
+
+  <!--
+    SDL_mixer opens its optional codec libraries by name when it initializes, and prefers
+    whichever it finds over the decoders compiled into it. Those libraries sit under
+    runtimes/<rid>/native in an ordinary build, where the platform loader never looks, so a
+    development build has always decoded music with the built-in DRFLAC. Publishing flattens
+    every native next to the executable, which is the one layout where libFLAC is found - and
+    SDL_mixer's libFLAC decoder discards the first block of a stream it opens, 4096 frames or
+    about 93ms, so a shipped build began every song a tenth of a second in, mid-waveform and
+    with an audible click. Repeating a song was unaffected because a loop seeks rather than
+    reopens.
+
+    None of these libraries are needed. The game ships .wav sound effects and .flac music, and
+    SDL_mixer decodes both with decoders built into it; the built-in FLAC decoder is
+    sample-for-sample identical to the reference decoder from the first frame on. Leaving them
+    out is what keeps a shipped build decoding exactly like a development one, and takes about
+    3MB off every package.
+  -->
+  <PropertyGroup>
+    <UnusedMixerCodecPattern>^(lib)?(FLAC|gme|mpg123|ogg|opusfile|opus|vorbisfile|vorbis|wavpackdll|wavpack|xmp)([-.][0-9][0-9.]*)?\.(dll|dylib|so)(\.[0-9][0-9.]*)?$</UnusedMixerCodecPattern>
+  </PropertyGroup>
+
+  <Target Name="ExcludeUnusedMixerCodecsFromOutput" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths
+          Remove="@(ReferenceCopyLocalPaths)"
+          Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)%(Extension)', '$(UnusedMixerCodecPattern)'))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ExcludeUnusedMixerCodecsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish
+          Remove="@(ResolvedFileToPublish)"
+          Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)%(Extension)', '$(UnusedMixerCodecPattern)'))" />
+    </ItemGroup>
+  </Target>
 </Project>
