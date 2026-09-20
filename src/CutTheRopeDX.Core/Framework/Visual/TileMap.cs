@@ -195,19 +195,19 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 return;
             }
-            Rectangle rectangle = RectInRectIntersection(new Rectangle(mapX, mapY, tileMapWidth, tileMapHeight), new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
-            Vector vector = Vect(MathF.Max(0f, rectangle.x), MathF.Max(0f, rectangle.y));
-            Vector vector2 = Vect((int)vector.X / tileWidth, (int)vector.Y / tileHeight);
-            float rowStartY = mapY + (vector2.Y * tileHeight);
-            Vector vector3 = Vect(mapX + (vector2.X * tileWidth), rowStartY);
+            Rectangle visibleMap = RectInRectIntersection(new Rectangle(mapX, mapY, tileMapWidth, tileMapHeight), new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight));
+            Vector visibleOrigin = Vect(MathF.Max(0f, visibleMap.x), MathF.Max(0f, visibleMap.y));
+            Vector firstTile = Vect((int)visibleOrigin.X / tileWidth, (int)visibleOrigin.Y / tileHeight);
+            float rowStartY = mapY + (firstTile.Y * tileHeight);
+            Vector tilePos = Vect(mapX + (firstTile.X * tileWidth), rowStartY);
             int count = drawers.Count;
             for (int i = 0; i < count; i++)
             {
                 ImageMultiDrawer imageMultiDrawer = drawers[i];
                 _ = (imageMultiDrawer?.numberOfQuadsToDraw = 0);
             }
-            int maxVisibleColumn = (int)(vector2.X + maxColsOnScreen - 1f);
-            int maxVisibleRow = (int)(vector2.Y + maxRowsOnScreen - 1f);
+            int maxVisibleColumn = (int)(firstTile.X + maxColsOnScreen - 1f);
+            int maxVisibleRow = (int)(firstTile.Y + maxRowsOnScreen - 1f);
             if (repeatedVertically == Repeat.NONE)
             {
                 maxVisibleRow = Math.Min(rows - 1, maxVisibleRow);
@@ -216,45 +216,45 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 maxVisibleColumn = Math.Min(columns - 1, maxVisibleColumn);
             }
-            for (int j = (int)vector2.X; j <= maxVisibleColumn; j++)
+            for (int j = (int)firstTile.X; j <= maxVisibleColumn; j++)
             {
-                vector3.Y = rowStartY;
-                int k = (int)vector2.Y;
-                while (k <= maxVisibleRow && vector3.Y < cameraY + cameraViewHeight)
+                tilePos.Y = rowStartY;
+                int k = (int)firstTile.Y;
+                while (k <= maxVisibleRow && tilePos.Y < cameraY + cameraViewHeight)
                 {
-                    Rectangle rectangle2 = RectInRectIntersection(new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight), new Rectangle(vector3.X, vector3.Y, tileWidth, tileHeight));
-                    Rectangle r = new(cameraX - vector3.X + rectangle2.x, cameraY - vector3.Y + rectangle2.y, rectangle2.w, rectangle2.h);
+                    Rectangle visibleTile = RectInRectIntersection(new Rectangle(cameraX, cameraY, cameraViewWidth, cameraViewHeight), new Rectangle(tilePos.X, tilePos.Y, tileWidth, tileHeight));
+                    Rectangle r = new(cameraX - tilePos.X + visibleTile.x, cameraY - tilePos.Y + visibleTile.y, visibleTile.w, visibleTile.h);
                     int tileColumn = j;
                     int tileRow = k;
                     if (repeatedVertically == Repeat.EDGES)
                     {
-                        if (vector3.Y < y)
+                        if (tilePos.Y < y)
                         {
                             tileRow = 0;
                         }
-                        else if (vector3.Y >= y + tileMapHeight)
+                        else if (tilePos.Y >= y + tileMapHeight)
                         {
                             tileRow = rows - 1;
                         }
                     }
                     if (repeatedHorizontally == Repeat.EDGES)
                     {
-                        if (vector3.X < x)
+                        if (tilePos.X < x)
                         {
                             tileColumn = 0;
                         }
-                        else if (vector3.X >= x + tileMapWidth)
+                        else if (tilePos.X >= x + tileMapWidth)
                         {
                             tileColumn = columns - 1;
                         }
                     }
                     if (horizontalRandom)
                     {
-                        tileColumn = Math.Abs((int)(FmSin(vector3.X) * randomSeed) % columns);
+                        tileColumn = Math.Abs((int)(FmSin(tilePos.X) * randomSeed) % columns);
                     }
                     if (verticalRandom)
                     {
-                        tileRow = Math.Abs((int)(FmSin(vector3.Y) * randomSeed) % rows);
+                        tileRow = Math.Abs((int)(FmSin(tilePos.Y) * randomSeed) % rows);
                     }
                     if (tileColumn >= columns)
                     {
@@ -268,28 +268,24 @@ namespace CutTheRopeDX.Framework.Visual
                     if (tileIndex >= 0)
                     {
                         TileEntry tileEntry = tiles[tileIndex];
-                        ImageMultiDrawer imageMultiDrawer2 = drawers[tileEntry.drawerIndex];
-                        Texture2D texture = imageMultiDrawer2.image.texture;
+                        ImageMultiDrawer drawer = drawers[tileEntry.drawerIndex];
+                        Texture2D texture = drawer.image.texture;
                         if (tileEntry.quad != -1 && texture.quadRects != null)
                         {
                             r.x += texture.quadRects[tileEntry.quad].x;
                             r.y += texture.quadRects[tileEntry.quad].y;
                         }
-                        Quad2D textureCoordinates = DrawHelper.GetTextureCoordinates(imageMultiDrawer2.image.texture, r);
-                        Quad3D qv = Quad3D.MakeQuad3D(pos.X + rectangle2.x, pos.Y + rectangle2.y, 0f, rectangle2.w, rectangle2.h);
-                        ImageMultiDrawer imageMultiDrawer3 = imageMultiDrawer2;
-                        Quad2D quad2D = textureCoordinates;
-                        Quad3D quad3D = qv;
-                        ImageMultiDrawer imageMultiDrawer4 = imageMultiDrawer2;
-                        int numberOfQuadsToDraw = imageMultiDrawer4.numberOfQuadsToDraw;
-                        imageMultiDrawer4.numberOfQuadsToDraw = numberOfQuadsToDraw + 1;
-                        imageMultiDrawer3.SetTextureQuadatVertexQuadatIndex(quad2D, quad3D, numberOfQuadsToDraw);
+                        Quad2D textureCoordinates = DrawHelper.GetTextureCoordinates(drawer.image.texture, r);
+                        Quad3D qv = Quad3D.MakeQuad3D(pos.X + visibleTile.x, pos.Y + visibleTile.y, 0f, visibleTile.w, visibleTile.h);
+                        int quadIndex = drawer.numberOfQuadsToDraw;
+                        drawer.numberOfQuadsToDraw = quadIndex + 1;
+                        drawer.SetTextureQuadatVertexQuadatIndex(textureCoordinates, qv, quadIndex);
                     }
-                    vector3.Y += tileHeight;
+                    tilePos.Y += tileHeight;
                     k++;
                 }
-                vector3.X += tileWidth;
-                if (vector3.X >= cameraX + cameraViewWidth)
+                tilePos.X += tileWidth;
+                if (tilePos.X >= cameraX + cameraViewWidth)
                 {
                     break;
                 }

@@ -158,11 +158,11 @@ namespace CutTheRopeDX.GameMain
             button.y = 8f;
             _ = gameView.AddChildwithID(button, 1);
             const int HudUiRestartQuad = 0;
-            Button button2 = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, HudUiRestartQuad, GameControllerButtonId.Restart, this);
-            button2.anchor = button2.parentAnchor = 12;
-            button2.x = -button.width - 16f;
-            button2.y = 8f;
-            _ = gameView.AddChildwithID(button2, 2);
+            Button restartButton = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, HudUiRestartQuad, GameControllerButtonId.Restart, this);
+            restartButton.anchor = restartButton.parentAnchor = 12;
+            restartButton.x = -button.width - 16f;
+            restartButton.y = 8f;
+            _ = gameView.AddChildwithID(restartButton, 2);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = PausePlateScale;
@@ -179,37 +179,37 @@ namespace CutTheRopeDX.GameMain
             _ = image.AddChild(mapNameLabel);
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5, 2, DesignBox.w);
             pauseMenuPlate = image;
-            Button c = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
-            _ = vBox.AddChild(c);
+            Button continueButton = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("CONTINUE"), GameControllerButtonId.Continue, this);
+            _ = vBox.AddChild(continueButton);
             if (!CustomLevelSession.IsActive)
             {
-                Button c2 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("SKIP_LEVEL"), GameControllerButtonId.SkipLevel, this);
-                _ = vBox.AddChild(c2);
-                Button c3 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_SELECT"), GameControllerButtonId.LevelSelect, this);
-                _ = vBox.AddChild(c3);
+                Button skipLevelButton = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("SKIP_LEVEL"), GameControllerButtonId.SkipLevel, this);
+                _ = vBox.AddChild(skipLevelButton);
+                Button levelSelectButton = MenuController.CreateButtonWithTextIDDelegate(Application.GetString("LEVEL_SELECT"), GameControllerButtonId.LevelSelect, this);
+                _ = vBox.AddChild(levelSelectButton);
             }
             string exitLabel = CustomLevelSession.IsActive
                 ? PlatformServices.Host?.CustomLevelExitLabelKey ?? "QUIT_BUTTON"
                 : "MAIN_MENU";
-            Button c4 = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(exitLabel), GameControllerButtonId.MainMenu, this);
-            _ = vBox.AddChild(c4);
+            Button exitButton = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(exitLabel), GameControllerButtonId.MainMenu, this);
+            _ = vBox.AddChild(exitButton);
             vBox.anchor = vBox.parentAnchor = 10;
-            ToggleButton toggleButton = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic);
-            ToggleButton toggleButton2 = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound);
-            HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, toggleButton.height);
-            _ = hBox.AddChild(toggleButton2);
-            _ = hBox.AddChild(toggleButton);
+            ToggleButton musicToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic);
+            ToggleButton soundToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound);
+            HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
+            _ = hBox.AddChild(soundToggle);
+            _ = hBox.AddChild(musicToggle);
             _ = vBox.AddChild(hBox);
             vBox.y = (DesignBox.h - vBox.height) / 2f;
             bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
             bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
             if (!soundOn)
             {
-                toggleButton2.Toggle();
+                soundToggle.Toggle();
             }
             if (!musicOn)
             {
-                toggleButton.Toggle();
+                musicToggle.Toggle();
             }
             _ = gameView.AddChildwithID(image, 3);
 
@@ -365,12 +365,12 @@ namespace CutTheRopeDX.GameMain
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);
-            Image image = (Image)boxOpenClose.result.GetChildWithName("star1");
-            Image image2 = (Image)boxOpenClose.result.GetChildWithName("star2");
-            Image image3 = (Image)boxOpenClose.result.GetChildWithName("star3");
-            image.SetDrawQuad(result.StarsCollected > 0 ? 13 : 14);
-            image2.SetDrawQuad(result.StarsCollected > 1 ? 13 : 14);
-            image3.SetDrawQuad(result.StarsCollected > 2 ? 13 : 14);
+            Image star1 = (Image)boxOpenClose.result.GetChildWithName("star1");
+            Image star2 = (Image)boxOpenClose.result.GetChildWithName("star2");
+            Image star3 = (Image)boxOpenClose.result.GetChildWithName("star3");
+            star1.SetDrawQuad(result.StarsCollected > 0 ? 13 : 14);
+            star2.SetDrawQuad(result.StarsCollected > 1 ? 13 : 14);
+            star3.SetDrawQuad(result.StarsCollected > 2 ? 13 : 14);
             string clearText = result.StarsCollected switch
             {
                 1 => "LEVEL_CLEARED2",
@@ -621,13 +621,13 @@ namespace CutTheRopeDX.GameMain
                 default:
                     return;
             }
-            GameScene gameScene5 = (GameScene)view.GetChild(0);
+            GameScene gameScene = (GameScene)view.GetChild(0);
             if (overlayMode != GameControllerOverlayMode.Gameplay)
             {
                 LevelStart();
             }
-            gameScene5.animateRestartDim = n == GameControllerButtonId.Restart;
-            gameScene5.Reload();
+            gameScene.animateRestartDim = n == GameControllerButtonId.Restart;
+            gameScene.Reload();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
             RootController.LogEvent(n != GameControllerButtonId.ExitFromLose ? "IG_REPLAY_PRESSED" : "LC_REPLAY_PRESSED");
         }

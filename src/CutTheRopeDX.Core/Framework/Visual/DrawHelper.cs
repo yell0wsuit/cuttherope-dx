@@ -469,33 +469,33 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>An 8-vertex strip suitable for antialiased line rendering.</returns>
         public static VertexPositionColor[] BuildAntialiasedLineVertices(float x1, float y1, float x2, float y2, float size, RGBAColor color)
         {
-            Vector v = Vect(x1, y1);
-            Vector vector = VectSub(Vect(x2, y2), v);
-            Vector v2 = VectPerp(vector);
-            Vector vector2 = VectNormalize(v2);
-            v2 = VectMult(vector2, size);
-            Vector v3 = VectNeg(v2);
-            Vector v4 = VectAdd(v2, vector);
-            Vector v5 = VectAdd(VectNeg(v2), vector);
-            v2 = VectAdd(v2, v);
-            v3 = VectAdd(v3, v);
-            v4 = VectAdd(v4, v);
-            v5 = VectAdd(v5, v);
-            Vector vector3 = VectSub(v2, vector2);
-            Vector vector4 = VectSub(v4, vector2);
-            Vector vector5 = VectAdd(v3, vector2);
-            Vector vector6 = VectAdd(v5, vector2);
+            Vector start = Vect(x1, y1);
+            Vector span = VectSub(Vect(x2, y2), start);
+            Vector leftStart = VectPerp(span);
+            Vector normal = VectNormalize(leftStart);
+            leftStart = VectMult(normal, size);
+            Vector rightStart = VectNeg(leftStart);
+            Vector leftEnd = VectAdd(leftStart, span);
+            Vector rightEnd = VectAdd(VectNeg(leftStart), span);
+            leftStart = VectAdd(leftStart, start);
+            rightStart = VectAdd(rightStart, start);
+            leftEnd = VectAdd(leftEnd, start);
+            rightEnd = VectAdd(rightEnd, start);
+            Vector leftInnerStart = VectSub(leftStart, normal);
+            Vector leftInnerEnd = VectSub(leftEnd, normal);
+            Vector rightInnerStart = VectAdd(rightStart, normal);
+            Vector rightInnerEnd = VectAdd(rightEnd, normal);
             VertexPositionColor[] vertices = GetVertexCache(ref s_antialiasedLineVerticesCache, 8);
             Color transparent = RGBAColor.transparentRGBA.ToColor();
             Color lineColor = color.ToColor();
-            vertices[0] = new VertexPositionColor(new Vector3(v2.X, v2.Y, 0f), transparent);
-            vertices[1] = new VertexPositionColor(new Vector3(v4.X, v4.Y, 0f), transparent);
-            vertices[2] = new VertexPositionColor(new Vector3(vector3.X, vector3.Y, 0f), lineColor);
-            vertices[3] = new VertexPositionColor(new Vector3(vector4.X, vector4.Y, 0f), lineColor);
-            vertices[4] = new VertexPositionColor(new Vector3(vector5.X, vector5.Y, 0f), lineColor);
-            vertices[5] = new VertexPositionColor(new Vector3(vector6.X, vector6.Y, 0f), lineColor);
-            vertices[6] = new VertexPositionColor(new Vector3(v3.X, v3.Y, 0f), transparent);
-            vertices[7] = new VertexPositionColor(new Vector3(v5.X, v5.Y, 0f), transparent);
+            vertices[0] = new VertexPositionColor(new Vector3(leftStart.X, leftStart.Y, 0f), transparent);
+            vertices[1] = new VertexPositionColor(new Vector3(leftEnd.X, leftEnd.Y, 0f), transparent);
+            vertices[2] = new VertexPositionColor(new Vector3(leftInnerStart.X, leftInnerStart.Y, 0f), lineColor);
+            vertices[3] = new VertexPositionColor(new Vector3(leftInnerEnd.X, leftInnerEnd.Y, 0f), lineColor);
+            vertices[4] = new VertexPositionColor(new Vector3(rightInnerStart.X, rightInnerStart.Y, 0f), lineColor);
+            vertices[5] = new VertexPositionColor(new Vector3(rightInnerEnd.X, rightInnerEnd.Y, 0f), lineColor);
+            vertices[6] = new VertexPositionColor(new Vector3(rightStart.X, rightStart.Y, 0f), transparent);
+            vertices[7] = new VertexPositionColor(new Vector3(rightEnd.X, rightEnd.Y, 0f), transparent);
             return vertices;
         }
 
