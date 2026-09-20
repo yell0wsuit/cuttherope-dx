@@ -181,7 +181,7 @@ namespace CutTheRopeDX.GameMain
             bool isPaddington = false,
             bool paddingtonGreetingPending = false)
         {
-            target = CharAnimations.CharAnimations_createWithResID(Resources.Img.CharAnimations);
+            target = Image.CreateWithResID(new CharAnimations(), Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
 

@@ -16,18 +16,6 @@ namespace CutTheRopeDX.Framework.Helpers
     internal class GameObject : Animation
     {
         /// <summary>
-        /// Creates a game object from the specified <paramref name="texture"/>.
-        /// </summary>
-        /// <param name="texture">Texture to create the object from.</param>
-        /// <returns>A new game object initialized with <paramref name="texture"/>.</returns>
-        private static GameObject GameObject_create(Texture2D texture)
-        {
-            GameObject gameObject = new();
-            _ = gameObject.InitWithTexture(texture);
-            return gameObject;
-        }
-
-        /// <summary>
         /// Creates a game object from the specified texture resource and quad index.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
@@ -35,9 +23,7 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns>A new game object configured to draw the selected quad.</returns>
         public static GameObject GameObject_createWithResIDQuad(string resourceName, int quadIndex)
         {
-            GameObject gameObject = GameObject_create(Application.GetTexture(resourceName));
-            gameObject.SetDrawQuad(quadIndex);
-            return gameObject;
+            return CreateWithResID(new GameObject(), resourceName, quadIndex);
         }
 
         /// <inheritdoc />

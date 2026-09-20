@@ -110,7 +110,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>A new <see cref="Image"/> bound to the resolved texture.</returns>
         public static Image Image_createWithResID(string resourceName)
         {
-            return Image_create(Application.GetTexture(resourceName));
+            return CreateWithResID(new Image(), resourceName);
         }
 
         /// <summary>
@@ -121,9 +121,31 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>A new <see cref="Image"/> configured to draw the specified quad.</returns>
         public static Image Image_createWithResIDQuad(string resourceName, int q)
         {
-            Image image = Image_create(Application.GetTexture(resourceName));
-            image.SetDrawQuad(q);
-            return image;
+            return CreateWithResID(new Image(), resourceName, q);
+        }
+
+        /// <summary>
+        /// Binds <paramref name="element"/> to the texture behind a resource name, optionally
+        /// selecting a quad, and hands the element back with its own type intact.
+        /// </summary>
+        /// <typeparam name="T">The element type being created.</typeparam>
+        /// <param name="element">A freshly constructed element to initialize.</param>
+        /// <param name="resourceName">Texture resource name to resolve.</param>
+        /// <param name="quad">Quad index to draw, or <c>-1</c> to leave the default.</param>
+        /// <returns><paramref name="element"/>, initialized.</returns>
+        /// <remarks>
+        /// The element is passed in rather than constructed from a <c>new()</c> constraint so that
+        /// no <see cref="Activator"/> call reaches the ahead-of-time compiled browser build.
+        /// </remarks>
+        public static T CreateWithResID<T>(T element, string resourceName, int quad = -1)
+            where T : Image
+        {
+            _ = element.InitWithTexture(Application.GetTexture(resourceName));
+            if (quad >= 0)
+            {
+                element.SetDrawQuad(quad);
+            }
+            return element;
         }
 
         /// <summary>

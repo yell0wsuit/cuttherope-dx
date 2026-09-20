@@ -70,26 +70,6 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
-        /// Creates a horizontally tiled image from the specified texture.
-        /// </summary>
-        /// <param name="t">Texture to use.</param>
-        /// <returns>A new horizontally tiled image instance.</returns>
-        public static HorizontallyTiledImage HorizontallyTiledImage_create(Texture2D t)
-        {
-            return (HorizontallyTiledImage)new HorizontallyTiledImage().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a tiled image from the specified texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <returns>A new horizontally tiled image initialized from the requested resource.</returns>
-        public static HorizontallyTiledImage HorizontallyTiledImage_createWithResID(string resourceName)
-        {
-            return HorizontallyTiledImage_create(Application.GetTexture(resourceName));
-        }
-
-        /// <summary>
         /// Quad indices for the left, center, and right tiles.
         /// </summary>
         public int[] tiles = new int[3];

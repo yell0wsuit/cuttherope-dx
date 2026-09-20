@@ -56,7 +56,7 @@ namespace CutTheRopeDX.GameMain
 
             _base.anchor = buttonNone.anchor = 18;
 
-            armImage = TiledImage.TiledImage_createWithResID(Resources.Img.ObjRoboHand);
+            armImage = Image.CreateWithResID(new TiledImage(), Resources.Img.ObjRoboHand);
             armImage.SetTile(3);
             armImage.width = (int)length;
             armImage.height = (int)Image.GetQuadSize(Resources.Img.ObjRoboHand, 3).Y;

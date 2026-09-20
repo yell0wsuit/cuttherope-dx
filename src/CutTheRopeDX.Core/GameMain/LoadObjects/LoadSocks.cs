@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 
@@ -29,7 +30,7 @@ namespace CutTheRopeDX.GameMain
             // below round a malformed one up into range.
             int group = ParseIntOrZero(xmlNode.Attribute("group")?.Value);
             string resource = SockArt.TextureFor(group, SpecialEvents.IsXmas);
-            XmasSock = Sock.Sock_createWithResID(resource);
+            XmasSock = Image.CreateWithResID(new Sock(), resource);
             Sock sock = XmasSock;
             sock.group = group;
 

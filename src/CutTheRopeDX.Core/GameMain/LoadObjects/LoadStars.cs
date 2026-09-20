@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Visual;
 using System.Xml.Linq;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
@@ -17,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadStar(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            Star star = Star.Star_createWithResID(Resources.Img.ObjStarIdle);
+            Star star = Image.CreateWithResID(new Star(), Resources.Img.ObjStarIdle);
             if (nightLevel)
             {
                 star.EnableNightMode();

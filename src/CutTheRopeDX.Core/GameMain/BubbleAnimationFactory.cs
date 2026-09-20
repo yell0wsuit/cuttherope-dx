@@ -41,7 +41,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured ghost-bubble animation (not yet added to a parent).</returns>
         public static CandyInGhostBubbleAnimation CreateGhostBubble()
         {
-            CandyInGhostBubbleAnimation ghostBubble = CandyInGhostBubbleAnimation.CIGBAnimation_createWithResID(Resources.Img.ObjBubble);
+            CandyInGhostBubbleAnimation ghostBubble = Image.CreateWithResID(new CandyInGhostBubbleAnimation(), Resources.Img.ObjBubble);
             ghostBubble.anchor = ghostBubble.parentAnchor = CenterAnchor;
             ghostBubble.visible = false;
             ghostBubble.AddSupportingCloudsTimelines();

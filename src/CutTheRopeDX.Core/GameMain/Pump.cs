@@ -15,39 +15,6 @@ namespace CutTheRopeDX.GameMain
         public const float MouthOffset = 80f;
 
         /// <summary>
-        /// Creates a pump from a texture.
-        /// </summary>
-        /// <param name="t">Texture used by the pump.</param>
-        /// <returns>The initialized pump.</returns>
-        public static Pump Pump_create(Texture2D t)
-        {
-            return (Pump)new Pump().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a pump from a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <returns>The initialized pump.</returns>
-        public static Pump Pump_createWithResID(string resourceName)
-        {
-            return Pump_create(Application.GetTexture(resourceName));
-        }
-
-        /// <summary>
-        /// Creates a pump using a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <param name="q">Quad index to draw.</param>
-        /// <returns>The initialized pump.</returns>
-        public static Pump Pump_createWithResID(string resourceName, int q)
-        {
-            Pump pump = Pump_create(Application.GetTexture(resourceName));
-            pump.SetDrawQuad(q);
-            return pump;
-        }
-
-        /// <summary>
         /// Updates the internal endpoints and angle based on the current rotation.
         /// </summary>
         public void UpdateRotation()

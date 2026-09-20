@@ -392,7 +392,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured confetti particle element.</returns>
         public static BaseElement CreateConfettiParticleNear()
         {
-            Confetti confetti = Confetti.Confetti_createWithResID(Resources.Img.ConfettiParticles);
+            Confetti confetti = Image.CreateWithResID(new Confetti(), Resources.Img.ConfettiParticles);
 
             // Spawned across the design box and animated in design coordinates, so it travels with
             // the panel it bursts over instead of falling where the design size alone would put it.
@@ -897,26 +897,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private sealed class Confetti : Animation
         {
-            /// <summary>
-            /// Creates a confetti particle from a texture resource name.
-            /// </summary>
-            /// <param name="resourceName">Texture resource name to load.</param>
-            /// <returns>The initialized confetti particle.</returns>
-            public static Confetti Confetti_createWithResID(string resourceName)
-            {
-                return Confetti_create(Application.GetTexture(resourceName));
-            }
-
-            /// <summary>
-            /// Creates a confetti particle from a texture.
-            /// </summary>
-            /// <param name="t">Texture used by the confetti particle.</param>
-            /// <returns>The initialized confetti particle.</returns>
-            public static Confetti Confetti_create(Texture2D t)
-            {
-                return (Confetti)new Confetti().InitWithTexture(t);
-            }
-
             /// <inheritdoc />
             public override void Update(float delta)
             {

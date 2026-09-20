@@ -13,28 +13,6 @@ namespace CutTheRopeDX.GameMain
     internal sealed class CharAnimations : GameObject
     {
         /// <summary>
-        /// Creates an Om Nom character animation container from a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name to load.</param>
-        /// <returns>The initialized Om Nom character animation container.</returns>
-        public static CharAnimations CharAnimations_createWithResID(string resourceName)
-        {
-            return CharAnimations_create(Application.GetTexture(resourceName));
-        }
-
-        /// <summary>
-        /// Creates an Om Nom character animation container from a texture.
-        /// </summary>
-        /// <param name="t">Texture used by the Om Nom character animation container.</param>
-        /// <returns>The initialized Om Nom character animation container.</returns>
-        private static CharAnimations CharAnimations_create(Texture2D t)
-        {
-            CharAnimations charAnimations = new();
-            _ = charAnimations.InitWithTexture(t);
-            return charAnimations;
-        }
-
-        /// <summary>
         /// Adds a named child Om Nom character animation image to the container.
         /// </summary>
         /// <param name="resourceName">Texture resource name for the child animation.</param>
@@ -43,7 +21,7 @@ namespace CutTheRopeDX.GameMain
             animations ??= [];
             animationNameToIndex ??= [];
 
-            CharAnimation charAnimation = CharAnimation.CharAnimation_createWithResID(resourceName);
+            CharAnimation charAnimation = CreateWithResID(new CharAnimation(), resourceName);
             // Use the same anchor as the base animation (18) for proper centering
             charAnimation.parentAnchor = charAnimation.anchor = anchor;
             charAnimation.DoRestoreCutTransparency();

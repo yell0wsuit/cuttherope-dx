@@ -46,29 +46,6 @@ namespace CutTheRopeDX.GameMain
         private const string AchievementSnailTamer = "acSnailTamer";
 
         /// <summary>
-        /// Creates a snail from a texture.
-        /// </summary>
-        /// <param name="texture">Texture used by the snail.</param>
-        /// <returns>The initialized snail.</returns>
-        private static Snail Snail_create(Texture2D texture)
-        {
-            return (Snail)new Snail().InitWithTexture(texture);
-        }
-
-        /// <summary>
-        /// Creates a snail from a texture resource and applies a draw quad.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <param name="q">Quad index to draw.</param>
-        /// <returns>The initialized snail.</returns>
-        public static Snail Snail_createWithResIDQuad(string resourceName, int q)
-        {
-            Snail snail = Snail_create(Application.GetTexture(resourceName));
-            snail.SetDrawQuad(q);
-            return snail;
-        }
-
-        /// <summary>
         /// Attaches the snail to a candy physics point and plays the wake-up state transition.
         /// </summary>
         /// <param name="p">Candy physics point to follow.</param>

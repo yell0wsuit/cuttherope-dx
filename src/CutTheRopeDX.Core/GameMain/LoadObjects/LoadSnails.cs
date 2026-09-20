@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Visual;
 using System.Xml.Linq;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
@@ -20,7 +21,7 @@ namespace CutTheRopeDX.GameMain
             float x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
             float y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
 
-            Snail snail = Snail.Snail_createWithResIDQuad(Resources.Img.ObjSnail, 8);
+            Snail snail = Image.CreateWithResID(new Snail(), Resources.Img.ObjSnail, 8);
             snail.anchor = 18;
             snail.x = x;
             snail.y = y;

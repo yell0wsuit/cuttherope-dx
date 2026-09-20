@@ -48,26 +48,6 @@ namespace CutTheRopeDX.GameMain
         private const int TimedEmptyQuad = 20; // frame_0055: empty timed ring
 
         /// <summary>
-        /// Creates a star from a texture.
-        /// </summary>
-        /// <param name="t">Texture used by the star.</param>
-        /// <returns>The initialized star.</returns>
-        public static Star Star_create(Texture2D t)
-        {
-            return (Star)new Star().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a star from a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <returns>The initialized star.</returns>
-        public static Star Star_createWithResID(string resourceName)
-        {
-            return Star_create(Application.GetTexture(resourceName));
-        }
-
-        /// <summary>
         /// Initializes a star with default timed and night-mode visual state.
         /// </summary>
         public Star()

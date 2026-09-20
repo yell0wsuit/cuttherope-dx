@@ -18,29 +18,6 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class Rocket : GameObject, ITimelineDelegate
     {
-        /// <summary>
-        /// Creates a new <see cref="Rocket"/> instance initialized with the specified texture.
-        /// </summary>
-        /// <param name="t">The texture to apply to the rocket.</param>
-        /// <returns>A new <see cref="Rocket"/> initialized with the given texture.</returns>
-        private static Rocket Rocket_create(Texture2D t)
-        {
-            return (Rocket)new Rocket().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Rocket"/> from a named texture resource and assigns it a draw quad.
-        /// </summary>
-        /// <param name="resourceName">The resource name used to look up the texture.</param>
-        /// <param name="q">The draw quad index to assign to the rocket.</param>
-        /// <returns>A new <see cref="Rocket"/> configured with the specified resource and quad.</returns>
-        public static Rocket Rocket_createWithResIDQuad(string resourceName, int q)
-        {
-            Rocket rocket = Rocket_create(Application.GetTexture(resourceName));
-            rocket.SetDrawQuad(q);
-            return rocket;
-        }
-
         /// <inheritdoc />
         public override Image InitWithTexture(Texture2D tx)
         {

@@ -20,7 +20,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadRocket(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            Rocket rocket = Rocket.Rocket_createWithResIDQuad(Resources.Img.ObjRocket, 10);
+            Rocket rocket = Image.CreateWithResID(new Rocket(), Resources.Img.ObjRocket, 10);
             rocket.scaleX = rocket.scaleY = ActivePhysicsConstants.RocketBodyScale;
             rocket.DoRestoreCutTransparency();
             rocket.delegateRocketDelegate = this;

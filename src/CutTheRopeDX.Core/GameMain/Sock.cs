@@ -20,39 +20,6 @@ namespace CutTheRopeDX.GameMain
         private const float BindPointOffsetY = 25f * ScalingCompensation;
 
         /// <summary>
-        /// Creates a magic hat from a texture.
-        /// </summary>
-        /// <param name="t">Texture used by the magic hat.</param>
-        /// <returns>The initialized magic hat.</returns>
-        public static Sock Sock_create(Texture2D t)
-        {
-            return (Sock)new Sock().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a magic hat from a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <returns>The initialized magic hat.</returns>
-        public static Sock Sock_createWithResID(string resourceName)
-        {
-            return Sock_create(Application.GetTexture(resourceName));
-        }
-
-        /// <summary>
-        /// Creates a magic hat using a texture resource name and quad index.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <param name="q">Quad index.</param>
-        /// <returns>The initialized magic hat.</returns>
-        public static Sock Sock_createWithResIDQuad(string resourceName, int q)
-        {
-            Sock sock = Sock_create(Application.GetTexture(resourceName));
-            sock.SetDrawQuad(q);
-            return sock;
-        }
-
-        /// <summary>
         /// Creates the teleport flash animation from the same art the hat itself draws.
         /// </summary>
         /// <remarks>

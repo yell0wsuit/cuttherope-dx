@@ -9,29 +9,6 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal class Bubble : GameObject, ITransporterItem, ITransporterBindAware
     {
-        /// <summary>
-        /// Creates a bubble from a texture.
-        /// </summary>
-        /// <param name="t">Texture used by the bubble.</param>
-        /// <returns>The initialized bubble.</returns>
-        public static Bubble Bubble_create(Texture2D t)
-        {
-            return (Bubble)new Bubble().InitWithTexture(t);
-        }
-
-        /// <summary>
-        /// Creates a bubble using a texture resource name and applies the specified quad.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <param name="q">Quad index to draw.</param>
-        /// <returns>The initialized bubble.</returns>
-        public static Bubble Bubble_createWithResIDQuad(string resourceName, int q)
-        {
-            Bubble bubble = Bubble_create(Application.GetTexture(resourceName));
-            bubble.SetDrawQuad(q);
-            return bubble;
-        }
-
         /// <inheritdoc />
         public override void Draw()
         {
