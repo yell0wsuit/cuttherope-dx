@@ -38,17 +38,17 @@ namespace CutTheRopeDX.GameMain
                 DoRestoreCutTransparency();
                 int buttonQuad = ButtonFirstQuad + ((t - 1) * ButtonFramesPerToggle);
                 int q = ButtonFirstQuad + ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
-                Image image = Image_createWithResIDQuad(Resources.Img.ObjSpikes, buttonQuad);
-                Image image2 = Image_createWithResIDQuad(Resources.Img.ObjSpikes, q);
-                image.DoRestoreCutTransparency();
-                image2.DoRestoreCutTransparency();
-                rotateButton = new Button().InitWithUpElementDownElementandID(image, image2, SpikesButtonId.Rotate);
+                Image upImage = Image_createWithResIDQuad(Resources.Img.ObjSpikes, buttonQuad);
+                Image downImage = Image_createWithResIDQuad(Resources.Img.ObjSpikes, q);
+                upImage.DoRestoreCutTransparency();
+                downImage.DoRestoreCutTransparency();
+                rotateButton = new Button().InitWithUpElementDownElementandID(upImage, downImage, SpikesButtonId.Rotate);
                 rotateButton.delegateButtonDelegate = this;
                 rotateButton.anchor = rotateButton.parentAnchor = 18;
                 _ = AddChild(rotateButton);
                 Vector quadOffset = GetQuadOffset(Resources.Img.ObjSpikes, buttonQuad);
                 Vector quadSize = GetQuadSize(Resources.Img.ObjSpikes, buttonQuad);
-                Vector vector = VectSub(Vect(image.texture.preCutSize.X, image.texture.preCutSize.Y), VectAdd(quadSize, quadOffset));
+                Vector vector = VectSub(Vect(upImage.texture.preCutSize.X, upImage.texture.preCutSize.Y), VectAdd(quadSize, quadOffset));
                 rotateButton.SetTouchIncreaseLeftRightTopBottom(0f - quadOffset.X + (quadSize.X / 2f), 0f - vector.X + (quadSize.X / 2f), 0f - quadOffset.Y + (quadSize.Y / 2f), 0f - vector.Y + (quadSize.Y / 2f));
             }
             passColorToChilds = false;

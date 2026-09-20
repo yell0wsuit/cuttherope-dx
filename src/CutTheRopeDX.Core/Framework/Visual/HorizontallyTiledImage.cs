@@ -38,13 +38,13 @@ namespace CutTheRopeDX.Framework.Visual
             }
             else
             {
-                Rectangle r = texture.quadRects[tiles[0]];
-                Rectangle r2 = texture.quadRects[tiles[2]];
-                r.w = MathF.Min(r.w, width / 2f);
-                r2.w = MathF.Min(r2.w, width - r.w);
-                r2.x += texture.quadRects[tiles[2]].w - r2.w;
-                DrawHelper.DrawImagePart(texture, r, drawX, drawY + offsets[0]);
-                DrawHelper.DrawImagePart(texture, r2, drawX + r.w, drawY + offsets[2]);
+                Rectangle leftPart = texture.quadRects[tiles[0]];
+                Rectangle rightPart = texture.quadRects[tiles[2]];
+                leftPart.w = MathF.Min(leftPart.w, width / 2f);
+                rightPart.w = MathF.Min(rightPart.w, width - leftPart.w);
+                rightPart.x += texture.quadRects[tiles[2]].w - rightPart.w;
+                DrawHelper.DrawImagePart(texture, leftPart, drawX, drawY + offsets[0]);
+                DrawHelper.DrawImagePart(texture, rightPart, drawX + leftPart.w, drawY + offsets[2]);
             }
             PostDraw();
         }

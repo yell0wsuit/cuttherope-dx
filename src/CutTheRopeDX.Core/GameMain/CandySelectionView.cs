@@ -284,14 +284,14 @@ namespace CutTheRopeDX.GameMain
             }
             _ = slotBgUp.AddChild(itemImage);
 
-            Image itemImage2 = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
-            itemImage2.anchor = itemImage2.parentAnchor = 18;
-            itemImage2.y = itemYOffset;
+            Image downItemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
+            downItemImage.anchor = downItemImage.parentAnchor = 18;
+            downItemImage.y = itemYOffset;
             if (doRestoreTransparency)
             {
-                itemImage2.DoRestoreCutTransparency();
+                downItemImage.DoRestoreCutTransparency();
             }
-            _ = slotBgDown.AddChild(itemImage2);
+            _ = slotBgDown.AddChild(downItemImage);
 
             Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
             slotButton.delegateButtonDelegate = currentButtonDelegate;

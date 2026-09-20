@@ -281,7 +281,7 @@ namespace CutTheRopeDX.Framework.Visual
             touchState = TOUCH_STATE.MOVING;
             if (!VectEqual(dragStart, impossibleTouch))
             {
-                Vector vector2 = VectSub(vector, dragStart);
+                Vector dragDelta = VectSub(vector, dragStart);
                 dragStart = vector;
 
                 // A pointer that jumps discontinuously - capture lost and regained, or a second
@@ -290,11 +290,11 @@ namespace CutTheRopeDX.Framework.Visual
                 // genuine fast swipe fell behind the finger by whatever the cap cut off.
                 // dragStart has already advanced, so the next event measures from where the
                 // pointer really is instead of repeating the rejected distance.
-                if (MathF.Abs(vector2.X) > maxTouchMoveLength || MathF.Abs(vector2.Y) > maxTouchMoveLength)
+                if (MathF.Abs(dragDelta.X) > maxTouchMoveLength || MathF.Abs(dragDelta.Y) > maxTouchMoveLength)
                 {
                     return false;
                 }
-                totalDrag = VectAdd(totalDrag, vector2);
+                totalDrag = VectAdd(totalDrag, dragDelta);
                 if ((touchTimer > 0f || untouchChildsOnMove) && VectLength(totalDrag) > touchMoveIgnoreLength)
                 {
                     touchTimer = 0f;
@@ -303,21 +303,21 @@ namespace CutTheRopeDX.Framework.Visual
                 }
                 if (container.width <= width)
                 {
-                    vector2.X = 0f;
+                    dragDelta.X = 0f;
                 }
                 if (container.height <= height)
                 {
-                    vector2.Y = 0f;
+                    dragDelta.Y = 0f;
                 }
                 if (shouldBounceHorizontally && (container.x > 0f || container.x < (-container.width + width)))
                 {
-                    vector2.X /= 2f;
+                    dragDelta.X /= 2f;
                 }
                 if (shouldBounceVertically && (container.y > 0f || container.y < (-container.height + height)))
                 {
-                    vector2.Y /= 2f;
+                    dragDelta.Y /= 2f;
                 }
-                pendingDrag = VectAdd(pendingDrag, MoveContainerBy(vector2));
+                pendingDrag = VectAdd(pendingDrag, MoveContainerBy(dragDelta));
                 move = vectZero;
                 return true;
             }

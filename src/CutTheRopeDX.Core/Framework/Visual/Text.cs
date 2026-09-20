@@ -161,15 +161,10 @@ namespace CutTheRopeDX.Framework.Visual
                             // Skip rendering if character is not in the font
                             if (charQuad >= 0)
                             {
-                                ImageMultiDrawer imageMultiDrawer3 = multiDrawers[charmapIndex];
-                                int quadIndex = charQuad;
-                                float quadX = lineX;
-                                float quadY = lineY;
-                                int[] array3 = array2;
-                                int mapIndex = charmapIndex;
-                                int drawIndex = array3[mapIndex];
-                                array3[mapIndex] = drawIndex + 1;
-                                imageMultiDrawer3.MapTextureQuadAtXYatIndex(quadIndex, quadX, quadY, drawIndex);
+                                ImageMultiDrawer drawer = multiDrawers[charmapIndex];
+                                int drawIndex = array2[charmapIndex];
+                                array2[charmapIndex] = drawIndex + 1;
+                                drawer.MapTextureQuadAtXYatIndex(charQuad, lineX, lineY, drawIndex);
                                 renderedCharCount++;
                             }
 
@@ -183,15 +178,15 @@ namespace CutTheRopeDX.Framework.Visual
                             // Only render ellipsis if '.' character is available
                             if (charQuad2 >= 0)
                             {
-                                ImageMultiDrawer imageMultiDrawer2 = multiDrawers[charmapIndex2];
+                                ImageMultiDrawer dotDrawer = multiDrawers[charmapIndex2];
                                 int dotWidth = (int)font.GetCharWidth('.');
                                 if (l == lineLength - 1 || (l == lineLength - 2 && lineX + (3 * (dotWidth + dotSpacing)) + font.GetCharWidth(' ') > wrapWidth))
                                 {
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
                                     lineX += dotWidth + dotSpacing;
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
                                     lineX += dotWidth + dotSpacing;
-                                    imageMultiDrawer2.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
                                     break;
                                 }
                             }

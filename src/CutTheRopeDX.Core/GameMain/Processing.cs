@@ -37,15 +37,15 @@ namespace CutTheRopeDX.GameMain
                 _ = hBox.AddChild(image);
                 _ = hBox.AddChild(c);
             }
-            Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
-            _ = AddTimeline(timeline2);
-            timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline2.delegateTimelineDelegate = this;
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
-            _ = AddTimeline(timeline2);
+            Timeline dimInTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            dimInTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            dimInTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
+            _ = AddTimeline(dimInTimeline);
+            Timeline dimOutTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            dimOutTimeline.delegateTimelineDelegate = this;
+            dimOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0, 0, 0, 0.4f), KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            dimOutTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
+            _ = AddTimeline(dimOutTimeline);
             PlayTimeline(0);
             return this;
         }

@@ -31,11 +31,11 @@ namespace CutTheRopeDX.Framework.Visual
                 v.X = 0f - v.Y;
                 v.Y = tangentX;
                 v = VectMult(v, p.tangentialAccel);
-                Vector v2 = VectAdd(VectAdd(vector, v), gravity);
-                v2 = VectMult(v2, delta);
-                p.dir = VectAdd(p.dir, v2);
-                v2 = VectMult(p.dir, delta);
-                p.pos = VectAdd(p.pos, v2);
+                Vector step = VectAdd(VectAdd(vector, v), gravity);
+                step = VectMult(step, delta);
+                p.dir = VectAdd(p.dir, step);
+                step = VectMult(p.dir, delta);
+                p.pos = VectAdd(p.pos, step);
                 p.color.RedColor += p.deltaColor.RedColor * delta;
                 p.color.GreenColor += p.deltaColor.GreenColor * delta;
                 p.color.BlueColor += p.deltaColor.BlueColor * delta;

@@ -303,8 +303,8 @@ namespace CutTheRopeDX.GameMain
         {
             for (int i = 0; i < 3; i++)
             {
-                Timeline timeline2 = hudStar[i].GetCurrentTimeline();
-                timeline2?.StopTimeline();
+                Timeline currentTimeline = hudStar[i].GetCurrentTimeline();
+                currentTimeline?.StopTimeline();
                 const int HudUiStarFirstQuad = 1;
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
             }

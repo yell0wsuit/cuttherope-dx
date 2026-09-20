@@ -121,29 +121,29 @@ namespace CutTheRopeDX.GameMain
         /// <param name="d">Delay before switching animations, in seconds.</param>
         public void SwitchToAnimationatEndOfAnimationDelay(string resourceName2, int a2, string resourceName1, int a1, float d)
         {
-            Animation animation = GetAnimation(resourceName1);
-            Animation animation2 = GetAnimation(resourceName2);
-            Timeline timeline = animation.GetTimeline(a1);
+            Animation currentAnimation = GetAnimation(resourceName1);
+            Animation nextAnimation = GetAnimation(resourceName2);
+            Timeline timeline = currentAnimation.GetTimeline(a1);
             List<TimelineAction> dynamicArray = [];
-            // Check if resourceName1 refers to the base animation (CharAnimations)
+            // Check if resourceName1 refers to the base currentAnimation (CharAnimations)
             bool isBaseAnimation = resourceName1 == Resources.Img.CharAnimations;
-            dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
-            if (animation != animation2)
+            dynamicArray.Add(TimelineAction.CreateAction(nextAnimation, "ACTION_PLAY_TIMELINE", isBaseAnimation ? 1 : 0, a2));
+            if (currentAnimation != nextAnimation)
             {
-                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_UPDATEABLE", 1, 1));
-                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_VISIBLE", 1, 1));
-                dynamicArray.Add(TimelineAction.CreateAction(animation2, "ACTION_SET_TOUCHABLE", 1, 1));
-                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_UPDATEABLE", 0, 0));
-                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_VISIBLE", 0, 0));
-                dynamicArray.Add(TimelineAction.CreateAction(animation, "ACTION_SET_TOUCHABLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(nextAnimation, "ACTION_SET_UPDATEABLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(nextAnimation, "ACTION_SET_VISIBLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(nextAnimation, "ACTION_SET_TOUCHABLE", 1, 1));
+                dynamicArray.Add(TimelineAction.CreateAction(currentAnimation, "ACTION_SET_UPDATEABLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(currentAnimation, "ACTION_SET_VISIBLE", 0, 0));
+                dynamicArray.Add(TimelineAction.CreateAction(currentAnimation, "ACTION_SET_TOUCHABLE", 0, 0));
             }
             timeline.AddKeyFrame(KeyFrame.MakeAction(dynamicArray, d));
         }
 
         /// <summary>
-        /// Plays a timeline on the base animation or a named child animation.
+        /// Plays a timeline on the base currentAnimation or a named child currentAnimation.
         /// </summary>
-        /// <param name="resourceName">Texture resource name that identifies the animation to play.</param>
+        /// <param name="resourceName">Texture resource name that identifies the currentAnimation to play.</param>
         /// <param name="t">Timeline ID to play.</param>
         public void PlayAnimationtimeline(string resourceName, int t)
         {
@@ -155,10 +155,10 @@ namespace CutTheRopeDX.GameMain
             {
                 anim.SetEnabled(false);
             }
-            Animation animation = GetAnimation(resourceName);
-            animation.SetEnabled(true);
-            color = animation == this ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA;
-            animation.PlayTimeline(t);
+            Animation currentAnimation = GetAnimation(resourceName);
+            currentAnimation.SetEnabled(true);
+            color = currentAnimation == this ? RGBAColor.solidOpaqueRGBA : RGBAColor.transparentRGBA;
+            currentAnimation.PlayTimeline(t);
         }
 
         /// <inheritdoc />

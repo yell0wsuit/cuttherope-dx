@@ -589,13 +589,13 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns>The rotated vector.</returns>
         public static Vector VectRotateAround(Vector v, float rad, float cx, float cy)
         {
-            Vector v2 = v;
-            v2.X -= cx;
-            v2.Y -= cy;
-            v2 = VectRotate(v2, rad);
-            v2.X += cx;
-            v2.Y += cy;
-            return v2;
+            Vector rotated = v;
+            rotated.X -= cx;
+            rotated.Y -= cy;
+            rotated = VectRotate(rotated, rad);
+            rotated.X += cx;
+            rotated.Y += cy;
+            return rotated;
         }
 
         /// <summary>

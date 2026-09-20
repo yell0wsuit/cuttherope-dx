@@ -305,9 +305,9 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The signed rotation angle in degrees from <paramref name="v1"/> to <paramref name="v2"/>.</returns>
         private static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
-            Vector vector = VectSub(v1, c);
-            Vector vector2 = VectSub(v2, c);
-            float angleDelta = VectAngleNormalized(vector2) - VectAngleNormalized(vector);
+            Vector startOffset = VectSub(v1, c);
+            Vector endOffset = VectSub(v2, c);
+            float angleDelta = VectAngleNormalized(endOffset) - VectAngleNormalized(startOffset);
             return RADIANS_TO_DEGREES(angleDelta);
         }
 

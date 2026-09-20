@@ -289,11 +289,11 @@ namespace CutTheRopeDX.GameMain
             }
             if (steamFront != null)
             {
-                Dictionary<int, BaseElement> childs2 = steamFront.GetChilds();
-                foreach (KeyValuePair<int, BaseElement> keyValuePair2 in childs2)
+                Dictionary<int, BaseElement> frontChilds = steamFront.GetChilds();
+                foreach (KeyValuePair<int, BaseElement> child in frontChilds)
                 {
-                    BaseElement value2 = keyValuePair2.Value;
-                    value2?.GetTimeline(0).SetTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
+                    BaseElement element = child.Value;
+                    element?.GetTimeline(0).SetTimelineLoopType(Timeline.LoopType.TIMELINE_NO_LOOP);
                 }
             }
             if (steamState != 3)
