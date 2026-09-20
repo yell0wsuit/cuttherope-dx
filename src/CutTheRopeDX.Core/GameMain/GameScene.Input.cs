@@ -56,6 +56,12 @@ namespace CutTheRopeDX.GameMain
             }
         }
 
+        /// <summary>Cancels belt dragging before synthetic touch releases can create inertia.</summary>
+        public void CancelConveyorDrags()
+        {
+            conveyors?.CancelAllDrags();
+        }
+
         /// <summary>Resolves a supported pointer index before any gesture state is accessed.</summary>
         private bool TryGetPointerGesture(int pointerIndex, out PointerGestureState gesture)
         {

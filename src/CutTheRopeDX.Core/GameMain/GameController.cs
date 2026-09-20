@@ -990,6 +990,9 @@ namespace CutTheRopeDX.GameMain
         /// <param name="gs">Game scene that should receive synthetic touch releases.</param>
         public void ReleaseAllTouches(GameScene gs)
         {
+            // The offscreen release coordinates cancel buttons, but would give a dragged
+            // conveyor a large fling delta. Cancel belt capture before sending those releases.
+            gs.CancelConveyorDrags();
             for (int i = 0; i < 5; i++)
             {
                 touchAddressMap[i] = 0;
