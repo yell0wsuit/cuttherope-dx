@@ -225,9 +225,8 @@ namespace CutTheRopeDX.GameMain
             {
                 HandlePumpFlowPtSkin(p, body.Point, body.Visual);
             }
-            foreach (object bungee in bungees)
+            foreach (Grab grab in bungees)
             {
-                Grab grab = (Grab)bungee;
                 // A kicked cup's rope holds still while time is frozen, so the pump cannot blow it.
                 if (grab?.Rope != null && grab.Mount?.IsMounted == false && !timeFrozen)
                 {

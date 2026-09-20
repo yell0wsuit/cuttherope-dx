@@ -426,9 +426,9 @@ namespace CutTheRopeDX.Framework.Visual
                 int rangeStart = array[i << 1];
                 int rangeEnd = array[(i << 1) + 1];
                 int length = rangeEnd - rangeStart;
-                string str = string_.Substring(rangeStart, length);
-                float w = font.StringWidth(str);
-                FormattedString item = new FormattedString().InitWithStringAndWidth(str, w);
+                string line = string_.Substring(rangeStart, length);
+                float w = font.StringWidth(line);
+                FormattedString item = new FormattedString().InitWithStringAndWidth(line, w);
                 formattedStrings.Add(item);
             }
         }

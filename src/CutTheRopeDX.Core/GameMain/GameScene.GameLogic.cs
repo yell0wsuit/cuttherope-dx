@@ -1160,9 +1160,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="sid">Spike toggle identifier to match.</param>
         public void RotateAllSpikesWithID(int sid)
         {
-            foreach (object obj in spikes)
+            foreach (Spikes spike in spikes)
             {
-                Spikes spike = (Spikes)obj;
                 if (spike.GetToggled() == sid)
                 {
                     spike.RotateSpikes();
@@ -1179,9 +1178,8 @@ namespace CutTheRopeDX.GameMain
             {
                 return null;
             }
-            foreach (object obj in ghosts)
+            foreach (Ghost ghost in ghosts)
             {
-                Ghost ghost = (Ghost)obj;
                 if (ghost?.OwnsBubble(bubble) == true)
                 {
                     return ghost;

@@ -409,16 +409,16 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns>The normalized <paramref name="angle"/>.</returns>
         public static float AngleTo0_360(float angle)
         {
-            float result = angle;
-            while (MathF.Abs(result) > DEG_360)
+            float normalized = angle;
+            while (MathF.Abs(normalized) > DEG_360)
             {
-                result -= result > 0f ? DEG_360 : -DEG_360;
+                normalized -= normalized > 0f ? DEG_360 : -DEG_360;
             }
-            if (result < 0f)
+            if (normalized < 0f)
             {
-                result += DEG_360;
+                normalized += DEG_360;
             }
-            return result;
+            return normalized;
         }
 
         /// <summary>Creates a <see cref="Vector"/> from the given x and y components.</summary>

@@ -164,9 +164,9 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void PlayTimeline(int t)
         {
-            foreach (object obj in animations)
+            foreach (Animation obj in animations)
             {
-                ((Animation)obj).SetEnabled(false);
+                obj.SetEnabled(false);
             }
             color = RGBAColor.solidOpaqueRGBA;
             base.PlayTimeline(t);

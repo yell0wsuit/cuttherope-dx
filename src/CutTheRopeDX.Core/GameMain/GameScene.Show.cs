@@ -49,9 +49,8 @@ namespace CutTheRopeDX.GameMain
             conveyors.ProcessItems(pumps);
             conveyors.ProcessItems(bungees);
 
-            foreach (object obj in rotatedCircles)
+            foreach (RotatedCircle rotatedCircle2 in rotatedCircles)
             {
-                RotatedCircle rotatedCircle2 = (RotatedCircle)obj;
                 rotatedCircle2.operating = -1;
                 rotatedCircle2.circlesArray = rotatedCircles;
             }

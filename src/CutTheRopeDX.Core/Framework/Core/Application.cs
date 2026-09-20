@@ -151,12 +151,12 @@ namespace CutTheRopeDX.Framework.Core
             prefs = CreatePreferences();
             if (ApplicationSettings.GetBool(7))
             {
-                string text = Preferences.GetStringForKey("PREFS_LOCALE");
-                if (string.IsNullOrEmpty(text))
+                string locale = Preferences.GetStringForKey("PREFS_LOCALE");
+                if (string.IsNullOrEmpty(locale))
                 {
-                    text = LanguageHelper.ToCode(LanguageHelper.FromSystemCulture());
+                    locale = LanguageHelper.ToCode(LanguageHelper.FromSystemCulture());
                 }
-                appSettings.SetString(8, text);
+                appSettings.SetString(8, locale);
             }
             IS_IPAD = false;
             IS_RETINA = false;

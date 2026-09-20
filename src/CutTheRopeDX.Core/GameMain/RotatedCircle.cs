@@ -147,9 +147,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Whether another circle contains at least one of the same objects.</returns>
         public bool ContainsSameObjectWithAnotherCircle()
         {
-            foreach (object obj in circlesArray)
+            foreach (RotatedCircle item in circlesArray)
             {
-                RotatedCircle item = (RotatedCircle)obj;
                 if (item != this && ContainsSameObjectWithCircle(item))
                 {
                     return true;
@@ -182,9 +181,8 @@ namespace CutTheRopeDX.GameMain
             vinil.Draw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            foreach (object obj in circlesArray)
+            foreach (RotatedCircle item in circlesArray)
             {
-                RotatedCircle item = (RotatedCircle)obj;
                 if (item != this && item.ContainsSameObjectWithAnotherCircle() && circlesArray.IndexOf(item) < circlesArray.IndexOf(this))
                 {
                     DrawHelper.DrawCircleIntersection(x, y, sizeInPixels, item.x, item.y, item.sizeInPixels, 81, OUTER_CIRCLE_WIDTH * item.vinilHighlightL.scaleX * 0.5f, CONTOUR_COLOR);
@@ -232,9 +230,8 @@ namespace CutTheRopeDX.GameMain
             {
                 return false;
             }
-            foreach (object obj in containedObjects)
+            foreach (GameObject containedObject in containedObjects)
             {
-                GameObject containedObject = (GameObject)obj;
                 if (anotherCircle.containedObjects.IndexOf(containedObject) != -1)
                 {
                     return true;

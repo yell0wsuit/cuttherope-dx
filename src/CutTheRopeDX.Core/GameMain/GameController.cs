@@ -201,13 +201,13 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(toggleButton);
             _ = vBox.AddChild(hBox);
             vBox.y = (DesignBox.h - vBox.height) / 2f;
-            bool flag3 = Preferences.GetBooleanForKey("SOUND_ON");
-            bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
-            if (!flag3)
+            bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
+            bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
+            if (!soundOn)
             {
                 toggleButton2.Toggle();
             }
-            if (!flag2)
+            if (!musicOn)
             {
                 toggleButton.Toggle();
             }
@@ -307,16 +307,16 @@ namespace CutTheRopeDX.GameMain
             int box = root.GetBox();
             int pack = root.GetPack();
             _ = root.GetLevel();
-            bool flag = true;
+            bool packComplete = true;
             for (int levelIndex = Preferences.GetLevelsInPackCount(pack) - 1; levelIndex >= 0; levelIndex--)
             {
                 if (Preferences.GetScoreForPackLevel(box, pack, levelIndex) <= 0)
                 {
-                    flag = false;
+                    packComplete = false;
                     break;
                 }
             }
-            if (flag && pack < nameArray.Length)
+            if (packComplete && pack < nameArray.Length)
             {
                 RootController.PostAchievementName(nameArray[pack]);
             }
@@ -592,9 +592,9 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
-                        bool flag = Preferences.GetBooleanForKey("MUSIC_ON");
-                        Preferences.SetBooleanForKey(!flag, "MUSIC_ON", true);
-                        if (flag)
+                        bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
+                        Preferences.SetBooleanForKey(!musicOn, "MUSIC_ON", true);
+                        if (musicOn)
                         {
                             RootController.LogEvent("IM_MUSIC_OFF_PRESSED");
                             SoundMgr.StopMusic();
@@ -606,9 +606,9 @@ namespace CutTheRopeDX.GameMain
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
                     {
-                        bool flag2 = Preferences.GetBooleanForKey("SOUND_ON");
-                        Preferences.SetBooleanForKey(!flag2, "SOUND_ON", true);
-                        if (flag2)
+                        bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
+                        Preferences.SetBooleanForKey(!soundOn, "SOUND_ON", true);
+                        if (soundOn)
                         {
                             SoundMgr.SuspendSoundEffects();
                             RootController.LogEvent("IM_SOUND_OFF_PRESSED");

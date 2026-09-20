@@ -154,15 +154,15 @@ namespace CutTheRopeDX.Framework.Visual
                     break;
                 case LoopType.TIMELINE_PING_PONG:
                     {
-                        bool flag3 = !thiss.timelineDirReverse && thiss.time >= thiss.length - 1E-06f;
-                        bool flag2 = thiss.timelineDirReverse && thiss.time <= 1E-06f;
-                        if (flag3)
+                        bool reachedEnd = !thiss.timelineDirReverse && thiss.time >= thiss.length - 1E-06f;
+                        bool reachedStart = thiss.timelineDirReverse && thiss.time <= 1E-06f;
+                        if (reachedEnd)
                         {
                             thiss.time = MathF.Max(0f, thiss.length - (thiss.time - thiss.length));
                             thiss.timelineDirReverse = true;
                             return;
                         }
-                        if (flag2)
+                        if (reachedStart)
                         {
                             if (thiss.loopsLimit > 0)
                             {

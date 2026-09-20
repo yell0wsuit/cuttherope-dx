@@ -680,8 +680,8 @@ namespace CutTheRopeDX.GameMain
                 _ = vBox.AddChild(c3);
             }
             _ = designGroup.AddChild(vBox);
-            bool flag = Application.GetString("FACEBOOK_BUTTON").Length > 0;
-            if (flag)
+            bool hasFacebookButton = Application.GetString("FACEBOOK_BUTTON").Length > 0;
+            if (hasFacebookButton)
             {
                 BaseElement baseElement2 = new();
                 baseElement2.SetName("container");
@@ -704,7 +704,7 @@ namespace CutTheRopeDX.GameMain
                 Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuExtraButtons, 2);
                 button2.x -= texture.preCutSize.X;
                 button2.y -= texture.preCutSize.Y;
-                if (flag)
+                if (hasFacebookButton)
                 {
                     _ = baseElement2.AddChild(button2);
                 }
@@ -767,19 +767,19 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(designGroup);
             hBox.y = (vBox.height / 2) + 10;
             vBox.y = -hBox.height / 2;
-            bool flag4 = Preferences.GetBooleanForKey("SOUND_ON");
-            bool flag2 = Preferences.GetBooleanForKey("MUSIC_ON");
-            bool flag3 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
-            if (!flag4)
+            bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
+            bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
+            bool clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
+            if (!soundOn)
             {
                 toggleButton2.Toggle();
             }
-            if (!flag2)
+            if (!musicOn)
             {
                 toggleButton.Toggle();
             }
             ToggleButton toggleButton3 = (ToggleButton)baseElement3.GetChildWithName("button");
-            if (flag3 && toggleButton3 != null)
+            if (clickToCut && toggleButton3 != null)
             {
                 toggleButton3.Toggle();
             }
@@ -1022,7 +1022,7 @@ namespace CutTheRopeDX.GameMain
             }
             string packTitle = boxPackStrings;
             UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(n, 0);
-            bool flag = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
+            bool isLockedPack = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
             PackStripLayout strip = PackStrip();
             Image image = Image.Image_createWithResIDQuad(resourceName, q);
@@ -1034,7 +1034,7 @@ namespace CutTheRopeDX.GameMain
             // and rides that one transform, so only the tile has to know the scale.
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = strip.Scale;
-            if (flag)
+            if (isLockedPack)
             {
                 _ = baseElement.AddChild(image);
                 int requiredStars = Preferences.PackUnlockStars(n);
@@ -1172,9 +1172,9 @@ namespace CutTheRopeDX.GameMain
         {
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
-            string text = Application.GetString("TOTAL_STARS").ToString();
-            text = text.Replace("%d", "");
-            HBox hBox = CreateTextWithStar(text + Preferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
+            string totalStarsLabel = Application.GetString("TOTAL_STARS").ToString();
+            totalStarsLabel = totalStarsLabel.Replace("%d", "");
+            HBox hBox = CreateTextWithStar(totalStarsLabel + Preferences.GetTotalStars().ToString(CultureInfo.InvariantCulture));
             PlaceStarTotal(hBox);
             hBox.SetName("text");
             PackStripLayout strip = PackStrip();
@@ -1425,7 +1425,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured level button element.</returns>
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
-            bool flag = Preferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
+            bool isLocked = Preferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = Preferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
             {
@@ -1433,7 +1433,7 @@ namespace CutTheRopeDX.GameMain
                 delegateValue = this
             };
             Image image;
-            if (flag)
+            if (isLocked)
             {
                 touchBaseElement.bid = new MenuButtonId(-1);
                 image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 1);
@@ -1978,9 +1978,9 @@ namespace CutTheRopeDX.GameMain
                     }
                 case var id when id == MenuButtonId.ToggleMusic:
                     {
-                        bool flag6 = Preferences.GetBooleanForKey("MUSIC_ON");
-                        Preferences.SetBooleanForKey(!flag6, "MUSIC_ON", true);
-                        if (flag6)
+                        bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
+                        Preferences.SetBooleanForKey(!musicOn, "MUSIC_ON", true);
+                        if (musicOn)
                         {
                             SoundMgr.StopMusic();
                             return;
@@ -2009,8 +2009,8 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case var id when id == MenuButtonId.ToggleClickToCut:
                     {
-                        bool flag7 = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
-                        Preferences.SetBooleanForKey(!flag7, "PREFS_CLICK_TO_CUT", true);
+                        bool clickToCut = Preferences.GetBooleanForKey("PREFS_CLICK_TO_CUT");
+                        Preferences.SetBooleanForKey(!clickToCut, "PREFS_CLICK_TO_CUT", true);
                         return;
                     }
                 case var id when id == MenuButtonId.PackSelect:
@@ -2204,8 +2204,8 @@ namespace CutTheRopeDX.GameMain
                         }
                         Preferences.SetLastBox(pack);
                         Preferences.SetLastGamePack(Preferences.GetBoxForPack(pack));
-                        bool flag5 = Preferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != Preferences.GetPacksCount();
-                        if (targetPack != Preferences.GetPacksCount() && !flag5)
+                        bool targetPackLocked = Preferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != Preferences.GetPacksCount();
+                        if (targetPack != Preferences.GetPacksCount() && !targetPackLocked)
                         {
                             PreLevelSelect();
                             ShowView(6);
@@ -2335,12 +2335,12 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool TouchesBeganwithEvent(IList<TouchLocation> touches)
         {
-            bool flag = base.TouchesBeganwithEvent(touches);
+            bool handledByBase = base.TouchesBeganwithEvent(touches);
             if (activeViewID == VIEW_ABOUT)
             {
                 aboutView?.DisableAutoScroll();
             }
-            return flag;
+            return handledByBase;
         }
 
         /// <inheritdoc />

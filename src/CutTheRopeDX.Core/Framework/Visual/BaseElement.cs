@@ -579,7 +579,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The slot ID of <paramref name="c"/>, or -1 if it is not a child.</returns>
         public virtual int GetChildId(BaseElement c)
         {
-            int result = -1;
+            int notFound = -1;
             foreach (KeyValuePair<int, BaseElement> child in childs)
             {
                 if (c.Equals(child.Value))
@@ -587,7 +587,7 @@ namespace CutTheRopeDX.Framework.Visual
                     return child.Key;
                 }
             }
-            return result;
+            return notFound;
         }
 
         /// <summary>

@@ -134,9 +134,9 @@ namespace CutTheRopeDX.Commons
         /// <inheritdoc />
         public override bool OnTouchUpXY(float tx, float ty)
         {
-            bool flag = base.OnTouchUpXY(tx, ty);
+            bool handledByChild = base.OnTouchUpXY(tx, ty);
             container.StartMovingToSpointInDirection(vectZero);
-            return flag;
+            return handledByChild;
         }
 
         /// <summary>
@@ -203,15 +203,15 @@ namespace CutTheRopeDX.Commons
                 spointsLimits[j] = spoints[j];
                 limitPoints[j] = j;
             }
-            bool flag = true;
-            while (flag)
+            bool swapped = true;
+            while (swapped)
             {
-                flag = false;
+                swapped = false;
                 for (int k = 0; k < spointsNum - 1; k++)
                 {
                     if (spointsLimits[k].X > spointsLimits[k + 1].X)
                     {
-                        flag = true;
+                        swapped = true;
                         (spointsLimits[k + 1], spointsLimits[k]) = (spointsLimits[k], spointsLimits[k + 1]);
                         (limitPoints[k + 1], limitPoints[k]) = (limitPoints[k], limitPoints[k + 1]);
                     }

@@ -71,12 +71,9 @@ namespace CutTheRopeDX.GameMain
             // Cleanup old mice before creating new arrays
             if (mice != null)
             {
-                foreach (object obj in mice)
+                foreach (Mouse mouse in mice)
                 {
-                    if (obj is Mouse mouse)
-                    {
-                        mouse.Cleanup();
-                    }
+                    mouse?.Cleanup();
                 }
             }
 

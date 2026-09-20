@@ -223,7 +223,7 @@ namespace CutTheRopeDX.GameMain
                 : segmentLength <= BUNGEE_REST_LEN + relaxThresholdMedium
                     ? 1
                     : segmentLength <= BUNGEE_REST_LEN + relaxThresholdHard ? 2 : 3;
-            bool flag = false;
+            bool useAlternateStripe = false;
             int sampleCount = (count - 1) * points;
             float[] array = new float[sampleCount * 2];
             b.drawPtsCount = sampleCount * 2;
@@ -298,7 +298,7 @@ namespace CutTheRopeDX.GameMain
                 b.drawPts[drawPointCount++] = vector.Y;
                 if (cachedPointCount >= 8 || bezierT == 1)
                 {
-                    RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !flag ? rgbaColor6 : rgbaColor5;
+                    RGBAColor color = b.forceWhite ? RGBAColor.whiteRGBA : !useAlternateStripe ? rgbaColor6 : rgbaColor5;
                     Renderer.SetColor(color.ToColor());
                     int segmentCount = cachedPointCount >> 1;
                     for (int i = 0; i < segmentCount - 1; i++)
@@ -308,7 +308,7 @@ namespace CutTheRopeDX.GameMain
                     array[0] = array[cachedPointCount - 2];
                     array[1] = array[cachedPointCount - 1];
                     cachedPointCount = 2;
-                    flag = !flag;
+                    useAlternateStripe = !useAlternateStripe;
                     rgbaColor5.RedColor += redStep * (segmentCount - 1);
                     rgbaColor5.GreenColor += greenStep * (segmentCount - 1);
                     rgbaColor5.BlueColor += blueStep * (segmentCount - 1);
@@ -921,26 +921,26 @@ namespace CutTheRopeDX.GameMain
             }
             Vector[] array2 = new Vector[count];
             Vector[] array3 = new Vector[count];
-            bool flag = false;
+            bool inTail = false;
             int tailPartCount = 0;
             for (int j = 0; j < count; j++)
             {
                 ConstraintedPoint constraintedPoint2 = parts[j];
-                bool flag2 = true;
+                bool connectedToPrevious = true;
                 if (j > 0)
                 {
                     ConstraintedPoint p = parts[j - 1];
                     if (!constraintedPoint2.HasConstraintTo(p))
                     {
-                        flag2 = false;
+                        connectedToPrevious = false;
                     }
                 }
-                if (constraintedPoint2.pin.X == -1f && !flag2)
+                if (constraintedPoint2.pin.X == -1f && !connectedToPrevious)
                 {
-                    flag = true;
+                    inTail = true;
                     array2[j] = constraintedPoint2.pos;
                 }
-                if (!flag)
+                if (!inTail)
                 {
                     array2[j] = constraintedPoint2.pos;
                 }

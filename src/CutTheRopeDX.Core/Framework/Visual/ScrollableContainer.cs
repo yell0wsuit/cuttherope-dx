@@ -236,8 +236,8 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (touchPassTimeout == 0f)
             {
-                bool flag = base.OnTouchDownXY(tx, ty);
-                if (dontHandleTouchDownsHandledByChilds && flag)
+                bool handledByChild = base.OnTouchDownXY(tx, ty);
+                if (dontHandleTouchDownsHandledByChilds && handledByChild)
                 {
                     return true;
                 }
@@ -263,8 +263,8 @@ namespace CutTheRopeDX.Framework.Visual
         {
             if (touchPassTimeout == 0f || passTouches)
             {
-                bool flag = base.OnTouchMoveXY(tx, ty);
-                if (dontHandleTouchMovesHandledByChilds && flag)
+                bool handledByChild = base.OnTouchMoveXY(tx, ty);
+                if (dontHandleTouchMovesHandledByChilds && handledByChild)
                 {
                     return true;
                 }
@@ -333,18 +333,18 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (touchPassTimeout == 0f || passTouches)
             {
-                bool flag = base.OnTouchUpXY(tx, ty);
-                if (dontHandleTouchUpsHandledByChilds && flag)
+                bool handledByChild = base.OnTouchUpXY(tx, ty);
+                if (dontHandleTouchUpsHandledByChilds && handledByChild)
                 {
                     return true;
                 }
             }
             if (touchTimer > 0f)
             {
-                bool flag2 = base.OnTouchDownXY(savedTouch.X, savedTouch.Y);
+                bool replayHandledByChild = base.OnTouchDownXY(savedTouch.X, savedTouch.Y);
                 touchReleaseTimer = 0.2f;
                 touchTimer = 0f;
-                if (dontHandleTouchDownsHandledByChilds && flag2)
+                if (dontHandleTouchDownsHandledByChilds && replayHandledByChild)
                 {
                     return true;
                 }
@@ -633,19 +633,19 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The actual applied movement after bounds checks.</returns>
         public Vector MoveContainerBy(Vector off)
         {
-            float val = container.x + off.X;
-            float val2 = container.y + off.Y;
+            float targetX = container.x + off.X;
+            float targetY = container.y + off.Y;
             if (!shouldBounceHorizontally)
             {
-                val = MathF.Min(MathF.Max(-container.width + width, val), 0f);
+                targetX = MathF.Min(MathF.Max(-container.width + width, targetX), 0f);
             }
             if (!shouldBounceVertically)
             {
-                val2 = MathF.Min(MathF.Max(-container.height + height, val2), 0f);
+                targetY = MathF.Min(MathF.Max(-container.height + height, targetY), 0f);
             }
-            Vector vector = VectSub(Vect(val, val2), Vect(container.x, container.y));
-            container.x = val;
-            container.y = val2;
+            Vector vector = VectSub(Vect(targetX, targetY), Vect(container.x, container.y));
+            container.x = targetX;
+            container.y = targetY;
             return vector;
         }
 

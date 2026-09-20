@@ -218,9 +218,8 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             gesture.Begin(vector, world);
-            foreach (object obj in spikes)
+            foreach (Spikes spike in spikes)
             {
-                Spikes spike = (Spikes)obj;
                 if (spike.rotateButton != null && spike.touchIndex == -1 && spike.rotateButton.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
                     spike.touchIndex = ti;
@@ -242,9 +241,8 @@ namespace CutTheRopeDX.GameMain
             bool primaryInPlay = !candies[0].HasNoWholeBodyInPlay;
             if (primaryInPlay)
             {
-                foreach (object obj in bungees)
+                foreach (Grab grab in bungees)
                 {
-                    Grab grab = (Grab)obj;
                     GunSource gun = grab.GunSource;
                     if (gun != null && gun.CanFire(candies[0].Lifecycle.Attachments.InLantern, MouseCarries(candies[0])))
                     {
@@ -381,28 +379,26 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             RotatedCircle rotatedCircle = null;
-            bool flag = false;
-            bool flag2 = false;
-            foreach (object obj2 in rotatedCircles)
+            bool hasContainedCircle = false;
+            bool hasOverlappingCircle = false;
+            foreach (RotatedCircle rotatedCircle2 in rotatedCircles)
             {
-                RotatedCircle rotatedCircle2 = (RotatedCircle)obj2;
                 float distanceToLeftHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle1);
                 float distanceToRightHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle2);
                 if ((distanceToLeftHandle < 90f && !rotatedCircle2.HasOneHandle()) || distanceToRightHandle < 90f)
                 {
-                    foreach (object obj3 in rotatedCircles)
+                    foreach (RotatedCircle rotatedCircle3 in rotatedCircles)
                     {
-                        RotatedCircle rotatedCircle3 = (RotatedCircle)obj3;
                         if (rotatedCircles.IndexOf(rotatedCircle3) > rotatedCircles.IndexOf(rotatedCircle2))
                         {
                             float circleDistance = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
                             if (circleDistance + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
                             {
-                                flag = true;
+                                hasContainedCircle = true;
                             }
                             if (circleDistance <= rotatedCircle2.sizeInPixels + rotatedCircle3.sizeInPixels)
                             {
-                                flag2 = true;
+                                hasOverlappingCircle = true;
                             }
                         }
                     }
@@ -425,7 +421,7 @@ namespace CutTheRopeDX.GameMain
                     break;
                 }
             }
-            if (rotatedCircle != null && rotatedCircles.IndexOf(rotatedCircle) != rotatedCircles.Count - 1 && flag2 && !flag)
+            if (rotatedCircle != null && rotatedCircles.IndexOf(rotatedCircle) != rotatedCircles.Count - 1 && hasOverlappingCircle && !hasContainedCircle)
             {
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
@@ -443,9 +439,8 @@ namespace CutTheRopeDX.GameMain
             }
             if (ghosts != null)
             {
-                foreach (object objGhost in ghosts)
+                foreach (Ghost ghost in ghosts)
                 {
-                    Ghost ghost = (Ghost)objGhost;
                     if (ghost != null && ghost.OnTouchDownXY(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                     {
                         return true;
@@ -455,9 +450,8 @@ namespace CutTheRopeDX.GameMain
             // A tap that lands on a stuck cup claims the touch; taps that land anywhere else start
             // every detached cup trying to re-stick.
             bool touchedMountedCup = false;
-            foreach (object obj4 in bungees)
+            foreach (Grab bungee in bungees)
             {
-                Grab bungee = (Grab)obj4;
                 float tapRadius = Grab.KICK_TAP_RADIUS;
                 if (bungee.Mount is SuctionMount tapped && tapped.IsMounted
                     && PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), bungee.x - tapRadius, bungee.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
@@ -466,17 +460,15 @@ namespace CutTheRopeDX.GameMain
                     break;
                 }
             }
-            foreach (object obj4 in bungees)
+            foreach (Grab bungee in bungees)
             {
-                Grab bungee = (Grab)obj4;
                 if (bungee.Mount is SuctionMount mount && !mount.IsMounted && bungee.Rope != null && !touchedMountedCup)
                 {
                     mount.BeginSticking();
                 }
             }
-            foreach (object obj4 in bungees)
+            foreach (Grab bungee in bungees)
             {
-                Grab bungee = (Grab)obj4;
                 if (bungee.Wheel?.TryBeginOperating(bungee, camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), ti) == true)
                 {
                     // A touch that lands on the wheel belongs to the wheel: without this, a wheel
@@ -609,9 +601,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj in spikes)
+            foreach (Spikes spike in spikes)
             {
-                Spikes spike = (Spikes)obj;
                 if (spike.rotateButton != null && spike.touchIndex == ti)
                 {
                     spike.touchIndex = -1;
@@ -621,9 +612,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj2 in rotatedCircles)
+            foreach (RotatedCircle rotatedCircle in rotatedCircles)
             {
-                RotatedCircle rotatedCircle = (RotatedCircle)obj2;
                 if (rotatedCircle.operating == ti)
                 {
                     rotatedCircle.operating = -1;
@@ -632,9 +622,8 @@ namespace CutTheRopeDX.GameMain
                     rotatedCircle.SetIsRightControllerActive(false);
                 }
             }
-            foreach (object obj3 in bungees)
+            foreach (Grab bungee in bungees)
             {
-                Grab bungee = (Grab)obj3;
                 bungee.Wheel?.EndOperating(ti);
                 bungee.Rail?.EndDrag(ti);
                 if (bungee.Mount is SuctionMount mount && bungee.Rope != null)
@@ -719,9 +708,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj in pumps)
+            foreach (Pump pump3 in pumps)
             {
-                Pump pump3 = (Pump)obj;
                 if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(gesture.StartPosition, vector) > 10)
                 {
                     pump3.pumpTouchTimer = 0f;
@@ -914,9 +902,8 @@ namespace CutTheRopeDX.GameMain
                 };
                 gesture.Cuts.Add(fingerCut);
                 int ropesCutThisFrame = 0;
-                foreach (object obj2 in gesture.Cuts)
+                foreach (FingerCut item in gesture.Cuts)
                 {
-                    FingerCut item = (FingerCut)obj2;
                     ropesCutThisFrame += CutWithRazorOrLine1Line2Immediate(null, item.start, item.end, false);
                 }
                 if (ropesCutThisFrame > 0)

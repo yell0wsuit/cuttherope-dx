@@ -34,8 +34,8 @@ namespace CutTheRopeDX.GameMain
             _ = bool.TryParse(xmlNode.Attribute("moveVertical")?.Value, out bool v);
             float o = ParseFloatOrZero(xmlNode.Attribute("moveOffset")?.Value) * scale;
             _ = bool.TryParse(xmlNode.Attribute("spider")?.Value, out bool spider);
-            bool flag = xmlNode.Attribute("part")?.Value == "L";
-            _ = bool.TryParse(xmlNode.Attribute("hidePath")?.Value, out bool flag2);
+            bool isLeftPart = xmlNode.Attribute("part")?.Value == "L";
+            _ = bool.TryParse(xmlNode.Attribute("hidePath")?.Value, out bool hidePath);
             _ = bool.TryParse(xmlNode.Attribute("bindBulb")?.Value, out bool bindBulb);
             string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
             _ = bool.TryParse(xmlNode.Attribute("gun")?.Value, out bool gun);
@@ -79,13 +79,13 @@ namespace CutTheRopeDX.GameMain
             if (grab.mover != null)
             {
                 grab.SetBee();
-                if (!flag2)
+                if (!hidePath)
                 {
                     int pollenPathStep = 3;
-                    bool flag3 = (xmlNode.Attribute("path")?.Value ?? string.Empty).StartsWith('R');
+                    bool sparsePollenPath = (xmlNode.Attribute("path")?.Value ?? string.Empty).StartsWith('R');
                     for (int l = 0; l < grab.mover.pathLen - 1; l++)
                     {
-                        if (!flag3 || l % pollenPathStep == 0)
+                        if (!sparsePollenPath || l % pollenPathStep == 0)
                         {
                             pollenDrawer.FillWithPolenFromPathIndexToPathIndexGrab(l, l + 1, grab);
                         }
@@ -131,7 +131,7 @@ namespace CutTheRopeDX.GameMain
                 // from the same metadata pass, says which half a part="L"/"R" grab binds to.
                 SplitCandyState split = candies[0].Lifecycle.Split;
                 ConstraintedPoint authoredHalf = split == null ? null
-                    : flag ? split.Left.Body.Point : split.Right.Body.Point;
+                    : isLeftPart ? split.Left.Body.Point : split.Right.Body.Point;
                 if (bindBulb)
                 {
                     CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
@@ -165,7 +165,7 @@ namespace CutTheRopeDX.GameMain
                     if (!breakable)
                     {
                         // breakable="false" is a chain: it renders as a chain and can only be cut by the
-                        // axe (the original's single `isUnBreakable` flag). `axed`/axeNumber is purely a
+                        // axe (the original's single `isUnBreakable` isLeftPart). `axed`/axeNumber is purely a
                         // bind target and does not make the rope axe-only.
                         bungee.SetCutOnlyByAxe();
                     }
@@ -183,7 +183,7 @@ namespace CutTheRopeDX.GameMain
             {
                 SplitCandyState split = candies[0].Lifecycle.Split;
                 ConstraintedPoint constraintedPoint = split == null ? star
-                    : flag ? split.Left.Body.Point : split.Right.Body.Point;
+                    : isLeftPart ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
                 grab.GunSource.Arrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
             }

@@ -127,8 +127,8 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns><see langword="true"/> if not shareware or if the shareware IAP has been purchased.</returns>
         public static bool IsSharewareUnlocked()
         {
-            bool flag = IsShareware();
-            return !flag || (flag && GetBooleanForKey("IAP_SHAREWARE"));
+            bool isShareware = IsShareware();
+            return !isShareware || (isShareware && GetBooleanForKey("IAP_SHAREWARE"));
         }
 
         /// <summary>
@@ -400,8 +400,8 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The game pack index.</returns>
         public static int GetLastGamePack()
         {
-            int val = GetIntForKey("PREFS_LAST_GAMEPACK");
-            return val >= 0 ? val : 0;
+            int lastGamePack = GetIntForKey("PREFS_LAST_GAMEPACK");
+            return lastGamePack >= 0 ? lastGamePack : 0;
         }
 
         /// <summary>
@@ -441,10 +441,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The save slot index.</returns>
         public static int GetLastBox()
         {
-            int val = GetIntForKey("PREFS_LAST_BOX");
+            int lastBox = GetIntForKey("PREFS_LAST_BOX");
             int maxPack = GetPacksCount();
             // If saved pack is out of range, fall back to first pack
-            return (val >= 0 && val <= maxPack) ? val : 0;
+            return (lastBox >= 0 && lastBox <= maxPack) ? lastBox : 0;
         }
 
         /// <summary>

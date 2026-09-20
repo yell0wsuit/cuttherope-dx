@@ -144,34 +144,34 @@ namespace CutTheRopeDX.GameMain
                     antsPath?.Draw();
                 }
             }
-            foreach (object razor in razors)
+            foreach (Razor razor in razors)
             {
-                ((Razor)razor).Draw();
+                razor.Draw();
             }
-            foreach (object rotatedCircle in rotatedCircles)
+            foreach (RotatedCircle rotatedCircle in rotatedCircles)
             {
-                ((RotatedCircle)rotatedCircle).Draw();
+                rotatedCircle.Draw();
             }
             conveyors.Draw();
-            foreach (object bubble in bubbles)
+            foreach (GameObject bubble in bubbles)
             {
-                ((GameObject)bubble).Draw();
+                bubble.Draw();
             }
-            foreach (object pump in pumps)
+            foreach (GameObject pump in pumps)
             {
-                ((GameObject)pump).Draw();
+                pump.Draw();
             }
-            foreach (object spike in spikes)
+            foreach (Spikes spike in spikes)
             {
-                ((Spikes)spike).Draw();
+                spike.Draw();
             }
             foreach (PauseSwitcher switcher in pauseSwitchers)
             {
                 switcher?.Draw();
             }
-            foreach (object bouncer in bouncers)
+            foreach (Bouncer bouncer in bouncers)
             {
-                ((Bouncer)bouncer).Draw();
+                bouncer.Draw();
             }
             foreach (BambooTube bambooTube in bambooTubes)
             {
@@ -194,9 +194,8 @@ namespace CutTheRopeDX.GameMain
             }
             activeHand?.TheClaw().DrawActiveHand();
             miceManager?.DrawMice();
-            foreach (object sockObj in socks)
+            foreach (Sock sock in socks)
             {
-                Sock sock = (Sock)sockObj;
                 sock.y -= 85f;
                 sock.Draw();
                 sock.y += 85f;
@@ -214,9 +213,8 @@ namespace CutTheRopeDX.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             if (ghosts != null)
             {
-                foreach (object objGhost in ghosts)
+                foreach (Ghost ghost in ghosts)
                 {
-                    Ghost ghost = (Ghost)objGhost;
                     ghost?.Draw();
                 }
             }
@@ -225,17 +223,15 @@ namespace CutTheRopeDX.GameMain
             // Two passes, as in the reference engine: every grab's backing layer (the rail a
             // moveable grab slides along, the hook back plate) is drawn before any rope. A single
             // interleaved pass lets a later grab's rail paint over an earlier grab's rope.
-            foreach (object bungeeObj in bungees)
+            foreach (Grab grab in bungees)
             {
-                Grab grab = (Grab)bungeeObj;
                 // Reset blend mode per grab to avoid state leakage from child draws.
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 grab.GunSource?.SetDisabled(candies[0].Lifecycle.Attachments.InLantern || MouseCarries(candies[0]));
                 grab.DrawBack();
             }
-            foreach (object bungeeObj in bungees)
+            foreach (Grab grab in bungees)
             {
-                Grab grab = (Grab)bungeeObj;
                 Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
                 grab.Draw();
             }
@@ -245,9 +241,8 @@ namespace CutTheRopeDX.GameMain
             candyConnector?.Draw();
             Renderer.SetColor(Color.White);
 
-            foreach (object bungeeGun in bungees)
+            foreach (Grab grab in bungees)
             {
-                Grab grab = (Grab)bungeeGun;
                 GunSource gun = grab.GunSource;
                 if (gun == null || !gun.HasFired)
                 {
@@ -263,9 +258,9 @@ namespace CutTheRopeDX.GameMain
             {
                 bulb?.DrawLight();
             }
-            foreach (object starObj in stars)
+            foreach (GameObject starObj in stars)
             {
-                ((GameObject)starObj).Draw();
+                starObj.Draw();
             }
             particlesAniPool.Draw();
             if (rockets != null)
@@ -346,9 +341,8 @@ namespace CutTheRopeDX.GameMain
             {
                 steamTube2?.DrawFront();
             }
-            foreach (object bungeeSpider in bungees)
+            foreach (Grab bungee3 in bungees)
             {
-                Grab bungee3 = (Grab)bungeeSpider;
                 if (bungee3.Spider is SpiderRider drawnRider && drawnRider.IsAttached)
                 {
                     drawnRider.Animation.Draw();

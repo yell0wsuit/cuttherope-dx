@@ -500,9 +500,8 @@ namespace CutTheRopeDX.GameMain
 
             if (camera.type != CAMERATYPE.CAMERASPEEDPIXELS || !ignoreTouches)
             {
-                foreach (object obj2 in stars)
+                foreach (Star star in stars)
                 {
-                    Star star = (Star)obj2;
                     star.Update(delta);
                     if (star.timeout > 0 && star.time == 0)
                     {
@@ -574,9 +573,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj3 in bubbles)
+            foreach (Bubble bubble3 in bubbles)
             {
-                Bubble bubble3 = (Bubble)obj3;
                 bubble3.Update(delta);
                 float bubbleCaptureRadius = ActivePhysicsConstants.BubbleCaptureRadius;
                 // One capture pass over every body a bubble can lift: whole candies and split halves
@@ -632,9 +630,8 @@ namespace CutTheRopeDX.GameMain
 
                 if (!bubble3.withoutShadow)
                 {
-                    foreach (object obj4 in rotatedCircles)
+                    foreach (RotatedCircle rotatedCircle5 in rotatedCircles)
                     {
-                        RotatedCircle rotatedCircle5 = (RotatedCircle)obj4;
                         if (VectDistance(Vect(bubble3.x, bubble3.y), Vect(rotatedCircle5.x, rotatedCircle5.y)) < rotatedCircle5.sizeInPixels)
                         {
                             bubble3.withoutShadow = true;
@@ -660,16 +657,14 @@ namespace CutTheRopeDX.GameMain
             }
             if (ghosts != null)
             {
-                foreach (object objGhost in ghosts)
+                foreach (Ghost ghost in ghosts)
                 {
-                    Ghost ghost = (Ghost)objGhost;
                     ghost?.Update(delta);
                 }
             }
             tutorialDirector.Update(delta);
-            foreach (object obj7 in pumps)
+            foreach (Pump pump in pumps)
             {
-                Pump pump = (Pump)obj7;
                 pump.Update(delta);
                 if (Mover.MoveVariableToTarget(ref pump.pumpTouchTimer, 0, 1, delta))
                 {
@@ -789,12 +784,10 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             RotatedCircle rotatedCircle6 = null;
-            foreach (object obj8 in rotatedCircles)
+            foreach (RotatedCircle rotatedCircle7 in rotatedCircles)
             {
-                RotatedCircle rotatedCircle7 = (RotatedCircle)obj8;
-                foreach (object obj9 in bungees)
+                foreach (Grab bungee4 in bungees)
                 {
-                    Grab bungee4 = (Grab)obj9;
                     // Self-moving grabs, player rails, and ghost apparitions never ride the disc.
                     bool discBindable = (bungee4.Mount?.FollowsPlatform ?? bungee4.Motion.FollowsPlatform)
                         && bungee4 is not IGhostApparition;
@@ -810,9 +803,8 @@ namespace CutTheRopeDX.GameMain
                         _ = rotatedCircle7.containedObjects.Remove(bungee4);
                     }
                 }
-                foreach (object obj10 in bubbles)
+                foreach (Bubble bubble4 in bubbles)
                 {
-                    Bubble bubble4 = (Bubble)obj10;
                     if (bubble4 is not IGhostApparition
                         && VectDistance(Vect(bubble4.x, bubble4.y), Vect(rotatedCircle7.x, rotatedCircle7.y)) <= rotatedCircle7.sizeInPixels + (RTPD(10) * 3f))
                     {
@@ -866,9 +858,8 @@ namespace CutTheRopeDX.GameMain
 
             }
             float collisionHalfSize = ActivePhysicsConstants.SockCatchHalfSize;
-            foreach (object obj11 in socks)
+            foreach (Sock sock3 in socks)
             {
-                Sock sock3 = (Sock)obj11;
                 sock3.Update(delta, timeFrozen);
                 if (timeFrozen)
                 {
@@ -1253,9 +1244,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj13 in razors)
+            foreach (Razor razor in razors)
             {
-                Razor razor = (Razor)obj13;
                 razor.Update(delta);
                 _ = CutWithRazorOrLine1Line2Immediate(razor, vectZero, vectZero, false);
             }
@@ -1265,9 +1255,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             DetonateBombsOnContact(delta);
-            foreach (object obj14 in spikes)
+            foreach (Spikes spike in spikes)
             {
-                Spikes spike = (Spikes)obj14;
                 spike.Update(delta, timeFrozen);
                 float spikeCollisionRadius = 15f;
                 // Break the first body that touches the spike, in one pass over whole candies and
@@ -1301,9 +1290,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (object obj15 in bouncers)
+            foreach (Bouncer bouncer in bouncers)
             {
-                Bouncer bouncer = (Bouncer)obj15;
                 bouncer.Update(delta, timeFrozen);
                 float bouncerCollisionRadius = ActivePhysicsConstants.BouncerCollisionRadius;
                 bool anyCandyHit = false;
@@ -1638,67 +1626,63 @@ namespace CutTheRopeDX.GameMain
             if (clickToCut && !ignoreTouches && !AcceptsVisualOnlyPointerInput)
             {
                 ResetBungeeHighlight();
-                bool flag12 = false;
+                bool tapHitsControl = false;
                 Vector p = camera.ScreenToWorld(slastTouch.X, slastTouch.Y);
                 if (gravityState.IsInToggleTouchZone(p.X, p.Y))
                 {
-                    flag12 = true;
+                    tapHitsControl = true;
                 }
                 // A tap inside a bubbled body's pop zone is a bubble pop, not a rope cut.
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bubble))
                 {
                     if (body.Bubble != null && PointInRect(p.X, p.Y, body.Point.pos.X - 60f, body.Point.pos.Y - 60f, 120f, 120f))
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                 }
-                foreach (object obj19 in spikes)
+                foreach (Spikes spike2 in spikes)
                 {
-                    Spikes spike2 = (Spikes)obj19;
                     if (spike2.rotateButton != null && spike2.rotateButton.IsInTouchZoneXYforTouchDown(p.X, p.Y, true))
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                     }
                 }
-                foreach (object obj20 in pumps)
+                foreach (Pump pump2 in pumps)
                 {
-                    Pump pump2 = (Pump)obj20;
                     if (GameObject.PointInObject(p, pump2))
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                 }
-                foreach (object obj21 in rotatedCircles)
+                foreach (RotatedCircle rotatedCircle8 in rotatedCircles)
                 {
-                    RotatedCircle rotatedCircle8 = (RotatedCircle)obj21;
                     if (rotatedCircle8.IsLeftControllerActive() || rotatedCircle8.IsRightControllerActive())
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                     if (VectDistance(Vect(p.X, p.Y), Vect(rotatedCircle8.handle1.X, rotatedCircle8.handle1.Y)) <= 90f || VectDistance(Vect(p.X, p.Y), Vect(rotatedCircle8.handle2.X, rotatedCircle8.handle2.Y)) <= 90f)
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                 }
-                foreach (object obj22 in bungees)
+                foreach (Grab bungee5 in bungees)
                 {
-                    Grab bungee5 = (Grab)obj22;
                     if (bungee5.Wheel != null && PointInRect(p.X, p.Y, bungee5.x - WheelControl.TapHalfExtent, bungee5.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f))
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                     if (bungee5.Rail is RailMotion rail5 && (PointInRect(p.X, p.Y, bungee5.x - 65f, bungee5.y - 65f, 130f, 130f) || rail5.DraggingTouch != -1))
                     {
-                        flag12 = true;
+                        tapHitsControl = true;
                         break;
                     }
                 }
-                if (!flag12)
+                if (!tapHitsControl)
                 {
                     Vector s = default;
                     Grab grab2 = null;
