@@ -23,7 +23,7 @@ namespace CutTheRopeDX.GameMain
             {
                 return;
             }
-            bool flag = Mover.MoveVariableToTarget(ref raDelay, 0, 1, delta);
+            bool delayFinished = Mover.MoveVariableToTarget(ref raDelay, 0, 1, delta);
             switch (raState)
             {
                 case -1:
@@ -32,16 +32,16 @@ namespace CutTheRopeDX.GameMain
                         ctime = ActiveResult.ElapsedTime;
                         cstarBonus = ActiveResult.StarBonus;
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
-                        Text text27 = (Text)result.GetChildWithName("dataTitle");
-                        Image.SetElementPositionWithQuadOffset(text27, Resources.Img.MenuResults, 5);
-                        text27.SetString(Application.GetString("STAR_BONUS"));
+                        Text dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        Image.SetElementPositionWithQuadOffset(dataTitle, Resources.Img.MenuResults, 5);
+                        dataTitle.SetString(Application.GetString("STAR_BONUS"));
                         ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
                         raState = 1;
                         raDelay = 1f;
                         return;
                     }
                 case 0:
-                    if (flag)
+                    if (delayFinished)
                     {
                         raState = 1;
                         raDelay = 0.2f;
@@ -50,14 +50,14 @@ namespace CutTheRopeDX.GameMain
                     break;
                 case 1:
                     {
-                        Text text28 = (Text)result.GetChildWithName("dataTitle");
-                        text28.SetEnabled(true);
-                        Text text21 = (Text)result.GetChildWithName("dataValue");
-                        text21.SetEnabled(true);
-                        Text text22 = (Text)result.GetChildWithName("scoreValue");
-                        text22.SetEnabled(true);
-                        text28.color.AlphaChannel = text21.color.AlphaChannel = text22.color.AlphaChannel = 1f - (raDelay / 0.2f);
-                        if (flag)
+                        Text dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        dataTitle.SetEnabled(true);
+                        Text dataValue = (Text)result.GetChildWithName("dataValue");
+                        dataValue.SetEnabled(true);
+                        Text scoreValue = (Text)result.GetChildWithName("scoreValue");
+                        scoreValue.SetEnabled(true);
+                        dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = scoreValue.color.AlphaChannel = 1f - (raDelay / 0.2f);
+                        if (delayFinished)
                         {
                             raState = 2;
                             raDelay = 1f;
@@ -70,10 +70,10 @@ namespace CutTheRopeDX.GameMain
                         cstarBonus = (int)(ActiveResult.StarBonus * raDelay);
                         cscore = (int)((1f - raDelay) * ActiveResult.StarBonus);
                         ((Text)result.GetChildWithName("dataValue")).SetString(cstarBonus.ToString(CultureInfo.InvariantCulture));
-                        Text text29 = (Text)result.GetChildWithName("scoreValue");
-                        text29.SetEnabled(true);
-                        text29.SetString(cscore.ToString(CultureInfo.InvariantCulture));
-                        if (flag)
+                        Text scoreValue = (Text)result.GetChildWithName("scoreValue");
+                        scoreValue.SetEnabled(true);
+                        scoreValue.SetString(cscore.ToString(CultureInfo.InvariantCulture));
+                        if (delayFinished)
                         {
                             raState = 3;
                             raDelay = 0.2f;
@@ -83,10 +83,10 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 3:
                     {
-                        BaseElement baseElement = (Text)result.GetChildWithName("dataTitle");
-                        Text text23 = (Text)result.GetChildWithName("dataValue");
-                        baseElement.color.AlphaChannel = text23.color.AlphaChannel = raDelay / 0.2f;
-                        if (flag)
+                        BaseElement dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        Text dataValue = (Text)result.GetChildWithName("dataValue");
+                        dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = raDelay / 0.2f;
+                        if (delayFinished)
                         {
                             raState = 4;
                             raDelay = 0.2f;
@@ -100,10 +100,10 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 4:
                     {
-                        BaseElement baseElement2 = (Text)result.GetChildWithName("dataTitle");
-                        Text text24 = (Text)result.GetChildWithName("dataValue");
-                        baseElement2.color.AlphaChannel = text24.color.AlphaChannel = 1f - (raDelay / 0.2f);
-                        if (flag)
+                        BaseElement dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        Text dataValue = (Text)result.GetChildWithName("dataValue");
+                        dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = 1f - (raDelay / 0.2f);
+                        if (delayFinished)
                         {
                             raState = 5;
                             raDelay = 1f;
@@ -119,7 +119,7 @@ namespace CutTheRopeDX.GameMain
                         int seconds = (int)(Round(ctime) - (minutes * 60));
                         ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
-                        if (flag)
+                        if (delayFinished)
                         {
                             cscore = ActiveResult.FinalScore;
                             ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
@@ -131,16 +131,16 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 6:
                     {
-                        BaseElement baseElement3 = (Text)result.GetChildWithName("dataTitle");
-                        Text text25 = (Text)result.GetChildWithName("dataValue");
-                        baseElement3.color.AlphaChannel = text25.color.AlphaChannel = raDelay / 0.2f;
-                        if (flag)
+                        BaseElement dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        Text dataValue = (Text)result.GetChildWithName("dataValue");
+                        dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = raDelay / 0.2f;
+                        if (delayFinished)
                         {
                             raState = 7;
                             raDelay = 0.2f;
-                            Text text30 = (Text)result.GetChildWithName("dataTitle");
-                            Image.SetElementPositionWithQuadOffset(text30, Resources.Img.MenuResults, 7);
-                            text30.SetString(Application.GetString("FINAL_SCORE"));
+                            Text finalScoreTitle = (Text)result.GetChildWithName("dataTitle");
+                            Image.SetElementPositionWithQuadOffset(finalScoreTitle, Resources.Img.MenuResults, 7);
+                            finalScoreTitle.SetString(Application.GetString("FINAL_SCORE"));
                             ((Text)result.GetChildWithName("dataValue")).SetString("");
                             return;
                         }
@@ -148,10 +148,10 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 7:
                     {
-                        BaseElement baseElement4 = (Text)result.GetChildWithName("dataTitle");
-                        Text text26 = (Text)result.GetChildWithName("dataValue");
-                        baseElement4.color.AlphaChannel = text26.color.AlphaChannel = 1f - (raDelay / 0.2f);
-                        if (flag)
+                        BaseElement dataTitle = (Text)result.GetChildWithName("dataTitle");
+                        Text dataValue = (Text)result.GetChildWithName("dataValue");
+                        dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = 1f - (raDelay / 0.2f);
+                        if (delayFinished)
                         {
                             raState = 8;
                             if (shouldShowImprovedResult)
@@ -311,73 +311,73 @@ namespace CutTheRopeDX.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             result.AddTimelinewithID(timeline, 1);
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
-            image.anchor = 18;
-            image.SetName("star1");
-            Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuResults, 0);
-            AddPanelPiece(image);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
-            image2.anchor = 18;
-            image2.SetName("star2");
-            Image.SetElementPositionWithQuadOffset(image2, Resources.Img.MenuResults, 1);
-            AddPanelPiece(image2);
-            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
-            image3.anchor = 18;
-            image3.SetName("star3");
-            Image.SetElementPositionWithQuadOffset(image3, Resources.Img.MenuResults, 2);
-            AddPanelPiece(image3);
-            Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
-            text.SetString(Application.GetString("LEVEL_CLEARED1"));
-            Image.SetElementPositionWithQuadOffset(text, Resources.Img.MenuResults, 3);
-            text.anchor = 18;
-            text.SetName("passText");
-            AddPanelPiece(text);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 15);
-            image4.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(image4, Resources.Img.MenuResults, 4);
-            AddPanelPiece(image4);
+            Image star1 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            star1.anchor = 18;
+            star1.SetName("star1");
+            Image.SetElementPositionWithQuadOffset(star1, Resources.Img.MenuResults, 0);
+            AddPanelPiece(star1);
+            Image star2 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            star2.anchor = 18;
+            star2.SetName("star2");
+            Image.SetElementPositionWithQuadOffset(star2, Resources.Img.MenuResults, 1);
+            AddPanelPiece(star2);
+            Image star3 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            star3.anchor = 18;
+            star3.SetName("star3");
+            Image.SetElementPositionWithQuadOffset(star3, Resources.Img.MenuResults, 2);
+            AddPanelPiece(star3);
+            Text passText = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
+            passText.SetString(Application.GetString("LEVEL_CLEARED1"));
+            Image.SetElementPositionWithQuadOffset(passText, Resources.Img.MenuResults, 3);
+            passText.anchor = 18;
+            passText.SetName("passText");
+            AddPanelPiece(passText);
+            Image dataPlate = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 15);
+            dataPlate.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(dataPlate, Resources.Img.MenuResults, 4);
+            AddPanelPiece(dataPlate);
             stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, ResourceMgr.GetResultStampQuad());
-            Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(7);
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline2.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
-            _ = stamp.AddTimeline(timeline2);
+            Timeline stampTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(7);
+            stampTimeline.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            stampTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            stampTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            stampTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
+            _ = stamp.AddTimeline(stampTimeline);
             stamp.anchor = 18;
             stamp.SetEnabled(false);
             Image.SetElementPositionWithQuadOffset(stamp, Resources.Img.MenuResults, 12);
             AddPanelPiece(stamp);
-            Button button = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("REPLAY"), 8, b);
-            button.anchor = 18;
+            Button replayButton = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("REPLAY"), 8, b);
+            replayButton.anchor = 18;
             // Custom levels hide the NEXT/MENU buttons, so replay takes the centered menu slot instead.
-            Image.SetElementPositionWithQuadOffset(button, Resources.Img.MenuResults, CustomLevelSession.IsActive ? 9 : 11);
-            AddPanelPiece(button);
+            Image.SetElementPositionWithQuadOffset(replayButton, Resources.Img.MenuResults, CustomLevelSession.IsActive ? 9 : 11);
+            AddPanelPiece(replayButton);
             if (!CustomLevelSession.IsActive)
             {
-                Button button2 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
-                button2.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(button2, Resources.Img.MenuResults, 10);
-                AddPanelPiece(button2);
-                Button button3 = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
-                button3.anchor = 18;
-                Image.SetElementPositionWithQuadOffset(button3, Resources.Img.MenuResults, 9);
-                AddPanelPiece(button3);
+                Button nextButton = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("NEXT"), 9, b);
+                nextButton.anchor = 18;
+                Image.SetElementPositionWithQuadOffset(nextButton, Resources.Img.MenuResults, 10);
+                AddPanelPiece(nextButton);
+                Button menuButton = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString("MENU"), 5, b);
+                menuButton.anchor = 18;
+                Image.SetElementPositionWithQuadOffset(menuButton, Resources.Img.MenuResults, 9);
+                AddPanelPiece(menuButton);
             }
-            Text text2 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text2.SetName("dataTitle");
-            text2.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text2, Resources.Img.MenuResults, 5);
-            AddPanelPiece(text2);
-            Text text3 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
-            text3.SetName("dataValue");
-            text3.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text3, Resources.Img.MenuResults, 6);
-            AddPanelPiece(text3);
-            Text text4 = new Text().InitWithFont(Application.GetFont(Resources.Fnt.FontNumbersBig));
-            text4.SetName("scoreValue");
-            text4.anchor = 18;
-            Image.SetElementPositionWithQuadOffset(text4, Resources.Img.MenuResults, 8);
-            AddPanelPiece(text4);
+            Text dataTitle = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
+            dataTitle.SetName("dataTitle");
+            dataTitle.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(dataTitle, Resources.Img.MenuResults, 5);
+            AddPanelPiece(dataTitle);
+            Text dataValue = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
+            dataValue.SetName("dataValue");
+            dataValue.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(dataValue, Resources.Img.MenuResults, 6);
+            AddPanelPiece(dataValue);
+            Text scoreValue = new Text().InitWithFont(Application.GetFont(Resources.Fnt.FontNumbersBig));
+            scoreValue.SetName("scoreValue");
+            scoreValue.anchor = 18;
+            Image.SetElementPositionWithQuadOffset(scoreValue, Resources.Img.MenuResults, 8);
+            AddPanelPiece(scoreValue);
             confettiAnims = new BaseElement();
             AddPanelPiece(confettiAnims);
             openCloseAnims = null;
@@ -615,8 +615,8 @@ namespace CutTheRopeDX.GameMain
             }
             coverBackgroundRight.AddTimelinewithID(timeline, 0);
             coverBackgroundRight.PlayTimeline(0);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
-            Image image5 = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
+            Image spineLeft = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
+            Image spineRight = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
             float loadingY = 80f;
             float leftOpenOffset = 50f;
             float rightRestInset = 10f;
@@ -637,8 +637,8 @@ namespace CutTheRopeDX.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
-            image4.AddTimelinewithID(timeline, 0);
-            image4.PlayTimeline(0);
+            spineLeft.AddTimelinewithID(timeline, 0);
+            spineLeft.PlayTimeline(0);
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             if (open)
             {
@@ -654,8 +654,8 @@ namespace CutTheRopeDX.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeScale(0, 1.3f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
                 timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             }
-            image5.AddTimelinewithID(timeline, 0);
-            image5.PlayTimeline(0);
+            spineRight.AddTimelinewithID(timeline, 0);
+            spineRight.PlayTimeline(0);
             Image coverSideLeft = Image.Image_createWithResIDQuad(boxCover, 1);
             Image coverSideRight = Image.Image_createWithResIDQuad(boxCover, 1);
             coverSideLeft.rotationCenterX = -coverSideLeft.width / 2f;
@@ -700,8 +700,8 @@ namespace CutTheRopeDX.GameMain
             _ = openCloseAnims.AddChild(coverBackgroundRight);
             if (boxAnim == 0)
             {
-                _ = openCloseAnims.AddChild(image4);
-                _ = openCloseAnims.AddChild(image5);
+                _ = openCloseAnims.AddChild(spineLeft);
+                _ = openCloseAnims.AddChild(spineRight);
             }
         }
 
@@ -730,8 +730,8 @@ namespace CutTheRopeDX.GameMain
                     }
                 case 2:
                     {
-                        DelayedDispatcher.DispatchFunc dispatchFunc2 = new(Selector_postBoxClosed);
-                        TimerManager.RegisterDelayedObjectCall(dispatchFunc2, this, 0.001f);
+                        DelayedDispatcher.DispatchFunc postBoxClosedCall = new(Selector_postBoxClosed);
+                        TimerManager.RegisterDelayedObjectCall(postBoxClosedCall, this, 0.001f);
                         break;
                     }
                 case 3:
@@ -766,10 +766,10 @@ namespace CutTheRopeDX.GameMain
                 RemoveChild(openCloseAnims);
                 openCloseAnims = null;
             }
-            BaseElement baseElement = (Text)result.GetChildWithName("dataTitle");
-            Text text2 = (Text)result.GetChildWithName("dataValue");
-            Text text3 = (Text)result.GetChildWithName("scoreValue");
-            baseElement.color.AlphaChannel = text2.color.AlphaChannel = text3.color.AlphaChannel = 1f;
+            BaseElement dataTitle = (Text)result.GetChildWithName("dataTitle");
+            Text dataValue = (Text)result.GetChildWithName("dataValue");
+            Text scoreValue = (Text)result.GetChildWithName("scoreValue");
+            dataTitle.color.AlphaChannel = dataValue.color.AlphaChannel = scoreValue.color.AlphaChannel = 1f;
         }
 
         /// <summary>
