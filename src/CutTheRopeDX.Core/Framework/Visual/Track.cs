@@ -214,14 +214,11 @@ namespace CutTheRopeDX.Framework.Visual
                         break;
                     case TrackType.TRACK_COLOR:
                         {
-                            ColorParams color = currentStepPerSecond.value.color;
-                            color.rgba.RedColor *= 2f;
-                            ColorParams color2 = currentStepPerSecond.value.color;
-                            color2.rgba.GreenColor *= 2f;
-                            ColorParams color3 = currentStepPerSecond.value.color;
-                            color3.rgba.BlueColor *= 2f;
-                            ColorParams color4 = currentStepPerSecond.value.color;
-                            color4.rgba.AlphaChannel *= 2f;
+                            ColorParams perSecond = currentStepPerSecond.value.color;
+                            perSecond.rgba.RedColor *= 2f;
+                            perSecond.rgba.GreenColor *= 2f;
+                            perSecond.rgba.BlueColor *= 2f;
+                            perSecond.rgba.AlphaChannel *= 2f;
                             currentStepAcceleration.value.color.rgba.RedColor = currentStepPerSecond.value.color.rgba.RedColor / duration;
                             currentStepAcceleration.value.color.rgba.GreenColor = currentStepPerSecond.value.color.rgba.GreenColor / duration;
                             currentStepAcceleration.value.color.rgba.BlueColor = currentStepPerSecond.value.color.rgba.BlueColor / duration;
@@ -235,14 +232,11 @@ namespace CutTheRopeDX.Framework.Visual
                             }
                             else
                             {
-                                ColorParams color5 = currentStepAcceleration.value.color;
-                                color5.rgba.RedColor *= -1f;
-                                ColorParams color6 = currentStepAcceleration.value.color;
-                                color6.rgba.GreenColor *= -1f;
-                                ColorParams color7 = currentStepAcceleration.value.color;
-                                color7.rgba.BlueColor *= -1f;
-                                ColorParams color8 = currentStepAcceleration.value.color;
-                                color8.rgba.AlphaChannel *= -1f;
+                                ColorParams acceleration = currentStepAcceleration.value.color;
+                                acceleration.rgba.RedColor *= -1f;
+                                acceleration.rgba.GreenColor *= -1f;
+                                acceleration.rgba.BlueColor *= -1f;
+                                acceleration.rgba.AlphaChannel *= -1f;
                             }
                             break;
                         }
@@ -818,14 +812,12 @@ namespace CutTheRopeDX.Framework.Visual
                         break;
                     case TrackType.TRACK_COLOR:
                         {
-                            BaseElement element5 = timeline.element;
-                            element5.color.RedColor += thiss.currentStepPerSecond.value.color.rgba.RedColor * delta;
-                            BaseElement element6 = timeline.element;
-                            element6.color.GreenColor += thiss.currentStepPerSecond.value.color.rgba.GreenColor * delta;
-                            BaseElement element7 = timeline.element;
-                            element7.color.BlueColor += thiss.currentStepPerSecond.value.color.rgba.BlueColor * delta;
-                            BaseElement element8 = timeline.element;
-                            element8.color.AlphaChannel += thiss.currentStepPerSecond.value.color.rgba.AlphaChannel * delta;
+                            BaseElement element = timeline.element;
+                            RGBAColor perSecond = thiss.currentStepPerSecond.value.color.rgba;
+                            element.color.RedColor += perSecond.RedColor * delta;
+                            element.color.GreenColor += perSecond.GreenColor * delta;
+                            element.color.BlueColor += perSecond.BlueColor * delta;
+                            element.color.AlphaChannel += perSecond.AlphaChannel * delta;
                             break;
                         }
 

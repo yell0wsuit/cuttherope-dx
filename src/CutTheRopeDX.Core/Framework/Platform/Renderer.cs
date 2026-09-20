@@ -509,30 +509,30 @@ namespace CutTheRopeDX.Framework.Platform
             for (int i = 0; i < quadCount; i++)
             {
                 Quad3D position = positions[i];
-                Vector3 pos0 = new(position.BlX, position.BlY, position.BlZ);
-                Vector3 pos1 = new(position.BrX, position.BrY, position.BrZ);
-                Vector3 pos2 = new(position.TlX, position.TlY, position.TlZ);
-                Vector3 pos3 = new(position.TrX, position.TrY, position.TrZ);
+                Vector3 bottomLeft = new(position.BlX, position.BlY, position.BlZ);
+                Vector3 bottomRight = new(position.BrX, position.BrY, position.BrZ);
+                Vector3 topLeft = new(position.TlX, position.TlY, position.TlZ);
+                Vector3 topRight = new(position.TrX, position.TrY, position.TrZ);
                 Quad2D tex = texCoordinates[i];
-                Vector2 tex0 = new(tex.tlX, tex.tlY);
-                Vector2 tex1 = new(tex.trX, tex.trY);
-                Vector2 tex2 = new(tex.blX, tex.blY);
-                Vector2 tex3 = new(tex.brX, tex.brY);
+                Vector2 texTopLeft = new(tex.tlX, tex.tlY);
+                Vector2 texTopRight = new(tex.trX, tex.trY);
+                Vector2 texBottomLeft = new(tex.blX, tex.blY);
+                Vector2 texBottomRight = new(tex.brX, tex.brY);
                 for (int vertex = 0; vertex < 4; vertex++)
                 {
                     Vector3 positionValue = vertex switch
                     {
-                        0 => pos0,
-                        1 => pos1,
-                        2 => pos2,
-                        _ => pos3
+                        0 => bottomLeft,
+                        1 => bottomRight,
+                        2 => topLeft,
+                        _ => topRight
                     };
                     Vector2 texCoord = vertex switch
                     {
-                        0 => tex0,
-                        1 => tex1,
-                        2 => tex2,
-                        _ => tex3
+                        0 => texTopLeft,
+                        1 => texTopRight,
+                        2 => texBottomLeft,
+                        _ => texBottomRight
                     };
                     vertices[vertexIndex++] = new VertexPositionNormalTexture(positionValue, s_normal, texCoord);
                 }
@@ -554,31 +554,31 @@ namespace CutTheRopeDX.Framework.Platform
             for (int i = 0; i < quadCount; i++)
             {
                 Quad3D position = positions[i];
-                Vector3 pos0 = new(position.BlX, position.BlY, position.BlZ);
-                Vector3 pos1 = new(position.BrX, position.BrY, position.BrZ);
-                Vector3 pos2 = new(position.TlX, position.TlY, position.TlZ);
-                Vector3 pos3 = new(position.TrX, position.TrY, position.TrZ);
+                Vector3 bottomLeft = new(position.BlX, position.BlY, position.BlZ);
+                Vector3 bottomRight = new(position.BrX, position.BrY, position.BrZ);
+                Vector3 topLeft = new(position.TlX, position.TlY, position.TlZ);
+                Vector3 topRight = new(position.TrX, position.TrY, position.TrZ);
                 Quad2D tex = texCoordinates[i];
-                Vector2 tex0 = new(tex.tlX, tex.tlY);
-                Vector2 tex1 = new(tex.trX, tex.trY);
-                Vector2 tex2 = new(tex.blX, tex.blY);
-                Vector2 tex3 = new(tex.brX, tex.brY);
+                Vector2 texTopLeft = new(tex.tlX, tex.tlY);
+                Vector2 texTopRight = new(tex.trX, tex.trY);
+                Vector2 texBottomLeft = new(tex.blX, tex.blY);
+                Vector2 texBottomRight = new(tex.brX, tex.brY);
                 int colorIndex = i * 4;
                 for (int vertex = 0; vertex < 4; vertex++)
                 {
                     Vector3 positionValue = vertex switch
                     {
-                        0 => pos0,
-                        1 => pos1,
-                        2 => pos2,
-                        _ => pos3
+                        0 => bottomLeft,
+                        1 => bottomRight,
+                        2 => topLeft,
+                        _ => topRight
                     };
                     Vector2 texCoord = vertex switch
                     {
-                        0 => tex0,
-                        1 => tex1,
-                        2 => tex2,
-                        _ => tex3
+                        0 => texTopLeft,
+                        1 => texTopRight,
+                        2 => texBottomLeft,
+                        _ => texBottomRight
                     };
                     Color color = colors[colorIndex + vertex].ToColor();
                     vertices[vertexIndex++] = new VertexPositionColorTexture(positionValue, color, texCoord);
