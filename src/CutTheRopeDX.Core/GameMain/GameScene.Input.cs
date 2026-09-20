@@ -62,6 +62,31 @@ namespace CutTheRopeDX.GameMain
             conveyors?.CancelAllDrags();
         }
 
+        /// <summary>Releases captured controls when play ends without firing their release actions.</summary>
+        private void CancelTouchesForLevelEnd()
+        {
+            EndActiveFingerTraces();
+            CancelConveyorDrags();
+
+            foreach (Spikes spike in spikes)
+            {
+                spike.touchIndex = -1;
+                spike.rotateButton?.SetState(Button.BUTTON_STATE.BUTTON_UP);
+            }
+
+            foreach (Grab grab in bungees)
+            {
+                if (grab.Wheel is WheelControl wheel)
+                {
+                    wheel.EndOperating(wheel.OperatingTouch);
+                }
+                if (grab.Rail is RailMotion rail)
+                {
+                    rail.EndDrag(rail.DraggingTouch);
+                }
+            }
+        }
+
         /// <summary>Resolves a supported pointer index before any gesture state is accessed.</summary>
         private bool TryGetPointerGesture(int pointerIndex, out PointerGestureState gesture)
         {

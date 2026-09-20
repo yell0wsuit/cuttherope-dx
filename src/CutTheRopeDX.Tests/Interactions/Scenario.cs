@@ -476,12 +476,14 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="y">Level-space Y.</param>
         /// <param name="angle">Rotation in degrees.</param>
         /// <param name="size">Strip size.</param>
+        /// <param name="toggled">Toggle group, or -1 for a fixed strip.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Spikes(int x, int y, float angle = 0f, int size = 4)
+        public Scenario Spikes(int x, int y, float angle = 0f, int size = 4, int toggled = -1)
         {
             XElement spike = Node("spike4", x, y);
             spike.SetAttributeValue("angle", Num(angle));
             spike.SetAttributeValue("size", Num(size));
+            spike.SetAttributeValue("toggled", Num(toggled));
             return Add(spike);
         }
 

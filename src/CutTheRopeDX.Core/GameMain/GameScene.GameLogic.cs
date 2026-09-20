@@ -538,8 +538,7 @@ namespace CutTheRopeDX.GameMain
             tutorialDirector.Fire(TutorialEvent.GameWon);
             pendingLevelResult = CalculateScore();
 
-            EndActiveFingerTraces();
-            conveyors?.CancelAllDrags();
+            CancelTouchesForLevelEnd();
             dd.CancelAllDispatches();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
@@ -603,8 +602,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             tutorialDirector.Fire(TutorialEvent.GameLost);
-            EndActiveFingerTraces();
-            conveyors?.CancelAllDrags();
+            CancelTouchesForLevelEnd();
             dd.CancelAllDispatches();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
