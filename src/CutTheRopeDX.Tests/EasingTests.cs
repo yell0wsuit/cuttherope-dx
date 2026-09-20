@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Visual;
 
 using Xunit;
@@ -43,7 +45,7 @@ namespace CutTheRopeDX.Tests
             float peak = 0f;
             for (int t = 0; t <= 600; t++)
             {
-                peak = System.MathF.Max(peak, Easing.OutBack(t, 0.1f, 5.9f, 600f, 1.5f));
+                peak = MathF.Max(peak, Easing.OutBack(t, 0.1f, 5.9f, 600f, 1.5f));
             }
 
             Assert.True(peak > 6.0f, $"expected an overshoot above 6.0, peaked at {peak}");

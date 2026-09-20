@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -17,7 +18,7 @@ namespace CutTheRopeDX.Tests
         private static bool SegmentsCross(Vector2 p, Vector2 q, Vector2 r, Vector2 s)
         {
             float denominator = ((q.X - p.X) * (s.Y - r.Y)) - ((q.Y - p.Y) * (s.X - r.X));
-            if (System.MathF.Abs(denominator) < 1e-12f)
+            if (MathF.Abs(denominator) < 1e-12f)
             {
                 return false;
             }

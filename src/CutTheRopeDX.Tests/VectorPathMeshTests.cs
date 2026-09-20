@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -46,7 +47,7 @@ namespace CutTheRopeDX.Tests
                 Vector3 a = mesh.Vertices[mesh.Indices[i]].Position;
                 Vector3 b = mesh.Vertices[mesh.Indices[i + 1]].Position;
                 Vector3 c = mesh.Vertices[mesh.Indices[i + 2]].Position;
-                area += System.MathF.Abs(
+                area += MathF.Abs(
                     ((b.X - a.X) * (c.Y - a.Y)) - ((c.X - a.X) * (b.Y - a.Y))) * 0.5f;
             }
             return area;

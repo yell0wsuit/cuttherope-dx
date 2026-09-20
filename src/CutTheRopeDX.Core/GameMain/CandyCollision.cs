@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Physics;
 
@@ -49,7 +51,7 @@ namespace CutTheRopeDX.GameMain
         public static float PairDistance(CandyContext a, CandyContext b)
         {
             return a.collisionDistanceOverride.HasValue || b.collisionDistanceOverride.HasValue
-                ? System.MathF.Max(a.collisionDistanceOverride ?? 0f, b.collisionDistanceOverride ?? 0f)
+                ? MathF.Max(a.collisionDistanceOverride ?? 0f, b.collisionDistanceOverride ?? 0f)
                 : a.CollisionRadius + b.CollisionRadius;
         }
 

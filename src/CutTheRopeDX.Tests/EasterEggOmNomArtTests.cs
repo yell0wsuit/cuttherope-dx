@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -52,10 +53,10 @@ namespace CutTheRopeDX.Tests
                 {
                     foreach (Vector2 point in contour)
                     {
-                        minX = System.MathF.Min(minX, point.X);
-                        minY = System.MathF.Min(minY, point.Y);
-                        maxX = System.MathF.Max(maxX, point.X);
-                        maxY = System.MathF.Max(maxY, point.Y);
+                        minX = MathF.Min(minX, point.X);
+                        minY = MathF.Min(minY, point.Y);
+                        maxX = MathF.Max(maxX, point.X);
+                        maxY = MathF.Max(maxY, point.Y);
                     }
                 }
             }

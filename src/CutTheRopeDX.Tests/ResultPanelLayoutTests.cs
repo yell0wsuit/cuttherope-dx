@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -125,7 +126,7 @@ namespace CutTheRopeDX.Tests
         /// <param name="width">Surface width to lay out for.</param>
         /// <param name="height">Surface height to lay out for.</param>
         /// <param name="body">Work to run against the panel and the viewport it was laid out for.</param>
-        private static void WithPanel(int width, int height, System.Action<BaseElement, Rectangle> body)
+        private static void WithPanel(int width, int height, Action<BaseElement, Rectangle> body)
         {
             _ = HeadlessGame.Boot();
 
@@ -177,10 +178,10 @@ namespace CutTheRopeDX.Tests
 
                 float x = ToDrawnX(panel, button.drawX + (button.width / 2f));
                 float y = ToDrawnY(panel, button.drawY + (button.height / 2f));
-                left = System.MathF.Min(left, x);
-                right = System.MathF.Max(right, x);
-                top = System.MathF.Min(top, y);
-                bottom = System.MathF.Max(bottom, y);
+                left = MathF.Min(left, x);
+                right = MathF.Max(right, x);
+                top = MathF.Min(top, y);
+                bottom = MathF.Max(bottom, y);
             }
 
             Assert.True(right > left, "the panel drew no buttons to measure");
@@ -236,8 +237,8 @@ namespace CutTheRopeDX.Tests
                     continue;
                 }
 
-                left = System.MathF.Min(left, ToDrawnX(panel, piece.drawX));
-                right = System.MathF.Max(right, ToDrawnX(panel, piece.drawX + piece.width));
+                left = MathF.Min(left, ToDrawnX(panel, piece.drawX));
+                right = MathF.Max(right, ToDrawnX(panel, piece.drawX + piece.width));
             }
 
             Assert.True(left < right, "the panel described no drawable piece");

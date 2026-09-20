@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -69,7 +71,7 @@ namespace CutTheRopeDX.Tests
             for (int i = 0; i < 60; i++)
             {
                 animation.Update(Step);
-                peak = System.MathF.Max(peak, animation.CurrentFrame.ScaleX);
+                peak = MathF.Max(peak, animation.CurrentFrame.ScaleX);
             }
 
             Assert.True(peak > 6.0f, $"expected a rise overshoot above 6.0, peaked at {peak}");

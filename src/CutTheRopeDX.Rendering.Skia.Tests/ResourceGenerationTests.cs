@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using CutTheRopeDX.Framework.Core;
@@ -20,7 +22,7 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             _ = registry.TrackTransient();
 
             Assert.Equal(1, registry.TransientCount);
-            System.Collections.Generic.IReadOnlyList<string> rebuild = registry.Invalidate();
+            IReadOnlyList<string> rebuild = registry.Invalidate();
 
             Assert.Equal(["images/hud", "images/menu"], Sorted(rebuild));
             Assert.Equal(0, registry.TransientCount);
@@ -222,10 +224,10 @@ namespace CutTheRopeDX.Rendering.Skia.Tests
             ];
         }
 
-        private static string[] Sorted(System.Collections.Generic.IEnumerable<string> values)
+        private static string[] Sorted(IEnumerable<string> values)
         {
             string[] sorted = [.. values];
-            System.Array.Sort(sorted, System.StringComparer.Ordinal);
+            Array.Sort(sorted, StringComparer.Ordinal);
             return sorted;
         }
     }

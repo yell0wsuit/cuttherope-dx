@@ -1,5 +1,3 @@
-using System;
-
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 

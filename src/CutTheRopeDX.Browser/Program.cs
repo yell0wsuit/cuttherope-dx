@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 
 using CutTheRopeDX.Browser;
 using CutTheRopeDX.Framework;
@@ -46,7 +47,7 @@ int deliveryAttempts = 0;
 while (HostShim.CanvasReceived() == 0 && deliveryAttempts < 200)
 {
     deliveryAttempts++;
-    await System.Threading.Tasks.Task.Delay(25);
+    await Task.Delay(25);
 }
 if (HostShim.CanvasReceived() == 0)
 {

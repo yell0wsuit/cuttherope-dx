@@ -1,3 +1,5 @@
+using System;
+
 namespace CutTheRopeDX.Framework
 {
     /// <summary>
@@ -385,7 +387,7 @@ namespace CutTheRopeDX.Framework
             float[] table = UseMobilePhysicsModel
                 ? rotatable ? MobilePhysicsConstants.RotatableSpikesQuadWidths : MobilePhysicsConstants.SpikesQuadWidths
                 : rotatable ? PhysicsConstants.RotatableSpikesQuadWidths : PhysicsConstants.SpikesQuadWidths;
-            int index = System.Math.Clamp(widthIndex - 1, 0, table.Length - 1);
+            int index = Math.Clamp(widthIndex - 1, 0, table.Length - 1);
             return UseMobilePhysicsModel ? ToWorld(table[index]) : table[index];
         }
 

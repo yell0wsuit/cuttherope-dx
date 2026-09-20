@@ -216,7 +216,7 @@ namespace CutTheRopeDX.GameMain
 
             int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-            GameObject visual = Image.CreateWithResID(new GameObject(), 
+            GameObject visual = Image.CreateWithResID(new GameObject(),
                 candyResource,
                 role == CandyBodyRole.LeftHalf ? SplitCandyLeftQuad : SplitCandyRightQuad);
             visual.scaleX = visual.scaleY = 0.71f;

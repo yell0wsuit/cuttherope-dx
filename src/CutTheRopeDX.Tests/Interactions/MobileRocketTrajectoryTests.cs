@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.GameMain;
 
 using Xunit;
@@ -24,7 +26,7 @@ namespace CutTheRopeDX.Tests.Interactions
             for (int frame = 0; frame < 45; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
-                maximumRocketX = System.MathF.Max(maximumRocketX, rocket.x);
+                maximumRocketX = MathF.Max(maximumRocketX, rocket.x);
             }
 
             // The iOS footage shows the lower rocket move down-right while reeling in the candy;

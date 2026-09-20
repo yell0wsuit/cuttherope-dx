@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace CutTheRopeDX.Desktop.Platform.Graphics
@@ -159,7 +160,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
     /// <summary>The fixed 32-entry memory type table Vulkan reports.</summary>
     [StructLayout(LayoutKind.Sequential)]
-    [System.Runtime.CompilerServices.InlineArray(32)]
+    [InlineArray(32)]
     internal struct VkMemoryTypeArray
     {
         private VkMemoryType element;
@@ -167,7 +168,7 @@ namespace CutTheRopeDX.Desktop.Platform.Graphics
 
     /// <summary>The fixed 16-entry memory heap table Vulkan reports.</summary>
     [StructLayout(LayoutKind.Sequential)]
-    [System.Runtime.CompilerServices.InlineArray(16)]
+    [InlineArray(16)]
     internal struct VkMemoryHeapArray
     {
         private VkMemoryHeap element;

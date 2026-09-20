@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Threading;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Platform;
@@ -65,8 +67,8 @@ namespace CutTheRopeDX.Desktop.Tests
             using SkiaAssetPlatform assets = new(store, null);
 
             assets.PrepareImage("images/test");
-            Assert.True(System.Threading.SpinWait.SpinUntil(
-                () => assets.IsImageReady("images/test"), System.TimeSpan.FromSeconds(5)));
+            Assert.True(SpinWait.SpinUntil(
+                () => assets.IsImageReady("images/test"), TimeSpan.FromSeconds(5)));
 
             Assert.Equal((7, 11), assets.ImageDimensions("images/test"));
             Assert.NotNull(assets.ImageTexture("images/test"));

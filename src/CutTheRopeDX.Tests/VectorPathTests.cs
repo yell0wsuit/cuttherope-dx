@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -100,9 +101,9 @@ namespace CutTheRopeDX.Tests
                     Vector2 onCurve = new(
                         (3f * mt * mt * t * 0f) + (3f * mt * t * t * 44.8f) + (t * t * t * 100f),
                         (3f * mt * mt * t * 55.2f) + (3f * mt * t * t * 100f) + (t * t * t * 100f));
-                    nearest = System.MathF.Min(nearest, Vector2.Distance(midpoint, onCurve));
+                    nearest = MathF.Min(nearest, Vector2.Distance(midpoint, onCurve));
                 }
-                worst = System.MathF.Max(worst, nearest);
+                worst = MathF.Max(worst, nearest);
             }
 
             Assert.True(worst <= 0.1f, $"chord sag {worst} exceeded the 0.1 tolerance");

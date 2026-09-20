@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace CutTheRopeDX.Browser
@@ -174,7 +175,7 @@ namespace CutTheRopeDX.Browser
 
         private static ref int AsInt(Span<byte> buffer, int offset)
         {
-            return ref System.Runtime.InteropServices.MemoryMarshal
+            return ref MemoryMarshal
                 .Cast<byte, int>(buffer.Slice(offset, 4))[0];
         }
     }

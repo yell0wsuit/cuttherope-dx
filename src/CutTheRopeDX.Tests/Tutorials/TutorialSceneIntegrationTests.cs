@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Linq;
@@ -245,8 +246,8 @@ namespace CutTheRopeDX.Tests.Tutorials
 
         private static void AssertSampledCandyState(
             string showOn,
-            System.Action<GameScene, CandyContext> establish,
-            System.Func<Scenario, Scenario> configure = null)
+            Action<GameScene, CandyContext> establish,
+            Func<Scenario, Scenario> configure = null)
         {
             Scenario scenario = Scenario.New()
                 .Candy(100, 100)

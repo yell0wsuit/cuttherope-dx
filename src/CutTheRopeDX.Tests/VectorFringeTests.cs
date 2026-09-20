@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -50,8 +51,8 @@ namespace CutTheRopeDX.Tests
             for (int i = 0; i < fringe.IndexCount; i++)
             {
                 Vector3 position = fringe.Vertices[fringe.Indices[i]].Position;
-                minX = System.MathF.Min(minX, position.X);
-                maxX = System.MathF.Max(maxX, position.X);
+                minX = MathF.Min(minX, position.X);
+                maxX = MathF.Max(maxX, position.X);
             }
 
             Assert.Equal(-2f, minX, 1);
@@ -75,9 +76,9 @@ namespace CutTheRopeDX.Tests
                     continue;
                 }
                 Assert.False(
-                    System.MathF.Abs(position.X - 28f) < 0.01f,
+                    MathF.Abs(position.X - 28f) < 0.01f,
                     "the hole's fringe grew into the filled body");
-                if (System.MathF.Abs(position.X - 32f) < 0.01f)
+                if (MathF.Abs(position.X - 32f) < 0.01f)
                 {
                     sawInsideHole = true;
                 }
@@ -126,7 +127,7 @@ namespace CutTheRopeDX.Tests
             float widest = float.MinValue;
             for (int i = 0; i < wide.IndexCount; i++)
             {
-                widest = System.MathF.Max(widest, wide.Vertices[wide.Indices[i]].Position.X);
+                widest = MathF.Max(widest, wide.Vertices[wide.Indices[i]].Position.X);
             }
 
             Assert.Equal(104f, widest, 1);

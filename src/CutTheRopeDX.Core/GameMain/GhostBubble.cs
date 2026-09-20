@@ -1,4 +1,3 @@
-using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
