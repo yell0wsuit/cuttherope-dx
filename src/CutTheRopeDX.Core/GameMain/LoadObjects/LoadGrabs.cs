@@ -185,7 +185,7 @@ namespace CutTheRopeDX.GameMain
                 ConstraintedPoint constraintedPoint = split == null ? star
                     : isLeftPart ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
-                grab.GunSource.Arrow.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(vector));
+                grab.GunSource.Arrow.rotation = float.RadiansToDegrees(VectAngleNormalized(vector));
             }
             bungees.Add(grab);
         }

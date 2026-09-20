@@ -139,7 +139,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
         /// <param name="rate">Requested emission rate in particles per second.</param>
         public void SetEmissionRate(float rate)
         {
-            emissionRate = MAX(0f, rate);
+            emissionRate = Math.Max(0f, rate);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 particle.Position = VectAdd(particle.Position, VectMult(particle.Velocity, delta));
                 if (config.RotateToVelocity)
                 {
-                    particle.Rotation = RADIANS_TO_DEGREES(MathF.Atan2(particle.Velocity.Y, particle.Velocity.X) + 1.5708f);
+                    particle.Rotation = float.RadiansToDegrees(MathF.Atan2(particle.Velocity.Y, particle.Velocity.X) + 1.5708f);
                 }
                 else
                 {
@@ -233,10 +233,10 @@ namespace CutTheRopeDX.GameMain.FingerTraces
         /// <returns>The initialized particle state for the next emitted particle.</returns>
         private FingerParticle CreateParticle()
         {
-            float angle = DEGREES_TO_RADIANS(emitterRotation + (config.AngleVarianceDegrees * RND_MINUS1_1));
-            Vector direction = new(Cosf(angle), Sinf(angle));
+            float angle = float.DegreesToRadians(emitterRotation + (config.AngleVarianceDegrees * RND_MINUS1_1));
+            Vector direction = new(MathF.Cos(angle), MathF.Sin(angle));
             float speed = config.Speed + (config.SpeedVariance * RND_MINUS1_1);
-            float life = MAX(0.05f, config.Life + (config.LifeVariance * RND_MINUS1_1));
+            float life = Math.Max(0.05f, config.Life + (config.LifeVariance * RND_MINUS1_1));
             float startScale = config.StartScale + (config.StartScaleVariance * RND_MINUS1_1);
             float spinDegrees = config.SpinDegrees + (config.SpinVarianceDegrees * RND_MINUS1_1);
             Vector spawnPos = new(
@@ -249,13 +249,13 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 SpawnPosition = spawnPos,
                 Velocity = VectMult(direction, speed),
                 Rotation = config.RotateToVelocity
-                    ? RADIANS_TO_DEGREES(MathF.Atan2(direction.Y, direction.X) + 1.5708f)
+                    ? float.RadiansToDegrees(MathF.Atan2(direction.Y, direction.X) + 1.5708f)
                     : 0f,
                 RotationVelocity = config.RotateToVelocity
                     ? 0f
                     : config.SpinIsTotalDegreesOverLife
-                    ? DEGREES_TO_RADIANS(spinDegrees) / life
-                    : DEGREES_TO_RADIANS(spinDegrees),
+                    ? float.DegreesToRadians(spinDegrees) / life
+                    : float.DegreesToRadians(spinDegrees),
                 StartScale = startScale,
                 EndScale = config.EndScale,
                 Life = life,

@@ -245,7 +245,7 @@ namespace CutTheRopeDX.GameMain
                             }
                             if (rope.relaxed != 0 && rope.cut == -1 && rotateBody != null)
                             {
-                                float ropeAngle = RADIANS_TO_DEGREES(VectAngleNormalized(anchorToEnd));
+                                float ropeAngle = float.RadiansToDegrees(VectAngleNormalized(anchorToEnd));
                                 GameObject rotatedVisual = RotatedVisualOf(rotateBody);
                                 if (rotateBody.Owner.Capabilities.CanRotateWithRopes)
                                 {
@@ -282,7 +282,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     else if (!rotatedBodies.Contains(body) && body.Owner.Lifecycle.Attachments.Hand == null)
                     {
-                        RotatedVisualOf(body).rotation += MIN(5, body.ResidualRotation);
+                        RotatedVisualOf(body).rotation += Math.Min(5, body.ResidualRotation);
                         body.ResidualRotation *= 0.98f;
                     }
                 }
@@ -875,7 +875,7 @@ namespace CutTheRopeDX.GameMain
                 float originalSockRotation = sock3.rotation;
                 sock3.rotation = 0f;
                 sock3.UpdateRotation();
-                float invRotation = DEGREES_TO_RADIANS(0f - originalSockRotation);
+                float invRotation = float.DegreesToRadians(0f - originalSockRotation);
                 sock3.rotation = originalSockRotation;
                 sock3.UpdateRotation();
 
@@ -1767,12 +1767,12 @@ namespace CutTheRopeDX.GameMain
                 else if (cameraTargetDistance > initialCameraToStarDistance / 2)
                 {
                     camera.speed += delta * cameraAcceleration;
-                    camera.speed = MIN(maxCameraSpeed, camera.speed);
+                    camera.speed = Math.Min(maxCameraSpeed, camera.speed);
                 }
                 else
                 {
                     camera.speed -= delta * cameraDeceleration;
-                    camera.speed = MAX(minCameraSpeed, camera.speed);
+                    camera.speed = Math.Max(minCameraSpeed, camera.speed);
                 }
                 if (MathF.Abs(camera.pos.X - boundedCameraX) < 1 && MathF.Abs(camera.pos.Y - boundedCameraY) < 1)
                 {

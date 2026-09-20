@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
@@ -97,7 +98,7 @@ namespace CutTheRopeDX.Framework.Visual
 
                     if (maxHeight != -1f)
                     {
-                        height = (int)MIN(height, maxHeight);
+                        height = (int)Math.Min(height, maxHeight);
                     }
                 }
                 return;
@@ -136,7 +137,7 @@ namespace CutTheRopeDX.Framework.Visual
             int renderedCharCount = 0;
             char[] characters2 = "..".ToCharArray();
             int dotSpacing = (int)font.GetCharOffset(characters2, 0, 2);
-            int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : MIN(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
+            int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : Math.Min(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
             bool isTruncated = visibleLineCount != formattedStrings.Count;
             int[] array2 = new int[totalCharmaps];
             for (int k = 0; k < visibleLineCount; k++)
@@ -208,7 +209,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (maxHeight != -1f)
             {
-                height = (int)MIN(height, maxHeight);
+                height = (int)Math.Min(height, maxHeight);
             }
         }
 
@@ -398,7 +399,7 @@ namespace CutTheRopeDX.Framework.Visual
                     // line of negative length. What the text means there is an empty line, which
                     // is what an end held at the start describes.
                     array[rangesLength++] = (short)lineStart;
-                    array[rangesLength++] = (short)MAX(lineEnd, lineStart);
+                    array[rangesLength++] = (short)Math.Max(lineEnd, lineStart);
                     while (wordStart < textLength && characters[wordStart] == ' ')
                     {
                         wordStart++;

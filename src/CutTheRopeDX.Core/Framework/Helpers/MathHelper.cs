@@ -17,50 +17,6 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <summary>Random float in the range [0, 1].</summary>
         public static float RND_0_1 => (float)Arc4random() / ARC4RANDOM_MAX;
 
-        /// <summary>Returns the smaller of two integers.</summary>
-        /// <param name="a">First value.</param>
-        /// <param name="b">Second value.</param>
-        /// <returns>The smaller of <paramref name="a"/> and <paramref name="b"/>.</returns>
-        public static int MIN(int a, int b)
-        {
-            return Math.Min(a, b);
-        }
-
-        /// <summary>Returns the smaller of two floats.</summary>
-        /// <param name="a">First value.</param>
-        /// <param name="b">Second value.</param>
-        /// <returns>The smaller of <paramref name="a"/> and <paramref name="b"/>.</returns>
-        public static float MIN(float a, float b)
-        {
-            return MathF.Min(a, b);
-        }
-
-        /// <summary>Returns the larger of two integers.</summary>
-        /// <param name="a">First value.</param>
-        /// <param name="b">Second value.</param>
-        /// <returns>The larger of <paramref name="a"/> and <paramref name="b"/>.</returns>
-        public static int MAX(int a, int b)
-        {
-            return Math.Max(a, b);
-        }
-
-        /// <summary>Returns the larger of two floats.</summary>
-        /// <param name="a">First value.</param>
-        /// <param name="b">Second value.</param>
-        /// <returns>The larger of <paramref name="a"/> and <paramref name="b"/>.</returns>
-        public static float MAX(float a, float b)
-        {
-            return MathF.Max(a, b);
-        }
-
-        /// <summary>Returns the absolute value of a float.</summary>
-        /// <param name="a">The input value.</param>
-        /// <returns>The absolute value of <paramref name="a"/>.</returns>
-        public static float ABS(float a)
-        {
-            return MathF.Abs(a);
-        }
-
         /// <summary>Returns a random integer in the range [0, n].</summary>
         /// <param name="n">Upper bound (inclusive).</param>
         /// <returns>A random integer between 0 and <paramref name="n"/>.</returns>
@@ -141,54 +97,6 @@ namespace CutTheRopeDX.Framework.Helpers
         public static float ToRadians(float degrees)
         {
             return (float)(degrees * 0.017453292519943295769236907684886);
-        }
-
-        /// <summary>Returns the ceiling of <paramref name="value"/> as a float.</summary>
-        /// <param name="value">The input value.</param>
-        /// <returns>The smallest integer greater than or equal to <paramref name="value"/>.</returns>
-        public static float Ceil(float value)
-        {
-            return MathF.Ceiling(value);
-        }
-
-        /// <summary>Returns <paramref name="value"/> rounded to the nearest integer as a float.</summary>
-        /// <param name="value">The input value.</param>
-        /// <returns>The rounded <paramref name="value"/>.</returns>
-        public static float Round(float value)
-        {
-            return MathF.Round(value);
-        }
-
-        /// <summary>Returns the cosine of <paramref name="x"/> (radians) as a float.</summary>
-        /// <param name="x">Angle in radians.</param>
-        /// <returns>The cosine of <paramref name="x"/>.</returns>
-        public static float Cosf(float x)
-        {
-            return MathF.Cos(x);
-        }
-
-        /// <summary>Returns the sine of <paramref name="x"/> (radians) as a float.</summary>
-        /// <param name="x">Angle in radians.</param>
-        /// <returns>The sine of <paramref name="x"/>.</returns>
-        public static float Sinf(float x)
-        {
-            return MathF.Sin(x);
-        }
-
-        /// <summary>Returns the tangent of <paramref name="x"/> (radians) as a float.</summary>
-        /// <param name="x">Angle in radians.</param>
-        /// <returns>The tangent of <paramref name="x"/>.</returns>
-        public static float Tanf(float x)
-        {
-            return MathF.Tan(x);
-        }
-
-        /// <summary>Returns the arccosine of <paramref name="x"/> in radians as a float.</summary>
-        /// <param name="x">Value in the range [-1, 1].</param>
-        /// <returns>The arccosine of <paramref name="x"/> in radians.</returns>
-        public static float Acosf(float x)
-        {
-            return MathF.Acos(x);
         }
 
         /// <summary>
@@ -310,22 +218,6 @@ namespace CutTheRopeDX.Framework.Helpers
             array2[2] = br2;
             array2[3] = bl2;
             return Overlaps1Way(array, array2) && Overlaps1Way(array2, array);
-        }
-
-        /// <summary>Converts degrees to radians.</summary>
-        /// <param name="D">Angle in degrees.</param>
-        /// <returns>Angle in radians.</returns>
-        public static float DEGREES_TO_RADIANS(float D)
-        {
-            return D * MathF.PI / DEG_180;
-        }
-
-        /// <summary>Converts radians to degrees.</summary>
-        /// <param name="R">Angle in radians.</param>
-        /// <returns>Angle in degrees.</returns>
-        public static float RADIANS_TO_DEGREES(float R)
-        {
-            return R * DEG_180 / MathF.PI;
         }
 
         /// <summary>

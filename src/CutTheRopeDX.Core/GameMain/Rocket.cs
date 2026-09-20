@@ -94,7 +94,7 @@ namespace CutTheRopeDX.GameMain
             container.x = x;
             container.y = y;
             float movementSpeed = VectLength(VectSub(point.prevPos, point.pos));
-            movementSpeed = MAX(movementSpeed, ActivePhysicsConstants.RocketExhaustSpeedFloor);
+            movementSpeed = Math.Max(movementSpeed, ActivePhysicsConstants.RocketExhaustSpeedFloor);
             float exhaustAngle = angle - MathF.PI;
             float exhaustOffset = GetExhaustOffset();
             Vector vector = Vect(x, y);
@@ -268,7 +268,7 @@ namespace CutTheRopeDX.GameMain
             t1.X = x - (bb.w / 2f);
             t2.X = x + (bb.w / 2f);
             t1.Y = t2.Y = y;
-            angle = DEGREES_TO_RADIANS(rotation);
+            angle = float.DegreesToRadians(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);
         }
@@ -285,7 +285,7 @@ namespace CutTheRopeDX.GameMain
             Vector startOffset = VectSub(v1, c);
             Vector endOffset = VectSub(v2, c);
             float angleDelta = VectAngleNormalized(endOffset) - VectAngleNormalized(startOffset);
-            return RADIANS_TO_DEGREES(angleDelta);
+            return float.RadiansToDegrees(angleDelta);
         }
 
         /// <summary>
@@ -334,7 +334,7 @@ namespace CutTheRopeDX.GameMain
         public void HandleRotateFinal()
         {
             rotation = AngleTo0_360(rotation);
-            float snappedStep = Round(rotation / DEG_45);
+            float snappedStep = MathF.Round(rotation / DEG_45);
             float snappedRotation = DEG_45 * snappedStep;
             float startRotationAngle = ActivePhysicsConstants.UseTimeTravelRocketModel ? rotation : (int)rotation;
             RemoveTimeline(1);

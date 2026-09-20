@@ -182,8 +182,8 @@ namespace CutTheRopeDX.GameMain
             };
             rotatedCircle.handle1 = new Vector(rotatedCircle.x - size, rotatedCircle.y);
             rotatedCircle.handle2 = new Vector(rotatedCircle.x + size, rotatedCircle.y);
-            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
-            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, DEGREES_TO_RADIANS(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, float.DegreesToRadians(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
+            rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, float.DegreesToRadians(rotatedCircle.rotation), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(size);
             rotatedCircle.SetHasOneHandle(HasOneHandle());
             rotatedCircle.vinilControllerL.visible = false;

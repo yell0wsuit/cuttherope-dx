@@ -72,7 +72,7 @@ namespace CutTheRopeDX.GameMain
 
             speed = VectMult(direction, speedMagnitude);
 
-            float rawAngle = RADIANS_TO_DEGREES(VectAngleNormalized(direction));
+            float rawAngle = float.RadiansToDegrees(VectAngleNormalized(direction));
             angleDeg = AngleTo0_360(rawAngle);
 
             internalHalfHeight = AntConveyorLogic.GetSegmentHalfHeight(deviceScale);

@@ -21,7 +21,7 @@ namespace CutTheRopeDX.GameMain
             t1.X = x - (bb.w / 2f);
             t2.X = x + (bb.w / 2f);
             t1.Y = t2.Y = y;
-            angle = DEGREES_TO_RADIANS(rotation);
+            angle = float.DegreesToRadians(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);
         }
@@ -79,7 +79,7 @@ namespace CutTheRopeDX.GameMain
         {
             get
             {
-                float angleRad = DEGREES_TO_RADIANS(rotation);
+                float angleRad = float.DegreesToRadians(rotation);
                 Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
                 return VectAdd(Vect(x, y), offset);
             }
@@ -88,7 +88,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
-            float angleRad = DEGREES_TO_RADIANS(rotation);
+            float angleRad = float.DegreesToRadians(rotation);
             Vector offset = VectRotate(Vect(width * 0.01f * scaleX, 0f), angleRad);
             Vector adjusted = VectSub(point, offset);
             x = adjusted.X;

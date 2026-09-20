@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -124,8 +126,8 @@ namespace CutTheRopeDX.GameMain
             }
 
             bb = MakeRectangle(
-                Round(texture.quadOffsets[quad].X),
-                Round(texture.quadOffsets[quad].Y),
+                MathF.Round(texture.quadOffsets[quad].X),
+                MathF.Round(texture.quadOffsets[quad].Y),
                 texture.quadRects[quad].w,
                 texture.quadRects[quad].h);
             rbb = new Quad2D(bb.x, bb.y, bb.w, bb.h);

@@ -136,7 +136,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < index; i++)
             {
                 angle += SegmentAtIndex(i).rotation;
-                position = VectAdd(position, VectRotate(SegmentAtIndex(i).endPosition, DEGREES_TO_RADIANS(angle)));
+                position = VectAdd(position, VectRotate(SegmentAtIndex(i).endPosition, float.DegreesToRadians(angle)));
             }
             return position;
         }
@@ -154,10 +154,10 @@ namespace CutTheRopeDX.GameMain
             {
                 MechanicalHandSegment segment = (MechanicalHandSegment)element;
                 angle += element.rotation;
-                position = VectAdd(position, VectRotate(segment.endPosition, DEGREES_TO_RADIANS(angle)));
+                position = VectAdd(position, VectRotate(segment.endPosition, float.DegreesToRadians(angle)));
                 element = element.GetChild(0);
             }
-            return VectAdd(position, VectRotate(clawOffset, DEGREES_TO_RADIANS(angle)));
+            return VectAdd(position, VectRotate(clawOffset, float.DegreesToRadians(angle)));
         }
 
         /// <summary>

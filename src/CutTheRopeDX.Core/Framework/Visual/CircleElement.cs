@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 
@@ -22,7 +24,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             PreDraw();
             Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            _ = MIN(width, height);
+            _ = Math.Min(width, height);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.SetColor(Color.White);
             PostDraw();

@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Framework.Helpers
         {
             return string.IsNullOrEmpty(p) || p[0] != 'R'
                 ? 100
-                : MAX(1, CirclePathRadius(p) / 2) + 1;
+                : Math.Max(1, CirclePathRadius(p) / 2) + 1;
         }
 
         /// <summary>Scales the radius of a circular ("R…") path into world units.</summary>
@@ -134,8 +134,8 @@ namespace CutTheRopeDX.Framework.Helpers
                 float theta = 0f;
                 for (int i = 0; i < pointCount; i++)
                 {
-                    float x = s.X + (radius * Cosf(theta));
-                    float y = s.Y + (radius * Sinf(theta));
+                    float x = s.X + (radius * MathF.Cos(theta));
+                    float y = s.Y + (radius * MathF.Sin(theta));
                     AddPathPoint(Vect(x, y));
                     theta += angleStep;
                 }

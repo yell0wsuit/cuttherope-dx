@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
@@ -116,7 +117,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
         /// <inheritdoc />
         protected override void OnHeadStateUpdated(Vector averageDirection)
         {
-            glowAlpha = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
+            glowAlpha = Math.Min(Segments.Count / 5f, VectLength(averageDirection) / 10f);
         }
 
         /// <inheritdoc />
@@ -148,7 +149,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             {
                 Vector point = sampledPoints[i];
                 Vector direction = GetPointDirection(sampledPoints, i);
-                float directionLength = MAX(0.0001f, VectLength(direction));
+                float directionLength = Math.Max(0.0001f, VectLength(direction));
                 Vector normal = new(-(direction.Y / directionLength), direction.X / directionLength);
                 float t = sampledPoints.Count == 1 ? 1f : i / (float)(sampledPoints.Count - 1);
                 float halfWidth = i == sampledPoints.Count - 1
@@ -182,7 +183,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 return false;
             }
 
-            int sampleCount = MAX(2, (controlPoints.Count * 2) - 1);
+            int sampleCount = Math.Max(2, (controlPoints.Count * 2) - 1);
             Vector[] controlPointArray = [.. controlPoints];
             for (int i = 0; i < sampleCount; i++)
             {

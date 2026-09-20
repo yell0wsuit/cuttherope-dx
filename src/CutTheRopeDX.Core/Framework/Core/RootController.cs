@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Platform;
@@ -283,7 +284,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Gets how far the current transition has run, from 0 at its start to 1 at its end.
         /// </summary>
-        internal float TransitionProgress => MIN(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
+        internal float TransitionProgress => Math.Min(1, (transitionDelay - (transitionTime - lastTime)) / transitionDelay);
 
         /// <summary>
         /// Releases the captured transition frames.

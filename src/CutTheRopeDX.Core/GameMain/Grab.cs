@@ -66,7 +66,7 @@ namespace CutTheRopeDX.GameMain
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
             Vector startOffset = VectSub(v1, c);
-            return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(startOffset));
+            return float.RadiansToDegrees(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(startOffset));
         }
 
         /// <inheritdoc />
@@ -94,7 +94,7 @@ namespace CutTheRopeDX.GameMain
                 Vector pos = mover.pos;
                 Vector toTarget = VectSub(targetPos, pos);
                 float t = 0f;
-                if (ABS(toTarget.X) > 15f)
+                if (MathF.Abs(toTarget.X) > 15f)
                 {
                     float rotationTarget = 10f;
                     t = toTarget.X > 0f ? rotationTarget : 0f - rotationTarget;
@@ -411,7 +411,7 @@ namespace CutTheRopeDX.GameMain
             HorizontallyTiledImage moveBackground = CreateWithResID(new HorizontallyTiledImage(), Resources.Img.ObjHook);
             moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
             moveBackground.width = (int)(l + 142f);
-            moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;
+            moveBackground.rotationCenterX = 0f - MathF.Round(moveBackground.width / 2) + 74f;
             moveBackground.x = -74f;
             Image grabMoverHighlight = Image_createWithResIDQuad(Resources.Img.ObjHook, MovableHookHighlightQuad);
             grabMoverHighlight.visible = false;

@@ -178,9 +178,9 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             }
 
             Vector averageDirection = GetAverageDirection();
-            averageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
+            averageRotation = float.RadiansToDegrees(MathF.Atan2(averageDirection.Y, averageDirection.X));
             particles.SetRotation(averageRotation + DEG_180);
-            headScale = MIN(Segments.Count / 5f, VectLength(averageDirection) / 10f);
+            headScale = Math.Min(Segments.Count / 5f, VectLength(averageDirection) / 10f);
 
             if (glowImage != null)
             {
@@ -221,8 +221,8 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             for (int i = 0; i < quads.Count; i++)
             {
                 LightningQuad quad = quads[i];
-                float rotation = RADIANS_TO_DEGREES(MathF.Atan2(quad.End.Y - quad.Start.Y, quad.End.X - quad.Start.X)) + DEG_90;
-                float scale = MAX(0.01f, VectDistance(quad.Start, quad.End) / QuadSpacing);
+                float rotation = float.RadiansToDegrees(MathF.Atan2(quad.End.Y - quad.Start.Y, quad.End.X - quad.Start.X)) + DEG_90;
+                float scale = Math.Max(0.01f, VectDistance(quad.Start, quad.End) / QuadSpacing);
                 sprites.Add(new FingerTraceSpritePose(
                     i == 0 ? FingerTraceSpriteKind.Head : FingerTraceSpriteKind.Body,
                     Resources.Img.FingerTraces,

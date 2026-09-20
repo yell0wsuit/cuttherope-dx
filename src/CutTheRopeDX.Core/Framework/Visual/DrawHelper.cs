@@ -315,8 +315,8 @@ namespace CutTheRopeDX.Framework.Visual
             float angle = 0f;
             for (int i = 0; i < vertexCount; i++)
             {
-                glVertices[i * 2] = x + (radius * Cosf(angle));
-                glVertices[(i * 2) + 1] = y + (radius * Sinf(angle));
+                glVertices[i * 2] = x + (radius * MathF.Cos(angle));
+                glVertices[(i * 2) + 1] = y + (radius * MathF.Sin(angle));
                 angle += angleStep;
             }
         }
@@ -340,7 +340,7 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 float intersectionDistance = ((radius1 * radius1) - (radius2 * radius2) + (centerDistance * centerDistance))
                     / (2f * centerDistance);
-                float angleOffset = Acosf((centerDistance - intersectionDistance) / radius2);
+                float angleOffset = MathF.Acos((centerDistance - intersectionDistance) / radius2);
                 float baseAngle = VectAngle(VectSub(Vect(cx1, cy1), Vect(cx2, cy2)));
                 float startAngle = baseAngle - angleOffset;
                 float endAngle = baseAngle + angleOffset;
@@ -440,10 +440,10 @@ namespace CutTheRopeDX.Framework.Visual
         private static void CalcCurve(float cx, float cy, float radius, float startAngle, float endAngle, int vertexCount, float[] glVertices)
         {
             float angleStep = (endAngle - startAngle) / (vertexCount - 1);
-            float tangentFactor = Tanf(angleStep);
-            float cosineFactor = Cosf(angleStep);
-            float currentX = radius * Cosf(startAngle);
-            float currentY = radius * Sinf(startAngle);
+            float tangentFactor = MathF.Tan(angleStep);
+            float cosineFactor = MathF.Cos(angleStep);
+            float currentX = radius * MathF.Cos(startAngle);
+            float currentY = radius * MathF.Sin(startAngle);
             for (int i = 0; i < vertexCount; i++)
             {
                 glVertices[i * 2] = currentX + cx;

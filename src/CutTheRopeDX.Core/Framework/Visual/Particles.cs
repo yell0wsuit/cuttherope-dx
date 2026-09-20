@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Framework.Visual
@@ -175,10 +177,10 @@ namespace CutTheRopeDX.Framework.Visual
             particle.pos.X = x + (posVar.X * RND_MINUS1_1);
             particle.pos.Y = y + (posVar.Y * RND_MINUS1_1);
             particle.startPos = particle.pos;
-            float angleRad = DEGREES_TO_RADIANS(angle + (angleVar * RND_MINUS1_1));
+            float angleRad = float.DegreesToRadians(angle + (angleVar * RND_MINUS1_1));
             Vector v = default;
-            v.Y = Sinf(angleRad);
-            v.X = Cosf(angleRad);
+            v.Y = MathF.Sin(angleRad);
+            v.X = MathF.Cos(angleRad);
             float s = speed + (speedVar * RND_MINUS1_1);
             particle.dir = VectMult(v, s);
             particle.radialAccel = radialAccel + (radialAccelVar * RND_MINUS1_1);

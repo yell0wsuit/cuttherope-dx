@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
@@ -103,7 +104,7 @@ namespace CutTheRopeDX.GameMain
         public float GetCurrentHeightModulated()
         {
             float currentHeight = GetCurrentHeight();
-            return currentHeight + (heightScale * Sinf(6f * phase));
+            return currentHeight + (heightScale * MathF.Sin(6f * phase));
         }
 
         /// <summary>
@@ -141,7 +142,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), DEGREES_TO_RADIANS(rotation)));
+            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), float.DegreesToRadians(rotation)));
             float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
             // The Windows Phone reach of 40 grows with the tube like the valve offset above it, or
             // the valve would be a third of its authored size to tap in DX's larger world.
@@ -198,7 +199,7 @@ namespace CutTheRopeDX.GameMain
         {
             get
             {
-                float angle = DEGREES_TO_RADIANS(rotation);
+                float angle = float.DegreesToRadians(rotation);
                 Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
                 return VectAdd(Vect(x, y), offset);
             }
@@ -207,7 +208,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void SetBindPoint(Vector point)
         {
-            float angle = DEGREES_TO_RADIANS(rotation);
+            float angle = float.DegreesToRadians(rotation);
             Vector offset = VectRotate(Vect(0f, height * 0.45f * scaleY), angle);
             Vector adjusted = VectSub(point, offset);
             x = adjusted.X;

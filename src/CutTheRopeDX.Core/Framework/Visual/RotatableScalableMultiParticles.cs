@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
 
 namespace CutTheRopeDX.Framework.Visual
@@ -12,7 +14,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             base.InitParticle(ref particle);
             particle.angle = initialAngle;
-            // particle.deltaAngle = DEGREES_TO_RADIANS(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
+            // particle.deltaAngle = float.DegreesToRadians(rotateSpeed + (rotateSpeedVar * RND_MINUS1_1));
             particle.deltaSize = (endSize - size) / particle.life;
         }
 
@@ -54,8 +56,8 @@ namespace CutTheRopeDX.Framework.Visual
                 Vector bottomLeft = Vect(p.pos.X - halfWidth, p.pos.Y + halfHeight);
                 Vector bottomRight = Vect(p.pos.X + halfWidth, p.pos.Y + halfHeight);
                 p.angle += p.deltaAngle * delta;
-                float cosA = Cosf(p.angle);
-                float sinA = Sinf(p.angle);
+                float cosA = MathF.Cos(p.angle);
+                float sinA = MathF.Sin(p.angle);
                 topLeft = RotatePreCalc(topLeft, cosA, sinA, cx, cy);
                 topRight = RotatePreCalc(topRight, cosA, sinA, cx, cy);
                 bottomLeft = RotatePreCalc(bottomLeft, cosA, sinA, cx, cy);

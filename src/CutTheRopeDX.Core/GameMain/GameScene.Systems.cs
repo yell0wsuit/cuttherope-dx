@@ -61,7 +61,7 @@ namespace CutTheRopeDX.GameMain
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int directionSign = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = MAX(VectLength(vector) * ActivePhysicsConstants.BouncerImpulseVelocityScale, ActivePhysicsConstants.BouncerMinImpulse) * directionSign;
+                float s2 = Math.Max(VectLength(vector) * ActivePhysicsConstants.BouncerImpulseVelocityScale, ActivePhysicsConstants.BouncerMinImpulse) * directionSign;
                 Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
                 s.pos = VectRotateAround(s.pos, 0f - b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y);
@@ -84,7 +84,7 @@ namespace CutTheRopeDX.GameMain
         {
             float tubeScale = tube.GetHeightScale();
             float damping = ActivePhysicsConstants.SteamTubeDamping;
-            float angle = DEGREES_TO_RADIANS(tube.rotation);
+            float angle = float.DegreesToRadians(tube.rotation);
             float tubeWidth = ActivePhysicsConstants.SteamTubeWidthScale * tubeScale;
             float currentHeight = tube.GetCurrentHeightModulated();
             float verticalOffset = ActivePhysicsConstants.SteamTubeVerticalOffsetScale * tubeScale;
@@ -129,9 +129,9 @@ namespace CutTheRopeDX.GameMain
                     if (tube.rotation == 0f)
                     {
                         float deltaX = tube.x - position.X;
-                        horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
+                        horizontalImpulse = MathF.Abs(deltaX) > tubeWidth / 4f
                             ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
-                            : ABS(velocity.X) < ActivePhysicsConstants.SteamTubeVelocityDeadzone ? 0f - velocity.X : (0f - velocity.X) / damping;
+                            : MathF.Abs(velocity.X) < ActivePhysicsConstants.SteamTubeVelocityDeadzone ? 0f - velocity.X : (0f - velocity.X) / damping;
                     }
 
                     // Windows Phone force, mapped to world scale (tubeScale is world/Windows Phone transform).
@@ -157,9 +157,9 @@ namespace CutTheRopeDX.GameMain
                     if (applyHorizontalCentering)
                     {
                         float deltaX = tube.x - position.X;
-                        horizontalImpulse = ABS(deltaX) > tubeWidth / 4f
+                        horizontalImpulse = MathF.Abs(deltaX) > tubeWidth / 4f
                             ? ((0f - velocity.X) / damping) + (0.25f * deltaX)
-                            : ABS(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
+                            : MathF.Abs(velocity.X) < 1f ? 0f - velocity.X : (0f - velocity.X) / damping;
                     }
 
                     bool alignedWithGravity =
@@ -212,7 +212,7 @@ namespace CutTheRopeDX.GameMain
             SoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
             Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
-            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, RADIANS_TO_DEGREES(p.angle) - DEG_90, grid, flowLength);
+            PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, float.RadiansToDegrees(p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
             Vector v = Vect(p.x + Pump.MouthOffset, p.y);
             v = VectRotateAround(v, p.angle - (MathF.PI / 2), p.x, p.y);
@@ -454,7 +454,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                int cutPart = MIN(i, rope.parts.Count - 2);
+                int cutPart = Math.Min(i, rope.parts.Count - 2);
                 if (cutPart < 0)
                 {
                     return false;

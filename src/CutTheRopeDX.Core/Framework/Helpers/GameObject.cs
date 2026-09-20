@@ -157,10 +157,10 @@ namespace CutTheRopeDX.Framework.Helpers
             Vector topRight = Vect(bb.x + bb.w, bb.y);
             Vector bottomRight = Vect(bb.x + bb.w, bb.y + bb.h);
             Vector bottomLeft = Vect(bb.x, bb.y + bb.h);
-            topLeft = VectRotateAround(topLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            topRight = VectRotateAround(topRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            bottomRight = VectRotateAround(bottomRight, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
-            bottomLeft = VectRotateAround(bottomLeft, DEGREES_TO_RADIANS(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            topLeft = VectRotateAround(topLeft, float.DegreesToRadians(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            topRight = VectRotateAround(topRight, float.DegreesToRadians(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            bottomRight = VectRotateAround(bottomRight, float.DegreesToRadians(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
+            bottomLeft = VectRotateAround(bottomLeft, float.DegreesToRadians(angle), (width / 2) + rotationCenterX, (height / 2) + rotationCenterY);
             rbb.tlX = topLeft.X;
             rbb.tlY = topLeft.Y;
             rbb.trX = topRight.X;

@@ -592,14 +592,14 @@ namespace CutTheRopeDX.Framework.Visual
             // spointMoveDirection = d;
             int nearestScrollPoint = -1;
             float nearestDistance = 9999999f;
-            float directionAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(d)));
+            float directionAngle = AngleTo0_360(float.RadiansToDegrees(VectAngleNormalized(d)));
             Vector v = Vect(container.x, container.y);
             for (int i = 0; i < spointsNum; i++)
             {
                 if (spoints[i].X <= 0f && (spoints[i].X >= (-container.width + width) || spoints[i].X >= 0f) && spoints[i].Y <= 0f && (spoints[i].Y >= (-container.height + height) || spoints[i].Y >= 0f))
                 {
                     float candidateDistance = VectDistance(spoints[i], v);
-                    if ((VectEqual(d, vectZero) || MathF.Abs(AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[i], v)))) - directionAngle) <= DEG_90) && candidateDistance < nearestDistance)
+                    if ((VectEqual(d, vectZero) || MathF.Abs(AngleTo0_360(float.RadiansToDegrees(VectAngleNormalized(VectSub(spoints[i], v)))) - directionAngle) <= DEG_90) && candidateDistance < nearestDistance)
                     {
                         nearestScrollPoint = i;
                         nearestDistance = candidateDistance;
@@ -620,8 +620,8 @@ namespace CutTheRopeDX.Framework.Visual
             {
                 delegateScrollableContainerProtocol.ScrollableContainerchangedTargetScrollPoint(this, targetSpoint);
             }
-            float moveAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(move)));
-            float targetAngle = AngleTo0_360(RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
+            float moveAngle = AngleTo0_360(float.RadiansToDegrees(VectAngleNormalized(move)));
+            float targetAngle = AngleTo0_360(float.RadiansToDegrees(VectAngleNormalized(VectSub(spoints[targetSpoint], v))));
             spointMoveMultiplier = MathF.Abs(AngleTo0_360(moveAngle - targetAngle)) < DEG_90 ? MathF.Max(1f, VectLength(move) / 500f) : 0.5f;
             lastTargetSpoint = targetSpoint;
         }

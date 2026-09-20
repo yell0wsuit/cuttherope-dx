@@ -20,8 +20,8 @@ namespace CutTheRopeDX.GameMain
             {
                 backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
                 float radius = MathF.Sqrt(9000);
-                backCloud2.x = x + (radius * Cosf(DEGREES_TO_RADIANS(170 + angle)));
-                backCloud2.y = y + (radius * Sinf(DEGREES_TO_RADIANS(170 + angle)));
+                backCloud2.x = x + (radius * MathF.Cos(float.DegreesToRadians(170 + angle)));
+                backCloud2.y = y + (radius * MathF.Sin(float.DegreesToRadians(170 + angle)));
                 backCloud2.anchor = 18;
                 backCloud2.visible = false;
                 _ = AddChild(backCloud2);
@@ -42,8 +42,8 @@ namespace CutTheRopeDX.GameMain
 
                 backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
                 float radius2 = MathF.Sqrt(9000);
-                backCloud.x = x + (radius2 * Cosf(DEGREES_TO_RADIANS(10 + angle)));
-                backCloud.y = y + (radius2 * Sinf(DEGREES_TO_RADIANS(10 + angle)));
+                backCloud.x = x + (radius2 * MathF.Cos(float.DegreesToRadians(10 + angle)));
+                backCloud.y = y + (radius2 * MathF.Sin(float.DegreesToRadians(10 + angle)));
                 backCloud.anchor = 18;
                 backCloud.visible = false;
                 _ = AddChild(backCloud);

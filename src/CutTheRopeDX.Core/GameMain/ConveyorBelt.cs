@@ -330,8 +330,8 @@ namespace CutTheRopeDX.GameMain
 
             this.rotation = -rotation;
             IsManual = isManual;
-            rotationRad = DEGREES_TO_RADIANS(rotation);
-            direction = Vect(Cosf(rotationRad), -Sinf(rotationRad));
+            rotationRad = float.DegreesToRadians(rotation);
+            direction = Vect(MathF.Cos(rotationRad), -MathF.Sin(rotationRad));
             this.velocity = velocity;
             rotationCenterX = -length / 2f;
             rotationCenterY = 0f;
@@ -347,8 +347,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The world-space position.</returns>
         private Vector VecToWorldSpace(float localX, float localY)
         {
-            float cosR = Cosf(rotationRad);
-            float sinR = Sinf(rotationRad);
+            float cosR = MathF.Cos(rotationRad);
+            float sinR = MathF.Sin(rotationRad);
             return Vect(
                 x + (cosR * localX) - (sinR * localY),
                 y - (sinR * localX) - (cosR * localY));
@@ -744,7 +744,7 @@ namespace CutTheRopeDX.GameMain
         public Vector ToLocalSpace(Vector worldPoint)
         {
             float perpAngle = -rotationRad - (MathF.PI / 2f);
-            Vector perp = Vect(Cosf(perpAngle), Sinf(perpAngle));
+            Vector perp = Vect(MathF.Cos(perpAngle), MathF.Sin(perpAngle));
             float dx = worldPoint.X - x;
             float dy = worldPoint.Y - y;
             return Vect((direction.X * dx) + (direction.Y * dy), (perp.X * dx) + (perp.Y * dy));

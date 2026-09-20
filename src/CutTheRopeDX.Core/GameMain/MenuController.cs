@@ -527,8 +527,8 @@ namespace CutTheRopeDX.GameMain
             BaseElement state1Down = CreateElementWithResIdquad(resourceName, quad);
             BaseElement state2Up = CreateElementWithResIdquad(resourceName, quad2);
             BaseElement state2Down = CreateElementWithResIdquad(resourceName, quad2);
-            int width = MAX(state1Up.width, state2Up.width);
-            int height = MAX(state1Up.height, state2Up.height);
+            int width = Math.Max(state1Up.width, state2Up.width);
+            int height = Math.Max(state1Up.height, state2Up.height);
             state1Up.width = state1Down.width = width;
             state1Up.height = state1Down.height = height;
             state2Up.width = state2Down.width = width;
@@ -733,7 +733,7 @@ namespace CutTheRopeDX.GameMain
             _ = menuView.AddChild(baseElement);
             BaseElement dragToCutOption = CreateControlButtontitleAnchortextbuttonIDdelegate(5, Application.GetString("DRAG_TO_CUT"), -1, null);
             BaseElement clickToCutOption = CreateControlButtontitleAnchortextbuttonIDdelegate(6, Application.GetString("CLICK_TO_CUT"), MenuButtonId.ToggleClickToCut, this);
-            HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80), 16, MAX(dragToCutOption.height, clickToCutOption.height));
+            HBox hBox = new HBox().InitWithOffsetAlignHeight(RTPD(80), 16, Math.Max(dragToCutOption.height, clickToCutOption.height));
             hBox.parentAnchor = hBox.anchor = 18;
             _ = hBox.AddChild(dragToCutOption);
             _ = hBox.AddChild(clickToCutOption);
@@ -1263,7 +1263,7 @@ namespace CutTheRopeDX.GameMain
             // there, and slide onto its edge where it is not, rather than off the screen.
             PlacePackEdge(
                 prevb,
-                MAX(
+                Math.Max(
                     packContainer.x - strip.ArrowGap,
                     (prevb.width * strip.Scale) + PackArrowInset),
                 strip.Scale,
@@ -1274,7 +1274,7 @@ namespace CutTheRopeDX.GameMain
             nextb.anchor = nextb.parentAnchor = 17;
             PlacePackEdge(
                 nextb,
-                MIN(
+                Math.Min(
                     packContainer.x + packContainer.width + strip.ArrowGap,
                     VisibleBounds.w - (nextb.width * strip.Scale) - PackArrowInset),
                 strip.Scale,

@@ -74,7 +74,7 @@ namespace CutTheRopeDX.GameMain
             b1.X = t1.X;
             b2.X = t2.X;
             b1.Y = b2.Y = y + ActivePhysicsConstants.BouncerHeight;
-            angle = DEGREES_TO_RADIANS(rotation);
+            angle = float.DegreesToRadians(rotation);
             t1 = VectRotateAround(t1, angle, x, y);
             t2 = VectRotateAround(t2, angle, x, y);
             b1 = VectRotateAround(b1, angle, x, y);

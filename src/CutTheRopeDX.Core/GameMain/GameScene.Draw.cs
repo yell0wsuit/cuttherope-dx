@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using CutTheRopeDX.Framework;
@@ -23,7 +24,7 @@ namespace CutTheRopeDX.GameMain
                 // Recompute in case the camera's fit, the internal resolution or the texture
                 // dimensions changed.
                 float desiredScale = GetBackgroundCoverScale(backTexture);
-                if (ABS(desiredScale - backgroundScale) > 0.0001f)
+                if (MathF.Abs(desiredScale - backgroundScale) > 0.0001f)
                 {
                     UpdateBackgroundScale();
                 }

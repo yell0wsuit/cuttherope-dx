@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Framework.Visual
             Vector size = texture2D.quadRects != null
                 ? Vect(texture2D.quadRects[quad].w, texture2D.quadRects[quad].h)
                 : Vect(texture2D._realWidth, texture2D._realHeight);
-            return VectAdd(offset, Vect(Ceil(size.X / 2), Ceil(size.Y / 2)));
+            return VectAdd(offset, Vect(MathF.Ceiling(size.X / 2), MathF.Ceiling(size.Y / 2)));
         }
 
         /// <summary>

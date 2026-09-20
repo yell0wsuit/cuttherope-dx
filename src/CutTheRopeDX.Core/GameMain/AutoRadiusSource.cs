@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
@@ -27,7 +29,7 @@ namespace CutTheRopeDX.GameMain
             RadiusAlpha = 1f;
             IsFading = false;
 
-            VertexCount = (int)MAX(16f, radius);
+            VertexCount = (int)Math.Max(16f, radius);
             VertexCount /= 2;
             if (VertexCount % 2 != 0)
             {

@@ -221,7 +221,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             }
 
             Vector averageDirection = GetAverageDirection();
-            AverageRotation = RADIANS_TO_DEGREES(MathF.Atan2(averageDirection.Y, averageDirection.X));
+            AverageRotation = float.RadiansToDegrees(MathF.Atan2(averageDirection.Y, averageDirection.X));
             for (int i = 0; i < particles.Length; i++)
             {
                 particles[i].SetRotation(AverageRotation + DEG_180);

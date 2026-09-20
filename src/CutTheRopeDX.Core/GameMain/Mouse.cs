@@ -225,7 +225,7 @@ namespace CutTheRopeDX.GameMain
             elapsedActive = 0f;
             carry = null;
 
-            float angleRad = DEGREES_TO_RADIANS(angleDeg);
+            float angleRad = float.DegreesToRadians(angleDeg);
             Vector origin = default;
             Vector Rotate(Vector v)
             {

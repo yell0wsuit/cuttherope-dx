@@ -681,7 +681,7 @@ namespace CutTheRopeDX.Framework.Core
                 Rectangle rect = MakeRectangle(data[quadDataIndex], data[quadDataIndex + 1], data[quadDataIndex + 2], data[quadDataIndex + 3]);
                 if (lowestPoint < rect.h + rect.y)
                 {
-                    lowestPoint = (int)Ceil(rect.h + rect.y);
+                    lowestPoint = (int)MathF.Ceiling(rect.h + rect.y);
                 }
                 rect.x /= scaleX;
                 rect.y /= scaleY;

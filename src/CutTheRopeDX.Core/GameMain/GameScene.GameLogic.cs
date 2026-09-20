@@ -279,7 +279,7 @@ namespace CutTheRopeDX.GameMain
                     ctx.Lifecycle.Attachments.Rocket.visible = true;
                     Vector holeOut = session.BambooTube.HoleOut;
                     Vector tubeCenter = Vect(session.BambooTube.x, session.BambooTube.y);
-                    ctx.Lifecycle.Attachments.Rocket.rotation = RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
+                    ctx.Lifecycle.Attachments.Rocket.rotation = float.RadiansToDegrees(VectAngleNormalized(VectSub(tubeCenter, holeOut)));
                     ctx.Lifecycle.Attachments.Rocket.startRotation = ctx.Lifecycle.Attachments.Rocket.rotation;
                     ctx.Lifecycle.Attachments.Rocket.startCandyRotation = 0f;
                     GameObject rocketCandyVisual = body.Main ?? body.Visual;
@@ -301,13 +301,13 @@ namespace CutTheRopeDX.GameMain
                 session.Sock.light.PlayTimeline(0);
                 session.Sock.light.visible = true;
                 Vector v = Vect(0f, ActivePhysicsConstants.SockExitOffsetY);
-                v = VectRotate(v, DEGREES_TO_RADIANS(session.Sock.rotation));
+                v = VectRotate(v, float.DegreesToRadians(session.Sock.rotation));
                 body.Point.pos.X = session.Sock.x;
                 body.Point.pos.Y = session.Sock.y;
                 body.Point.pos = VectAdd(body.Point.pos, v);
                 body.Point.prevPos.X = body.Point.pos.X;
                 body.Point.prevPos.Y = body.Point.pos.Y;
-                body.Point.v = VectMult(VectRotate(Vect(0f, -1f), DEGREES_TO_RADIANS(session.Sock.rotation)), session.SavedExitSpeed);
+                body.Point.v = VectMult(VectRotate(Vect(0f, -1f), float.DegreesToRadians(session.Sock.rotation)), session.SavedExitSpeed);
                 body.Point.posDelta = VectDiv(body.Point.v, 60f);
                 body.Point.prevPos = VectSub(body.Point.pos, body.Point.posDelta);
 
@@ -498,8 +498,8 @@ namespace CutTheRopeDX.GameMain
             Vector ropeVector = VectSub(anchor.pos, tail.pos);
             Vector ropeLeftNormal = VectPerp(ropeVector);
             Vector ropeRightNormal = VectRperp(ropeVector);
-            float fa = RADIANS_TO_DEGREES(VectAngleNormalized(ropeLeftNormal) - DEGREES_TO_RADIANS(rocket.rotation));
-            float fb = RADIANS_TO_DEGREES(VectAngleNormalized(ropeRightNormal) - DEGREES_TO_RADIANS(rocket.rotation));
+            float fa = float.RadiansToDegrees(VectAngleNormalized(ropeLeftNormal) - float.DegreesToRadians(rocket.rotation));
+            float fb = float.RadiansToDegrees(VectAngleNormalized(ropeRightNormal) - float.DegreesToRadians(rocket.rotation));
             rocket.additionalAngle = AngleTo0_360(rocket.additionalAngle);
             fa = NearestAngleTofrom(rocket.additionalAngle, fa);
             fb = NearestAngleTofrom(rocket.additionalAngle, fb);
@@ -762,7 +762,7 @@ namespace CutTheRopeDX.GameMain
         {
             return point == null || point.prevPos.X == UNDEFINED_COORDINATE
                 ? -90f
-                : RADIANS_TO_DEGREES(MathF.Atan2(
+                : float.RadiansToDegrees(MathF.Atan2(
                     point.pos.Y - point.prevPos.Y,
                     point.pos.X - point.prevPos.X));
         }

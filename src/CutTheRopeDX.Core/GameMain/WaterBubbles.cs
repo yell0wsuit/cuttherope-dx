@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
@@ -113,8 +115,8 @@ namespace CutTheRopeDX.GameMain
                 Vector br = Vect(particle.pos.X + halfWidth, particle.pos.Y + halfHeight);
 
                 particle.angle += particle.deltaAngle * delta;
-                float cosA = Cosf(particle.angle);
-                float sinA = Sinf(particle.angle);
+                float cosA = MathF.Cos(particle.angle);
+                float sinA = MathF.Sin(particle.angle);
                 tl = RotatePreCalc(tl, cosA, sinA, particle.pos.X, particle.pos.Y);
                 tr = RotatePreCalc(tr, cosA, sinA, particle.pos.X, particle.pos.Y);
                 bl = RotatePreCalc(bl, cosA, sinA, particle.pos.X, particle.pos.Y);

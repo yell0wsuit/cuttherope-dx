@@ -260,7 +260,7 @@ namespace CutTheRopeDX.GameMain
 
                             // Fire the gun - create a rope to the candy
                             float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - ActivePhysicsConstants.BungeeRestLength;
-                            float ropeLength = MAX(gunToCandyDistance, ActivePhysicsConstants.BungeeRestLength);
+                            float ropeLength = Math.Max(gunToCandyDistance, ActivePhysicsConstants.BungeeRestLength);
                             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                             grab.SetRope(bungee);
@@ -750,9 +750,9 @@ namespace CutTheRopeDX.GameMain
                         Vector touchWorld = camera.ScreenToWorld(tx, ty);
                         Vector lastTouchOffset = VectSub(rotatedCircle.lastTouch, circleCenter);
                         float rotationDelta = VectAngleNormalized(VectSub(touchWorld, circleCenter)) - VectAngleNormalized(lastTouchOffset);
-                        float initial_rotation = DEGREES_TO_RADIANS(rotatedCircle.rotation);
-                        rotatedCircle.rotation += RADIANS_TO_DEGREES(rotationDelta);
-                        float circleAngle = DEGREES_TO_RADIANS(rotatedCircle.rotation);
+                        float initial_rotation = float.DegreesToRadians(rotatedCircle.rotation);
+                        rotatedCircle.rotation += float.RadiansToDegrees(rotationDelta);
+                        float circleAngle = float.DegreesToRadians(rotatedCircle.rotation);
                         circleAngle = FBOUND_PI(circleAngle);
                         rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, circleAngle, rotatedCircle.x, rotatedCircle.y);
                         rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, circleAngle, rotatedCircle.x, rotatedCircle.y);
@@ -788,7 +788,7 @@ namespace CutTheRopeDX.GameMain
                                     grab.initial_rotatedCircle = rotatedCircle;
                                     grab.initial_rotation = initial_rotation;
                                 }
-                                float grabAngle = DEGREES_TO_RADIANS(rotatedCircle.rotation) - grab.initial_rotation;
+                                float grabAngle = float.DegreesToRadians(rotatedCircle.rotation) - grab.initial_rotation;
                                 grabAngle = FBOUND_PI(grabAngle);
                                 Vector rotatedGrabPos = VectRotateAround(Vect(grab.initial_x, grab.initial_y), grabAngle, rotatedCircle.x, rotatedCircle.y);
                                 grab.x = rotatedGrabPos.X;
@@ -809,12 +809,12 @@ namespace CutTheRopeDX.GameMain
                                     pump.initial_rotatedCircle = rotatedCircle;
                                     pump.initial_rotation = initial_rotation;
                                 }
-                                float pumpAngle = DEGREES_TO_RADIANS(rotatedCircle.rotation) - pump.initial_rotation;
+                                float pumpAngle = float.DegreesToRadians(rotatedCircle.rotation) - pump.initial_rotation;
                                 pumpAngle = FBOUND_PI(pumpAngle);
                                 Vector rotatedPumpPos = VectRotateAround(Vect(pump.initial_x, pump.initial_y), pumpAngle, rotatedCircle.x, rotatedCircle.y);
                                 pump.x = rotatedPumpPos.X;
                                 pump.y = rotatedPumpPos.Y;
-                                pump.rotation += RADIANS_TO_DEGREES(rotationDelta);
+                                pump.rotation += float.RadiansToDegrees(rotationDelta);
                                 pump.UpdateRotation();
                             }
                         }
@@ -836,7 +836,7 @@ namespace CutTheRopeDX.GameMain
                                     bubble.initial_rotatedCircle = rotatedCircle;
                                     bubble.initial_rotation = initial_rotation;
                                 }
-                                float bubbleAngle = DEGREES_TO_RADIANS(rotatedCircle.rotation) - bubble.initial_rotation;
+                                float bubbleAngle = float.DegreesToRadians(rotatedCircle.rotation) - bubble.initial_rotation;
                                 bubbleAngle = FBOUND_PI(bubbleAngle);
                                 Vector rotatedBubblePos = VectRotateAround(Vect(bubble.initial_x, bubble.initial_y), bubbleAngle, rotatedCircle.x, rotatedCircle.y);
                                 bubble.x = rotatedBubblePos.X;

@@ -90,8 +90,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             raState = 4;
                             raDelay = 0.2f;
-                            int minutes = (int)MathF.Floor(Round(ActiveResult.ElapsedTime) / 60f);
-                            int seconds = (int)(Round(ActiveResult.ElapsedTime) - (minutes * 60f));
+                            int minutes = (int)MathF.Floor(MathF.Round(ActiveResult.ElapsedTime) / 60f);
+                            int seconds = (int)(MathF.Round(ActiveResult.ElapsedTime) - (minutes * 60f));
                             ((Text)result.GetChildWithName("dataTitle")).SetString(Application.GetString("TIME"));
                             ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                             return;
@@ -115,8 +115,8 @@ namespace CutTheRopeDX.GameMain
                     {
                         ctime = ActiveResult.ElapsedTime * raDelay;
                         cscore = (int)(ActiveResult.StarBonus + ((1f - raDelay) * ActiveResult.TimeBonus));
-                        int minutes = (int)MathF.Floor(Round(ctime) / 60);
-                        int seconds = (int)(Round(ctime) - (minutes * 60));
+                        int minutes = (int)MathF.Floor(MathF.Round(ctime) / 60);
+                        int seconds = (int)(MathF.Round(ctime) - (minutes * 60));
                         ((Text)result.GetChildWithName("dataValue")).SetString(minutes.ToString(CultureInfo.InvariantCulture) + ":" + seconds.ToString("D2", CultureInfo.InvariantCulture));
                         ((Text)result.GetChildWithName("scoreValue")).SetString(cscore.ToString(CultureInfo.InvariantCulture));
                         if (delayFinished)
