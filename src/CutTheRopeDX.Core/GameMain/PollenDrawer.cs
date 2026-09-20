@@ -112,16 +112,16 @@ namespace CutTheRopeDX.GameMain
         public void FillWithPolenFromPathIndexToPathIndexGrab(int p1, int p2, Grab g)
         {
             int segmentSpacing = 44;
-            Vector vector = g.mover.path[p1];
-            Vector vector2 = VectSub(g.mover.path[p2], vector);
-            int segmentCount = (int)(VectLength(vector2) / segmentSpacing);
-            Vector v3 = VectNormalize(vector2);
+            Vector pathStart = g.mover.path[p1];
+            Vector segmentDelta = VectSub(g.mover.path[p2], pathStart);
+            int segmentCount = (int)(VectLength(segmentDelta) / segmentSpacing);
+            Vector segmentDirection = VectNormalize(segmentDelta);
             for (int i = 0; i <= segmentCount; i++)
             {
-                Vector v4 = VectAdd(vector, VectMult(v3, i * segmentSpacing));
-                v4.X += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
-                v4.Y += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
-                AddPollenAtparentIndex(v4, p1);
+                Vector pollenPos = VectAdd(pathStart, VectMult(segmentDirection, i * segmentSpacing));
+                pollenPos.X += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
+                pollenPos.Y += RND_RANGE((int)RTPD(-2), (int)RTPD(2));
+                AddPollenAtparentIndex(pollenPos, p1);
             }
         }
 

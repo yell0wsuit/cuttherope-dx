@@ -496,10 +496,10 @@ namespace CutTheRopeDX.GameMain
             ConstraintedPoint anchor = rope.bungeeAnchor;
             ConstraintedPoint tail = rope.parts[^1];
             Vector ropeVector = VectSub(anchor.pos, tail.pos);
-            Vector v1 = VectPerp(ropeVector);
-            Vector v2 = VectRperp(ropeVector);
-            float fa = RADIANS_TO_DEGREES(VectAngleNormalized(v1) - DEGREES_TO_RADIANS(rocket.rotation));
-            float fb = RADIANS_TO_DEGREES(VectAngleNormalized(v2) - DEGREES_TO_RADIANS(rocket.rotation));
+            Vector ropeLeftNormal = VectPerp(ropeVector);
+            Vector ropeRightNormal = VectRperp(ropeVector);
+            float fa = RADIANS_TO_DEGREES(VectAngleNormalized(ropeLeftNormal) - DEGREES_TO_RADIANS(rocket.rotation));
+            float fb = RADIANS_TO_DEGREES(VectAngleNormalized(ropeRightNormal) - DEGREES_TO_RADIANS(rocket.rotation));
             rocket.additionalAngle = AngleTo0_360(rocket.additionalAngle);
             fa = NearestAngleTofrom(rocket.additionalAngle, fa);
             fb = NearestAngleTofrom(rocket.additionalAngle, fb);
@@ -878,9 +878,9 @@ namespace CutTheRopeDX.GameMain
         {
             int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-            Image image2 = Image.Image_createWithResID(candyResource);
-            image2.DoRestoreCutTransparency();
-            CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, image2);
+            Image candyImage = Image.Image_createWithResID(candyResource);
+            candyImage.DoRestoreCutTransparency();
+            CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, candyImage);
             if (gravityState.IsInverted)
             {
                 candyBreak.gravity.Y = -ActivePhysicsConstants.CandyBreakGravityY;

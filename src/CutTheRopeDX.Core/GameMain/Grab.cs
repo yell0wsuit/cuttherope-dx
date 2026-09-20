@@ -65,8 +65,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The rotation angle in degrees.</returns>
         public static float GetRotateAngleForStartEndCenter(Vector v1, Vector v2, Vector c)
         {
-            Vector v3 = VectSub(v1, c);
-            return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(v3));
+            Vector startOffset = VectSub(v1, c);
+            return RADIANS_TO_DEGREES(VectAngleNormalized(VectSub(v2, c)) - VectAngleNormalized(startOffset));
         }
 
         /// <inheritdoc />
@@ -90,14 +90,14 @@ namespace CutTheRopeDX.GameMain
 
             if (bee?.updateable == true)
             {
-                Vector vector2 = mover.path[mover.targetPoint];
+                Vector targetPos = mover.path[mover.targetPoint];
                 Vector pos = mover.pos;
-                Vector vector = VectSub(vector2, pos);
+                Vector toTarget = VectSub(targetPos, pos);
                 float t = 0f;
-                if (ABS(vector.X) > 15f)
+                if (ABS(toTarget.X) > 15f)
                 {
                     float rotationTarget = 10f;
-                    t = vector.X > 0f ? rotationTarget : 0f - rotationTarget;
+                    t = toTarget.X > 0f ? rotationTarget : 0f - rotationTarget;
                 }
                 _ = Mover.MoveVariableToTarget(ref bee.rotation, t, 60f, delta);
             }
@@ -319,13 +319,13 @@ namespace CutTheRopeDX.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
                 gunSource.Cup.AddTimelinewithID(timeline, GUN_CUP_HIDE);
 
-                Timeline timeline2 = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline2.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
-                timeline2.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline2.AddKeyFrame(KeyFrame.MakePos(0, 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
-                gunSource.Cup.AddTimelinewithID(timeline2, GUN_CUP_DROP_AND_HIDE);
-                Track track = timeline2.GetTrack(Track.TrackType.TRACK_POSITION);
+                Timeline cupTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+                cupTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                cupTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
+                cupTimeline.AddKeyFrame(KeyFrame.MakePos(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                cupTimeline.AddKeyFrame(KeyFrame.MakePos(0, 50, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 1));
+                gunSource.Cup.AddTimelinewithID(cupTimeline, GUN_CUP_DROP_AND_HIDE);
+                Track track = cupTimeline.GetTrack(Track.TrackType.TRACK_POSITION);
                 track.relative = true;
                 return;
             }

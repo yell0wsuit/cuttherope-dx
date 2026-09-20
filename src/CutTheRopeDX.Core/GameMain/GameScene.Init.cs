@@ -22,11 +22,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The initialized gravity toggle button.</returns>
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
-            Image u = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
-            Image d2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
-            Image u2 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
-            Image d3 = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
-            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(u, d2, u2, d3, GameSceneButtonId.GravityToggle);
+            Image normalUp = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image normalDown = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
+            Image invertedUp = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
+            Image invertedDown = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
+            ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(normalUp, normalDown, invertedUp, invertedDown, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
         }

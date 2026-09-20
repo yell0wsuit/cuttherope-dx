@@ -87,23 +87,23 @@ namespace CutTheRopeDX.GameMain
                 bool isChinese = LanguageHelper.IsCurrentAny(Language.LANGZH, Language.LANGZHTW);
                 if (levelLabel.Secondary != null)
                 {
-                    Text text2 = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
-                    text2.anchor = 33;
-                    text2.parentAnchor = 9;
-                    text2.y = isChinese ? 3f : 30f; // the "Level" label in game
-                    text2.rotationCenterX -= text2.width / 2f;
-                    text2.scaleX = text2.scaleY = 0.7f;
-                    _ = text.AddChild(text2);
+                    Text secondaryLabel = Text.CreateWithFontandString(Resources.Fnt.BigFont, levelLabel.Secondary);
+                    secondaryLabel.anchor = 33;
+                    secondaryLabel.parentAnchor = 9;
+                    secondaryLabel.y = isChinese ? 3f : 30f; // the "Level" label in game
+                    secondaryLabel.rotationCenterX -= secondaryLabel.width / 2f;
+                    secondaryLabel.scaleX = secondaryLabel.scaleY = 0.7f;
+                    _ = text.AddChild(secondaryLabel);
                 }
-                Timeline timeline6 = new Timeline().InitWithMaxKeyFramesOnTrack(5);
-                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
-                timeline6.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
-                text.AddTimelinewithID(timeline6, 0);
+                Timeline labelTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+                labelTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                labelTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                labelTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                labelTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));
+                labelTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
+                text.AddTimelinewithID(labelTimeline, 0);
                 text.PlayTimeline(0);
-                timeline6.delegateTimelineDelegate = staticAniPool;
+                labelTimeline.delegateTimelineDelegate = staticAniPool;
                 _ = staticAniPool.AddChild(text);
 
                 // The label is rebuilt from scratch here on every level start and restart, so it

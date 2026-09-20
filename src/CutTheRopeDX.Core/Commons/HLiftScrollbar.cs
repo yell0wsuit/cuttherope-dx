@@ -219,11 +219,11 @@ namespace CutTheRopeDX.Commons
             }
             for (int l = 0; l < spointsNum - 1; l++)
             {
-                Vector vector3 = spointsLimits[l];
-                Vector vector4 = spointsLimits[l + 1];
+                Vector currentPoint = spointsLimits[l];
+                Vector nextPoint = spointsLimits[l + 1];
                 Vector[] array = spointsLimits;
                 int limitIndex = l;
-                array[limitIndex].X = array[limitIndex].X + ((vector4.X - vector3.X) / 2f);
+                array[limitIndex].X = array[limitIndex].X + ((nextPoint.X - currentPoint.X) / 2f);
             }
         }
 

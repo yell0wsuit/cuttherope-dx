@@ -25,11 +25,11 @@ namespace CutTheRopeDX.GameMain
             if (GameObject.RectInObject(p.x - flowLength, p.y - flowLength, p.x + flowLength, p.y + flowLength, c))
             {
                 Vector v = Vect(c.x, c.y);
-                Vector vector = default;
-                vector.X = p.x - (p.bb.w / 2f);
-                Vector vector2 = default;
-                vector2.X = p.x + (p.bb.w / 2f);
-                vector.Y = vector2.Y = p.y;
+                Vector leftEdge = default;
+                leftEdge.X = p.x - (p.bb.w / 2f);
+                Vector rightEdge = default;
+                rightEdge.X = p.x + (p.bb.w / 2f);
+                leftEdge.Y = rightEdge.Y = p.y;
                 if (p.angle != 0)
                 {
                     v = VectRotateAround(v, 0 - p.angle, p.x, p.y);
@@ -38,12 +38,12 @@ namespace CutTheRopeDX.GameMain
                 // reference, which tests the target object's own bbox against the flow column.
                 float flowBoxW = ActivePhysicsConstants.UseMobilePhysicsModel ? c.bb.w : p.bb.w;
                 float flowBoxH = ActivePhysicsConstants.UseMobilePhysicsModel ? c.bb.h : p.bb.h;
-                if (v.Y < vector.Y && RectInRect(v.X - (flowBoxW / 2), v.Y - (flowBoxH / 2), v.X + (flowBoxW / 2), v.Y + (flowBoxH / 2), vector.X, vector.Y - flowLength, vector2.X, vector2.Y))
+                if (v.Y < leftEdge.Y && RectInRect(v.X - (flowBoxW / 2), v.Y - (flowBoxH / 2), v.X + (flowBoxW / 2), v.Y + (flowBoxH / 2), leftEdge.X, leftEdge.Y - flowLength, rightEdge.X, rightEdge.Y))
                 {
-                    float verticalImpulse = flowLength * 2f * (flowLength - (vector.Y - v.Y)) / flowLength;
-                    Vector v2 = Vect(0f, 0f - verticalImpulse);
-                    v2 = VectRotate(v2, p.angle);
-                    s.ApplyImpulseDelta(v2, 0.016f);
+                    float verticalImpulse = flowLength * 2f * (flowLength - (leftEdge.Y - v.Y)) / flowLength;
+                    Vector impulse = Vect(0f, 0f - verticalImpulse);
+                    impulse = VectRotate(impulse, p.angle);
+                    s.ApplyImpulseDelta(impulse, 0.016f);
                 }
             }
         }
@@ -586,8 +586,8 @@ namespace CutTheRopeDX.GameMain
             Vector v = Vect(tx, ty);
             for (int i = 0; i < bungees.Count; i++)
             {
-                Grab grab2 = bungees[i];
-                Bungee rope = grab2.Rope;
+                Grab ropeGrab = bungees[i];
+                Bungee rope = ropeGrab.Rope;
                 if (rope != null)
                 {
                     for (int j = 0; j < rope.drawPtsCount; j += 2)
@@ -599,7 +599,7 @@ namespace CutTheRopeDX.GameMain
                             nearestDistance = distanceToPoint;
                             result = rope;
                             s = vector;
-                            grab = grab2;
+                            grab = ropeGrab;
                         }
                     }
                 }

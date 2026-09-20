@@ -25,16 +25,16 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The created action instance.</returns>
         public static TimelineAction CreateAction(BaseElement target, string action, int p, int sp)
         {
-            TimelineAction action2 = new()
+            TimelineAction timelineAction = new()
             {
                 actionTarget = target
             };
-            action2.data.actionName = action;
-            action2.data.actionParam = p;
-            action2.data.actionSubParam = sp;
-            action2.data.actionParamFloat = p;
-            action2.data.actionSubParamFloat = sp;
-            return action2;
+            timelineAction.data.actionName = action;
+            timelineAction.data.actionParam = p;
+            timelineAction.data.actionSubParam = sp;
+            timelineAction.data.actionParamFloat = p;
+            timelineAction.data.actionSubParamFloat = sp;
+            return timelineAction;
         }
 
         /// <summary>
@@ -47,16 +47,16 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The created action instance.</returns>
         public static TimelineAction CreateAction(BaseElement target, string action, float p, float sp)
         {
-            TimelineAction action2 = new()
+            TimelineAction timelineAction = new()
             {
                 actionTarget = target
             };
-            action2.data.actionName = action;
-            action2.data.actionParam = (int)MathF.Round(p);
-            action2.data.actionSubParam = (int)MathF.Round(sp);
-            action2.data.actionParamFloat = p;
-            action2.data.actionSubParamFloat = sp;
-            return action2;
+            timelineAction.data.actionName = action;
+            timelineAction.data.actionParam = (int)MathF.Round(p);
+            timelineAction.data.actionSubParam = (int)MathF.Round(sp);
+            timelineAction.data.actionParamFloat = p;
+            timelineAction.data.actionSubParamFloat = sp;
+            return timelineAction;
         }
 
         /// <summary>

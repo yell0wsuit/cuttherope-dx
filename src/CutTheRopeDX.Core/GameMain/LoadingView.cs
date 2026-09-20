@@ -95,7 +95,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Scale(coverScale, coverScale, 1f);
 
             Texture2D texture = Application.GetTexture(boxCover);
-            Renderer.SetColor(s_Color1);
+            Renderer.SetColor(s_coverTint);
             Vector quadSize = Image.GetQuadSize(boxCover, 0);
             float leftQuadX = (SCREEN_WIDTH / 2f) - quadSize.X;
             DrawHelper.DrawImageQuad(texture, 0, leftQuadX, 0f);
@@ -106,7 +106,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.Translate(-mirrorPivotX, -SCREEN_HEIGHT / 2f, 0f);
             DrawHelper.DrawImageQuad(texture, 0, SCREEN_WIDTH / 2f, 0.5f);
             Renderer.PopMatrix();
-            Texture2D texture2 = Application.GetTexture(Resources.Img.MenuLevelUi);
+            Texture2D levelUiTexture = Application.GetTexture(Resources.Img.MenuLevelUi);
             if (!game)
             {
                 Renderer.Enable(Renderer.GL_SCISSOR_TEST);
@@ -120,9 +120,9 @@ namespace CutTheRopeDX.GameMain
             }
             Renderer.SetColor(Color.White);
             leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 6).X;
-            DrawHelper.DrawImageQuad(texture2, 6, leftQuadX, 80f);
+            DrawHelper.DrawImageQuad(levelUiTexture, 6, leftQuadX, 80f);
             leftQuadX = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 7).X;
-            DrawHelper.DrawImageQuad(texture2, 7, leftQuadX, 80f);
+            DrawHelper.DrawImageQuad(levelUiTexture, 7, leftQuadX, 80f);
             if (!game)
             {
                 Renderer.Disable(Renderer.GL_SCISSOR_TEST);
@@ -131,12 +131,12 @@ namespace CutTheRopeDX.GameMain
             {
                 Vector quadOffset = Image.GetQuadOffset(Resources.Img.MenuLevelUi, 9);
                 float rocketLiftOffset = 1250f * progressPercent / 100f;
-                DrawHelper.DrawImageQuad(texture2, 9, quadOffset.X, 700f - rocketLiftOffset);
+                DrawHelper.DrawImageQuad(levelUiTexture, 9, quadOffset.X, 700f - rocketLiftOffset);
             }
             else
             {
                 float loadingBarOffset = 1120f * progressPercent / 100f;
-                DrawHelper.DrawImageQuad(texture2, 8, 1084f, loadingBarOffset - 100f);
+                DrawHelper.DrawImageQuad(levelUiTexture, 8, 1084f, loadingBarOffset - 100f);
             }
             Renderer.PopMatrix();
             PostDraw();
@@ -165,6 +165,6 @@ namespace CutTheRopeDX.GameMain
         private bool animationComplete;
 
         /// <summary>Tint used for the mirrored pack-cover background.</summary>
-        private static Color s_Color1 = new(0.85f, 0.85f, 0.85f, 1f);
+        private static Color s_coverTint = new(0.85f, 0.85f, 0.85f, 1f);
     }
 }

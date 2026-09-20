@@ -275,15 +275,15 @@ namespace CutTheRopeDX.Framework.Core
                     {
                         SetViewTransition(4);
                         PrebuildMenuControllers();
-                        LoadingController c2 = prebuiltLoading;
+                        LoadingController loading = prebuiltLoading;
                         prebuiltLoading = null;
-                        AddChildwithID(c2, 2);
-                        MenuController menuController2 = prebuiltMenu;
+                        AddChildwithID(loading, 2);
+                        MenuController menu = prebuiltMenu;
                         prebuiltMenu = null;
-                        AddChildwithID(menuController2, 1);
+                        AddChildwithID(menu, 1);
                         DeleteChild(0);
                         resourceMgr.FreePack(PackStartup);
-                        menuController2.viewToShow = 0;
+                        menu.viewToShow = 0;
                         if (Preferences.GetBooleanForKey("PREFS_GAME_CENTER_ENABLED"))
                         {
                             EnableGameCenter();
@@ -328,8 +328,8 @@ namespace CutTheRopeDX.Framework.Core
                         if (nextController == 0)
                         {
                             SetShowGreeting(true);
-                            GameController c3 = new(this);
-                            AddChildwithID(c3, 3);
+                            GameController game = new(this);
+                            AddChildwithID(game, 3);
                             ActivateChild(3);
                             ILogger gameBuildLogger = Log.For(LogCategories.Application);
                             double gameBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;
@@ -341,8 +341,8 @@ namespace CutTheRopeDX.Framework.Core
                         {
                             return;
                         }
-                        MenuController menuController3 = new(this);
-                        AddChildwithID(menuController3, 1);
+                        MenuController menu = new(this);
+                        AddChildwithID(menu, 1);
                         // A menu opening on level select shows the current box's cover at once. That
                         // cover is still loaded, from before the level or from the menu's own batch,
                         // so freeing it here would only have the menu decode it again in the frame
@@ -364,20 +364,20 @@ namespace CutTheRopeDX.Framework.Core
                         }
                         if (nextController == 1)
                         {
-                            menuController3.viewToShow = 0;
+                            menu.viewToShow = 0;
                         }
                         if (nextController is 2 or 4)
                         {
-                            menuController3.viewToShow = 6;
+                            menu.viewToShow = 6;
                         }
                         if (nextController == 3)
                         {
-                            menuController3.viewToShow = pack < Preferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
+                            menu.viewToShow = pack < Preferences.GetPacksCount() - 1 ? 5 : (PackConfig.OutroVideo != null ? 7 : 5);
                         }
                         ActivateChild(1);
                         if (nextController == 3)
                         {
-                            menuController3.ShowNextPack();
+                            menu.ShowNextPack();
                         }
                         ILogger menuBuildLogger = Log.For(LogCategories.Application);
                         double menuBuildMs = Stopwatch.GetElapsedTime(buildStartedTicks).TotalMilliseconds;

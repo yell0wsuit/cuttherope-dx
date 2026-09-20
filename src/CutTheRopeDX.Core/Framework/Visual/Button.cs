@@ -17,9 +17,9 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>A new <see cref="Button"/> initialized with the given textures and identifier.</returns>
         public static Button CreateWithTextureUpDownID(Texture2D up, Texture2D down, ButtonId bID)
         {
-            Image up2 = Image.Image_create(up);
-            Image down2 = Image.Image_create(down);
-            return new Button().InitWithUpElementDownElementandID(up2, down2, bID);
+            Image upImage = Image.Image_create(up);
+            Image downImage = Image.Image_create(down);
+            return new Button().InitWithUpElementDownElementandID(upImage, downImage, bID);
         }
 
         /// <summary>
@@ -104,10 +104,10 @@ namespace CutTheRopeDX.Framework.Visual
         public virtual void SetState(BUTTON_STATE s)
         {
             state = s;
-            BaseElement child3 = GetChild(0);
-            BaseElement child2 = GetChild(1);
-            child3.SetEnabled(s == BUTTON_STATE.BUTTON_UP);
-            child2.SetEnabled(s == BUTTON_STATE.BUTTON_DOWN);
+            BaseElement upChild = GetChild(0);
+            BaseElement downChild = GetChild(1);
+            upChild.SetEnabled(s == BUTTON_STATE.BUTTON_UP);
+            downChild.SetEnabled(s == BUTTON_STATE.BUTTON_DOWN);
         }
 
         /// <inheritdoc />
