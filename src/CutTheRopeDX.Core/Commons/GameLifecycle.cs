@@ -85,7 +85,7 @@ namespace CutTheRopeDX.Commons
             if (state == 3)
             {
                 state = 4;
-                onResumeTimeStamp = DateTimeJavaHelper.CurrentTimeMillis();
+                onResumeTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 DRAW_NOTHING = false;
             }
         }
@@ -126,7 +126,7 @@ namespace CutTheRopeDX.Commons
                 {
                     if (state == 4)
                     {
-                        if (DateTimeJavaHelper.CurrentTimeMillis() - onResumeTimeStamp >= 500L)
+                        if (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - onResumeTimeStamp >= 500L)
                         {
                             ResumeRuntime();
                             RenderFrame();
