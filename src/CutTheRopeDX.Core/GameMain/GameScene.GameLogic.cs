@@ -736,7 +736,7 @@ namespace CutTheRopeDX.GameMain
         public void PopBubbleAtXY(float bx, float by)
         {
             SoundMgr.PlaySound(Resources.Snd.BubbleBreak);
-            Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
+            Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjBubble);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;

@@ -247,7 +247,7 @@ namespace CutTheRopeDX.GameMain
                 parentAnchor = 18
             };
 
-            Animation body = Animation.Animation_createWithResID(Resources.Img.ObjMouse);
+            Animation body = Image.CreateWithResID(new Animation(), Resources.Img.ObjMouse);
             body.anchor = body.parentAnchor = 18;
             body.DoRestoreCutTransparency();
 
@@ -307,7 +307,7 @@ namespace CutTheRopeDX.GameMain
             _ = container.AddChild(body);
 
             // Eye blink animation — frames 5-13
-            Animation eyes = Animation.Animation_createWithResID(Resources.Img.ObjMouse);
+            Animation eyes = Image.CreateWithResID(new Animation(), Resources.Img.ObjMouse);
             eyes.anchor = eyes.parentAnchor = 18;
             eyes.DoRestoreCutTransparency();
             _ = eyes.AddAnimationDelayLoopFirstLast(

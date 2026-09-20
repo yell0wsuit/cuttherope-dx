@@ -185,7 +185,7 @@ namespace CutTheRopeDX.GameMain
             eye2.SetEnabled(false);
             _ = backContainer.AddChild(eye2);
 
-            wakeUp = Animation_createWithResID(Resources.Img.ObjSnail);
+            wakeUp = CreateWithResID(new Animation(), Resources.Img.ObjSnail);
             wakeUp.SetDrawQuad(SnailWakeStartQuad);
             wakeUp.parentAnchor = wakeUp.anchor = 9;
             wakeUp.SetEnabled(false);
@@ -195,7 +195,7 @@ namespace CutTheRopeDX.GameMain
             wakeUpTimeline.delegateTimelineDelegate = this;
             _ = backContainer.AddChild(wakeUp);
 
-            sleep = Animation_createWithResID(Resources.Img.ObjSnail);
+            sleep = CreateWithResID(new Animation(), Resources.Img.ObjSnail);
             sleep.SetDrawQuad(SnailSleepStartQuad);
             sleep.parentAnchor = sleep.anchor = 9;
             sleep.SetEnabled(false);

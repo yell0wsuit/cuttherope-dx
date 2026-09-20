@@ -104,7 +104,7 @@ namespace CutTheRopeDX.GameMain
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
 
             // Initialize main candy
-            GameObject candyObj = GameObject.GameObject_createWithResIDQuad(candyResource, 0);
+            GameObject candyObj = Image.CreateWithResID(new GameObject(), candyResource, 0);
             candyObj.DoRestoreCutTransparency();
             candyObj.anchor = 18;
             candyObj.bb = GetCandyBoundingBox(candyObj);
@@ -122,21 +122,21 @@ namespace CutTheRopeDX.GameMain
             candyObj.AddTimelinewithID(candyReappearTimeline, 2);
 
             // Add candy main visual component
-            GameObject candyMainObj = GameObject.GameObject_createWithResIDQuad(candyResource, 1);
+            GameObject candyMainObj = Image.CreateWithResID(new GameObject(), candyResource, 1);
             candyMainObj.DoRestoreCutTransparency();
             candyMainObj.anchor = candyMainObj.parentAnchor = 18;
             _ = candyObj.AddChild(candyMainObj);
             candyMainObj.scaleX = candyMainObj.scaleY = 0.71f;
 
             // Add candy top visual component
-            GameObject candyTopObj = GameObject.GameObject_createWithResIDQuad(candyResource, 2);
+            GameObject candyTopObj = Image.CreateWithResID(new GameObject(), candyResource, 2);
             candyTopObj.DoRestoreCutTransparency();
             candyTopObj.anchor = candyTopObj.parentAnchor = 18;
             _ = candyObj.AddChild(candyTopObj);
             candyTopObj.scaleX = candyTopObj.scaleY = 0.71f;
 
             // Setup candy blink animation (highlight_start=2, layer_1-8=3-10, highlight_end=1)
-            Animation candyBlinkAnim = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
+            Animation candyBlinkAnim = Image.CreateWithResID(new Animation(), Resources.Img.ObjCandyFx);
             candyBlinkAnim.AddAnimationWithIDDelayLoopFirstLast(0, 0.07f, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 9);
             candyBlinkAnim.AddAnimationWithIDDelayLoopCountSequence(1, 0.3f, Timeline.LoopType.TIMELINE_NO_LOOP, 2, 10, [10]);
             Timeline blinkColorTimeline = candyBlinkAnim.GetTimeline(1);
@@ -216,7 +216,7 @@ namespace CutTheRopeDX.GameMain
 
             int selectedCandySkin = Framework.Core.Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-            GameObject visual = GameObject.GameObject_createWithResIDQuad(
+            GameObject visual = Image.CreateWithResID(new GameObject(), 
                 candyResource,
                 role == CandyBodyRole.LeftHalf ? SplitCandyLeftQuad : SplitCandyRightQuad);
             visual.scaleX = visual.scaleY = 0.71f;

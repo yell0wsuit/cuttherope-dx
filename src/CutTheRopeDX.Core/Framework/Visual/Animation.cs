@@ -8,16 +8,6 @@ namespace CutTheRopeDX.Framework.Visual
     internal class Animation : Image
     {
         /// <summary>
-        /// Creates an animation using a texture resource name.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <returns>A new animation initialized from the specified texture resource.</returns>
-        public static Animation Animation_createWithResID(string resourceName)
-        {
-            return CreateWithResID(new Animation(), resourceName);
-        }
-
-        /// <summary>
         /// Adds a sequential frame animation from quad <paramref name="start"/> to <paramref name="end"/>.
         /// </summary>
         /// <param name="animationId">Timeline slot ID for the animation.</param>

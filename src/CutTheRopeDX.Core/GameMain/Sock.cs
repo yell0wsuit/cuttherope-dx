@@ -30,7 +30,7 @@ namespace CutTheRopeDX.GameMain
         public void CreateAnimations(string resourceName)
         {
             XmasSock = resourceName;
-            light = Animation_createWithResID(XmasSock);
+            light = CreateWithResID(new Animation(), XmasSock);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;

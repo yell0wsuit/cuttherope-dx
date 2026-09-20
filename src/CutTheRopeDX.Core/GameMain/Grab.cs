@@ -307,7 +307,7 @@ namespace CutTheRopeDX.GameMain
                 _ = AddChild(gunSource.Front);
                 gunSource.Front.visible = false;
 
-                gunSource.Cup = Animation_createWithResID(Resources.Img.ObjGun);
+                gunSource.Cup = CreateWithResID(new Animation(), Resources.Img.ObjGun);
                 gunSource.Cup.DoRestoreCutTransparency();
                 gunSource.Cup.AddAnimationWithIDDelayLoopFirstLast(GUN_CUP_SHOW, 0.1f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 10);
                 gunSource.Cup.anchor = 18;
@@ -452,7 +452,7 @@ namespace CutTheRopeDX.GameMain
             bee.blendingMode = 1;
             bee.DoRestoreCutTransparency();
             bee.parentAnchor = 18;
-            Animation animation = Animation_createWithResID(Resources.Img.ObjBee);
+            Animation animation = CreateWithResID(new Animation(), Resources.Img.ObjBee);
             animation.parentAnchor = animation.anchor = 9;
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.03f, Timeline.LoopType.TIMELINE_PING_PONG, 2, 4);
@@ -481,7 +481,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Attaches a spider to this grab.</summary>
         public void SetSpider()
         {
-            Animation spiderAnimation = Animation_createWithResID(Resources.Img.ObjSpider);
+            Animation spiderAnimation = CreateWithResID(new Animation(), Resources.Img.ObjSpider);
             spiderAnimation.DoRestoreCutTransparency();
             spiderAnimation.anchor = 18;
             spiderAnimation.x = x;

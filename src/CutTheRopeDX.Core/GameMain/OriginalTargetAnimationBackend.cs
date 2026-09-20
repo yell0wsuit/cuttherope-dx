@@ -628,7 +628,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Blink animation instance attached to Om Nom.</returns>
         private Animation CreateBlinkAnimation()
         {
-            Animation blink = Animation.Animation_createWithResID(Resources.Img.CharAnimations);
+            Animation blink = Image.CreateWithResID(new Animation(), Resources.Img.CharAnimations);
             blink.parentAnchor = 9;
             blink.visible = false;
             blink.AddAnimationWithIDDelayLoopCountSequence(0, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);

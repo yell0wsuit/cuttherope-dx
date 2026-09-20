@@ -449,7 +449,7 @@ namespace CutTheRopeDX.GameMain
                                 rope.chosenOne = false;
                             }
                         }
-                        Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjCandyFx);
+                        Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjCandyFx);
                         animation.x = candy.x;
                         animation.y = candy.y;
                         animation.anchor = 18;
@@ -542,7 +542,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             hudStar[starsCollected - 1].PlayTimeline(0);
                         }
-                        Animation starDisappear = Animation.Animation_createWithResID(Resources.Img.ObjStarDisappear);
+                        Animation starDisappear = Image.CreateWithResID(new Animation(), Resources.Img.ObjStarDisappear);
                         starDisappear.DoRestoreCutTransparency();
                         starDisappear.x = star.x;
                         starDisappear.y = star.y;

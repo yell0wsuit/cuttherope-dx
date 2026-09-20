@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured bubble animation (not yet added to a parent).</returns>
         public static Animation CreateBubble()
         {
-            Animation bubble = Animation.Animation_createWithResID(Resources.Img.ObjBubble);
+            Animation bubble = Image.CreateWithResID(new Animation(), Resources.Img.ObjBubble);
             bubble.anchor = bubble.parentAnchor = CenterAnchor;
             _ = bubble.AddAnimationDelayLoopFirstLast(FrameDelaySeconds, Timeline.LoopType.TIMELINE_REPLAY, FirstFrame, LastFrame);
             bubble.PlayTimeline(0);

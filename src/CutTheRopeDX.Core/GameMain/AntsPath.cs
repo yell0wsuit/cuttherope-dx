@@ -403,7 +403,7 @@ namespace CutTheRopeDX.GameMain
         private Ant CreateAntForOffset(float offset)
         {
             Ant ant = new();
-            Animation anim = Animation.Animation_createWithResID(Resources.Img.ObjAnt);
+            Animation anim = Image.CreateWithResID(new Animation(), Resources.Img.ObjAnt);
             int maxFrame = anim.texture?.quadsCount > 0
                 ? Math.Min(5, anim.texture.quadsCount - 1)
                 : 0;

@@ -61,7 +61,7 @@ namespace CutTheRopeDX.GameMain
                     anchor = 18
                 };
 
-                sparks = Animation_createWithResID(Resources.Img.ObjRocket);
+                sparks = CreateWithResID(new Animation(), Resources.Img.ObjRocket);
                 sparks.parentAnchor = sparks.anchor = 18;
                 sparks.SetEnabled(false);
                 sparks.DoRestoreCutTransparency();

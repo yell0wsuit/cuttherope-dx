@@ -355,7 +355,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         horizontalOffset *= -steamState;
                     }
-                    Animation animation = Animation.Animation_createWithResID(Resources.Img.ObjPipe);
+                    Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjPipe);
                     animation.DoRestoreCutTransparency();
                     _ = animation.AddAnimationDelayLoopFirstLast(frameDelay, Timeline.LoopType.TIMELINE_REPLAY, animationStartFrame, animationEndFrame);
                     animation.anchor = animation.parentAnchor = 18;

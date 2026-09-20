@@ -119,7 +119,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (timeout > 0)
             {
-                timedAnim = Animation_createWithResID(Resources.Img.ObjStarIdle);
+                timedAnim = CreateWithResID(new Animation(), Resources.Img.ObjStarIdle);
                 timedAnim.anchor = timedAnim.parentAnchor = 18;
                 timedAnim.SetDrawQuad(TimedEmptyQuad);
                 time = timeout;
@@ -152,21 +152,21 @@ namespace CutTheRopeDX.GameMain
             // Add glow sprite
             if (!nightMode)
             {
-                glowSprite = GameObject_createWithResIDQuad(Resources.Img.ObjStarIdle, ImgObjStarIdleGlow);
+                glowSprite = CreateWithResID(new GameObject(), Resources.Img.ObjStarIdle, ImgObjStarIdleGlow);
                 glowSprite.anchor = glowSprite.parentAnchor = 18;
                 glowSprite.blendingMode = -1; // Normal blending
                 _ = AddChild(glowSprite);
             }
             else
             {
-                glowSprite = GameObject_createWithResIDQuad(Resources.Img.ObjStarNight, ImgObjStarNightGlow);
+                glowSprite = CreateWithResID(new GameObject(), Resources.Img.ObjStarNight, ImgObjStarNightGlow);
                 glowSprite.anchor = glowSprite.parentAnchor = 18;
                 glowSprite.color = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.4f);
                 glowSprite.blendingMode = 1; // Normal blending
                 _ = AddChild(glowSprite);
             }
 
-            Animation animation = Animation_createWithResID(Resources.Img.ObjStarIdle);
+            Animation animation = CreateWithResID(new Animation(), Resources.Img.ObjStarIdle);
             animation.DoRestoreCutTransparency();
             _ = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 1, 18);
             animation.PlayTimeline(0);
@@ -177,7 +177,7 @@ namespace CutTheRopeDX.GameMain
 
             if (nightMode)
             {
-                dimmedIdleSprite = Animation_createWithResID(Resources.Img.ObjStarNight);
+                dimmedIdleSprite = CreateWithResID(new Animation(), Resources.Img.ObjStarNight);
                 dimmedIdleSprite.anchor = dimmedIdleSprite.parentAnchor = 18;
                 dimmedIdleSprite.blendingMode = 1; // Normal blending
                 _ = dimmedIdleSprite.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, ImgObjStarNightIdleOffStart, ImgObjStarNightIdleOffEnd);
@@ -185,14 +185,14 @@ namespace CutTheRopeDX.GameMain
                 dimmedIdleSprite.color = RGBAColor.transparentRGBA;
                 _ = AddChild(dimmedIdleSprite);
 
-                lightUpAnim = Animation_createWithResID(Resources.Img.ObjStarNight);
+                lightUpAnim = CreateWithResID(new Animation(), Resources.Img.ObjStarNight);
                 lightUpAnim.anchor = lightUpAnim.parentAnchor = 18;
                 lightUpAnim.blendingMode = 2; // Additive blending (SRC_ALPHA, ONE)
                 _ = lightUpAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, ImgObjStarNightLightUpStart, ImgObjStarNightLightUpEnd);
                 lightUpAnim.visible = false;
                 _ = AddChild(lightUpAnim);
 
-                lightDownAnim = Animation_createWithResID(Resources.Img.ObjStarNight);
+                lightDownAnim = CreateWithResID(new Animation(), Resources.Img.ObjStarNight);
                 lightDownAnim.anchor = lightDownAnim.parentAnchor = 18;
                 lightDownAnim.blendingMode = 1; // Normal blending
                 _ = lightDownAnim.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, ImgObjStarNightLightDownStart, ImgObjStarNightLightDownEnd);
