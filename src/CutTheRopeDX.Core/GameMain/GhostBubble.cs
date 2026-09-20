@@ -12,29 +12,6 @@ namespace CutTheRopeDX.GameMain
         BaseElement IGhostApparition.Element => this;
 
         /// <summary>
-        /// Creates a ghost bubble from a texture.
-        /// </summary>
-        /// <param name="texture">Texture used by the bubble.</param>
-        /// <returns>The initialized ghost bubble.</returns>
-        public static GhostBubble Create(Texture2D texture)
-        {
-            return (GhostBubble)new GhostBubble().InitWithTexture(texture);
-        }
-
-        /// <summary>
-        /// Creates a ghost bubble from a texture resource and applies a draw quad.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name.</param>
-        /// <param name="quad">Quad index to draw.</param>
-        /// <returns>The initialized ghost bubble.</returns>
-        public static GhostBubble CreateWithResIDQuad(string resourceName, int quad)
-        {
-            GhostBubble bubble = Create(Application.GetTexture(resourceName));
-            bubble?.SetDrawQuad(quad);
-            return bubble;
-        }
-
-        /// <summary>
         /// Adds looping ghost cloud timelines around the bubble.
         /// </summary>
         public void AddSupportingCloudsTimelines()

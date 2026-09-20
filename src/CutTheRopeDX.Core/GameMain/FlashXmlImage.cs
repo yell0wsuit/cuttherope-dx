@@ -84,18 +84,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Creates a Flash XML image for the specified texture resource.
-        /// </summary>
-        /// <param name="resourceName">Texture resource name to load.</param>
-        /// <returns>The initialized Flash XML image.</returns>
-        public static FlashXmlImage CreateWithResID(string resourceName)
-        {
-            FlashXmlImage image = new();
-            _ = image.InitWithTexture(Application.GetTexture(resourceName));
-            return image;
-        }
-
-        /// <summary>
         /// Converts an atlas-space dimension to an integer Flash point dimension.
         /// </summary>
         /// <param name="rawValue">Atlas-space dimension to normalize.</param>

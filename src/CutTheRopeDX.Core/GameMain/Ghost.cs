@@ -164,7 +164,7 @@ namespace CutTheRopeDX.GameMain
                     break;
                 case GhostForm.Bubble:
                     {
-                        GhostBubble ghostBubble = GhostBubble.CreateWithResIDQuad(Resources.Img.ObjBubble, RND_RANGE(1, 3));
+                        GhostBubble ghostBubble = Image.CreateWithResID(new GhostBubble(), Resources.Img.ObjBubble, RND_RANGE(1, 3));
                         ghostBubble.DoRestoreCutTransparency();
                         ghostBubble.bb = GameScene.GetBubbleBoundingBox();
                         ghostBubble.x = x;
