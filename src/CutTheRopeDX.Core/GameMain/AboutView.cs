@@ -82,7 +82,7 @@ namespace CutTheRopeDX.GameMain
             Vector scroll = currentContainer.GetScroll();
             Vector maxScroll = currentContainer.GetMaxScroll();
             scroll.Y += 0.5f;
-            scroll.Y = Framework.Helpers.MathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, maxScroll.Y);
+            scroll.Y = Math.Clamp(scroll.Y, 0f, MathF.Max(0f, maxScroll.Y));
             currentContainer.SetScroll(scroll);
             return true;
         }
@@ -260,10 +260,7 @@ namespace CutTheRopeDX.GameMain
             _ = (credits?.height = creditsExtent + (int)MathF.Round(ChromeReservation(snapshot)));
 
             Vector scroll = currentContainer.GetScroll();
-            scroll.Y = Framework.Helpers.MathHelper.FIT_TO_BOUNDARIES(
-                scroll.Y,
-                0f,
-                currentContainer.GetMaxScroll().Y);
+            scroll.Y = Math.Clamp(scroll.Y, 0f, MathF.Max(0f, currentContainer.GetMaxScroll().Y));
             currentContainer.SetScroll(scroll);
         }
 

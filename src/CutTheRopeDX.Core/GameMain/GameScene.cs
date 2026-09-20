@@ -435,8 +435,8 @@ namespace CutTheRopeDX.GameMain
         {
             Rectangle range = CameraTrackingRange();
             return Vect(
-                FIT_TO_BOUNDARIES(x, range.x, range.x + range.w),
-                FIT_TO_BOUNDARIES(y, range.y, range.y + range.h));
+                Math.Clamp(x, range.x, range.x + range.w),
+                Math.Clamp(y, range.y, range.y + range.h));
         }
 
         /// <summary>

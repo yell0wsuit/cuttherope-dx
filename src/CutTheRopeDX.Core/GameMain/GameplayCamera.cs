@@ -1,4 +1,4 @@
-using CutTheRopeDX.Framework.Helpers;
+using System;
 
 namespace CutTheRopeDX.GameMain
 {
@@ -28,7 +28,7 @@ namespace CutTheRopeDX.GameMain
         public static float Anchor(float tracked, float origin, float scrollable, float slack)
         {
             return HasTravel(scrollable, slack)
-                ? MathHelper.FIT_TO_BOUNDARIES((tracked - origin) / scrollable, 0f, 1f)
+                ? Math.Clamp((tracked - origin) / scrollable, 0f, 1f)
                 : 0.5f;
         }
 

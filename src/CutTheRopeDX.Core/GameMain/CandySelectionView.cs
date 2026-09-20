@@ -605,7 +605,7 @@ namespace CutTheRopeDX.GameMain
             currentContainer.y = layout.WindowTop;
 
             Vector scroll = currentContainer.GetScroll();
-            scroll.Y = MathHelper.FIT_TO_BOUNDARIES(scroll.Y, 0f, currentContainer.GetMaxScroll().Y);
+            scroll.Y = Math.Clamp(scroll.Y, 0f, MathF.Max(0f, currentContainer.GetMaxScroll().Y));
             currentContainer.SetScroll(scroll);
         }
 

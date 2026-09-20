@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Visual;
@@ -203,7 +205,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             }
 
             float blend = clampBlend
-                ? MathHelper.Clamp(t * 3f, 0f, 1f)
+                ? Math.Clamp(t * 3f, 0f, 1f)
                 : t * 3f;
 
             return RGBAColor.MakeRGBA(

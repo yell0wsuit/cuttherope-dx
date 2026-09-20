@@ -268,7 +268,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            _ = (spotLight?.x = FIT_TO_BOUNDARIES(spotFraction * width, width / 4f, width * 3f / 4f));
+            _ = (spotLight?.x = Math.Clamp(spotFraction * width, width / 4f, width * 3f / 4f));
         }
 
         /// <summary>Projects the world-space water clip into the camera's viewport coordinates.</summary>

@@ -115,7 +115,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
             Vector end = new(endX, endY);
             Vector delta = VectSub(end, start);
             float length = VectLength(delta);
-            float life = FIT_TO_BOUNDARIES((length * SegmentLifeMultiplier) + SegmentLifeBase, MinSegmentLife, MaxSegmentLife);
+            float life = Math.Clamp((length * SegmentLifeMultiplier) + SegmentLifeBase, MinSegmentLife, MaxSegmentLife);
 
             particleTimer = ParticleBurstDuration;
             StoreSegment(start, end, life);

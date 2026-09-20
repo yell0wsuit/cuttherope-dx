@@ -209,7 +209,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
         {
             foreach (FingerParticle particle in particles)
             {
-                float lifeRatio = FIT_TO_BOUNDARIES(particle.Life / particle.MaxLife, 0f, 1f);
+                float lifeRatio = Math.Clamp(particle.Life / particle.MaxLife, 0f, 1f);
                 float scale = particle.StartScale + ((particle.EndScale - particle.StartScale) * (1f - lifeRatio));
                 float alpha = config.FadeAlphaWithLife
                     ? config.Alpha * lifeRatio

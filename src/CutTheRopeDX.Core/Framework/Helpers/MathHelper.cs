@@ -41,36 +41,6 @@ namespace CutTheRopeDX.Framework.Helpers
             return (uint)random_.Next(int.MinValue, int.MaxValue);
         }
 
-        /// <summary>Clamps <paramref name="V"/> to the range [<paramref name="MINV"/>, <paramref name="MAXV"/>].</summary>
-        /// <param name="V">The value to clamp.</param>
-        /// <param name="MINV">Minimum bound.</param>
-        /// <param name="MAXV">Maximum bound.</param>
-        /// <returns>The clamped value.</returns>
-        public static float FIT_TO_BOUNDARIES(float V, float MINV, float MAXV)
-        {
-            return MathF.Max(MathF.Min(V, MAXV), MINV);
-        }
-
-        /// <summary>
-        /// Restricts <paramref name="value"/> to the range [<paramref name="min"/>, <paramref name="max"/>].
-        /// Body copied verbatim from MonoGame's <c>MathHelper.Clamp</c> so the de-XNA'd build keeps
-        /// bit-identical results; do not replace it with <see cref="Math.Clamp(float, float, float)"/>.
-        /// </summary>
-        /// <param name="value">The value to clamp.</param>
-        /// <param name="min">The minimum value.</param>
-        /// <param name="max">The maximum value.</param>
-        /// <returns>The clamped value.</returns>
-        public static float Clamp(float value, float min, float max)
-        {
-            // First we check to see if we're greater than the max.
-            value = (value > max) ? max : value;
-
-            // Then we check to see if we're less than the min.
-            value = (value < min) ? min : value;
-
-            return value;
-        }
-
         /// <summary>
         /// Linearly interpolates between <paramref name="value1"/> and <paramref name="value2"/>.
         /// Body copied verbatim from MonoGame's <c>MathHelper.Lerp</c> (the imprecise-but-matching
@@ -83,20 +53,6 @@ namespace CutTheRopeDX.Framework.Helpers
         public static float Lerp(float value1, float value2, float amount)
         {
             return value1 + ((value2 - value1) * amount);
-        }
-
-        /// <summary>
-        /// Converts <paramref name="degrees"/> to radians.
-        /// Body copied verbatim from MonoGame's <c>MathHelper.ToRadians</c>, which keeps XNA's
-        /// double-precision constant and rounds to float once at the end. Multiplying by a
-        /// pre-rounded <c>MathF.PI / 180f</c> instead is off by up to 1 ULP on ~9% of inputs,
-        /// so the literal below is load-bearing — do not "simplify" it.
-        /// </summary>
-        /// <param name="degrees">The angle in degrees.</param>
-        /// <returns>The angle in radians.</returns>
-        public static float ToRadians(float degrees)
-        {
-            return (float)(degrees * 0.017453292519943295769236907684886);
         }
 
         /// <summary>
