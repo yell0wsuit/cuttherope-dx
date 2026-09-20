@@ -1,5 +1,6 @@
-using CutTheRopeDX.Framework.Visual;
 using System.Xml.Linq;
+
+using CutTheRopeDX.Framework.Visual;
 
 using static CutTheRopeDX.Helpers.ParsingHelpers;
 

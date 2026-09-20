@@ -408,7 +408,7 @@ namespace CutTheRopeDX.GameMain
             bool v = rail.IsVertical;
             float o = rail.Offset;
 
-            HorizontallyTiledImage moveBackground = Image.CreateWithResID(new HorizontallyTiledImage(), Resources.Img.ObjHook);
+            HorizontallyTiledImage moveBackground = CreateWithResID(new HorizontallyTiledImage(), Resources.Img.ObjHook);
             moveBackground.SetTileHorizontallyLeftCenterRight(MovableRailLeftQuad, MovableRailCenterQuad, MovableRailRightQuad);
             moveBackground.width = (int)(l + 142f);
             moveBackground.rotationCenterX = 0f - Round(moveBackground.width / 2) + 74f;

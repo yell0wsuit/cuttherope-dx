@@ -1,7 +1,5 @@
 using System;
 
-using CutTheRopeDX.Framework.Core;
-
 namespace CutTheRopeDX.Framework.Visual
 {
     /// <summary>
