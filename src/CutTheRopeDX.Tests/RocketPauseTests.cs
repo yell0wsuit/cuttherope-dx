@@ -14,7 +14,7 @@ namespace CutTheRopeDX.Tests
         public void PauseShouldNotTurnAHeldRocket(int pointerId)
         {
             _ = Scenario.New().Candy(160, 350).Rocket(160, 100, isRotatable: true).Build();
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             root.SetPicker(false);
             GameController controller = new(root);
             controller.Activate();

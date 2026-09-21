@@ -19,7 +19,7 @@ namespace CutTheRopeDX.Tests
                 .Grab(159, 61, length: 10, wheel: true, breakable: false)
                 .Conveyor(-76, 60, length: 468, width: 50, velocity: 10f, manual: true)
                 .Build();
-            CTRRootController root = (CTRRootController)Application.SharedRootController();
+            RootController root = Application.SharedRootController();
             root.SetPicker(false);
             GameController controller = new(root);
             controller.Activate();
