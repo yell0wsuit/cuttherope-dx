@@ -325,9 +325,6 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
-        /// Word-wraps the current string into <see cref="FormattedString"/> lines based on <see cref="wrapWidth"/>.
-        /// </summary>
-        /// <summary>
         /// Extra advance between lines for this element, with both the font's configured spacing and
         /// the authored line-height multiplier applied.
         /// </summary>
@@ -338,6 +335,9 @@ namespace CutTheRopeDX.Framework.Visual
                 - (font.FontHeight() * sizeScale);
         }
 
+        /// <summary>
+        /// Word-wraps the current string into <see cref="FormattedString"/> lines based on <see cref="wrapWidth"/>.
+        /// </summary>
         public virtual void FormatText()
         {
             // Glyph advances come back at the font's own size, so the budget a line is measured

@@ -174,10 +174,10 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public bool IsDrawnByTransporter { get; set; }
 
-        /// <summary>Width class value for the small bouncer variant.</summary>
         /// <summary>Whether this is the large (type 2) bouncer; selects the collision width constant.</summary>
         private bool isLarge;
 
+        /// <summary>Width class value for the small bouncer variant.</summary>
         private const int SmallBouncerWidth = 1;
 
         /// <summary>Width class value for the large bouncer variant.</summary>

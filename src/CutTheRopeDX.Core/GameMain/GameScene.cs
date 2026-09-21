@@ -1006,10 +1006,6 @@ namespace CutTheRopeDX.GameMain
         private GameObject CandyTop => candies[0].WholeBody.Top;
 
         /// <summary>
-        /// Animation used for the candy blink effect.
-        /// </summary>
-
-        /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
         private ConstraintedPoint CandyPoint => candies[0].WholeBody.Point;

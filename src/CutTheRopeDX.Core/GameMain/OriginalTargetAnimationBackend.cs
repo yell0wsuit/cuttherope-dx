@@ -639,15 +639,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Creates a single ZZZ overlay image for the night level sleep animation.
-        /// Scale, rotation, and alpha are driven each frame by <see cref="AdvanceZzzState"/>.
-        /// </summary>
-        /// <returns>Configured ZZZ image, initially hidden.</returns>
-        /// <summary>
-        /// Creates the Paddington hat prop that stands beside Om Nom after the greeting.
-        /// </summary>
-        /// <returns>Hat prop image, sharing Om Nom's anchor so it lands where he set it down.</returns>
-        /// <summary>
         /// Hands off from the hat tip in a single callback, the way the iOS release does: it reveals
         /// the hat, drops Om Nom back onto the base sheet and restarts his idle loop together.
         /// </summary>
@@ -669,6 +660,10 @@ namespace CutTheRopeDX.GameMain
             };
         }
 
+        /// <summary>
+        /// Creates the Paddington hat prop that stands beside Om Nom after the greeting.
+        /// </summary>
+        /// <returns>Hat prop image, sharing Om Nom's anchor so it lands where he set it down.</returns>
         private Image CreatePaddingtonHat()
         {
             Image hat = Image.Image_createWithResIDQuad(Resources.Img.CharAnimationsPaddington, PaddingtonHatQuad);
@@ -680,6 +675,11 @@ namespace CutTheRopeDX.GameMain
             return hat;
         }
 
+        /// <summary>
+        /// Creates a single ZZZ overlay image for the night level sleep animation.
+        /// Scale, rotation, and alpha are driven each frame by <see cref="AdvanceZzzState"/>.
+        /// </summary>
+        /// <returns>Configured ZZZ image, initially hidden.</returns>
         private static Image CreateZzzOverlay()
         {
             Image zzz = Image.Image_createWithResID(Resources.Img.FxSleep);

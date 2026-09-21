@@ -355,9 +355,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Adds hook-related resources based on a grab node's attributes.
-        /// </summary>
-        /// <summary>
         /// Adds the art and sound one magic hat reaches. Which texture that is depends on the
         /// hat's group and the season, so the answer comes from <see cref="SockArt"/> - the same
         /// place the loader asks.
@@ -377,6 +374,9 @@ namespace CutTheRopeDX.GameMain
             _ = resources.Add(SpecialEvents.IsXmas ? Resources.Snd.TeleportXmas : Resources.Snd.Teleport);
         }
 
+        /// <summary>
+        /// Adds hook-related resources based on a grab node's attributes.
+        /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
         /// <param name="node">The grab XML node being inspected.</param>
         private static void AddGrabResources(HashSet<string> resources, XElement node)

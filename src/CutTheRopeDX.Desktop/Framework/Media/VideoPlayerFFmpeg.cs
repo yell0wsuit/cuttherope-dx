@@ -33,7 +33,6 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>Timeout in milliseconds before considering texture ready even without frames.</summary>
         private const int TextureReadyTimeoutMs = 500;
 
-        /// <summary>Maximum number of audio buffers to queue for playback.</summary>
         /// <summary>
         /// How far ahead of the device decoded audio is allowed to run. Bounding the queue by time
         /// rather than by a count of decoded packets keeps the lead the same whatever packet size
@@ -1160,9 +1159,6 @@ namespace CutTheRopeDX.Framework.Media
             }
         }
 
-        /// <summary>
-        /// Releases all FFmpeg and video resources.
-        /// </summary>
         /// <summary>How long a decode thread is given to notice it was asked to stop.</summary>
         /// <remarks>
         /// Generous rather than tight. Setting the stop flag now interrupts the blocking calls
@@ -1171,6 +1167,9 @@ namespace CutTheRopeDX.Framework.Media
         /// </remarks>
         private const int DecodeThreadStopTimeoutMs = 5000;
 
+        /// <summary>
+        /// Releases all FFmpeg and video resources.
+        /// </summary>
         private void Cleanup()
         {
             // The thread an earlier teardown gave up on is still inside everything below, so no
@@ -1390,8 +1389,6 @@ namespace CutTheRopeDX.Framework.Media
 
         /// <summary>The texture each decoded frame is written into.</summary>
         private IVideoFrameTexture videoTexture;
-
-        /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
 
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;

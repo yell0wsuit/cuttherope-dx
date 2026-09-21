@@ -389,8 +389,6 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>The texture each decoded frame is written into.</summary>
         private IVideoFrameTexture videoTexture;
 
-        /// <summary>Cached texture handle wrapper reused as long as <see cref="videoTexture"/> is unchanged.</summary>
-
         /// <summary>Managed buffer for transferring frame data to the texture.</summary>
         private byte[] videoBuffer;
 
