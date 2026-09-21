@@ -128,17 +128,6 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Returns the WVGA or non-WVGA value via <see cref="WVGAH"/>.
-        /// </summary>
-        /// <param name="P1">Value for non-WVGA resolution.</param>
-        /// <param name="P2">Value for WVGA resolution.</param>
-        /// <returns><paramref name="P2"/> on WVGA; otherwise <paramref name="P1"/>.</returns>
-        public static float CHOOSE3(float P1, float P2)
-        {
-            return WVGAH(P2, P1);
-        }
-
-        /// <summary>
         /// Blending mode: source alpha.
         /// </summary>
         public const int BLENDING_MODE_SRC_ALPHA = 0;
