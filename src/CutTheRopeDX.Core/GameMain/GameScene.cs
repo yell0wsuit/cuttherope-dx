@@ -1017,10 +1017,8 @@ namespace CutTheRopeDX.GameMain
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
         private readonly List<CandyContext> candies = [];
 
-#pragma warning disable IDE0052
         /// <summary>All Om Noms in the level. Single-target packs hold one element.</summary>
         private readonly List<TargetContext> targets = [];
-#pragma warning restore IDE0052
 
         /// <summary>The vector Om Nom a tap on the target plays over the frozen level.</summary>
         private readonly EasterEggOmNom easterEgg = new();

@@ -697,9 +697,7 @@ namespace CutTheRopeDX.GameMain
             const int frameRangeLength = 15;
             const int totalLength = (frameRangeLength * 2) + 1;
 
-#pragma warning disable IDE0028
             List<int> sequence = new(totalLength);
-#pragma warning restore IDE0028
 
             for (int offset = 1; offset <= frameRangeLength; offset++)
             {

@@ -40,7 +40,7 @@ namespace CutTheRopeDX.Framework.Media
                 hasAvFoundation: hasAvFoundation,
                 hasFfmpeg: hasFfmpeg);
 
-#pragma warning disable IDE0010, IDE0066
+#pragma warning disable IDE0010
             switch (backend)
             {
 #if MACOS_AVFOUNDATION
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.Framework.Media
                 default:
                     return new VideoPlayerNone();
             }
-#pragma warning restore IDE0010, IDE0066
+#pragma warning restore IDE0010
         }
     }
 }
