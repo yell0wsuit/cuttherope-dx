@@ -553,7 +553,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 t.NightSleep.ClearPresentation();
-                t.controller?.SetSleepOverlayVisible(false);
+                t.animation?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -617,7 +617,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
                 t.NightSleep.ClearPresentation();
-                t.controller?.SetSleepOverlayVisible(false);
+                t.animation?.SetSleepOverlayVisible(false);
                 if (t.targetObject != null)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
@@ -637,8 +637,8 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
-                t.controller?.PlaySad();
-                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, t.controller?.SkinDefinition);
+                t.animation?.Play(TargetAnimationState.Sad);
+                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterSad, t.animation?.SkinDefinition);
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();

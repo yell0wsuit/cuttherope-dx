@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Tests
             // Slot 2, the first manifest skin that is plainly not the classic look.
             GameScene scene = Scenario.New().Candy(160, 100).OmNom(160, 400, targetType: 3).Build();
             scene.SetEasterEggChance(1f);
-            Assert.NotNull(scene.Targets()[0].controller.SkinDefinition);
+            Assert.NotNull(scene.Targets()[0].animation.SkinDefinition);
 
             _ = scene.TouchDownXYIndex(x, y, 0);
             _ = scene.TouchUpXYIndex(x, y, 0);

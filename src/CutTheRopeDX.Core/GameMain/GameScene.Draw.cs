@@ -127,14 +127,14 @@ namespace CutTheRopeDX.GameMain
             support.Draw();
             waterLayer?.DrawBack();
             targetObject?.Draw();
-            targetAnimationController?.DrawSleepOverlays();
+            targetAnimation?.DrawSleepOverlays();
             // Draw additional Om Noms. targets[0] is the primary, drawn above.
             for (int ti = 1; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
                 t.support?.Draw();
                 t.targetObject?.Draw();
-                t.controller?.DrawSleepOverlays();
+                t.animation?.DrawSleepOverlays();
             }
             tutorialDirector.DrawTexts();
             tutorialDirector.DrawImages();

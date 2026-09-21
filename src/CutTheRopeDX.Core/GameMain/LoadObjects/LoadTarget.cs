@@ -61,12 +61,11 @@ namespace CutTheRopeDX.GameMain
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 
-            ITargetAnimationBackend targetAnimationBackend = TargetAnimationBackendFactory.CreateForTarget(
+            ITargetAnimationBackend animation = TargetAnimationBackendFactory.CreateForTarget(
                 targetType, nightLevel, SpecialEvents.IsXmas, isPaddington, paddingtonGreetingPending);
-            TargetAnimationController controller = TargetAnimationController.Create(targetAnimationBackend);
-            GameObject targetObj = controller.TargetObject;
-            targetBaseScaleX = controller.GetTargetBaseScaleX();
-            targetBaseScaleY = controller.GetTargetBaseScaleY();
+            GameObject targetObj = animation.TargetObject;
+            targetBaseScaleX = animation.GetTargetBaseScaleX();
+            targetBaseScaleY = animation.GetTargetBaseScaleY();
             targetObj.scaleX = targetBaseScaleX;
             targetObj.scaleY = targetBaseScaleY;
 
@@ -91,12 +90,12 @@ namespace CutTheRopeDX.GameMain
                 ? MakeRectangle((targetObj.width >> 1) - 50f, (targetObj.height >> 1) + 10f, 75f, 3f)
                 : MakeRectangle((targetObj.width >> 1) - 56f, (targetObj.height >> 1) + 30f, 108f, 2f);
 
-            controller.Initialize(this);
+            animation.Initialize(this);
 
             // Register this Om Nom as an independent target. targets[0] stays the primary.
             targets.Add(new TargetContext(BLINK_SKIP, RND_RANGE(5, 20))
             {
-                controller = controller,
+                animation = animation,
                 targetObject = targetObj,
                 support = support,
                 baseScaleX = targetBaseScaleX,
@@ -107,7 +106,7 @@ namespace CutTheRopeDX.GameMain
             // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (RootController.IsShowGreeting())
             {
-                if (!nightLevel && !controller.StartsWithGreeting)
+                if (!nightLevel && !animation.StartsWithGreeting)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }

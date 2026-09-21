@@ -155,13 +155,13 @@ namespace CutTheRopeDX.GameMain
 
                 bool isSleeping = !t.NightSleep.IsAwake && hasCandyPresent && canUpdateSleepState;
                 bool shouldShowSleepOverlay = isSleeping
-                    && t.controller?.IsSleepingAnimationPlaying() == true;
+                    && t.animation?.IsPlaying(TargetAnimationState.Sleeping) == true;
                 SetNightSleepVisibility(t, shouldShowSleepOverlay);
 
                 if (shouldShowSleepOverlay)
                 {
-                    t.controller?.UpdateSleepOverlays(delta);
-                    t.controller?.SyncSleepOverlayPosition(t.targetObject.x, t.targetObject.y);
+                    t.animation?.UpdateSleepOverlays(delta);
+                    t.animation?.SyncSleepOverlayPosition(t.targetObject.x, t.targetObject.y);
                 }
 
                 // Handle sleeping state animations and sounds
@@ -173,12 +173,12 @@ namespace CutTheRopeDX.GameMain
                     // Apply breathing pulse effect using sine wave (classic backend only;
                     // the Flash backend has its own sleeping timeline that includes the pulse).
                     if (t.NightSleep.Phase == NightSleepPhase.Pulsing
-                        && t.controller?.HandlesOwnSleepPulse != true)
+                        && t.animation?.HandlesOwnSleepPulse != true)
                     {
                         float sinValue = MathF.Sin(pulseTime * 2f);
                         float scaleY = 0.95f + ((sinValue + 1f) / 2f * 0.1f); // Scale between 0.95 and 1.05
 
-                        if (t.controller?.IsSleepingAnimationPlaying() == true)
+                        if (t.animation?.IsPlaying(TargetAnimationState.Sleeping) == true)
                         {
                             t.targetObject.rotationCenterY = 86f;
                             t.targetObject.scaleX = t.baseScaleX;
@@ -189,7 +189,7 @@ namespace CutTheRopeDX.GameMain
                     if (t.NightSleep.AdvanceSound(delta, NightSleepSoundInterval))
                     {
                         SoundMgr.PlayRandomOmNomSound(
-                            t.controller?.SkinDefinition,
+                            t.animation?.SkinDefinition,
                             Resources.Snd.MonsterSleep1,
                             Resources.Snd.MonsterSleep2,
                             Resources.Snd.MonsterSleep3);
@@ -237,7 +237,7 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         private void UpdateNightTargetAwake(TargetContext t, bool isAwake)
         {
-            float pulseDelay = t.controller?.GetSleepPulseDelaySeconds() ?? 0f;
+            float pulseDelay = t.animation?.GetSleepPulseDelaySeconds() ?? 0f;
             float pulseBaseY = t.targetObject == null
                 ? 0f
                 : GetSleepPulsePivotOffsetY(t.targetObject.height);
@@ -250,15 +250,15 @@ namespace CutTheRopeDX.GameMain
             // Waking up: reset sleep state and play wake animation
             if (transition == NightSleepTransition.Woke)
             {
-                if (t.targetObject != null && t.controller?.HandlesOwnSleepPulse != true)
+                if (t.targetObject != null && t.animation?.HandlesOwnSleepPulse != true)
                 {
                     t.targetObject.scaleX = t.baseScaleX;
                     t.targetObject.scaleY = t.baseScaleY;
                     t.targetObject.rotationCenterX = 0f;
                     t.targetObject.rotationCenterY = 0f;
                 }
-                t.controller?.SetSleepOverlayVisible(false);
-                t.controller?.PlayExcited();
+                t.animation?.SetSleepOverlayVisible(false);
+                t.animation?.Play(TargetAnimationState.Excited);
                 return;
             }
 
@@ -269,9 +269,9 @@ namespace CutTheRopeDX.GameMain
             }
 
             // Falling asleep: start sleep animation and prepare pulse effect.
-            t.controller?.SetSleepOverlayVisible(false);
-            t.controller?.PlaySleeping();
-            if (t.targetObject != null && t.controller?.HandlesOwnSleepPulse != true)
+            t.animation?.SetSleepOverlayVisible(false);
+            t.animation?.PlaySleeping(trimIdleToSleepTransition: true);
+            if (t.targetObject != null && t.animation?.HandlesOwnSleepPulse != true)
             {
                 t.targetObject.rotationCenterY = t.NightSleep.PulseBaseY;
             }
@@ -289,7 +289,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            t.controller?.SetSleepOverlayVisible(visible);
+            t.animation?.SetSleepOverlayVisible(visible);
         }
 
     }

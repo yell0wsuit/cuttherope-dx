@@ -65,7 +65,7 @@ namespace CutTheRopeDX.GameMain
             }
             for (int ti = 0; ti < targets.Count; ti++)
             {
-                targets[ti].controller?.ResetBlink();
+                targets[ti].animation?.ResetBlink();
             }
             // spiderTookCandy = false;
             time = 0f;
@@ -269,7 +269,7 @@ namespace CutTheRopeDX.GameMain
                 TargetIdleStep idleStep = owner.Idle.AdvanceCadence();
                 if (idleStep.BlinkDue && owner.Idle.ConsumeBlink(3))
                 {
-                    owner.controller?.TriggerBlink();
+                    owner.animation?.TriggerBlink();
                 }
                 if (idleStep.IdleDue)
                 {
@@ -277,7 +277,7 @@ namespace CutTheRopeDX.GameMain
                     // greeting (Time Travel). When it does, both timers are reset by the chat.
                     if (!TryStartChatReaction())
                     {
-                        owner.controller?.PlayRandomIdleVariant(RND_RANGE);
+                        owner.animation?.PlayRandomIdleVariant(RND_RANGE);
                         _ = owner.Idle.ConsumeIdle(RND_RANGE(5, 20));
                     }
                 }

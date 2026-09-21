@@ -8,7 +8,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="idleCountdown">Initial animation-frame idle/chat countdown.</param>
     internal sealed class TargetContext(int blinkCountdown, int idleCountdown)
     {
-        public TargetAnimationController controller;
+        public ITargetAnimationBackend animation;
 
         public GameObject targetObject;
 

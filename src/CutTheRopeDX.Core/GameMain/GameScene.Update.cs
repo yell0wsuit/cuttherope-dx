@@ -55,9 +55,9 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (!timeFrozen)
                     {
-                        t.controller?.UpdateAdditionalOverlays(delta);
+                        t.animation?.UpdateAdditionalOverlays(delta);
                     }
-                    t.controller?.SyncAdditionalOverlayPosition(t.targetObject.x, t.targetObject.y);
+                    t.animation?.SyncAdditionalOverlayPosition(t.targetObject.x, t.targetObject.y);
                 }
             }
             dd.Update(delta);
@@ -562,11 +562,11 @@ namespace CutTheRopeDX.GameMain
                         });
                         for (int ti = 0; ti < targets.Count; ti++)
                         {
-                            TargetAnimationController controller = targets[ti].controller;
-                            if (!timeFrozen && controller?.IsIdleLoopPlaying() == true)
+                            ITargetAnimationBackend animation = targets[ti].animation;
+                            if (!timeFrozen && animation?.IsPlaying(TargetAnimationState.IdleLoop) == true)
                             {
-                                controller.PlayExcited();
-                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, controller.SkinDefinition);
+                                animation.Play(TargetAnimationState.Excited);
+                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterExcited, animation.SkinDefinition);
                             }
                         }
                         break;
@@ -1504,8 +1504,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             if (t.Feeding.TryOpenMouth(closeDelay: 1f))
                             {
-                                t.controller?.PlayMouthOpening();
-                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.controller?.SkinDefinition);
+                                t.animation?.Play(TargetAnimationState.MouthOpening);
+                                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterOpen, t.animation?.SkinDefinition);
                             }
                         }
                     }
@@ -1517,8 +1517,8 @@ namespace CutTheRopeDX.GameMain
                             ActivePhysicsConstants.MouthOpenDistance);
                         if (t.Feeding.AdvanceMouthClose(delta, candyNearby, refreshDelay: 1f))
                         {
-                            t.controller?.PlayMouthClosing();
-                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.controller?.SkinDefinition);
+                            t.animation?.Play(TargetAnimationState.MouthClosing);
+                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterClose, t.animation?.SkinDefinition);
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
@@ -1563,8 +1563,8 @@ namespace CutTheRopeDX.GameMain
                             tutorialDirector.Fire(TutorialEvent.CandyEaten, body);
                             body.Visual.visible = false;
                             _ = t.Feeding.TryBeginChewing();
-                            t.controller?.PlayChewing();
-                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.controller?.SkinDefinition);
+                            t.animation?.Play(TargetAnimationState.Chewing);
+                            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterChewing, t.animation?.SkinDefinition);
                             SchedulePostEatSleep(t);
                             break;
                         }

@@ -103,7 +103,7 @@ namespace CutTheRopeDX.GameMain
             // A scripted greeting - Om Nom tipping the Paddington hat - plays alone: the chat
             // greeting would leave the classic skin with no animation at all, since it has no
             // directional turns, and the hat tip would never run to hand the hat over.
-            bool scriptedGreeting = targetAnimationController?.HasScriptedGreeting == true;
+            bool scriptedGreeting = targetAnimation?.HasScriptedGreeting == true;
 
             // On a two-Om-Nom level, randomly greet with the mutual chat instead of the wave.
             // TryShowChatGreeting returns false for diagonal/coincident pairs, falling back here.
@@ -113,12 +113,12 @@ namespace CutTheRopeDX.GameMain
             }
 
             // General greeting: the primary Om Nom waves.
-            targetAnimationController?.PlayGreeting();
+            targetAnimation?.Play(TargetAnimationState.Greeting);
             // A scripted greeting is unvoiced: the hat tip carries neither the wave sound nor the
             // Christmas bell that otherwise rings over the seasonal greeting.
             if (!scriptedGreeting)
             {
-                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimationController?.SkinDefinition);
+                SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targetAnimation?.SkinDefinition);
                 if (SpecialEvents.IsXmas && Preferences.GetIntForKey("PREFS_SELECTED_OMNOM") == 0)
                 {
                     SoundMgr.PlaySound(Resources.Snd.XmasBell);
@@ -188,8 +188,8 @@ namespace CutTheRopeDX.GameMain
             }
 
             // Initiator turns now; the other follows a fixed beat later.
-            targets[firstIndex].controller?.PlayGreetingTurn(firstState);
-            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targets[firstIndex].controller?.SkinDefinition);
+            targets[firstIndex].animation?.Play(firstState);
+            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, targets[firstIndex].animation?.SkinDefinition);
 
             dd.CallObjectSelectorParamafterDelay(
                 new DelayedDispatcher.DispatchFunc(Selector_showSecondChatGreeting), null, ChatGreetingGapSeconds);
@@ -224,8 +224,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            second.controller?.PlayGreetingTurn(state);
-            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.controller?.SkinDefinition);
+            second.animation?.Play(state);
+            SoundMgr.PlayOmNomSound(Resources.Snd.MonsterGreeting, second.animation?.SkinDefinition);
         }
 
         /// <inheritdoc />
@@ -984,7 +984,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Controller for Om Nom animation state transitions.
         /// </summary>
-        private TargetAnimationController targetAnimationController => targets.Count > 0 ? targets[0].controller : null;
+        private ITargetAnimationBackend targetAnimation => targets.Count > 0 ? targets[0].animation : null;
 #pragma warning restore IDE1006
 
         /// <summary>
@@ -1040,7 +1040,7 @@ namespace CutTheRopeDX.GameMain
         /// the vector artwork depicts, so the only one whose tap plays the easter egg.
         /// </summary>
         private bool EasterEggMatchesTarget =>
-            targetObject != null && targetAnimationController?.SkinDefinition == null;
+            targetObject != null && targetAnimation?.SkinDefinition == null;
 
         /// <summary>Gets a value indicating whether the easter egg is holding the level.</summary>
         internal bool EasterEggHoldsLevel => easterEgg.FreezesGameplay;

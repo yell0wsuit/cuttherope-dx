@@ -6,7 +6,7 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// Defines backend operations used by <see cref="TargetAnimationController"/>.
+    /// Defines the animation operations a target (Om Nom) exposes to the game scene.
     /// </summary>
     internal interface ITargetAnimationBackend
     {
