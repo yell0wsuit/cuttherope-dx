@@ -167,10 +167,8 @@ namespace CutTheRopeDX.Framework.Media
         /// <summary>The logger every line from the manager goes to.</summary>
         private static ILogger Logger => Log.For(LogCategories.MediaMovie);
 
-#pragma warning disable CA1859
         /// <summary>The underlying video player implementation.</summary>
         private readonly IVideoPlayer videoPlayer;
-#pragma warning restore CA1859
 
         /// <summary>The URL or path of the currently playing video.</summary>
         public string url;
