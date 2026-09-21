@@ -159,11 +159,11 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
                             if (wallClimberCount >= 50)
                             {
-                                RootController.PostAchievementName("acRookieWallClimber", ACHIEVEMENT_STRING("\"Rookie Wall Climber\""));
+                                RootController.PostAchievementName("acRookieWallClimber", "\"Rookie Wall Climber\"");
                             }
                             if (wallClimberCount >= 400)
                             {
-                                RootController.PostAchievementName("acVeteranWallClimber", ACHIEVEMENT_STRING("\"Veteran Wall Climber\""));
+                                RootController.PostAchievementName("acVeteranWallClimber", "\"Veteran Wall Climber\"");
                             }
                         }
                     }
@@ -367,7 +367,7 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
                         if (candiesUnitedCount == 100)
                         {
-                            RootController.PostAchievementName("1432722351", ACHIEVEMENT_STRING("\"Romantic Soul\""));
+                            RootController.PostAchievementName("1432722351", "\"Romantic Soul\"");
                         }
                         // The merged candy inherits its halves' bubbles: a ghost bubble wins over a
                         // plain one, and when both halves carried a ghost the second is parked until
@@ -1237,7 +1237,7 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(count, "PREFS_ROCKETS", false);
                             if (count >= 100)
                             {
-                                RootController.PostAchievementName("acPartyAnimal", ACHIEVEMENT_STRING("\"Party Animal\""));
+                                RootController.PostAchievementName("acPartyAnimal", "\"Party Animal\"");
                             }
                             break;
                         }
@@ -1522,7 +1522,7 @@ namespace CutTheRopeDX.GameMain
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
-                                RootController.PostAchievementName("1058281905", ACHIEVEMENT_STRING("\"Tummy Teaser\""));
+                                RootController.PostAchievementName("1058281905", "\"Tummy Teaser\"");
                             }
                         }
                     }
@@ -1613,11 +1613,11 @@ namespace CutTheRopeDX.GameMain
                     Preferences.SetIntForKey(candiesLostCount, "PREFS_CANDIES_LOST", false);
                     if (candiesLostCount == 50)
                     {
-                        RootController.PostAchievementName("681497443", ACHIEVEMENT_STRING("\"Weight Loser\""));
+                        RootController.PostAchievementName("681497443", "\"Weight Loser\"");
                     }
                     if (candiesLostCount == 200)
                     {
-                        RootController.PostAchievementName("1058341297", ACHIEVEMENT_STRING("\"Calorie Minimizer\""));
+                        RootController.PostAchievementName("1058341297", "\"Calorie Minimizer\"");
                     }
                     GameLost();
                     return;
@@ -1992,7 +1992,7 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetIntForKey(count, "PREFS_GRAB_ROCKET", false);
                         if (count >= 50)
                         {
-                            RootController.PostAchievementName("acRoboMaster", ACHIEVEMENT_STRING("\"Robo Master\""));
+                            RootController.PostAchievementName("acRoboMaster", "\"Robo Master\"");
                         }
                     }
 

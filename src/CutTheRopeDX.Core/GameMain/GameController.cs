@@ -324,15 +324,15 @@ namespace CutTheRopeDX.GameMain
             int totalStars = Preferences.GetTotalStars();
             if (totalStars is >= 50 and < 150)
             {
-                RootController.PostAchievementName("677900534", ACHIEVEMENT_STRING("\"Bronze Scissors\""));
+                RootController.PostAchievementName("677900534", "\"Bronze Scissors\"");
             }
             else if (totalStars is >= 150 and < 300)
             {
-                RootController.PostAchievementName("681508185", ACHIEVEMENT_STRING("\"Silver Scissors\""));
+                RootController.PostAchievementName("681508185", "\"Silver Scissors\"");
             }
             else if (totalStars >= 300)
             {
-                RootController.PostAchievementName("681473653", ACHIEVEMENT_STRING("\"Golden Scissors\""));
+                RootController.PostAchievementName("681473653", "\"Golden Scissors\"");
             }
             Preferences.RequestSave();
             int totalPackScore = 0;

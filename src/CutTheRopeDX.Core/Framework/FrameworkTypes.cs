@@ -76,16 +76,6 @@ namespace CutTheRopeDX.Framework
         }
 
         /// <summary>
-        /// Returns the achievement identifier string unchanged (pass-through).
-        /// </summary>
-        /// <param name="s">Achievement identifier string.</param>
-        /// <returns>The same string passed in.</returns>
-        public static string ACHIEVEMENT_STRING(string s)
-        {
-            return s;
-        }
-
-        /// <summary>
         /// Returns <paramref name="H"/> on WVGA displays, <paramref name="L"/> otherwise.
         /// </summary>
         /// <param name="H">Value for WVGA resolution.</param>

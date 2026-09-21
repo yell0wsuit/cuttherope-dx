@@ -86,7 +86,7 @@ namespace CutTheRopeDX.GameMain
             segmentsInternal.Clear();
             antsInternal.Clear();
 
-            float deviceScale = GetDeviceScaledFactor(scale);
+            float deviceScale = scale;
 
             for (int i = 1; i + 2 < path.Count; i += 2)
             {
@@ -241,7 +241,7 @@ namespace CutTheRopeDX.GameMain
             AntsPathSegment segment = SegmentForOffset(offset) ?? segmentsInternal[^1];
             float angle = segment.angleDeg;
             Vector pos = PositionForOffset(offset);
-            float blendDistance = AntConveyorLogic.GetEdgeFadeDistance(GetDeviceScaledFactor(Scale));
+            float blendDistance = AntConveyorLogic.GetEdgeFadeDistance(Scale);
 
             if (segment.nextSegment != null)
             {
@@ -280,7 +280,7 @@ namespace CutTheRopeDX.GameMain
                 return 1f;
             }
 
-            float fadeDistance = AntConveyorLogic.GetEdgeFadeDistance(GetDeviceScaledFactor(Scale));
+            float fadeDistance = AntConveyorLogic.GetEdgeFadeDistance(Scale);
             float fromStart = StartAntOffset + offset;
             float fromEnd = MathF.Abs(PathLength - offset);
             float minDist = MathF.Min(fromStart, fromEnd);
@@ -302,7 +302,7 @@ namespace CutTheRopeDX.GameMain
                 return RGBAColor.solidOpaqueRGBA;
             }
 
-            float fadeDistance = AntConveyorLogic.GetEdgeFadeDistance(GetDeviceScaledFactor(Scale));
+            float fadeDistance = AntConveyorLogic.GetEdgeFadeDistance(Scale);
             float fromStart = StartAntOffset + offset;
             float fromEnd = MathF.Abs(PathLength - offset);
             float minDist = MathF.Min(fromStart, fromEnd);
@@ -367,7 +367,7 @@ namespace CutTheRopeDX.GameMain
 
             if (!Looped && antsInternal.Count > 0)
             {
-                float gap = AntConveyorLogic.GetSpawnGap(GetDeviceScaledFactor(Scale));
+                float gap = AntConveyorLogic.GetSpawnGap(Scale);
                 if (minOffset >= gap - StartAntOffset)
                 {
                     antsInternal.Add(CreateAntForOffset(minOffset - gap));
@@ -483,14 +483,6 @@ namespace CutTheRopeDX.GameMain
         private static Vector SegmentDirection(AntsPathSegment segment)
         {
             return segment.Length <= 0f ? vectZero : VectDiv(VectSub(segment.endPoint, segment.startPoint), segment.Length);
-        }
-
-        /// <summary>Returns the effective scale factor for conveyor geometry (level scale; device multiplier is 1 on PC).</summary>
-        /// <param name="pathScale">The raw level scale factor.</param>
-        /// <returns>The device-scaled factor.</returns>
-        private static float GetDeviceScaledFactor(float pathScale)
-        {
-            return pathScale;
         }
 
         /// <summary>World-space origin of the path object.</summary>

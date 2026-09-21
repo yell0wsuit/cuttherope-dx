@@ -372,7 +372,7 @@ namespace CutTheRopeDX.Framework.Media
 
             try
             {
-                string soundPath = ContentPaths.GetSoundEffectPath(ResourceMgr.XNA_ResName(localizedName));
+                string soundPath = ContentPaths.GetSoundEffectPath(localizedName);
                 ISoundEffect loaded = _backend.LoadSound(soundPath);
                 loadedSounds.Add(localizedName, loaded);
                 return loaded;
@@ -484,7 +484,7 @@ namespace CutTheRopeDX.Framework.Media
             }
 
             StopMusicCore();
-            string musicPath = ContentPaths.GetMusicPath(ResourceMgr.XNA_ResName(localizedName));
+            string musicPath = ContentPaths.GetMusicPath(localizedName);
             try
             {
                 _backend.PlayMusic(_backend.LoadMusic(musicPath), true);

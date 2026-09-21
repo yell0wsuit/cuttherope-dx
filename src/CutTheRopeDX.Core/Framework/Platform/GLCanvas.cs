@@ -199,17 +199,6 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Converts raw platform <paramref name="touches"/> into the canvas touch format.
-        /// Currently returns the input list unchanged.
-        /// </summary>
-        /// <param name="touches">Touch list to convert.</param>
-        /// <returns>Converted touch list.</returns>
-        public static List<TouchLocation> ConvertTouches(List<TouchLocation> touches)
-        {
-            return touches;
-        }
-
-        /// <summary>
         /// Returns whether the canvas can become the first responder for input.
         /// </summary>
         /// <returns>Always <see langword="true" />.</returns>

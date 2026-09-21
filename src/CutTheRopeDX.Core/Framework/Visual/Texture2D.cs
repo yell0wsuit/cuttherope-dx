@@ -226,16 +226,6 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
-        /// Returns the <paramref name="size"/> unchanged (no power-of-two rounding needed).
-        /// </summary>
-        /// <param name="size">Input size in pixels.</param>
-        /// <returns>The real texture dimension used by the renderer.</returns>
-        private static int CalcRealSize(int size)
-        {
-            return size;
-        }
-
-        /// <summary>
         /// Stores the loaded image dimensions and computes max S/T texture coordinates.
         /// </summary>
         /// <param name="w">Image width in pixels.</param>
@@ -243,8 +233,8 @@ namespace CutTheRopeDX.Framework.Visual
         private void ImageLoaded(int w, int h)
         {
             _lowypoint = h;
-            int realWidth = CalcRealSize(w);
-            int realHeight = CalcRealSize(h);
+            int realWidth = w;
+            int realHeight = h;
             //_size = new Vector(realWidth, realHeight);
             _width = (uint)realWidth;
             _height = (uint)realHeight;
@@ -324,8 +314,8 @@ namespace CutTheRopeDX.Framework.Visual
             _lowypoint = -1;
             // _localTexParams = _defaultTexParams;
             Reg();
-            int realWidth = CalcRealSize(w);
-            int realHeight = CalcRealSize(h);
+            int realWidth = w;
+            int realHeight = h;
             float transitionTime = Application.SharedRootController().transitionTime;
             Application.SharedRootController().transitionTime = -1f;
             // Always use the render target since we now use fullscreen-style scaling in all modes

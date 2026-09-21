@@ -56,16 +56,6 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Resolves a localized XNA resource name for a string resource name.
-        /// </summary>
-        /// <param name="resourceName">The string name of the resource.</param>
-        /// <returns>The localized resource name.</returns>
-        public static string XNA_ResName(string resourceName)
-        {
-            return HandleLocalizedResource(resourceName);
-        }
-
-        /// <summary>
         /// Returns the texture quad index for the localized result stamp overlay.
         /// </summary>
         /// <returns>Quad index for the current language's result stamp.</returns>
@@ -310,7 +300,7 @@ namespace CutTheRopeDX.Framework.Core
                 return value;
             }
 
-            string path = XNA_ResName(resourceName);
+            string path = HandleLocalizedResource(resourceName);
             float scaleX = GetNormalScaleX(resourceName);
             float scaleY = GetNormalScaleY(resourceName);
             switch (resType)
