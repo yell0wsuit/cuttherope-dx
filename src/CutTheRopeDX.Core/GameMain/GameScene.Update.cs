@@ -477,7 +477,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (!timeFrozen)
             {
-                targetObject?.Update(delta);
+                TargetObject?.Update(delta);
                 // Update additional Om Noms' animations (targets[0] handled above via targetObject).
                 for (int ti = 1; ti < targets.Count; ti++)
                 {

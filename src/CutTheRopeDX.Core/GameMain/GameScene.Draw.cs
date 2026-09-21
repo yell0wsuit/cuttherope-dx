@@ -126,8 +126,8 @@ namespace CutTheRopeDX.GameMain
             decalsLayer?.Draw();
             support.Draw();
             waterLayer?.DrawBack();
-            targetObject?.Draw();
-            targetAnimation?.DrawSleepOverlays();
+            TargetObject?.Draw();
+            TargetAnimation?.DrawSleepOverlays();
             // Draw additional Om Noms. targets[0] is the primary, drawn above.
             for (int ti = 1; ti < targets.Count; ti++)
             {
