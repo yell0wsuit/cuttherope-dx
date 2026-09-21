@@ -623,7 +623,7 @@ namespace CutTheRopeDX.GameMain
             tail.pos = Vect(tx, ty);
             AddPart(bungeeAnchor);
             AddPart(tail);
-            tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
+            tail.AddConstraintwithRestLengthofType(bungeeAnchor, BUNGEE_REST_LEN, ConstraintType.DISTANCE);
             Vector v = VectSub(tail.pos, bungeeAnchor.pos);
             int subdivisionCount = (int)((len / BUNGEE_REST_LEN) + 2f);
             v = VectDiv(v, subdivisionCount);
@@ -695,7 +695,7 @@ namespace CutTheRopeDX.GameMain
                     newPart.pos = VectAdd(constraintedPoint.pos, off);
                     AddPartAt(newPart, parts.Count - 1);
                     tail.ChangeConstraintFromTowithRestLength(constraintedPoint, newPart, tailRestLength);
-                    newPart.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
+                    newPart.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, ConstraintType.DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
@@ -758,7 +758,7 @@ namespace CutTheRopeDX.GameMain
             for (int j = 0; j < count; j++)
             {
                 Constraint constraint = tail.constraints[j];
-                if (constraint != null && constraint.type == Constraint.CONSTRAINT.NOT_MORE_THAN)
+                if (constraint != null && constraint.type == ConstraintType.NOT_MORE_THAN)
                 {
                     constraint.restLength = (partCount - 1) * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack);
                 }
@@ -792,7 +792,7 @@ namespace CutTheRopeDX.GameMain
                         stubPart.pos = nextPart.pos;
                         stubPart.prevPos = nextPart.prevPos;
                         AddPartAt(stubPart, part + 1);
-                        stubPart.AddConstraintwithRestLengthofType(cutPart, BUNGEE_REST_LEN, Constraint.CONSTRAINT.DISTANCE);
+                        stubPart.AddConstraintwithRestLengthofType(cutPart, BUNGEE_REST_LEN, ConstraintType.DISTANCE);
                         break;
                     }
                 }
@@ -840,7 +840,7 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), Constraint.CONSTRAINT.NOT_MORE_THAN);
+                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), ConstraintType.NOT_MORE_THAN);
                         }
                     }
                     i++;

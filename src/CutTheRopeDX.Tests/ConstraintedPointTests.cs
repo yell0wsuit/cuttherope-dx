@@ -8,15 +8,15 @@ namespace CutTheRopeDX.Tests
     public sealed class ConstraintedPointTests
     {
         [Theory]
-        [InlineData((int)Constraint.CONSTRAINT.DISTANCE)]
-        [InlineData((int)Constraint.CONSTRAINT.NOT_MORE_THAN)]
-        [InlineData((int)Constraint.CONSTRAINT.NOT_LESS_THAN)]
+        [InlineData((int)ConstraintType.DISTANCE)]
+        [InlineData((int)ConstraintType.NOT_MORE_THAN)]
+        [InlineData((int)ConstraintType.NOT_LESS_THAN)]
         public void CoincidentZeroRestConstraintDoesNotInventASeparationDirection(int typeValue)
         {
             Vector position = new(10f, 20f);
             ConstraintedPoint first = new() { pos = position };
             ConstraintedPoint second = new() { pos = position };
-            first.AddConstraintwithRestLengthofType(second, 0f, (Constraint.CONSTRAINT)typeValue);
+            first.AddConstraintwithRestLengthofType(second, 0f, (ConstraintType)typeValue);
 
             ConstraintedPoint.SatisfyConstraints(first);
 

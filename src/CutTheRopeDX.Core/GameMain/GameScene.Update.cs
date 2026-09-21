@@ -442,7 +442,7 @@ namespace CutTheRopeDX.GameMain
                             {
                                 ConstraintedPoint secondToLastPart = rope.parts[^2];
                                 int restLength = (int)rope.tail.RestLengthFor(secondToLastPart);
-                                star.AddConstraintwithRestLengthofType(secondToLastPart, restLength, Constraint.CONSTRAINT.DISTANCE);
+                                star.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
                                 rope.tail = star;
                                 rope.parts[^1] = star;
                                 rope.initialCandleAngle = 0f;
@@ -471,8 +471,8 @@ namespace CutTheRopeDX.GameMain
                 {
                     float gap = VectDistance(leftPoint.pos, rightPoint.pos);
                     _ = primarySplit.TryBeginMerge(gap);
-                    leftPoint.AddConstraintwithRestLengthofType(rightPoint, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
-                    rightPoint.AddConstraintwithRestLengthofType(leftPoint, gap, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    leftPoint.AddConstraintwithRestLengthofType(rightPoint, gap, ConstraintType.NOT_MORE_THAN);
+                    rightPoint.AddConstraintwithRestLengthofType(leftPoint, gap, ConstraintType.NOT_MORE_THAN);
                 }
             }
             if (!timeFrozen)
@@ -1167,13 +1167,13 @@ namespace CutTheRopeDX.GameMain
                                 && RocketBindPath.UsesDirectFlyPath(ctx.Lifecycle.Attachments.Hand != null, MouseCarries(ctx)))
                             {
                                 rocket.point.pos = body.Point.pos;
-                                rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.point.AddConstraintwithRestLengthofType(body.Point, 0f, ConstraintType.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_FLY;
                             }
                             else
                             {
                                 float bindDist = VectLength(VectSub(body.Point.pos, rocket.point.pos));
-                                rocket.point.AddConstraintwithRestLengthofType(body.Point, bindDist, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                                rocket.point.AddConstraintwithRestLengthofType(body.Point, bindDist, ConstraintType.NOT_MORE_THAN);
                                 rocket.state = Rocket.STATE_ROCKET_DIST;
                             }
                             // Per-candy: zero the bound candy's rope-spin coast, not candy 0's.
@@ -1970,7 +1970,7 @@ namespace CutTheRopeDX.GameMain
                         }
                     }
 
-                    hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, Constraint.CONSTRAINT.NOT_MORE_THAN);
+                    hand.cPoint.AddConstraintwithRestLengthofType(grabbedBody.Point, 1f, ConstraintType.NOT_MORE_THAN);
                     hand.GrabCandy();
                     selectedHandIndex = hands.IndexOf(hand);
                     if (ctx.Lifecycle.Attachments.CaptureByHand(hand))

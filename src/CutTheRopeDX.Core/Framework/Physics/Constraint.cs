@@ -1,6 +1,27 @@
 namespace CutTheRopeDX.Framework.Physics
 {
     /// <summary>
+    /// Available constraint rules for point-to-point distance evaluation.
+    /// </summary>
+    internal enum ConstraintType
+    {
+        /// <summary>
+        /// Enforces an exact distance.
+        /// </summary>
+        DISTANCE,
+
+        /// <summary>
+        /// Prevents the distance from becoming greater than the rest length.
+        /// </summary>
+        NOT_MORE_THAN,
+
+        /// <summary>
+        /// Prevents the distance from becoming less than the rest length.
+        /// </summary>
+        NOT_LESS_THAN
+    }
+
+    /// <summary>
     /// Connection data describing how one <see cref="ConstraintedPoint"/> is constrained relative to another.
     /// </summary>
     internal sealed class Constraint : FrameworkTypes
@@ -18,27 +39,6 @@ namespace CutTheRopeDX.Framework.Physics
         /// <summary>
         /// Rule used when evaluating the constraint.
         /// </summary>
-        public CONSTRAINT type;
-
-        /// <summary>
-        /// Available constraint rules for point-to-point distance evaluation.
-        /// </summary>
-        public enum CONSTRAINT
-        {
-            /// <summary>
-            /// Enforces an exact distance.
-            /// </summary>
-            DISTANCE,
-
-            /// <summary>
-            /// Prevents the distance from becoming greater than the rest length.
-            /// </summary>
-            NOT_MORE_THAN,
-
-            /// <summary>
-            /// Prevents the distance from becoming less than the rest length.
-            /// </summary>
-            NOT_LESS_THAN
-        }
+        public ConstraintType type;
     }
 }

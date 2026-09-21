@@ -38,7 +38,7 @@ namespace CutTheRopeDX.Framework.Physics
         public void AddConstraintwithRestLengthofType(
             ConstraintedPoint constrainedPoint,
             float restLength,
-            Constraint.CONSTRAINT constraintType)
+            ConstraintType constraintType)
         {
             Constraint constraint = new()
             {
@@ -245,11 +245,11 @@ namespace CutTheRopeDX.Framework.Physics
                     deltaVector = DEFAULT_NON_ZERO_CONSTRAINT_DIRECTION;
                 }
                 float deltaLength = VectLength(deltaVector);
-                Constraint.CONSTRAINT type = constraint.type;
+                ConstraintType type = constraint.type;
 
-                bool shouldApplyConstraint = (type == Constraint.CONSTRAINT.DISTANCE)
-                    || (type == Constraint.CONSTRAINT.NOT_MORE_THAN && deltaLength > restLength)
-                    || (type == Constraint.CONSTRAINT.NOT_LESS_THAN && deltaLength < restLength);
+                bool shouldApplyConstraint = (type == ConstraintType.DISTANCE)
+                    || (type == ConstraintType.NOT_MORE_THAN && deltaLength > restLength)
+                    || (type == ConstraintType.NOT_LESS_THAN && deltaLength < restLength);
 
                 if (!shouldApplyConstraint)
                 {

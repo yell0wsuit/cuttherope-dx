@@ -225,21 +225,5 @@ namespace CutTheRopeDX.Commons
         /// The optional scroll container that receives mouse-wheel forwarding while the popup is visible.
         /// </summary>
         private ScrollableContainer scrollContainer;
-
-        /// <summary>
-        /// Identifies the built-in popup timelines.
-        /// </summary>
-        private enum POPUP
-        {
-            /// <summary>
-            /// The popup show animation timeline.
-            /// </summary>
-            SHOW_ANIM,
-
-            /// <summary>
-            /// The popup hide animation timeline.
-            /// </summary>
-            HIDE_ANIM
-        }
     }
 }
