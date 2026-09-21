@@ -4,9 +4,10 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// Om Nom character animation that handles timeline-switch actions emitted by the animation graph.
+    /// One selectable Om Nom character animation layer, handling the timeline-switch actions
+    /// emitted by the animation graph.
     /// </summary>
-    internal sealed class CharAnimation : Animation
+    internal sealed class CharAnimationLayer : Animation
     {
         /// <inheritdoc />
         public override bool HandleAction(ActionData a)

@@ -20,16 +20,16 @@ namespace CutTheRopeDX.GameMain
             animations ??= [];
             animationNameToIndex ??= [];
 
-            CharAnimation charAnimation = CreateWithResID(new CharAnimation(), resourceName);
+            CharAnimationLayer layer = CreateWithResID(new CharAnimationLayer(), resourceName);
             // Use the same anchor as the base animation (18) for proper centering
-            charAnimation.parentAnchor = charAnimation.anchor = anchor;
-            charAnimation.DoRestoreCutTransparency();
+            layer.parentAnchor = layer.anchor = anchor;
+            layer.DoRestoreCutTransparency();
 
             int index = nextAnimationIndex++;
-            animations.Add(charAnimation);
+            animations.Add(layer);
             animationNameToIndex[resourceName] = index;
-            _ = AddChild(charAnimation);
-            charAnimation.SetEnabled(false);
+            _ = AddChild(layer);
+            layer.SetEnabled(false);
         }
 
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace CutTheRopeDX.GameMain
             {
                 if (animations != null)
                 {
-                    foreach (Animation animation in animations)
+                    foreach (CharAnimationLayer animation in animations)
                     {
                         animation?.Dispose();
                     }
@@ -70,7 +70,7 @@ namespace CutTheRopeDX.GameMain
             }
             else if (animationNameToIndex != null && animationNameToIndex.TryGetValue(resourceName, out int index))
             {
-                ((CharAnimation)animations[index]).AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
+                animations[index].AddAnimationWithIDDelayLoopFirstLast(aid, d, l, s, e);
             }
         }
 
@@ -128,7 +128,7 @@ namespace CutTheRopeDX.GameMain
             {
                 StopCurrentTimeline();
             }
-            foreach (Animation anim in animations)
+            foreach (CharAnimationLayer anim in animations)
             {
                 anim.SetEnabled(false);
             }
@@ -141,7 +141,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void PlayTimeline(int t)
         {
-            foreach (Animation obj in animations)
+            foreach (CharAnimationLayer obj in animations)
             {
                 obj.SetEnabled(false);
             }
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Animation layers managed by this character animation container.
         /// </summary>
-        private List<Animation> animations;
+        private List<CharAnimationLayer> animations;
 
         /// <summary>
         /// Maps animation names to their layer indexes.
