@@ -176,9 +176,8 @@ namespace CutTheRopeDX.Framework.Core
             // A priming draw outside the draw loop; headless runs have no device to draw with.
             if (Renderer.IsAvailable)
             {
-                Application.SharedCanvas().BeforeRender();
+                GLCanvas.BeforeRender();
                 ActiveChild().ActiveView().Draw();
-                GLCanvas.AfterRender();
             }
         }
 

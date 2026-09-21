@@ -97,15 +97,6 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Creates the rendering canvas used by the application.
-        /// </summary>
-        /// <returns>Initialized canvas instance.</returns>
-        public virtual GLCanvas CreateCanvas()
-        {
-            return new GLCanvas().InitWithFrame();
-        }
-
-        /// <summary>
         /// Creates the resource manager used by the application.
         /// </summary>
         /// <returns>New resource manager instance.</returns>
@@ -282,7 +273,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <summary>
         /// Shared rendering canvas instance.
         /// </summary>
-        private static readonly GLCanvas _canvas = new GLCanvas().InitWithFrame();
+        private static readonly GLCanvas _canvas = new();
 
         /// <summary>
         /// Shared sound manager instance.

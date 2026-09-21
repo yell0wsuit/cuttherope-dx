@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Globalization;
 
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
@@ -8,140 +7,26 @@ namespace CutTheRopeDX.Framework.Platform
 {
     /// <summary>
     /// Shared rendering canvas that manages viewport sizing, projection setup,
-    /// touch forwarding, and a lightweight FPS overlay.
+    /// and touch forwarding.
     /// </summary>
     internal sealed class GLCanvas : FrameworkTypes
     {
-        /// <summary>
-        /// Gets the current scaled view bounds in desktop window coordinates.
-        /// </summary>
-        public Rectangle Bounds
-        {
-            get
-            {
-                _bounds.w = ScreenPresentation.Instance.SurfaceWidth;
-                _bounds.h = ScreenPresentation.Instance.SurfaceHeight;
-                _bounds.x = 0;
-                _bounds.y = 0;
-                return _bounds;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the canvas with the default master resolution and reset state.
-        /// </summary>
-        /// <returns>The initialized canvas instance.</returns>
-        public GLCanvas InitWithFrame()
-        {
-            aspect = ViewportLayout.DesignHeight / ViewportLayout.DesignWidth;
-            touchesCount = 0;
-            return this;
-        }
-
-        /// <summary>
-        /// Enables FPS text rendering using the supplied <paramref name="font"/>.
-        /// </summary>
-        /// <param name="font">Font used to draw the FPS overlay.</param>
-        public void InitFPSMeterWithFont(Font font)
-        {
-            fpsFont = font;
-            fpsText = new Text().InitWithFont(fpsFont);
-        }
-
-        /// <summary>
-        /// Draws the current frames-per-second value in the top-left corner.
-        /// </summary>
-        /// <param name="fps">FPS value to display.</param>
-        public void DrawFPS(float fps)
-        {
-            if (fpsText != null && fpsFont != null)
-            {
-                string @string = fps.ToString("F1", CultureInfo.InvariantCulture);
-                fpsText.SetString(@string);
-                Renderer.SetColor(Color.White);
-                Renderer.Enable(Renderer.GL_TEXTURE_2D);
-                Renderer.Enable(Renderer.GL_BLEND);
-                Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-                fpsText.x = 5f;
-                fpsText.y = 5f;
-                fpsText.Draw();
-                Renderer.Disable(Renderer.GL_BLEND);
-                Renderer.Disable(Renderer.GL_TEXTURE_2D);
-            }
-        }
-
-        /// <summary>
-        /// Performs one-time OpenGL preparation work.
-        /// Retained as a no-op compatibility hook.
-        /// </summary>
-        public static void PrepareOpenGL()
-        {
-        }
-
-        /// <summary>
-        /// Sets the default projection used for rendering in real screen coordinates.
-        /// </summary>
-        public void SetDefaultRealProjection()
-        {
-            SetDefaultProjection();
-        }
-
         /// <summary>
         /// Configures the renderer viewport and orthographic projection from the published
         /// viewport. The projection describes the logical region the game draws into and the
         /// viewport describes the surface pixels it lands on; both come from the same snapshot so
         /// they cannot disagree.
         /// </summary>
-        public void SetDefaultProjection()
+        public static void SetDefaultProjection()
         {
             Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
-            isFullscreen = PlatformServices.Window?.IsFullScreen ?? false;
             Renderer.SetViewport(XOffset, YOffset, BackingWidth, BackingHeight);
             Renderer.SetMatrixMode(15);
             Renderer.LoadIdentity();
             Renderer.SetOrthographic(0f, visible.w, visible.h, 0f, -1f, 1f);
             Renderer.SetMatrixMode(14);
             Renderer.LoadIdentity();
-        }
-
-        /// <summary>
-        /// Compatibility hook for rectangle drawing setup.
-        /// </summary>
-        public static void DrawRect()
-        {
-        }
-
-        /// <summary>
-        /// Makes the canvas active for rendering by applying the default projection.
-        /// </summary>
-        public void Show()
-        {
-            SetDefaultProjection();
-        }
-
-        /// <summary>
-        /// Hides the canvas.
-        /// Retained as a no-op compatibility hook.
-        /// </summary>
-        public static void Hide()
-        {
-        }
-
-        /// <summary>
-        /// Reapplies projection state after a surface change.
-        /// </summary>
-        public void Reshape()
-        {
-            SetDefaultProjection();
-        }
-
-        /// <summary>
-        /// Swaps the back buffer.
-        /// Retained as a no-op because the host owns presentation.
-        /// </summary>
-        public static void SwapBuffers()
-        {
         }
 
         /// <summary>
@@ -199,38 +84,12 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Returns whether the canvas can become the first responder for input.
-        /// </summary>
-        /// <returns>Always <see langword="true" />.</returns>
-        public static bool AcceptsFirstResponder()
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Requests first-responder status for input handling.
-        /// </summary>
-        /// <returns>Always <see langword="true" />.</returns>
-        public static bool BecomeFirstResponder()
-        {
-            return true;
-        }
-
-        /// <summary>
         /// Prepares renderer state for a frame before scene drawing begins.
         /// </summary>
-        public void BeforeRender()
+        public static void BeforeRender()
         {
             SetDefaultProjection();
             Renderer.Disable(Renderer.GL_BLEND);
-        }
-
-        /// <summary>
-        /// Restores renderer state after a frame has been drawn.
-        /// Retained as a no-op compatibility hook.
-        /// </summary>
-        public static void AfterRender()
-        {
         }
 
         /// <summary>
@@ -249,36 +108,6 @@ namespace CutTheRopeDX.Framework.Platform
         /// Active input delegate that receives touch and button events.
         /// </summary>
         public ITouchDelegate touchDelegate;
-
-        /// <summary>
-        /// Font used by the FPS overlay.
-        /// </summary>
-        private Font fpsFont;
-
-        /// <summary>
-        /// Cached text element used to render the FPS overlay.
-        /// </summary>
-        private Text fpsText;
-
-        /// <summary>
-        /// Cached rectangle reused when returning <see cref="Bounds"/>.
-        /// </summary>
-        private Rectangle _bounds;
-
-        /// <summary>
-        /// Whether the current view is fullscreen.
-        /// </summary>
-        public bool isFullscreen;
-
-        /// <summary>
-        /// Current backing-surface aspect ratio.
-        /// </summary>
-        public float aspect;
-
-        /// <summary>
-        /// Number of touches currently tracked by the canvas.
-        /// </summary>
-        public int touchesCount;
 
         /// <summary>
         /// Horizontal surface-pixel origin of the render viewport.

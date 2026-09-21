@@ -137,28 +137,6 @@ namespace CutTheRopeDX.Commons
                     else if (state == 2)
                     {
                         long timestamp = Stopwatch.GetTimestamp();
-                        long frameDeltaNanos = timestamp - prevTick;
-                        prevTick = timestamp;
-                        if (frameDeltaNanos < 1L)
-                        {
-                            frameDeltaNanos = 1L;
-                        }
-                        fpsDeltas[fpsDeltasPos++] = frameDeltaNanos;
-                        int sampleCount = fpsDeltas.Length;
-                        if (fpsDeltasPos >= sampleCount)
-                        {
-                            fpsDeltasPos = 0;
-                        }
-                        long totalDeltaNanos = 0L;
-                        for (int i = 0; i < sampleCount; i++)
-                        {
-                            totalDeltaNanos += fpsDeltas[i];
-                        }
-                        if (totalDeltaNanos < 1L)
-                        {
-                            totalDeltaNanos = 1L;
-                        }
-                        int fps = (int)(1000000000L * sampleCount / totalDeltaNanos);
                         playedTicks += DELTA_NANOS;
                         if (timestamp - playedTicks < DELTA_NANOS_THRES)
                         {
@@ -178,7 +156,6 @@ namespace CutTheRopeDX.Commons
                         if (state == 2)
                         {
                             RenderFrame();
-                            DrawFps(fps);
                             didRenderFrame = true;
                         }
                     }
@@ -331,16 +308,6 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <summary>
-        /// Draws the current frames-per-second counter on the shared canvas.
-        /// </summary>
-        /// <param name="fps">The frames-per-second value to display.</param>
-        public static void DrawFps(int fps)
-        {
-            GLCanvas gLCanvas = Application.SharedCanvas();
-            gLCanvas?.DrawFPS(fps);
-        }
-
-        /// <summary>
         /// Advances timers and the root controller by the specified frame delta.
         /// </summary>
         /// <param name="delta">The frame delta in milliseconds.</param>
@@ -370,11 +337,6 @@ namespace CutTheRopeDX.Commons
         private static long playedTicks;
 
         /// <summary>
-        /// Stores the stopwatch timestamp captured for the previous rendered frame.
-        /// </summary>
-        private static long prevTick;
-
-        /// <summary>
         /// The nominal frame duration in nanoseconds for the fixed-step renderer.
         /// </summary>
         private static readonly long DELTA_NANOS = 18181818L;
@@ -398,16 +360,6 @@ namespace CutTheRopeDX.Commons
         /// Indicates whether the runtime is currently paused.
         /// </summary>
         private static bool gPaused;
-
-        /// <summary>
-        /// Stores recent frame deltas for FPS calculation.
-        /// </summary>
-        private static readonly long[] fpsDeltas = new long[10];
-
-        /// <summary>
-        /// Tracks the insertion index within <see cref="fpsDeltas"/>.
-        /// </summary>
-        private static int fpsDeltasPos;
     }
 
     /// <summary>Log messages for the shared runtime's lifecycle.</summary>

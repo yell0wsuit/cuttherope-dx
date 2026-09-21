@@ -56,7 +56,7 @@ namespace CutTheRopeDX.Framework.Core
             {
                 return;
             }
-            Application.SharedCanvas().BeforeRender();
+            GLCanvas.BeforeRender();
             Renderer.PushMatrix();
             ApplyLandscape();
             if (transitionTime == -1f)
@@ -77,7 +77,6 @@ namespace CutTheRopeDX.Framework.Core
                 }
             }
             Renderer.PopMatrix();
-            GLCanvas.AfterRender();
         }
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace CutTheRopeDX.Framework.Core
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
-            Application.SharedCanvas().SetDefaultRealProjection();
+            GLCanvas.SetDefaultProjection();
             int transitionType = viewTransition;
             if (transitionType - 4 <= 1)
             {
@@ -227,7 +226,7 @@ namespace CutTheRopeDX.Framework.Core
         {
             if (viewTransition != -1 && previousView != null)
             {
-                Application.SharedCanvas().SetDefaultProjection();
+                GLCanvas.SetDefaultProjection();
                 Renderer.SetClearColor(Color.Black);
                 Renderer.Clear(0);
                 BeginTransition();
@@ -249,7 +248,7 @@ namespace CutTheRopeDX.Framework.Core
             previousView = view;
             if (viewTransition != -1 && previousView != null)
             {
-                Application.SharedCanvas().SetDefaultProjection();
+                GLCanvas.SetDefaultProjection();
                 Renderer.SetClearColor(Color.Black);
                 Renderer.Clear(0);
                 ApplyLandscape();
