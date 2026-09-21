@@ -40,21 +40,21 @@ namespace CutTheRopeDX.Framework.Media
                 hasAvFoundation: hasAvFoundation,
                 hasFfmpeg: hasFfmpeg);
 
-#pragma warning disable IDE0010
+            // A backend this build did not compile in has an empty case and falls through to the stub.
             switch (backend)
             {
-#if MACOS_AVFOUNDATION
                 case VideoPlayerBackend.AVFoundation:
+#if MACOS_AVFOUNDATION
                     return new VideoPlayerAVFoundation();
 #endif
-#if FFMPEG_BACKEND
                 case VideoPlayerBackend.Ffmpeg:
+#if FFMPEG_BACKEND
                     return new VideoPlayerFFmpeg();
 #endif
+                case VideoPlayerBackend.None:
                 default:
                     return new VideoPlayerNone();
             }
-#pragma warning restore IDE0010
         }
     }
 }
