@@ -51,23 +51,11 @@ namespace CutTheRopeDX.GameMain
             endSize = 0.7f;
             emissionRate = 2f;
 
-            startColor.RedColor = 1f;
-            startColor.GreenColor = 1f;
-            startColor.BlueColor = 1f;
-            startColor.AlphaChannel = 0.6f;
-            startColorVar.RedColor = 0f;
-            startColorVar.GreenColor = 0f;
-            startColorVar.BlueColor = 0f;
-            startColorVar.AlphaChannel = 0f;
+            startColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f);
+            startColorVar = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
 
-            endColor.RedColor = 1f;
-            endColor.GreenColor = 1f;
-            endColor.BlueColor = 1f;
-            endColor.AlphaChannel = 0f;
-            endColorVar.RedColor = 0f;
-            endColorVar.GreenColor = 0f;
-            endColorVar.BlueColor = 0f;
-            endColorVar.AlphaChannel = 0f;
+            endColor = RGBAColor.MakeRGBA(1f, 1f, 1f, 0f);
+            endColorVar = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
 
             blendAdditive = true;
             return this;
