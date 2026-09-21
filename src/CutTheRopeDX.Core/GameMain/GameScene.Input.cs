@@ -37,11 +37,11 @@ namespace CutTheRopeDX.GameMain
             Preferences.SetIntForKey(bubblesPoppedCount, "PREFS_BUBBLES_POPPED", false);
             if (bubblesPoppedCount == 50)
             {
-                RootController.PostAchievementName("681513183", "\"Bubble Popper\"");
+                Scorer.PostAchievementName("681513183", "\"Bubble Popper\"");
             }
             if (bubblesPoppedCount == 300)
             {
-                RootController.PostAchievementName("1058345234", "\"Bubble Master\"");
+                Scorer.PostAchievementName("1058345234", "\"Bubble Master\"");
             }
         }
 
@@ -272,11 +272,11 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(ropesShoot, "PREFS_ROPES_SHOOT", false);
                             if (ropesShoot >= 50)
                             {
-                                RootController.PostAchievementName("acRookieSniper", "\"Rookie Sniper\"");
+                                Scorer.PostAchievementName("acRookieSniper", "\"Rookie Sniper\"");
                             }
                             if (ropesShoot >= 150)
                             {
-                                RootController.PostAchievementName("acSkilledSniper", "\"Skilled Sniper\"");
+                                Scorer.PostAchievementName("acSkilledSniper", "\"Skilled Sniper\"");
                             }
                             return true;
                         }
@@ -649,11 +649,11 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
                         if (wallClimberCount >= 50)
                         {
-                            RootController.PostAchievementName("acRookieWallClimber", "\"Rookie Wall Climber\"");
+                            Scorer.PostAchievementName("acRookieWallClimber", "\"Rookie Wall Climber\"");
                         }
                         if (wallClimberCount >= 400)
                         {
-                            RootController.PostAchievementName("acVeteranWallClimber", "\"Veteran Wall Climber\"");
+                            Scorer.PostAchievementName("acVeteranWallClimber", "\"Veteran Wall Climber\"");
                         }
                     }
                 }
@@ -922,23 +922,23 @@ namespace CutTheRopeDX.GameMain
                     Preferences.SetIntForKey(ropesCutTotal, "PREFS_ROPES_CUT", false);
                     if (ropesCutTotal == 100)
                     {
-                        RootController.PostAchievementName("681461850", "\"Rope Cutter\"");
+                        Scorer.PostAchievementName("681461850", "\"Rope Cutter\"");
                     }
                     if (ropesCutAtOnce is >= 3 and < 5)
                     {
-                        RootController.PostAchievementName("681464917", "\"Quick Finger\"");
+                        Scorer.PostAchievementName("681464917", "\"Quick Finger\"");
                     }
                     if (ropesCutAtOnce >= 5)
                     {
-                        RootController.PostAchievementName("681508316", "\"Master Finger\"");
+                        Scorer.PostAchievementName("681508316", "\"Master Finger\"");
                     }
                     if (ropesCutTotal == 800)
                     {
-                        RootController.PostAchievementName("681457931", "\"Rope Cutter Maniac\"");
+                        Scorer.PostAchievementName("681457931", "\"Rope Cutter Maniac\"");
                     }
                     if (ropesCutTotal == 2000)
                     {
-                        RootController.PostAchievementName("1058248892", "\"Ultimate Rope Cutter\"");
+                        Scorer.PostAchievementName("1058248892", "\"Ultimate Rope Cutter\"");
                     }
                 }
             }

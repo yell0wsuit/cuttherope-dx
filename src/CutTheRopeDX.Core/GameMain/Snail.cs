@@ -69,7 +69,7 @@ namespace CutTheRopeDX.GameMain
             Preferences.SetIntForKey(grabbedSnails, PrefsGrabSnails, false);
             if (grabbedSnails >= 100)
             {
-                RootController.PostAchievementName(AchievementSnailTamer);
+                Scorer.PostAchievementName(AchievementSnailTamer);
             }
 
             SoundMgr.PlaySound(Resources.Snd.ExpSnailIn);

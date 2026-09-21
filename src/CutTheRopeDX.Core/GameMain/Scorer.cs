@@ -1,29 +1,16 @@
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// Stubbed scoring and platform achievement integration surface.
+    /// Stubbed platform achievement integration surface.
     /// </summary>
-    internal sealed class Scorer
+    internal static class Scorer
     {
         /// <summary>
-        /// Posts a leaderboard result to the platform scorer integration.
+        /// Posts an achievement. No platform integration exists, so this is a no-op.
         /// </summary>
-        public static void PostLeaderboardResultforLaderboardIdlowestValFirstforGameCenter()
-        {
-        }
-
-        /// <summary>
-        /// Posts an achievement by name.
-        /// </summary>
-        /// <param name="_">Achievement name or identifier.</param>
-        public static void PostAchievementName(string _)
-        {
-        }
-
-        /// <summary>
-        /// Opens the platform scorer profile UI.
-        /// </summary>
-        public static void ActivateScorerUIAtProfile()
+        /// <param name="_">Achievement identifier.</param>
+        /// <param name="_1">Human-readable achievement name, kept for readability at the call site.</param>
+        public static void PostAchievementName(string _, string _1 = null)
         {
         }
     }

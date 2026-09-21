@@ -555,23 +555,6 @@ namespace CutTheRopeDX.Framework.Core
             Application.SharedRootController().showGreeting = s;
         }
 
-        /// <summary>Stub for posting a named achievement with a value.</summary>
-        /// <param name="_">Achievement name.</param>
-        /// <param name="_1">Achievement value.</param>
-        /// <remarks>
-        /// No-op code.
-        /// </remarks>
-        public static void PostAchievementName(string _, string _1)
-        {
-        }
-
-        /// <summary>Posts a named achievement to the scorer.</summary>
-        /// <param name="name">The achievement identifier.</param>
-        public static void PostAchievementName(string name)
-        {
-            Scorer.PostAchievementName(name);
-        }
-
         /// <summary>Destroys and re-creates the loading controller child (slot 2).</summary>
         internal void RecreateLoadingController()
         {

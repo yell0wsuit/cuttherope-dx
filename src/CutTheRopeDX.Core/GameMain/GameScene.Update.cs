@@ -107,7 +107,7 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(underwaterCount, "PREFS_UNDERWATER", false);
                             if (underwaterCount >= 150)
                             {
-                                RootController.PostAchievementName("acDeepDiver");
+                                Scorer.PostAchievementName("acDeepDiver");
                             }
                         }
                         body.Underwater = true;
@@ -159,11 +159,11 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(wallClimberCount, "PREFS_WALL_CLIMBER", false);
                             if (wallClimberCount >= 50)
                             {
-                                RootController.PostAchievementName("acRookieWallClimber", "\"Rookie Wall Climber\"");
+                                Scorer.PostAchievementName("acRookieWallClimber", "\"Rookie Wall Climber\"");
                             }
                             if (wallClimberCount >= 400)
                             {
-                                RootController.PostAchievementName("acVeteranWallClimber", "\"Veteran Wall Climber\"");
+                                Scorer.PostAchievementName("acVeteranWallClimber", "\"Veteran Wall Climber\"");
                             }
                         }
                     }
@@ -367,7 +367,7 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetIntForKey(candiesUnitedCount, "PREFS_CANDIES_UNITED", false);
                         if (candiesUnitedCount == 100)
                         {
-                            RootController.PostAchievementName("1432722351", "\"Romantic Soul\"");
+                            Scorer.PostAchievementName("1432722351", "\"Romantic Soul\"");
                         }
                         // The merged candy inherits its halves' bubbles: a ghost bubble wins over a
                         // plain one, and when both halves carried a ghost the second is parked until
@@ -1237,7 +1237,7 @@ namespace CutTheRopeDX.GameMain
                             Preferences.SetIntForKey(count, "PREFS_ROCKETS", false);
                             if (count >= 100)
                             {
-                                RootController.PostAchievementName("acPartyAnimal", "\"Party Animal\"");
+                                Scorer.PostAchievementName("acPartyAnimal", "\"Party Animal\"");
                             }
                             break;
                         }
@@ -1522,7 +1522,7 @@ namespace CutTheRopeDX.GameMain
                             tummyTeasers++;
                             if (tummyTeasers >= 10)
                             {
-                                RootController.PostAchievementName("1058281905", "\"Tummy Teaser\"");
+                                Scorer.PostAchievementName("1058281905", "\"Tummy Teaser\"");
                             }
                         }
                     }
@@ -1613,11 +1613,11 @@ namespace CutTheRopeDX.GameMain
                     Preferences.SetIntForKey(candiesLostCount, "PREFS_CANDIES_LOST", false);
                     if (candiesLostCount == 50)
                     {
-                        RootController.PostAchievementName("681497443", "\"Weight Loser\"");
+                        Scorer.PostAchievementName("681497443", "\"Weight Loser\"");
                     }
                     if (candiesLostCount == 200)
                     {
-                        RootController.PostAchievementName("1058341297", "\"Calorie Minimizer\"");
+                        Scorer.PostAchievementName("1058341297", "\"Calorie Minimizer\"");
                     }
                     GameLost();
                     return;
@@ -1992,7 +1992,7 @@ namespace CutTheRopeDX.GameMain
                         Preferences.SetIntForKey(count, "PREFS_GRAB_ROCKET", false);
                         if (count >= 50)
                         {
-                            RootController.PostAchievementName("acRoboMaster", "\"Robo Master\"");
+                            Scorer.PostAchievementName("acRoboMaster", "\"Robo Master\"");
                         }
                     }
 

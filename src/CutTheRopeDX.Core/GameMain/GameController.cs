@@ -284,7 +284,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (Preferences.IsPackPerfect(box, pack) && pack < name.Length)
             {
-                RootController.PostAchievementName(name[pack]);
+                Scorer.PostAchievementName(name[pack]);
             }
         }
 
@@ -318,21 +318,21 @@ namespace CutTheRopeDX.GameMain
             }
             if (packComplete && pack < nameArray.Length)
             {
-                RootController.PostAchievementName(nameArray[pack]);
+                Scorer.PostAchievementName(nameArray[pack]);
             }
             CheckForBoxPerfect(box, pack);
             int totalStars = Preferences.GetTotalStars();
             if (totalStars is >= 50 and < 150)
             {
-                RootController.PostAchievementName("677900534", "\"Bronze Scissors\"");
+                Scorer.PostAchievementName("677900534", "\"Bronze Scissors\"");
             }
             else if (totalStars is >= 150 and < 300)
             {
-                RootController.PostAchievementName("681508185", "\"Silver Scissors\"");
+                Scorer.PostAchievementName("681508185", "\"Silver Scissors\"");
             }
             else if (totalStars >= 300)
             {
-                RootController.PostAchievementName("681473653", "\"Golden Scissors\"");
+                Scorer.PostAchievementName("681473653", "\"Golden Scissors\"");
             }
             Preferences.RequestSave();
             int totalPackScore = 0;

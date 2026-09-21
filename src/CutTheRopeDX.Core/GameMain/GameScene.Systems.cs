@@ -478,11 +478,11 @@ namespace CutTheRopeDX.GameMain
             Preferences.SetIntForKey(spidersBustedCount, "PREFS_SPIDERS_BUSTED", false);
             if (spidersBustedCount == 40)
             {
-                RootController.PostAchievementName("681486608", "\"Spider Busted\"");
+                Scorer.PostAchievementName("681486608", "\"Spider Busted\"");
             }
             if (spidersBustedCount == 200)
             {
-                RootController.PostAchievementName("1058341284", "\"Spider Tammer\"");
+                Scorer.PostAchievementName("1058341284", "\"Spider Tammer\"");
             }
             SoundMgr.PlaySound(Resources.Snd.SpiderFall);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
