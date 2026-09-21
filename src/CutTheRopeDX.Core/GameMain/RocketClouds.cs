@@ -49,9 +49,7 @@ namespace CutTheRopeDX.GameMain
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
-            Quad2D quad2D = imageGrid.texture.quads[5];
-            Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            drawer.SetTextureQuadatVertexQuadatIndex(quad2D, quad3D, particleCount);
+            SetParticleQuad(5);
             Vector quadSize = Image.GetQuadSize(Resources.Img.ObjRocket, 5);
             particle.width = quadSize.X;
             particle.height = quadSize.Y;

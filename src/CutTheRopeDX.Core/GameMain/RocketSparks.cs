@@ -56,9 +56,7 @@ namespace CutTheRopeDX.GameMain
         {
             base.InitParticle(ref particle);
             int sparklesParticle = RND_RANGE(6, 9);
-            Quad2D quad2D = imageGrid.texture.quads[sparklesParticle];
-            Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            drawer.SetTextureQuadatVertexQuadatIndex(quad2D, quad3D, particleCount);
+            SetParticleQuad(sparklesParticle);
             Vector quadSize = Image.GetQuadSize(Resources.Img.ObjRocket, sparklesParticle);
             particle.width = quadSize.X;
             particle.height = quadSize.Y;

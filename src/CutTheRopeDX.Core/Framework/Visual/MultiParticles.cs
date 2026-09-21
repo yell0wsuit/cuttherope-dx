@@ -34,16 +34,39 @@ namespace CutTheRopeDX.Framework.Visual
             return this;
         }
 
+        /// <summary>
+        /// Binds the atlas quad at <paramref name="quadIndex"/> to the particle slot being filled.
+        /// </summary>
+        /// <param name="quadIndex">Index of the quad in the particle texture atlas.</param>
+        protected void SetParticleQuad(int quadIndex)
+        {
+            Quad2D textureQuad = imageGrid.texture.quads[quadIndex];
+            Quad3D vertexQuad = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
+            drawer.SetTextureQuadatVertexQuadatIndex(textureQuad, vertexQuad, particleCount);
+        }
+
+        /// <summary>
+        /// Binds the atlas quad at <paramref name="quadIndex"/> to the particle slot being filled and
+        /// sizes <paramref name="particle"/> from that quad's rect, scaled by <paramref name="scale"/>.
+        /// </summary>
+        /// <param name="particle">Particle to size.</param>
+        /// <param name="quadIndex">Index of the quad in the particle texture atlas.</param>
+        /// <param name="scale">Factor applied to the quad's width and height.</param>
+        protected void SetParticleQuad(ref Particle particle, int quadIndex, float scale)
+        {
+            SetParticleQuad(quadIndex);
+            Rectangle textureRect = imageGrid.texture.quadRects[quadIndex];
+            particle.width = textureRect.w * scale;
+            particle.height = textureRect.h * scale;
+        }
+
         /// <inheritdoc />
         public override void InitParticle(ref Particle particle)
         {
-            Image image = imageGrid;
-            int quadIndex = RND(image.texture.quadsCount - 1);
-            Quad2D textureQuad = image.texture.quads[quadIndex];
-            Quad3D vertexQuad = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            Rectangle textureRect = image.texture.quadRects[quadIndex];
-            drawer.SetTextureQuadatVertexQuadatIndex(textureQuad, vertexQuad, particleCount);
+            int quadIndex = RND(imageGrid.texture.quadsCount - 1);
+            SetParticleQuad(quadIndex);
             base.InitParticle(ref particle);
+            Rectangle textureRect = imageGrid.texture.quadRects[quadIndex];
             particle.width = textureRect.w * particle.size;
             particle.height = textureRect.h * particle.size;
         }

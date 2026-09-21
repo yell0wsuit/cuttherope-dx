@@ -67,13 +67,7 @@ namespace CutTheRopeDX.GameMain
             base.InitParticle(ref particle);
 
             int randomQuad = s_bubbleQuads[RND_RANGE(0, s_bubbleQuads.Length - 1)];
-            Quad2D qt = imageGrid.texture.quads[randomQuad];
-            Quad3D qv = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            drawer.SetTextureQuadatVertexQuadatIndex(qt, qv, particleCount);
-
-            Rectangle rect = imageGrid.texture.quadRects[randomQuad];
-            particle.width = rect.w * particle.size;
-            particle.height = rect.h * particle.size;
+            SetParticleQuad(ref particle, randomQuad, particle.size);
             particle.deltaSize = endSize;
         }
 

@@ -14,13 +14,8 @@ namespace CutTheRopeDX.GameMain
             base.InitParticle(ref particle);
             angle += 360f / totalParticles;
             int quadIndex = RND_RANGE(4, 6);
-            Quad2D quad = imageGrid.texture.quads[quadIndex];
-            Quad3D quad3D = Quad3D.MakeQuad3D(0f, 0f, 0f, 0f, 0f);
-            drawer.SetTextureQuadatVertexQuadatIndex(quad, quad3D, particleCount);
-            Rectangle rect = imageGrid.texture.quadRects[quadIndex];
             float scale = size + (RND_MINUS1_1 * sizeVar);
-            particle.width = rect.w * scale;
-            particle.height = rect.h * scale;
+            SetParticleQuad(ref particle, quadIndex, scale);
             particle.deltaColor = RGBAColor.MakeRGBA(0f, 0f, 0f, 0f);
         }
 
