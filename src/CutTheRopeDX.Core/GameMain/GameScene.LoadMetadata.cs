@@ -200,11 +200,11 @@ namespace CutTheRopeDX.GameMain
                                 {
                                     primaryCandyClaimed = true;
                                     candies[0].candyNumber = number;
-                                    star.pos.X = cx;
-                                    star.pos.Y = cy;
-                                    star.prevPos = star.pos;
-                                    candy.x = cx;
-                                    candy.y = cy;
+                                    Star.pos.X = cx;
+                                    Star.pos.Y = cy;
+                                    Star.prevPos = Star.pos;
+                                    Candy.x = cx;
+                                    Candy.y = cy;
                                 }
                                 else
                                 {
@@ -221,7 +221,7 @@ namespace CutTheRopeDX.GameMain
             InstallSplitCandyState();
 
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
-            candy.bb = GetCandyBoundingBox(candy);
+            Candy.bb = GetCandyBoundingBox(Candy);
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 if (body.Role != CandyBodyRole.Whole)

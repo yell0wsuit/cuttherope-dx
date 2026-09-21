@@ -135,8 +135,8 @@ namespace CutTheRopeDX.GameMain
 
                     if (grab.GunSource is GunSource gunSource)
                     {
-                        gunSource.TrackAim(Vect(grab.x, grab.y), star.pos);
-                        gunSource.TrackFiredCup(star.pos, candy.rotation);
+                        gunSource.TrackAim(Vect(grab.x, grab.y), Star.pos);
+                        gunSource.TrackFiredCup(Star.pos, Candy.rotation);
                     }
 
                     Bungee rope = grab.Rope;
@@ -425,15 +425,15 @@ namespace CutTheRopeDX.GameMain
                         // aggregate captured above rather than through the lifecycle, which the merge just cleared.
                         ConstraintedPoint mergedLeft = merging.Left.Body.Point;
                         ConstraintedPoint mergedRight = merging.Right.Body.Point;
-                        star.pos.X = mergedLeft.pos.X;
-                        star.pos.Y = mergedLeft.pos.Y;
-                        candy.x = star.pos.X;
-                        candy.y = star.pos.Y;
-                        CalculateTopLeft(candy);
+                        Star.pos.X = mergedLeft.pos.X;
+                        Star.pos.Y = mergedLeft.pos.Y;
+                        Candy.x = Star.pos.X;
+                        Candy.y = Star.pos.Y;
+                        CalculateTopLeft(Candy);
                         Vector leftVelocity = VectSub(mergedLeft.pos, mergedLeft.prevPos);
                         Vector rightVelocity = VectSub(mergedRight.pos, mergedRight.prevPos);
                         Vector mergedVelocity = Vect((leftVelocity.X + rightVelocity.X) / 2f, (leftVelocity.Y + rightVelocity.Y) / 2f);
-                        star.prevPos = VectSub(star.pos, mergedVelocity);
+                        Star.prevPos = VectSub(Star.pos, mergedVelocity);
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
@@ -442,16 +442,16 @@ namespace CutTheRopeDX.GameMain
                             {
                                 ConstraintedPoint secondToLastPart = rope.parts[^2];
                                 int restLength = (int)rope.tail.RestLengthFor(secondToLastPart);
-                                star.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
-                                rope.tail = star;
-                                rope.parts[^1] = star;
+                                Star.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
+                                rope.tail = Star;
+                                rope.parts[^1] = Star;
                                 rope.initialCandleAngle = 0f;
                                 rope.chosenOne = false;
                             }
                         }
                         Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjCandyFx);
-                        animation.x = candy.x;
-                        animation.y = candy.y;
+                        animation.x = Candy.x;
+                        animation.y = Candy.y;
                         animation.anchor = 18;
                         int n = animation.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 11, 15);
                         animation.GetTimeline(n).delegateTimelineDelegate = aniPool;

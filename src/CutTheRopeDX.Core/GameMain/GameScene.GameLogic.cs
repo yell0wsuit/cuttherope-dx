@@ -567,22 +567,22 @@ namespace CutTheRopeDX.GameMain
             // The primary is already Removed(Eaten) here: the single caller runs behind AllEaten,
             // which cannot pass while an eatable candy still has a body. So the win timeline below
             // owns the visual outright and no longer has to raise a gone-flag of its own first.
-            candy.passTransformationsToChilds = true;
-            candyMain.scaleX = candyMain.scaleY = 1f;
-            candyTop.scaleX = candyTop.scaleY = 1f;
+            Candy.passTransformationsToChilds = true;
+            CandyMain.scaleX = CandyMain.scaleY = 1f;
+            CandyTop.scaleX = CandyTop.scaleY = 1f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
-            timeline.AddKeyFrame(KeyFrame.MakePos((int)candy.x, (int)candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            float targetX = TargetObject != null ? TargetObject.x : candy.x;
-            float targetY = TargetObject != null ? TargetObject.y : candy.y;
+            timeline.AddKeyFrame(KeyFrame.MakePos((int)Candy.x, (int)Candy.y, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            float targetX = TargetObject != null ? TargetObject.x : Candy.x;
+            float targetY = TargetObject != null ? TargetObject.y : Candy.y;
             timeline.AddKeyFrame(KeyFrame.MakePos((int)targetX, (int)(targetY + 10), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0.71f, 0.71f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            candy.AddTimelinewithID(timeline, 0);
-            candy.PlayTimeline(0);
+            Candy.AddTimelinewithID(timeline, 0);
+            Candy.PlayTimeline(0);
             timeline.delegateTimelineDelegate = aniPool;
-            _ = aniPool.AddChild(candy);
+            _ = aniPool.AddChild(Candy);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             ReleaseRopesForBody(candies[0].WholeBody);
             ExhaustAllActiveRockets();
@@ -1089,7 +1089,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? Star;
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.ReleaseCandy();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
@@ -1121,7 +1121,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? Star;
                     if (heldPoint != point)
                     {
                         continue;

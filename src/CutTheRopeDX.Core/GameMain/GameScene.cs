@@ -990,21 +990,20 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private Image support;
 
-#pragma warning disable IDE1006
         /// <summary>
         /// The main candy gameplay object.
         /// </summary>
-        private GameObject candy => candies[0].WholeBody.Visual;
+        private GameObject Candy => candies[0].WholeBody.Visual;
 
         /// <summary>
         /// The base candy sprite for split or layered visuals.
         /// </summary>
-        private GameObject candyMain => candies[0].WholeBody.Main;
+        private GameObject CandyMain => candies[0].WholeBody.Main;
 
         /// <summary>
         /// The top candy sprite for split or layered visuals.
         /// </summary>
-        private GameObject candyTop => candies[0].WholeBody.Top;
+        private GameObject CandyTop => candies[0].WholeBody.Top;
 
         /// <summary>
         /// Animation used for the candy blink effect.
@@ -1013,8 +1012,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
-        private ConstraintedPoint star => candies[0].WholeBody.Point;
-#pragma warning restore IDE1006
+        private ConstraintedPoint Star => candies[0].WholeBody.Point;
 
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
         private readonly List<CandyContext> candies = [];

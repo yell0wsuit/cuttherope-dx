@@ -248,20 +248,20 @@ namespace CutTheRopeDX.GameMain
                     {
                         float mapLeftX = waterLayer?.x ?? 0f;
                         float mapRightX = waterLayer != null ? waterLayer.x + waterLayer.width : mapWidth;
-                        bool candyInMapBounds = GameObject.RectInObject(mapLeftX, 0f, mapRightX, mapHeight, candy);
-                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || waterLayer.y > star.pos.Y;
+                        bool candyInMapBounds = GameObject.RectInObject(mapLeftX, 0f, mapRightX, mapHeight, Candy);
+                        bool canFireFromWaterState = waterLayer == null || candyInMapBounds || waterLayer.y > Star.pos.Y;
                         float tapRadius = Grab.GUN_TAP_RADIUS;
                         if (canFireFromWaterState && PointInRect(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), grab.x - tapRadius, grab.y - tapRadius, tapRadius * 2f, tapRadius * 2f))
                         {
-                            gun.Fire(Vect(grab.x, grab.y), star.pos, candyMain.rotation);
+                            gun.Fire(Vect(grab.x, grab.y), Star.pos, CandyMain.rotation);
                             gun.Cup.rotation = gun.InitialRotation;
                             gun.Front.SetDrawQuad(Grab.GunDisabledFrontQuad);
                             gun.Cup.PlayTimeline(Grab.GUN_CUP_SHOW);
 
                             // Fire the gun - create a rope to the candy
-                            float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), star.pos) - ActivePhysicsConstants.BungeeRestLength;
+                            float gunToCandyDistance = VectDistance(Vect(grab.x, grab.y), Star.pos) - ActivePhysicsConstants.BungeeRestLength;
                             float ropeLength = Math.Max(gunToCandyDistance, ActivePhysicsConstants.BungeeRestLength);
-                            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, star, star.pos.X, star.pos.Y, ropeLength);
+                            Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, grab.x, grab.y, Star, Star.pos.X, Star.pos.Y, ropeLength);
                             bungee.bungeeAnchor.pin = bungee.bungeeAnchor.pos;
                             grab.SetRope(bungee);
                             ropes.Register(bungee, grab);
@@ -329,7 +329,7 @@ namespace CutTheRopeDX.GameMain
                     if (hand.State == MechanicalHandState.HoldingCandy && VectDistance(world, hand.ClawPosition()) < MechanicalHand.MH_CLAW_TOUCH_RADIUS)
                     {
                         CandyContext held = HandHeldCandy(hand);
-                        hand.cPoint.RemoveConstraint(held?.WholeBody.Point ?? star);
+                        hand.cPoint.RemoveConstraint(held?.WholeBody.Point ?? Star);
                         hand.ReleaseCandyAfterDropSound();
                         hand.AnimateReleaseWithAnimationsPool(aniPool);
                         _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);

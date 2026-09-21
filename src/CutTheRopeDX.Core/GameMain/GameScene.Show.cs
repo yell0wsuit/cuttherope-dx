@@ -288,7 +288,7 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
-            if (t.element == candy)
+            if (t.element == Candy)
             {
                 RestoreCandyProperties();
             }
