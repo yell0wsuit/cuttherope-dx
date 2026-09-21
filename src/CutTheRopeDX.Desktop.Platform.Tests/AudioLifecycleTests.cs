@@ -88,11 +88,11 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
         }
 
         /// <summary>Writes a 16-bit PCM square-wave WAV so the fixtures need no tracked assets.</summary>
-        private void WriteTone(string relativePath, int milliseconds, short amplitude)
+        private void WriteTone(string relativePath, int milliseconds, short amplitude, int frequency = Frequency)
         {
             string path = Path.Combine(root, relativePath.Replace('/', Path.DirectorySeparatorChar));
             _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
-            int frames = Frequency * milliseconds / 1000;
+            int frames = frequency * milliseconds / 1000;
             int dataBytes = frames * BytesPerFrame;
             using BinaryWriter writer = new(File.Create(path));
             writer.Write("RIFF"u8);
@@ -101,8 +101,8 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             writer.Write(16);
             writer.Write((short)1);
             writer.Write((short)Channels);
-            writer.Write(Frequency);
-            writer.Write(Frequency * BytesPerFrame);
+            writer.Write(frequency);
+            writer.Write(frequency * BytesPerFrame);
             writer.Write((short)BytesPerFrame);
             writer.Write((short)16);
             writer.Write("data"u8);
@@ -390,6 +390,20 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
 
             Assert.Equal(AudioPlaybackState.Stopped, backend.MusicState);
             Assert.Equal(0, Render());
+        }
+
+        [Fact]
+        public void EffectsAtAnotherRateFillTheirFirstBuffer()
+        {
+            // A voice resampling on the fly comes up short on the first buffer it mixes, by the
+            // frames its resampler holds back, and the mixer leaves that shortfall silent: a gap
+            // cut into the sound just after it starts, heard as a pop.
+            WriteTone("sounds/sfx/low.wav", milliseconds: 100, amplitude: 16000, frequency: Frequency / 2);
+            using ISoundEffect effect = backend.LoadSound("sounds/sfx/low");
+            effect.CreateInstance().Play();
+
+            const int ChunkBytes = 1024 * BytesPerFrame;
+            Assert.Equal(ChunkBytes, backend.RenderForTesting(buffer, ChunkBytes));
         }
 
         [Fact]

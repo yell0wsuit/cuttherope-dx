@@ -31,19 +31,36 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
         /// <summary>Name of the FLAC decoder compiled into SDL_mixer.</summary>
         private const string FlacDecoder = "DRFLAC";
 
+        /// <summary>
+        /// Rate the device mixer runs at: the rate every song and most effects ship in, so those
+        /// reach it unconverted.
+        /// </summary>
+        /// <remarks>
+        /// A voice whose audio has to be resampled comes up short on the first buffer it mixes, by
+        /// the frames its resampler holds back, and the mixer leaves the shortfall silent: a gap cut
+        /// into every sound just after it starts, heard as a pop. The device's own rate is left to
+        /// SDL, which converts the mixed output in one stream that never restarts.
+        /// </remarks>
+        private const int MixerFrequency = 44100;
+
+        /// <summary>Channel count the device mixer runs at.</summary>
+        private const int MixerChannels = 2;
+
         private static readonly Lock LibraryLock = new();
         private static int libraryUsers;
 
         private readonly nint mixer;
+        private readonly int mixerFrequency;
         private readonly string contentRoot;
         private readonly Dictionary<string, SdlMusicTrack> music = [];
         private nint musicVoice;
         private uint musicOptions;
         private bool disposed;
 
-        private SdlAudioBackend(nint mixer, string contentRoot)
+        private SdlAudioBackend(nint mixer, int mixerFrequency, string contentRoot)
         {
             this.mixer = mixer;
+            this.mixerFrequency = mixerFrequency;
             this.contentRoot = contentRoot;
         }
 
@@ -69,7 +86,13 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
                 return null;
             }
 
-            nint mixer = Mixer.CreateMixerDevice(SDL.AudioDeviceDefaultPlayback, 0);
+            SDL.AudioSpec spec = new()
+            {
+                Format = SDL.AudioFormat.AudioF32LE,
+                Channels = MixerChannels,
+                Freq = MixerFrequency,
+            };
+            nint mixer = CreateMixer(spec, specPointer => Mixer.CreateMixerDevice(SDL.AudioDeviceDefaultPlayback, specPointer));
             if (mixer == 0)
             {
                 ReleaseLibrary();
@@ -77,7 +100,7 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
                 return null;
             }
 
-            return new SdlAudioBackend(mixer, contentRoot);
+            return new SdlAudioBackend(mixer, MixerFrequency, contentRoot);
         }
 
         /// <summary>
@@ -96,18 +119,24 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             }
 
             SDL.AudioSpec spec = new() { Format = SDL.AudioFormat.AudioS16LE, Channels = channels, Freq = frequency };
+            nint mixer = CreateMixer(spec, Mixer.CreateMixer);
+            if (mixer == 0)
+            {
+                ReleaseLibrary();
+                return null;
+            }
+
+            return new SdlAudioBackend(mixer, frequency, contentRoot);
+        }
+
+        /// <summary>Hands <paramref name="spec"/> to a mixer constructor that takes it by pointer.</summary>
+        private static nint CreateMixer(SDL.AudioSpec spec, Func<nint, nint> create)
+        {
             nint specPointer = Marshal.AllocHGlobal(Marshal.SizeOf<SDL.AudioSpec>());
             try
             {
                 Marshal.StructureToPtr(spec, specPointer, false);
-                nint mixer = Mixer.CreateMixer(specPointer);
-                if (mixer == 0)
-                {
-                    ReleaseLibrary();
-                    return null;
-                }
-
-                return new SdlAudioBackend(mixer, contentRoot);
+                return create(specPointer);
             }
             finally
             {
@@ -170,8 +199,7 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
 
             // Effects are short, are replayed constantly and often overlap, so they are decoded up
             // front; paying that cost once beats decoding on every hit.
-            return new SdlSoundEffect(
-                mixer, LoadAudio(ResolveAudioPath(contentRoot, contentPath, music: false), predecode: true));
+            return new SdlSoundEffect(mixer, LoadEffect(ResolveAudioPath(contentRoot, contentPath, music: false)));
         }
 
         /// <inheritdoc />
@@ -218,6 +246,101 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             return File.Exists(flac) || !File.Exists(wav) ? flac : wav;
         }
 
+        /// <summary>
+        /// Loads and decodes a sound effect, converting it to the mixer's rate when it ships at
+        /// another, so no voice ever has to resample it while playing.
+        /// </summary>
+        /// <remarks>
+        /// A file already at the mixer's rate loads untouched, keeping whatever SDL reads from it
+        /// beyond the samples, such as a loop region.
+        /// </remarks>
+        private nint LoadEffect(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"Audio file not found: {path}", path);
+            }
+
+            if (!SDL.LoadWAV(path, out SDL.AudioSpec source, out nint samples, out uint length))
+            {
+                throw new InvalidDataException($"Could not load audio '{path}': {SDL.GetError()}");
+            }
+
+            try
+            {
+                if (source.Freq == mixerFrequency)
+                {
+                    return LoadAudio(path, predecode: true);
+                }
+
+                SDL.AudioSpec target = new()
+                {
+                    Format = SDL.AudioFormat.AudioS16LE,
+                    Channels = source.Channels,
+                    Freq = mixerFrequency,
+                };
+                if (!SDL.ConvertAudioSamples(
+                    in source, samples, (int)length, in target, out nint converted, out int convertedLength))
+                {
+                    throw new InvalidDataException($"Could not resample audio '{path}': {SDL.GetError()}");
+                }
+
+                try
+                {
+                    return LoadConvertedEffect(path, target, converted, convertedLength);
+                }
+                finally
+                {
+                    SDL.Free(converted);
+                }
+            }
+            finally
+            {
+                SDL.Free(samples);
+            }
+        }
+
+        /// <summary>
+        /// Wraps converted 16-bit samples in a WAV header and loads them from memory.
+        /// </summary>
+        /// <remarks>
+        /// The mixer's raw-sample loader is bound with the wrong parameter type for its format, so
+        /// the samples go through its WAV decoder instead, which reads them back unchanged.
+        /// </remarks>
+        private unsafe nint LoadConvertedEffect(string path, SDL.AudioSpec spec, nint samples, int length)
+        {
+            const int HeaderBytes = 44;
+            int frameBytes = spec.Channels * sizeof(short);
+            byte[] wav = new byte[HeaderBytes + length];
+            using (BinaryWriter writer = new(new MemoryStream(wav)))
+            {
+                writer.Write("RIFF"u8);
+                writer.Write(HeaderBytes - 8 + length);
+                writer.Write("WAVEfmt "u8);
+                writer.Write(16);
+                writer.Write((short)1);
+                writer.Write((short)spec.Channels);
+                writer.Write(spec.Freq);
+                writer.Write(spec.Freq * frameBytes);
+                writer.Write((short)frameBytes);
+                writer.Write((short)16);
+                writer.Write("data"u8);
+                writer.Write(length);
+            }
+
+            Marshal.Copy(samples, wav, HeaderBytes, length);
+
+            // Predecoding copies the samples out before the load returns, so the buffer only has
+            // to stay pinned for the call.
+            fixed (byte* data = wav)
+            {
+                nint stream = SDL.IOFromConstMem((nint)data, (nuint)wav.Length);
+                return stream == 0
+                    ? throw new InvalidDataException($"Could not open audio '{path}': {SDL.GetError()}")
+                    : LoadAudio(stream, path, predecode: true);
+            }
+        }
+
         private nint LoadAudio(string path, bool predecode)
         {
             if (!File.Exists(path))
@@ -226,11 +349,17 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             }
 
             nint stream = SDL.IOFromFile(path, "rb");
-            if (stream == 0)
-            {
-                throw new InvalidDataException($"Could not open audio '{path}': {SDL.GetError()}");
-            }
+            return stream == 0
+                ? throw new InvalidDataException($"Could not open audio '{path}': {SDL.GetError()}")
+                : LoadAudio(stream, path, predecode);
+        }
 
+        /// <summary>
+        /// Loads audio from <paramref name="stream"/>, which the mixer closes. <paramref name="path"/>
+        /// names the file it came from, for errors and to pick its decoder.
+        /// </summary>
+        private nint LoadAudio(nint stream, string path, bool predecode)
+        {
             uint props = SDL.CreateProperties();
             try
             {
