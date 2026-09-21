@@ -15,8 +15,6 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 segmentLife: 0.1f,
                 particleBurstDuration: 0f,
                 particleEmissionRate: 0f,
-                ribbonBaseWidth: 12f,
-                minimumRibbonHalfWidth: 1f,
                 glowQuadIndex: null,
                 glowTranslateY: 0f)
         {

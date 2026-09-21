@@ -16,21 +16,21 @@ namespace CutTheRopeDX.GameMain.FingerTraces
     /// <param name="segmentLife">The lifetime in seconds assigned to each stored ribbon segment.</param>
     /// <param name="particleBurstDuration">The duration in seconds that particle emission remains active after a segment is appended.</param>
     /// <param name="particleEmissionRate">The particle emission rate used during the active burst window.</param>
-    /// <param name="ribbonBaseWidth">The base half-width contribution applied along the ribbon body.</param>
-    /// <param name="minimumRibbonHalfWidth">The minimum half-width preserved at the ribbon tip.</param>
     /// <param name="glowQuadIndex">
     /// The optional glow quad index. Pass <see langword="null"/> to disable glow sprite generation.
     /// </param>
     /// <param name="glowTranslateY">The local Y translation applied to the glow sprite pivot.</param>
+    /// <param name="ribbonBaseWidth">The base half-width contribution applied along the ribbon body. Every named trace uses the default.</param>
+    /// <param name="minimumRibbonHalfWidth">The minimum half-width preserved at the ribbon tip. Every named trace uses the default.</param>
     /// <param name="particles">The particle emitters owned by the trace.</param>
     internal abstract class RibbonFingerTrace(
         float segmentLife,
         float particleBurstDuration,
         float particleEmissionRate,
-        float ribbonBaseWidth,
-        float minimumRibbonHalfWidth,
         int? glowQuadIndex,
         float glowTranslateY,
+        float ribbonBaseWidth = 12f,
+        float minimumRibbonHalfWidth = 1f,
         params FingerParticles[] particles) : ParticleFingerTrace(segmentLife, particleBurstDuration, particleEmissionRate, 10, particles)
     {
         /// <summary>

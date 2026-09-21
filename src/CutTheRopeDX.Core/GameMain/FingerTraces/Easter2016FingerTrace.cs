@@ -15,11 +15,9 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 segmentLife: 0.15f,
                 particleBurstDuration: 0.1f,
                 particleEmissionRate: 50f,
-                ribbonBaseWidth: 12f,
-                minimumRibbonHalfWidth: 1f,
                 glowQuadIndex: 2,
                 glowTranslateY: 50f,
-                NamedTracePresets.CreateAlphaParticles(30, 9))
+                particles: [NamedTracePresets.CreateAlphaParticles(30, 9)])
         {
         }
 
