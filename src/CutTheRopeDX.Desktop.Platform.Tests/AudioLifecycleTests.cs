@@ -115,6 +115,101 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
             }
         }
 
+        /// <summary>
+        /// Writes a 16-bit FLAC of uncompressed (verbatim) frames: a square wave for
+        /// <paramref name="toneMilliseconds"/>, then silence to <paramref name="milliseconds"/>.
+        /// </summary>
+        private void WriteFlacTone(string relativePath, int milliseconds, int toneMilliseconds, short amplitude)
+        {
+            const int BlockSize = 4096;
+            string path = Path.Combine(root, relativePath.Replace('/', Path.DirectorySeparatorChar));
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(path));
+            int frames = Frequency * milliseconds / 1000;
+            int toneFrames = Frequency * toneMilliseconds / 1000;
+
+            using MemoryStream file = new();
+            file.Write("fLaC"u8);
+
+            // STREAMINFO, flagged as the last metadata block, 34 bytes long.
+            file.Write([0x80, 0, 0, 34]);
+            WriteBigEndian(file, BlockSize, 2);
+            WriteBigEndian(file, BlockSize, 2);
+            WriteBigEndian(file, 0, 3);
+            WriteBigEndian(file, 0, 3);
+            WriteBigEndian(file, ((ulong)Frequency << 44) | ((ulong)(Channels - 1) << 41) | (15UL << 36) | (uint)frames, 8);
+            file.Write(new byte[16]);
+
+            for (int start = 0, index = 0; start < frames; start += BlockSize, index++)
+            {
+                int count = Math.Min(BlockSize, frames - start);
+                using MemoryStream frame = new();
+
+                // Fixed block size; size read from the header end; 44.1 kHz; independent stereo;
+                // 16-bit samples; frame number below 128, so one byte.
+                frame.Write([0xFF, 0xF8, 0x79, 0x18, (byte)index]);
+                WriteBigEndian(frame, count - 1, 2);
+                frame.WriteByte(Crc8(frame.ToArray()));
+
+                for (int channel = 0; channel < Channels; channel++)
+                {
+                    frame.WriteByte(0x02);
+                    for (int i = start; i < start + count; i++)
+                    {
+                        short value = i >= toneFrames ? (short)0 : i % 100 < 50 ? amplitude : (short)-amplitude;
+                        WriteBigEndian(frame, value & 0xFFFF, 2);
+                    }
+                }
+
+                WriteBigEndian(frame, Crc16(frame.ToArray()), 2);
+                frame.WriteTo(file);
+            }
+
+            File.WriteAllBytes(path, file.ToArray());
+        }
+
+        private static void WriteBigEndian(Stream stream, ulong value, int bytes)
+        {
+            for (int shift = (bytes - 1) * 8; shift >= 0; shift -= 8)
+            {
+                stream.WriteByte((byte)(value >> shift));
+            }
+        }
+
+        private static void WriteBigEndian(Stream stream, int value, int bytes)
+        {
+            WriteBigEndian(stream, (uint)value, bytes);
+        }
+
+        private static byte Crc8(byte[] data)
+        {
+            int crc = 0;
+            foreach (byte b in data)
+            {
+                crc ^= b;
+                for (int bit = 0; bit < 8; bit++)
+                {
+                    crc = (crc & 0x80) != 0 ? (crc << 1) ^ 0x07 : crc << 1;
+                }
+            }
+
+            return (byte)crc;
+        }
+
+        private static int Crc16(byte[] data)
+        {
+            int crc = 0;
+            foreach (byte b in data)
+            {
+                crc ^= b << 8;
+                for (int bit = 0; bit < 8; bit++)
+                {
+                    crc = (crc & 0x8000) != 0 ? (crc << 1) ^ 0x8005 : crc << 1;
+                }
+            }
+
+            return crc & 0xFFFF;
+        }
+
         [Fact]
         public void SimultaneousInstancesOfOneEffectPlayIndependently()
         {
@@ -295,6 +390,20 @@ namespace CutTheRopeDX.Desktop.Platform.Tests
 
             Assert.Equal(AudioPlaybackState.Stopped, backend.MusicState);
             Assert.Equal(0, Render());
+        }
+
+        [Fact]
+        public void FlacMusicPlaysFromItsFirstFrame()
+        {
+            // Sound for the first 40 ms, then silence. A decoder that discards the opening block
+            // of the stream, as libFLAC does, would begin in the silence.
+            WriteFlacTone("sounds/opening.flac", milliseconds: 200, toneMilliseconds: 40, amplitude: 12000);
+            IMusicTrack track = backend.LoadMusic("sounds/opening");
+
+            backend.PlayMusic(track, repeating: false);
+
+            Assert.Equal(TimeSpan.FromMilliseconds(200), track.Duration);
+            Assert.True(Render() > 0);
         }
 
         [Fact]

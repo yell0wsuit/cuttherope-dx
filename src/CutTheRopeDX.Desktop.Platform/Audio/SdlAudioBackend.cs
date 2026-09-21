@@ -28,6 +28,9 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
         /// <summary>Extension music ships in.</summary>
         private const string MusicExtension = ".flac";
 
+        /// <summary>Name of the FLAC decoder compiled into SDL_mixer.</summary>
+        private const string FlacDecoder = "DRFLAC";
+
         private static readonly Lock LibraryLock = new();
         private static int libraryUsers;
 
@@ -222,10 +225,39 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
                 throw new FileNotFoundException($"Audio file not found: {path}", path);
             }
 
-            nint audio = Mixer.LoadAudio(mixer, path, predecode);
-            return audio == 0
-                ? throw new InvalidDataException($"Could not load audio '{path}': {SDL.GetError()}")
-                : audio;
+            nint stream = SDL.IOFromFile(path, "rb");
+            if (stream == 0)
+            {
+                throw new InvalidDataException($"Could not open audio '{path}': {SDL.GetError()}");
+            }
+
+            uint props = SDL.CreateProperties();
+            try
+            {
+                // The mixer closes the stream itself whether or not the load succeeds.
+                _ = SDL.SetPointerProperty(props, Mixer.Props.AudioLoadIOStreamPointer, stream);
+                _ = SDL.SetBooleanProperty(props, Mixer.Props.AudioLoadCloseIOBoolean, true);
+                _ = SDL.SetBooleanProperty(props, Mixer.Props.AudioLoadPreDecodeBoolean, predecode);
+                _ = SDL.SetPointerProperty(props, Mixer.Props.AudioLoadPreferredMixerPointer, mixer);
+
+                // Left to choose, the mixer prefers libFLAC over its built-in decoder whenever it
+                // can load one, and a system copy is enough. That decoder discards the first 4096
+                // frames of every stream it opens, so each song would start about 93ms in, with a
+                // click. The built-in decoder matches the reference decoder from the first frame.
+                if (path.EndsWith(MusicExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    _ = SDL.SetStringProperty(props, Mixer.Props.AudioDecoderString, FlacDecoder);
+                }
+
+                nint audio = Mixer.LoadAudioWithProperties(props);
+                return audio == 0
+                    ? throw new InvalidDataException($"Could not load audio '{path}': {SDL.GetError()}")
+                    : audio;
+            }
+            finally
+            {
+                SDL.DestroyProperties(props);
+            }
         }
 
         /// <inheritdoc />
