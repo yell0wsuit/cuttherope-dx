@@ -64,21 +64,5 @@ namespace CutTheRopeDX.GameMain
             return Array.IndexOf(UniqueSounds, soundResourceName) >= 0;
         }
 
-        /// <summary>Whether a followup timeline should play after the given timeline finishes.</summary>
-        /// <param name="finishedTimelineId">Timeline that just finished.</param>
-        /// <param name="followupTimelineId">Resolved followup timeline ID when one exists.</param>
-        /// <returns><see langword="true"/> when a followup timeline mapping exists; otherwise <see langword="false"/>.</returns>
-        public bool TryGetFollowupTimeline(int finishedTimelineId, out int followupTimelineId)
-        {
-            return Followups.TryGetValue(finishedTimelineId, out followupTimelineId);
-        }
-
-        /// <summary>Whether the given timeline should bind a delegate for followup/cadence.</summary>
-        /// <param name="timelineId">Timeline to test for followup binding.</param>
-        /// <returns><see langword="true"/> when the timeline has a configured followup; otherwise <see langword="false"/>.</returns>
-        public bool ShouldBindFollowupDelegate(int timelineId)
-        {
-            return Followups.ContainsKey(timelineId);
-        }
     }
 }

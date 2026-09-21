@@ -124,15 +124,6 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Creates the root controller that will own the active controller stack.
-        /// </summary>
-        /// <returns>New root controller instance.</returns>
-        public virtual RootController CreateRootController()
-        {
-            return RootController.CreateGameRoot();
-        }
-
-        /// <summary>
         /// Performs application startup by creating shared services, loading preferences,
         /// configuring orientation, and activating the root controller.
         /// </summary>
@@ -151,7 +142,7 @@ namespace CutTheRopeDX.Framework.Core
             }
             IS_IPAD = false;
             IS_RETINA = false;
-            root = CreateRootController();
+            root = RootController.CreateGameRoot();
             soundMgr = CreateSoundMgr();
             movieMgr = CreateMovieMgr();
             _canvas.touchDelegate = root;

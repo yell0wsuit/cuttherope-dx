@@ -495,14 +495,6 @@ namespace CutTheRopeDX.GameMain
             Spider = new SpiderRider { Animation = spiderAnimation };
         }
 
-        /// <summary>
-        /// Disposes the attached rope and clears the rope reference.
-        /// </summary>
-        public void DestroyRope()
-        {
-            Attachment.Release();
-        }
-
         /// <summary>Switches the suction cup images between their stuck and detached quads.</summary>
         public void UpdateKickState()
         {
@@ -550,7 +542,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (disposing)
             {
-                DestroyRope();
+                Attachment.Release();
                 bee?.Dispose();
                 bee = null;
                 Spider?.Animation?.Dispose();

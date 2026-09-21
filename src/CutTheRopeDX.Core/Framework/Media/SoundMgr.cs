@@ -287,7 +287,15 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         public static void StopMusic()
         {
-            StopMusicCore();
+            try
+            {
+                _backend?.StopMusic();
+            }
+            catch (Exception failure)
+            {
+                ILogger logger = Log.For(LogCategories.MediaSound);
+                SoundMgrLog.BackendCallFailed(logger, "stop music", failure);
+            }
         }
 
         /// <summary>
@@ -483,7 +491,7 @@ namespace CutTheRopeDX.Framework.Media
                 return;
             }
 
-            StopMusicCore();
+            StopMusic();
             string musicPath = ContentPaths.GetMusicPath(localizedName);
             try
             {
@@ -573,22 +581,6 @@ namespace CutTheRopeDX.Framework.Media
                 Release(entry.Instance);
                 return true;
             });
-        }
-
-        /// <summary>
-        /// Stops the currently playing background music.
-        /// </summary>
-        private static void StopMusicCore()
-        {
-            try
-            {
-                _backend?.StopMusic();
-            }
-            catch (Exception failure)
-            {
-                ILogger logger = Log.For(LogCategories.MediaSound);
-                SoundMgrLog.BackendCallFailed(logger, "stop music", failure);
-            }
         }
 
         /// <summary>

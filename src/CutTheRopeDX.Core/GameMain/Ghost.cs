@@ -412,7 +412,7 @@ namespace CutTheRopeDX.GameMain
                     break;
                 case GhostGrab grab:
                     hostScene?.UnregisterRope(grab.Rope);
-                    grab.DestroyRope();
+                    grab.Attachment.Release();
                     _ = gsBungees.Remove(grab);
                     break;
                 case GhostBouncer bouncer:

@@ -234,7 +234,7 @@ namespace CutTheRopeDX.Desktop
             input = new()
             {
                 Touch = touch => GameLifecycle.ProcessTouches([touch]),
-                MouseMoved = position => Application.SharedRootController().MouseMoved(GameLifecycle.TransformX(position.X), GameLifecycle.TransformY(position.Y)),
+                MouseMoved = position => Application.SharedRootController().MouseMoved(ScreenPresentation.Instance.TransformViewToGameX(position.X), ScreenPresentation.Instance.TransformViewToGameY(position.Y)),
                 Wheel = delta => Application.SharedRootController().HandleMouseWheel(delta),
                 Back = () => { Application.SharedMovieMgr().Stop(); _ = GameLifecycle.BackPressed(); },
                 FocusChanged = focused =>

@@ -325,26 +325,14 @@ namespace CutTheRopeDX.Desktop
         /// <param name="entry">The entry to render.</param>
         /// <returns>The formatted line.</returns>
         /// <remarks>
-        /// This only unpacks the entry. <see cref="Compose"/> holds the formatting, because
+        /// This only unpacks the entry. <see cref="LogEntryFormat.Compose"/> holds the formatting, because
         /// <c>LogMessage</c> is a struct of readonly fields with no public constructor and so
         /// cannot be built by a test.
         /// </remarks>
         public static string FormatEntry(LogMessage entry)
         {
-            return Compose(entry.LogLevel, entry.LogName, entry.Message, entry.Exception);
+            return LogEntryFormat.Compose(entry.LogLevel, entry.LogName, entry.Message, entry.Exception);
         }
 
-        /// <summary>
-        /// Formats one entry.
-        /// </summary>
-        /// <param name="level">Severity.</param>
-        /// <param name="category">Category name.</param>
-        /// <param name="message">The rendered message.</param>
-        /// <param name="exception">The attached exception, if any.</param>
-        /// <returns>The line, in the shape every host writes.</returns>
-        public static string Compose(LogLevel level, string category, string message, Exception exception)
-        {
-            return LogEntryFormat.Compose(level, category, message, exception);
-        }
     }
 }

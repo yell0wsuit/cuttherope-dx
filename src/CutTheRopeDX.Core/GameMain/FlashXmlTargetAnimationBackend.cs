@@ -486,7 +486,7 @@ namespace CutTheRopeDX.GameMain
         private static bool TryGetCompletionTargetTimelineId(OmNomSkinDefinition skinDefinition,
             int finishedTimelineId, out int followupTimelineId)
         {
-            return skinDefinition.TryGetFollowupTimeline(finishedTimelineId, out followupTimelineId);
+            return skinDefinition.Followups.TryGetValue(finishedTimelineId, out followupTimelineId);
         }
 
         /// <summary>
@@ -907,7 +907,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (SkinDefinition.ShouldBindFollowupDelegate(timelineId))
+            if (SkinDefinition.Followups.ContainsKey(timelineId))
             {
                 timeline.delegateTimelineDelegate = this;
                 _driverTimeline = timeline;

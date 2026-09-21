@@ -39,7 +39,7 @@ namespace CutTheRopeDX.Framework.Core
                         int levelsInPackCount = GetLevelsInPackCount(i);
                         while (j < levelsInPackCount)
                         {
-                            int intForKey2 = GetBoxIntForKey(GetBoxForPack(i), GetPackLevelKey("SCORE_", i, j));
+                            int intForKey2 = GetBoxIntForKey(PackConfig.GetSaveSlot(i), GetPackLevelKey("SCORE_", i, j));
                             if (intForKey2 > 5999)
                             {
                                 packScoreTotal = 150000;
@@ -169,7 +169,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The number of stars earned (0–3).</returns>
         public static int GetStarsForPackLevel(int p, int l)
         {
-            return GetStarsForPackLevel(GetBoxForPack(p), p, l);
+            return GetStarsForPackLevel(PackConfig.GetSaveSlot(p), p, l);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The <see cref="UNLOCKEDSTATE"/> of the level.</returns>
         public static UNLOCKEDSTATE GetUnlockedForPackLevel(int p, int l)
         {
-            return GetUnlockedForPackLevel(GetBoxForPack(p), p, l);
+            return GetUnlockedForPackLevel(PackConfig.GetSaveSlot(p), p, l);
         }
 
         /// <summary>
@@ -217,16 +217,6 @@ namespace CutTheRopeDX.Framework.Core
         {
             int packs = PackConfig.GetPackCount();
             return IsLiteVersion() ? Math.Min(packs, SharewareFreePacks()) : packs;
-        }
-
-        /// <summary>
-        /// Gets the save slot index for the specified pack.
-        /// </summary>
-        /// <param name="pack">The pack index.</param>
-        /// <returns>The save slot index.</returns>
-        public static int GetBoxForPack(int pack)
-        {
-            return PackConfig.GetSaveSlot(pack);
         }
 
         /// <summary>
@@ -258,7 +248,7 @@ namespace CutTheRopeDX.Framework.Core
             if (Application.SharedRootController() is RootController rootController)
             {
                 int pack = rootController.GetPack();
-                return GetTotalStarsInBox(GetBoxForPack(pack));
+                return GetTotalStarsInBox(PackConfig.GetSaveSlot(pack));
             }
 
             return GetTotalStarsInBox(0);
@@ -276,7 +266,7 @@ namespace CutTheRopeDX.Framework.Core
             int packsCount = GetPacksCount();
             while (i < packsCount)
             {
-                if (GetBoxForPack(i) != box)
+                if (PackConfig.GetSaveSlot(i) != box)
                 {
                     i++;
                     continue;
@@ -292,16 +282,6 @@ namespace CutTheRopeDX.Framework.Core
                 i++;
             }
             return totalStars;
-        }
-
-        /// <summary>
-        /// Gets the number of stars required to unlock the specified pack.
-        /// </summary>
-        /// <param name="n">The pack index.</param>
-        /// <returns>The star threshold for unlocking.</returns>
-        public static int PackUnlockStars(int n)
-        {
-            return PackConfig.GetUnlockStars(n);
         }
 
         /// <summary>
@@ -355,7 +335,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="l">The level index within the pack.</param>
         public static void SetUnlockedForPackLevel(UNLOCKEDSTATE s, int p, int l)
         {
-            SetUnlockedForPackLevel(GetBoxForPack(p), s, p, l);
+            SetUnlockedForPackLevel(PackConfig.GetSaveSlot(p), s, p, l);
         }
 
         /// <summary>
@@ -432,7 +412,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns><see langword="true"/> if all levels have 3 stars; otherwise, <see langword="false"/>.</returns>
         public static bool IsPackPerfect(int p)
         {
-            return IsPackPerfect(GetBoxForPack(p), p);
+            return IsPackPerfect(PackConfig.GetSaveSlot(p), p);
         }
 
         /// <summary>
@@ -475,7 +455,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The level score.</returns>
         public static int GetScoreForPackLevel(int p, int l)
         {
-            return GetScoreForPackLevel(GetBoxForPack(p), p, l);
+            return GetScoreForPackLevel(PackConfig.GetSaveSlot(p), p, l);
         }
 
         /// <summary>
@@ -498,7 +478,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="l">The level index within the pack.</param>
         public static void SetScoreForPackLevel(int s, int p, int l)
         {
-            SetScoreForPackLevel(GetBoxForPack(p), s, p, l);
+            SetScoreForPackLevel(PackConfig.GetSaveSlot(p), s, p, l);
         }
 
         /// <summary>
@@ -521,7 +501,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <param name="l">The level index within the pack.</param>
         public static void SetStarsForPackLevel(int s, int p, int l)
         {
-            SetStarsForPackLevel(GetBoxForPack(p), s, p, l);
+            SetStarsForPackLevel(PackConfig.GetSaveSlot(p), s, p, l);
         }
 
         /// <summary>
@@ -550,7 +530,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The total star count for the pack.</returns>
         public static int GetTotalStarsInPack(int p)
         {
-            return GetTotalStarsInPack(GetBoxForPack(p), p);
+            return GetTotalStarsInPack(PackConfig.GetSaveSlot(p), p);
         }
 
         /// <summary>
@@ -577,10 +557,10 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns><see langword="true"/> if no earlier pack shares the same save slot; otherwise, <see langword="false"/>.</returns>
         private static bool IsSlotEntryPack(int pack)
         {
-            int box = GetBoxForPack(pack);
+            int box = PackConfig.GetSaveSlot(pack);
             for (int i = 0; i < pack; i++)
             {
-                if (GetBoxForPack(i) == box)
+                if (PackConfig.GetSaveSlot(i) == box)
                 {
                     return false;
                 }
@@ -602,7 +582,7 @@ namespace CutTheRopeDX.Framework.Core
                     continue;
                 }
 
-                int box = GetBoxForPack(pack);
+                int box = PackConfig.GetSaveSlot(pack);
                 if (GetUnlockedForPackLevel(box, pack, 0) != UNLOCKEDSTATE.LOCKED)
                 {
                     continue;
@@ -633,7 +613,7 @@ namespace CutTheRopeDX.Framework.Core
                     continue;
                 }
 
-                int box = GetBoxForPack(i);
+                int box = PackConfig.GetSaveSlot(i);
                 SetBoxBoolForKey(box, true, GetPackLevelKey("UNLOCKED_", i, 0), false);
             }
 
@@ -677,7 +657,7 @@ namespace CutTheRopeDX.Framework.Core
             int packsCount = GetPacksCount();
             while (i < packsCount)
             {
-                int box = GetBoxForPack(i);
+                int box = PackConfig.GetSaveSlot(i);
                 if (GetUnlockedForPackLevel(box, i, 0) == UNLOCKEDSTATE.LOCKED)
                 {
                     SetUnlockedForPackLevel(box, UNLOCKEDSTATE.JUSTUNLOCKED, i, 0);
@@ -697,7 +677,7 @@ namespace CutTheRopeDX.Framework.Core
             {
                 for (int j = 0; j < GetLevelsInPackCount(i); j++)
                 {
-                    totalScore += GetBoxIntForKey(GetBoxForPack(i), GetPackLevelKey("SCORE_", i, j));
+                    totalScore += GetBoxIntForKey(PackConfig.GetSaveSlot(i), GetPackLevelKey("SCORE_", i, j));
                 }
             }
             return totalScore;

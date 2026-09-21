@@ -254,26 +254,6 @@ namespace CutTheRopeDX.Commons
         }
 
         /// <summary>
-        /// Converts a view-space X coordinate into game-space coordinates.
-        /// </summary>
-        /// <param name="x">The view-space X coordinate.</param>
-        /// <returns>The transformed game-space X coordinate.</returns>
-        public static float TransformX(float x)
-        {
-            return ScreenPresentation.Instance.TransformViewToGameX(x);
-        }
-
-        /// <summary>
-        /// Converts a view-space Y coordinate into game-space coordinates.
-        /// </summary>
-        /// <param name="y">The view-space Y coordinate.</param>
-        /// <returns>The transformed game-space Y coordinate.</returns>
-        public static float TransformY(float y)
-        {
-            return ScreenPresentation.Instance.TransformViewToGameY(y);
-        }
-
-        /// <summary>
         /// Forwards touch input from the platform layer to the shared canvas.
         /// </summary>
         /// <param name="touches">The touch locations reported for the current frame.</param>

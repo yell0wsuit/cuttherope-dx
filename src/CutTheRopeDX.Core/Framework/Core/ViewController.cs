@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
@@ -510,7 +509,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Pressed)
                 {
-                    return view.OnTouchDownXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchDownXY(ScreenPresentation.Instance.TransformViewToGameX(touchLocation.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touchLocation.Position.Y));
                 }
             }
             return false;
@@ -560,7 +559,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Released)
                 {
-                    return view.OnTouchUpXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchUpXY(ScreenPresentation.Instance.TransformViewToGameX(touchLocation.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touchLocation.Position.Y));
                 }
             }
             return false;
@@ -589,7 +588,7 @@ namespace CutTheRopeDX.Framework.Core
                 TouchLocation touchLocation = touches[i];
                 if (touchLocation.State == TouchLocationState.Moved)
                 {
-                    return view.OnTouchMoveXY(GameLifecycle.TransformX(touchLocation.Position.X), GameLifecycle.TransformY(touchLocation.Position.Y));
+                    return view.OnTouchMoveXY(ScreenPresentation.Instance.TransformViewToGameX(touchLocation.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touchLocation.Position.Y));
                 }
             }
             return false;

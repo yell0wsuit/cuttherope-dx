@@ -284,17 +284,12 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void Update(float delta)
         {
-            RefreshPresentation();
+            PrepareToDraw();
             base.Update(delta);
         }
 
         /// <summary>Refreshes the view from authoritative state immediately before rendering.</summary>
         internal void PrepareToDraw()
-        {
-            RefreshPresentation();
-        }
-
-        private void RefreshPresentation()
         {
             CandyTransportSession transport = owner.Lifecycle.Transport;
             visible = !owner.HasNoWholeBodyInPlay && transport?.Sock == null;

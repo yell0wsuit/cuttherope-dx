@@ -991,8 +991,8 @@ namespace CutTheRopeDX.GameMain
             baseElement.SetName("boxContainer");
             baseElement.anchor = baseElement.parentAnchor = 12;
             _ = touchBaseElement.AddChild(baseElement);
-            int totalStars = Preferences.GetTotalStarsInBox(Preferences.GetBoxForPack(n));
-            if (n > 0 && n < Preferences.GetPacksCount() && Preferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= Preferences.PackUnlockStars(n))
+            int totalStars = Preferences.GetTotalStarsInBox(PackConfig.GetSaveSlot(n));
+            if (n > 0 && n < Preferences.GetPacksCount() && Preferences.GetUnlockedForPackLevel(n, 0) == UNLOCKEDSTATE.LOCKED && totalStars >= PackConfig.GetUnlockStars(n))
             {
                 Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, n, 0);
             }
@@ -1037,7 +1037,7 @@ namespace CutTheRopeDX.GameMain
             if (isLockedPack)
             {
                 _ = baseElement.AddChild(image);
-                int requiredStars = Preferences.PackUnlockStars(n);
+                int requiredStars = PackConfig.GetUnlockStars(n);
                 Image lockOverlay = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
                 lockOverlay.DoRestoreCutTransparency();
                 lockOverlay.anchor = lockOverlay.parentAnchor = 9;
@@ -1389,7 +1389,7 @@ namespace CutTheRopeDX.GameMain
             currentPack = i;
             pack = i;
             Preferences.SetLastBox(i);
-            Preferences.SetLastGamePack(Preferences.GetBoxForPack(i));
+            Preferences.SetLastGamePack(PackConfig.GetSaveSlot(i));
         }
 
         /// <summary>
@@ -1765,7 +1765,7 @@ namespace CutTheRopeDX.GameMain
                 pack = 0;
                 currentPack = 0;
                 Preferences.SetLastBox(0);
-                Preferences.SetLastGamePack(Preferences.GetBoxForPack(0));
+                Preferences.SetLastGamePack(PackConfig.GetSaveSlot(0));
                 PreLevelSelect();
                 ShowView(VIEW_LEVEL_SELECT);
                 if (isOutro)
@@ -1815,7 +1815,7 @@ namespace CutTheRopeDX.GameMain
         {
             SoundMgr.StopMusic();
             RootController root = Application.SharedRootController();
-            root.SetBox(Preferences.GetBoxForPack(pack));
+            root.SetBox(PackConfig.GetSaveSlot(pack));
             root.SetPack(pack);
             root.SetLevel(level);
             Application.SharedRootController().SetViewTransition(-1);
@@ -1936,7 +1936,7 @@ namespace CutTheRopeDX.GameMain
                     ShowView(1);
                     return;
                 case var id when id == MenuButtonId.PlayPack0:
-                    Application.SharedRootController().SetBox(Preferences.GetBoxForPack(0));
+                    Application.SharedRootController().SetBox(PackConfig.GetSaveSlot(0));
                     Application.SharedRootController().SetPack(0);
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
@@ -1954,7 +1954,7 @@ namespace CutTheRopeDX.GameMain
                         resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         resourceMgr.LoadImmediately();
                         root.SetSurvival(true);
-                        root.SetBox(Preferences.GetBoxForPack(pack));
+                        root.SetBox(PackConfig.GetSaveSlot(pack));
                         root.SetPack(pack);
                         Deactivate();
                         return;
@@ -2203,7 +2203,7 @@ namespace CutTheRopeDX.GameMain
                             return;
                         }
                         Preferences.SetLastBox(pack);
-                        Preferences.SetLastGamePack(Preferences.GetBoxForPack(pack));
+                        Preferences.SetLastGamePack(PackConfig.GetSaveSlot(pack));
                         bool targetPackLocked = Preferences.GetUnlockedForPackLevel(targetPack, 0) == UNLOCKEDSTATE.LOCKED && targetPack != Preferences.GetPacksCount();
                         if (targetPack != Preferences.GetPacksCount() && !targetPackLocked)
                         {

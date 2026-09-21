@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using CutTheRopeDX.Commons;
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
@@ -101,7 +100,7 @@ namespace CutTheRopeDX.GameMain
             base.Activate();
             SoundMgr.StopMusic();
             PlayMusic();
-            InitGameView();
+            LevelFirstStart();
             ShowView(0);
 
             if (CustomLevelSession.IsActive && levelWatcher == null)
@@ -235,14 +234,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Initializes the game view for a fresh level start.
-        /// </summary>
-        public void InitGameView()
-        {
-            LevelFirstStart();
-        }
-
-        /// <summary>
         /// Starts the first-level open transition and enables gameplay input.
         /// </summary>
         public void LevelFirstStart()
@@ -294,7 +285,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="pack">Pack index to check.</param>
         public static void CheckForBoxPerfect(int pack)
         {
-            CheckForBoxPerfect(Preferences.GetBoxForPack(pack), pack);
+            CheckForBoxPerfect(PackConfig.GetSaveSlot(pack), pack);
         }
 
         /// <summary>
@@ -825,7 +816,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchDownXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchDownXYIndex(ScreenPresentation.Instance.TransformViewToGameX(touch.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touch.Position.Y), touchSlot);
                     }
                 }
             }
@@ -860,7 +851,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchUpXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchUpXYIndex(ScreenPresentation.Instance.TransformViewToGameX(touch.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touch.Position.Y), touchSlot);
                     }
                     else
                     {
@@ -898,7 +889,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     if (touchSlot != -1)
                     {
-                        _ = gameScene.TouchMoveXYIndex(GameLifecycle.TransformX(touch.Position.X), GameLifecycle.TransformY(touch.Position.Y), touchSlot);
+                        _ = gameScene.TouchMoveXYIndex(ScreenPresentation.Instance.TransformViewToGameX(touch.Position.X), ScreenPresentation.Instance.TransformViewToGameY(touch.Position.Y), touchSlot);
                     }
                 }
             }
