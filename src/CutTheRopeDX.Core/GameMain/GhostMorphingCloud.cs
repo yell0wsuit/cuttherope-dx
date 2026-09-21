@@ -44,7 +44,7 @@ namespace CutTheRopeDX.GameMain
             base.Update(delta);
             for (int i = 0; i < particleCount; i++)
             {
-                Particle particle = particles[i];
+                ref Particle particle = ref particles[i];
                 if (particle.life > 0f)
                 {
                     float fadeWindow = 0.2f * life;

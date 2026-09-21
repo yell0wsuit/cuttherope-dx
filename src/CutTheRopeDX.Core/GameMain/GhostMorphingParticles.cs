@@ -12,7 +12,9 @@ namespace CutTheRopeDX.GameMain
         public override void InitParticle(ref Particle particle)
         {
             base.InitParticle(ref particle);
-            angle += 360f / totalParticles;
+            // Integer division, as in the original: seven particles step 51 degrees each,
+            // so a burst spans 357 and the next one starts three degrees around.
+            angle += 360 / totalParticles;
             int quadIndex = RND_RANGE(4, 6);
             float scale = size + (RND_MINUS1_1 * sizeVar);
             SetParticleQuad(ref particle, quadIndex, scale);
@@ -24,16 +26,16 @@ namespace CutTheRopeDX.GameMain
         {
             if (InitWithTotalParticlesandImageGrid(numberOfParticles, Image.Image_createWithResID(Resources.Img.ObjGhost)) != null)
             {
-                size = 0.8f;
-                sizeVar = 0.4f;
+                size = 0.6f;
+                sizeVar = 0.2f;
                 angle = RND_RANGE(0, 360);
                 angleVar = 15f;
                 rotateSpeedVar = 30f;
-                life = 0.6f;
-                lifeVar = 0.15f;
+                life = 0.8f;
+                lifeVar = 0.3f;
                 duration = 1.5f;
-                speed = 60f;
-                speedVar = 15f;
+                speed = 420f;
+                speedVar = 105f;
                 startColor = RGBAColor.solidOpaqueRGBA;
                 endColor = RGBAColor.transparentRGBA;
             }
@@ -46,7 +48,7 @@ namespace CutTheRopeDX.GameMain
             base.Update(delta);
             for (int i = 0; i < particleCount; i++)
             {
-                Particle particle = particles[i];
+                ref Particle particle = ref particles[i];
                 if (particle.life > 0f)
                 {
                     float fadeThreshold = 0.7f * life;
