@@ -5,7 +5,6 @@ using System.Numerics;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
-using CutTheRopeDX.GameMain;
 
 using SkiaSharp;
 
