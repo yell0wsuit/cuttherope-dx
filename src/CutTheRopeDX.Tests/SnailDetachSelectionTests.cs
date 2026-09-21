@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldDetachTrueForAnActiveSnailRidingThisCandy()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.True(SnailDetachSelection.ShouldDetach(
                 snailActive: true, snailAttachedPoint: candy, targetPoint: candy));
         }
@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Tests
         public void ShouldDetachFalseForASnailRidingADifferentCandy()
         {
             // The multi-candy isolation invariant: detaching snails from candy A must leave candy B's snail on.
-            ConstraintedPoint candyA = new();
-            ConstraintedPoint candyB = new();
+            ConstrainedPoint candyA = new();
+            ConstrainedPoint candyB = new();
             Assert.False(SnailDetachSelection.ShouldDetach(
                 snailActive: true, snailAttachedPoint: candyB, targetPoint: candyA));
         }
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         public void ShouldDetachFalseForAnInactiveSnail()
         {
             // Only riding (active) snails detach; one that is spawning or already vanishing is left alone.
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.False(SnailDetachSelection.ShouldDetach(
                 snailActive: false, snailAttachedPoint: candy, targetPoint: candy));
         }
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldDetachFalseWhenSnailRidesNothing()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.False(SnailDetachSelection.ShouldDetach(
                 snailActive: true, snailAttachedPoint: null, targetPoint: candy));
         }

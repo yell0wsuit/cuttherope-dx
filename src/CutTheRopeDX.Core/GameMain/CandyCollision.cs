@@ -81,7 +81,7 @@ namespace CutTheRopeDX.GameMain
         /// <see cref="HtmlNudgeScaleX"/>/<see cref="HtmlNudgeScaleY"/>; the impulse is their
         /// difference. Point <paramref name="b"/>'s impulse is the negation of this one.
         /// </summary>
-        public static Vector HtmlNudgeImpulse(ConstraintedPoint a, ConstraintedPoint b)
+        public static Vector HtmlNudgeImpulse(ConstrainedPoint a, ConstrainedPoint b)
         {
             float aReverseX = (a.prevPos.X - a.pos.X) * HtmlNudgeScaleX;
             float aReverseY = (a.prevPos.Y - a.pos.Y) * HtmlNudgeScaleY;

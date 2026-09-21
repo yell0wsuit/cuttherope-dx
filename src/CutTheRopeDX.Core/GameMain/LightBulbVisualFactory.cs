@@ -13,7 +13,7 @@ namespace CutTheRopeDX.GameMain
 
     internal static class LightBulbVisualFactory
     {
-        public static CandyContext Create(float lightRadius, ConstraintedPoint point, string bulbNumber)
+        public static CandyContext Create(float lightRadius, ConstrainedPoint point, string bulbNumber)
         {
             LightBulb bulb = new(lightRadius, point, bulbNumber);
 

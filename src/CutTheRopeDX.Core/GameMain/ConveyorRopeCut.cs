@@ -18,8 +18,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="isWrappedGrab">True when the candidate is the wrapped grab itself.</param>
         /// <param name="ropeUncut">True when the candidate rope is still uncut.</param>
         public static bool ShouldCut(
-            ConstraintedPoint ropeTail,
-            ConstraintedPoint wrappedCandyPoint,
+            ConstrainedPoint ropeTail,
+            ConstrainedPoint wrappedCandyPoint,
             bool isWrappedGrab,
             bool ropeUncut)
         {

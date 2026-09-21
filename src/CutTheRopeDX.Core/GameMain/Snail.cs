@@ -51,7 +51,7 @@ namespace CutTheRopeDX.GameMain
         /// Attaches the snail to a candy physics point and plays the wake-up state transition.
         /// </summary>
         /// <param name="p">Candy physics point to follow.</param>
-        public void AttachToPoint(ConstraintedPoint p)
+        public void AttachToPoint(ConstrainedPoint p)
         {
             point = p;
             state = SNAIL_STATE_ACTIVE;
@@ -298,7 +298,7 @@ namespace CutTheRopeDX.GameMain
         public float startRotation;
 
         /// <summary>Returns the candy physics point currently followed by the snail.</summary>
-        public ConstraintedPoint AttachedPoint()
+        public ConstrainedPoint AttachedPoint()
         {
             return point;
         }
@@ -307,7 +307,7 @@ namespace CutTheRopeDX.GameMain
         private BaseElement backContainer;
 
         /// <summary>Candy physics point currently followed by the snail.</summary>
-        private ConstraintedPoint point;
+        private ConstrainedPoint point;
 
         /// <summary>Sleepy eyes overlay visual.</summary>
         private Image sleepyEyes;

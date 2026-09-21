@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldCutTrueForAnotherUncutRopeOnTheSameCandy()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.True(ConveyorRopeCut.ShouldCut(
                 ropeTail: candy, wrappedCandyPoint: candy, isWrappedGrab: false, ropeUncut: true));
         }
@@ -24,8 +24,8 @@ namespace CutTheRopeDX.Tests
         public void ShouldCutFalseForARopeOnADifferentCandy()
         {
             // The multi-candy isolation invariant: wrapping a grab on candy A must not cut candy B's rope.
-            ConstraintedPoint candyA = new();
-            ConstraintedPoint candyB = new();
+            ConstrainedPoint candyA = new();
+            ConstrainedPoint candyB = new();
             Assert.False(ConveyorRopeCut.ShouldCut(
                 ropeTail: candyB, wrappedCandyPoint: candyA, isWrappedGrab: false, ropeUncut: true));
         }
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.Tests
         public void ShouldCutFalseForTheWrappedGrabItself()
         {
             // The wrapped grab keeps its own rope; only its siblings are cut.
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.False(ConveyorRopeCut.ShouldCut(
                 ropeTail: candy, wrappedCandyPoint: candy, isWrappedGrab: true, ropeUncut: true));
         }
@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldCutFalseWhenRopeAlreadyCut()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.False(ConveyorRopeCut.ShouldCut(
                 ropeTail: candy, wrappedCandyPoint: candy, isWrappedGrab: false, ropeUncut: false));
         }
@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ShouldCutFalseWhenGrabHasNoRope()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Assert.False(ConveyorRopeCut.ShouldCut(
                 ropeTail: null, wrappedCandyPoint: candy, isWrappedGrab: false, ropeUncut: true));
         }

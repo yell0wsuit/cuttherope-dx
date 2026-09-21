@@ -197,7 +197,7 @@ namespace CutTheRopeDX.GameMain
                     grab.CreateAxisVisuals();
                     if (grabRadius == -1f)
                     {
-                        ConstraintedPoint ropeAnchor = hostScene?.GetGhostRopeAnchor(Vect(x, y));
+                        ConstrainedPoint ropeAnchor = hostScene?.GetGhostRopeAnchor(Vect(x, y));
                         if (ropeAnchor != null)
                         {
                             Vector anchorPos = ropeAnchor.pos;

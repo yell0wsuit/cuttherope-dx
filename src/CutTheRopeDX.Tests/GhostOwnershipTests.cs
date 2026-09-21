@@ -239,7 +239,7 @@ namespace CutTheRopeDX.Tests
             scene.OperatePump(pump);
             for (int i = 0; i < Bungee.BUNGEE_RELAXION_TIMES; i++)
             {
-                ConstraintedPoint.SatisfyConstraints(candy.Point);
+                ConstrainedPoint.SatisfyConstraints(candy.Point);
             }
 
             Assert.Equal(beforePump.X, candy.Point.pos.X, 3);

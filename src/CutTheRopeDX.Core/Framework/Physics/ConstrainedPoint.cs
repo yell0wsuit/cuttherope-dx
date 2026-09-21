@@ -7,7 +7,7 @@ namespace CutTheRopeDX.Framework.Physics
     /// <summary>
     /// Verlet-style physics point that can be pinned and linked to other points through constraints.
     /// </summary>
-    internal sealed class ConstraintedPoint : MaterialPoint
+    internal sealed class ConstrainedPoint : MaterialPoint
     {
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
@@ -22,7 +22,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// <summary>
         /// Initializes a new constrained point with no previous position, pin, or constraints.
         /// </summary>
-        public ConstraintedPoint()
+        public ConstrainedPoint()
         {
             prevPos = vectUndefined;
             pin = Vect(PIN_UNSET_COORDINATE, PIN_UNSET_COORDINATE);
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// <param name="restLength">Target distance for the relationship.</param>
         /// <param name="constraintType">Constraint rule to enforce.</param>
         public void AddConstraintwithRestLengthofType(
-            ConstraintedPoint constrainedPoint,
+            ConstrainedPoint constrainedPoint,
             float restLength,
             ConstraintType constraintType)
         {
@@ -53,7 +53,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// Removes the first constraint that targets the specified point.
         /// </summary>
         /// <param name="constrainedPoint">Target point to remove.</param>
-        public void RemoveConstraint(ConstraintedPoint constrainedPoint)
+        public void RemoveConstraint(ConstrainedPoint constrainedPoint)
         {
             for (int i = 0; i < constraints.Count; i++)
             {
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// </summary>
         /// <param name="fromPoint">Existing target point.</param>
         /// <param name="toPoint">Replacement target point.</param>
-        public void ChangeConstraintFromTo(ConstraintedPoint fromPoint, ConstraintedPoint toPoint)
+        public void ChangeConstraintFromTo(ConstrainedPoint fromPoint, ConstrainedPoint toPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// <param name="fromPoint">Existing target point.</param>
         /// <param name="toPoint">Replacement target point.</param>
         /// <param name="restLength">New rest length to store.</param>
-        public void ChangeConstraintFromTowithRestLength(ConstraintedPoint fromPoint, ConstraintedPoint toPoint, float restLength)
+        public void ChangeConstraintFromTowithRestLength(ConstrainedPoint fromPoint, ConstrainedPoint toPoint, float restLength)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -118,7 +118,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// </summary>
         /// <param name="restLength">New rest length.</param>
         /// <param name="constrainedPoint">Target point whose constraint should be updated.</param>
-        public void ChangeRestLengthToFor(float restLength, ConstraintedPoint constrainedPoint)
+        public void ChangeRestLengthToFor(float restLength, ConstrainedPoint constrainedPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -137,7 +137,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// </summary>
         /// <param name="p">Point to test.</param>
         /// <returns><see langword="true" /> if a matching constraint exists; otherwise <see langword="false" />.</returns>
-        public bool HasConstraintTo(ConstraintedPoint p)
+        public bool HasConstraintTo(ConstrainedPoint p)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -156,7 +156,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// </summary>
         /// <param name="constrainedPoint">Target point to look up.</param>
         /// <returns>The configured rest length, or <c>-1</c> when no constraint exists.</returns>
-        public float RestLengthFor(ConstraintedPoint constrainedPoint)
+        public float RestLengthFor(ConstrainedPoint constrainedPoint)
         {
             int count = constraints.Count;
             for (int i = 0; i < count; i++)
@@ -213,7 +213,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// Enforces all constraints owned by the specified point, including optional pinning.
         /// </summary>
         /// <param name="constrainedPoint">Point whose constraints should be satisfied.</param>
-        public static void SatisfyConstraints(ConstraintedPoint constrainedPoint)
+        public static void SatisfyConstraints(ConstrainedPoint constrainedPoint)
         {
             if (constrainedPoint == null)
             {
@@ -281,7 +281,7 @@ namespace CutTheRopeDX.Framework.Physics
         /// <param name="constrainedPoint">Point to update.</param>
         /// <param name="delta">Elapsed frame time in seconds.</param>
         /// <param name="coefficient">Additional timestep scaling coefficient.</param>
-        public static void Qcpupdate(ConstraintedPoint constrainedPoint, float delta, float coefficient)
+        public static void Qcpupdate(ConstrainedPoint constrainedPoint, float delta, float coefficient)
         {
             constrainedPoint.totalForce = vectZero;
             if (!constrainedPoint.disableGravity && !globalDisableGravity)

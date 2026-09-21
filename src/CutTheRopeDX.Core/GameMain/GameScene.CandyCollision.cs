@@ -43,8 +43,8 @@ namespace CutTheRopeDX.GameMain
                         continue;
                     }
                     // Only whole bodies collide, so each candy contributes exactly one point here.
-                    ConstraintedPoint pa = ca.WholeBody.Point;
-                    ConstraintedPoint pb = cb.WholeBody.Point;
+                    ConstrainedPoint pa = ca.WholeBody.Point;
+                    ConstrainedPoint pb = cb.WholeBody.Point;
                     if (!CandyCollision.ShouldUseHtmlModel(ca, cb, ActivePhysicsConstants.UseMobilePhysicsModel))
                     {
                         // Mobile-style: radius-sum trigger + de-penetration.
@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain
         /// candy's position by the equal-and-opposite impulse via <see cref="MaterialPoint.ApplyImpulseDelta"/>
         /// (leaving prevPos, so it reads as injected velocity in the Verlet step). No de-penetration.
         /// </summary>
-        private static void ResolveCandyPairHtml(ConstraintedPoint a, ConstraintedPoint b, float delta)
+        private static void ResolveCandyPairHtml(ConstrainedPoint a, ConstrainedPoint b, float delta)
         {
             Vector impulseA = CandyCollision.HtmlNudgeImpulse(a, b);
             a.ApplyImpulseDelta(impulseA, delta);
@@ -95,7 +95,7 @@ namespace CutTheRopeDX.GameMain
         /// Collision distance threshold (the engine's <c>a5</c>). For candy↔candy this is the sum
         /// of the two candy radii; for light bulbs it is the bulb collision distance.
         /// </param>
-        private static void HandleCandyIntersection(ConstraintedPoint a, ConstraintedPoint b, float collisionDist)
+        private static void HandleCandyIntersection(ConstrainedPoint a, ConstrainedPoint b, float collisionDist)
         {
             float dx = a.pos.X - b.pos.X;
             float dy = a.pos.Y - b.pos.Y;

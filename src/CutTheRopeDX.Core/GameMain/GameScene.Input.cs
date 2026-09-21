@@ -167,7 +167,7 @@ namespace CutTheRopeDX.GameMain
                 pauseSwitcherTouch = new PauseSwitcherTouch(ti, pressedSwitcher);
             }
             waterLayer?.AddParticlesAtXY(worldX, worldY);
-            if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstraintedPoint droppedMouseCandy))
+            if (miceManager != null && miceManager.HandleClick(worldX, worldY, out ConstrainedPoint droppedMouseCandy))
             {
                 CandyContext droppedCandy = CandyForPointOrNull(droppedMouseCandy);
                 if (droppedCandy != null)
@@ -196,7 +196,7 @@ namespace CutTheRopeDX.GameMain
                 // enforces for the snail interaction.
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Snail))
                 {
-                    ConstraintedPoint p = body.Point;
+                    ConstrainedPoint p = body.Point;
                     if (PointInRect(worldX, worldY, p.pos.X - 30f, p.pos.Y - 30f, 60f, 60f) && p.weight > 1f)
                     {
                         p.SetWeight(p.weight - 3f);
@@ -364,7 +364,7 @@ namespace CutTheRopeDX.GameMain
 
             foreach (CandyBody body in ActiveCandyBodies())
             {
-                if (body.Point != null && HandleConveyorTouchConstraintedPointXY(body.Point, tx, ty))
+                if (body.Point != null && HandleConveyorTouchConstrainedPointXY(body.Point, tx, ty))
                 {
                     return true;
                 }
@@ -372,7 +372,7 @@ namespace CutTheRopeDX.GameMain
 
             foreach (Lantern lantern in Lantern.GetAllLanterns())
             {
-                if (lantern != null && lantern.OnTouchDown(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), out ConstraintedPoint releasedCandyPoint))
+                if (lantern != null && lantern.OnTouchDown(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), out ConstrainedPoint releasedCandyPoint))
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_revealCandyFromLantern), releasedCandyPoint, Lantern.LanternCandyRevealTime);
                     return true;

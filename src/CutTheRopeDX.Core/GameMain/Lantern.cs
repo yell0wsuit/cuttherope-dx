@@ -143,14 +143,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="obj">Candy point passed through the dispatcher.</param>
         public void CaptureCandyFromDispatcher(FrameworkTypes obj)
         {
-            CaptureCandy((ConstraintedPoint)obj);
+            CaptureCandy((ConstrainedPoint)obj);
         }
 
         /// <summary>
         /// Captures the candy into this lantern and activates all lantern visuals.
         /// </summary>
         /// <param name="candyPoint">Candy physics point to capture.</param>
-        public void CaptureCandy(ConstraintedPoint candyPoint)
+        public void CaptureCandy(ConstrainedPoint candyPoint)
         {
             SoundMgr.PlaySound(Resources.Snd.LanternTeleportIn);
 
@@ -198,7 +198,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="point">Point being permanently removed.</param>
         /// <returns><see langword="true"/> when this was the captured lantern point.</returns>
-        public static bool CancelCandyCaptureForRemoval(ConstraintedPoint point)
+        public static bool CancelCandyCaptureForRemoval(ConstrainedPoint point)
         {
             if (point == null || SharedCandyPoint != point)
             {
@@ -253,7 +253,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ty">Touch Y position in world space.</param>
         /// <param name="releasedCandyPoint">Candy point that is being released, when the touch is handled.</param>
         /// <returns><see langword="true"/> if the touch was handled by this lantern; otherwise, <see langword="false"/>.</returns>
-        public bool OnTouchDown(float tx, float ty, out ConstraintedPoint releasedCandyPoint)
+        public bool OnTouchDown(float tx, float ty, out ConstrainedPoint releasedCandyPoint)
         {
             releasedCandyPoint = null;
             float distance = VectDistance(Vect(tx, ty), Vect(x, y));
@@ -365,7 +365,7 @@ namespace CutTheRopeDX.GameMain
         private DelayedDispatcher delayedDispatcher;
 
         /// <summary>Shared candy point currently captured by any lantern.</summary>
-        private static ConstraintedPoint SharedCandyPoint { get; set; }
+        private static ConstrainedPoint SharedCandyPoint { get; set; }
 
         /// <summary>Shared lantern registry for the current level.</summary>
         private static List<Lantern> allLanterns;

@@ -47,8 +47,8 @@ namespace CutTheRopeDX.Tests.Interactions
 
             CandyContext candy = scene.Candy();
             CandyContext axe = scene.Candies().Find(c => c.axe != null);
-            ConstraintedPoint candyPoint = candy.WholeBody.Point;
-            ConstraintedPoint bladePoint = axe.WholeBody.Point;
+            ConstrainedPoint candyPoint = candy.WholeBody.Point;
+            ConstrainedPoint bladePoint = axe.WholeBody.Point;
 
             Vector at = new(candyPoint.pos.X + distance, candyPoint.pos.Y);
             bladePoint.pos = at;

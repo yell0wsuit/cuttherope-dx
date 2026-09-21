@@ -163,7 +163,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             GameScene scene = Scenario.New().Candy(40, 400).Bomb(160, 200).Build();
             CandyContext bomb = Assert.Single(scene.Bombs());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             Vector bombPos = bomb.WholeBody.Point.pos;
 
             // Well inside the blast radius but well outside the contact distance, so only the blast
@@ -233,7 +233,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             GameScene scene = Scenario.New().Candy(40, 440).Bomb(160, 200).Build();
             CandyContext bomb = Assert.Single(scene.Bombs());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             Vector bombPos = bomb.WholeBody.Point.pos;
             PlaceAt(candyPoint, Vect(bombPos.X + (BombDefinition.BlastRadius / 2f), bombPos.Y));
 
@@ -336,7 +336,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             GameScene scene = Scenario.New().Candy(40, 440).Bomb(160, 200).Build();
             CandyContext bomb = Assert.Single(scene.Bombs());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             Vector bombPos = bomb.WholeBody.Point.pos;
 
             PlaceAt(candyPoint, Vect(bombPos.X + offset, bombPos.Y));
@@ -348,7 +348,7 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         /// <summary>Teleports a body, clearing its Verlet history so it starts from rest.</summary>
-        private static void PlaceAt(ConstraintedPoint point, Vector position)
+        private static void PlaceAt(ConstrainedPoint point, Vector position)
         {
             point.pos = position;
             point.prevPos = position;

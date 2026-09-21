@@ -17,7 +17,7 @@ namespace CutTheRopeDX.GameMain
             float y = (ParseIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
             string axeNumber = xmlNode.Attribute("axeNumber")?.Value ?? string.Empty;
 
-            ConstraintedPoint point = new();
+            ConstrainedPoint point = new();
             point.SetWeight(1f);
             point.disableGravity = false;
             point.pos = Vect(x, y);

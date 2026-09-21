@@ -16,9 +16,9 @@ namespace CutTheRopeDX.Tests
 {
     public class BungeeConnectorTests
     {
-        private static ConstraintedPoint PointAt(float x, float y, float weight)
+        private static ConstrainedPoint PointAt(float x, float y, float weight)
         {
-            ConstraintedPoint p = new();
+            ConstrainedPoint p = new();
             p.SetWeight(weight);
             p.pos = Vect(x, y);
             return p;
@@ -40,8 +40,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void InitPreservesHeadWeightWhenHeadPassedIn()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 160f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 160f, 1f);
 
             _ = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void InitSetsAnchorWeightWhenHeadAutoCreated()
         {
-            ConstraintedPoint tail = PointAt(100f, 160f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 160f, 1f);
 
             Bungee bungee = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 null, 100f, 100f, tail, tail.pos.X, tail.pos.Y, 60f);
@@ -63,8 +63,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void UpdateSkipsBothCandyEndsWhenHeadNotOwned()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
 
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void UpdateIntegratesHeadWhenOwned()
         {
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 null, 100f, 100f, tail, tail.pos.X, tail.pos.Y, 60f);
 
@@ -90,8 +90,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ReleaseRopesForPointCutsConnectorAtTailEndWhenTailCandyReleased()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
             GameScene scene = SceneWithConnector(connector);
@@ -104,8 +104,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ReleaseRopesForPointCutsConnectorAtHeadEndWhenHeadCandyReleased()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
             GameScene scene = SceneWithConnector(connector);
@@ -118,8 +118,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void ReleaseRopesForPointHidesConnectorTailPartsWhenConnectorAlreadyCut()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
             connector.SetCut(0);
@@ -133,8 +133,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void RemovePartPreservesEndpointWeightsWhenEndpointsNotOwned()
         {
-            ConstraintedPoint head = PointAt(100f, 100f, 1f);
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint head = PointAt(100f, 100f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee connector = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 head, head.pos.X, head.pos.Y, tail, tail.pos.X, tail.pos.Y, 60f);
 
@@ -148,7 +148,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void RemovePartWeakensOwnedAnchor()
         {
-            ConstraintedPoint tail = PointAt(100f, 220f, 1f);
+            ConstrainedPoint tail = PointAt(100f, 220f, 1f);
             Bungee grabRope = new Bungee().InitWithHeadAtXYTailAtTXTYandLength(
                 null, 100f, 100f, tail, tail.pos.X, tail.pos.Y, 60f);
 

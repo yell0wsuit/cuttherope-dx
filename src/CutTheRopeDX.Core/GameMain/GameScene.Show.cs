@@ -176,7 +176,7 @@ namespace CutTheRopeDX.GameMain
                 camera.type = CAMERATYPE.CAMERASPEEDPIXELS;
                 camera.speed = 20f;
                 cameraMoveMode = 0;
-                ConstraintedPoint constraintedPoint = CameraFocusPoint();
+                ConstrainedPoint constrainedPoint = CameraFocusPoint();
 
                 // The pan starts at whichever end of the tracking range is away from the focus
                 // point. Both ends and the midpoint they are chosen by are the level's own: a
@@ -187,12 +187,12 @@ namespace CutTheRopeDX.GameMain
                 float cameraStartY;
                 if (mapWidth > SCREEN_WIDTH)
                 {
-                    cameraStartX = constraintedPoint.pos.X > range.x + (mapWidth / 2f)
+                    cameraStartX = constrainedPoint.pos.X > range.x + (mapWidth / 2f)
                         ? range.x
                         : range.x + range.w;
                     cameraStartY = range.y;
                 }
-                else if (constraintedPoint.pos.Y > range.y + (mapHeight / 2f))
+                else if (constrainedPoint.pos.Y > range.y + (mapHeight / 2f))
                 {
                     cameraStartX = range.x;
                     cameraStartY = range.y;
@@ -203,8 +203,8 @@ namespace CutTheRopeDX.GameMain
                     cameraStartY = range.y + range.h;
                 }
                 Vector boundedCamera = BoundedCameraPosition(
-                    constraintedPoint.pos.X - (SCREEN_WIDTH / 2f),
-                    constraintedPoint.pos.Y - (SCREEN_HEIGHT / 2f));
+                    constrainedPoint.pos.X - (SCREEN_WIDTH / 2f),
+                    constrainedPoint.pos.Y - (SCREEN_HEIGHT / 2f));
 
                 // Seat the tracked position at the authored start point and let the fit derive the
                 // rest from it, the way every later frame does.
@@ -219,7 +219,7 @@ namespace CutTheRopeDX.GameMain
             // for the length of one, do it while the level they can already see waits. Seat the
             // camera where the pan would have left it and hand them the level.
             ignoreTouches = false;
-            ConstraintedPoint restingFocus = CameraFocusPoint();
+            ConstrainedPoint restingFocus = CameraFocusPoint();
             Vector resting = BoundedCameraPosition(
                 restingFocus.pos.X - (SCREEN_WIDTH / 2f),
                 restingFocus.pos.Y - (SCREEN_HEIGHT / 2f));

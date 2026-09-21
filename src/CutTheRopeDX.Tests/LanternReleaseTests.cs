@@ -14,8 +14,8 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void RestoreReleasedCandyRestoresOnlyTheReleasedCandy()
         {
-            ConstraintedPoint firstPoint = new();
-            ConstraintedPoint secondPoint = new();
+            ConstrainedPoint firstPoint = new();
+            ConstrainedPoint secondPoint = new();
             CandyContext first = CapturedCandy(firstPoint);
             CandyContext second = CapturedCandy(secondPoint);
             List<CandyContext> candies = [first, second];
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(0.71f, second.WholeBody.Top.scaleY);
         }
 
-        private static CandyContext CapturedCandy(ConstraintedPoint point)
+        private static CandyContext CapturedCandy(ConstrainedPoint point)
         {
             CandyBody body = new(
                 point,

@@ -24,7 +24,7 @@ namespace CutTheRopeDX.GameMain
 
     internal static class AxeVisualFactory
     {
-        public static CandyContext Create(ConstraintedPoint point, string axeNumber)
+        public static CandyContext Create(ConstrainedPoint point, string axeNumber)
         {
             Axe axe = new(point, axeNumber);
 

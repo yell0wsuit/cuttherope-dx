@@ -423,7 +423,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="scene">Scene to read.</param>
         /// <param name="point">Physics point to resolve.</param>
         /// <returns>The owning body, or <see langword="null"/>.</returns>
-        public static CandyBody BodyForPoint(this GameScene scene, ConstraintedPoint point)
+        public static CandyBody BodyForPoint(this GameScene scene, ConstrainedPoint point)
         {
             return scene.CandyBodyForPointOrNull(point);
         }

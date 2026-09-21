@@ -133,7 +133,7 @@ namespace CutTheRopeDX.GameMain
         /// <see langword="null"/> when no active body owns it — including the dormant whole body of a
         /// split candy and the body of a candy that was removed or hidden.
         /// </returns>
-        internal CandyBody CandyBodyForPointOrNull(ConstraintedPoint point)
+        internal CandyBody CandyBodyForPointOrNull(ConstrainedPoint point)
         {
             if (point == null)
             {
@@ -192,13 +192,13 @@ namespace CutTheRopeDX.GameMain
         /// when the primary has no active body at all, so the camera never loses its target.
         /// </summary>
         /// <returns>The camera's focus point.</returns>
-        private ConstraintedPoint CameraFocusPoint()
+        private ConstrainedPoint CameraFocusPoint()
         {
             IReadOnlyList<CandyBody> primaryBodies = candies[0].Lifecycle.ActiveBodies;
             return primaryBodies.Count > 0 ? primaryBodies[0].Point : candies[0].WholeBody.Point;
         }
 
-        private bool IsSpiderGrabbableCandyPoint(ConstraintedPoint point)
+        private bool IsSpiderGrabbableCandyPoint(ConstrainedPoint point)
         {
             CandyBody body = CandyBodyForPointOrNull(point);
             return body != null && body.Owner.Capabilities.CanBeGrabbedBySpider;
@@ -379,7 +379,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Cuts/hides all uncut ropes whose tail is the given candy point.</summary>
-        public void ReleaseRopesForPoint(ConstraintedPoint candyPoint)
+        public void ReleaseRopesForPoint(ConstrainedPoint candyPoint)
         {
             // One pass over every rope: RopeEntry knows which end a released candy sits on, which is
             // the connector's one asymmetry - a hook's rope only ever holds a candy at its tail.
@@ -493,8 +493,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private static void AlignRocketAngleToRope(Rocket rocket, Bungee rope, float delta)
         {
-            ConstraintedPoint anchor = rope.bungeeAnchor;
-            ConstraintedPoint tail = rope.parts[^1];
+            ConstrainedPoint anchor = rope.bungeeAnchor;
+            ConstrainedPoint tail = rope.parts[^1];
             Vector ropeVector = VectSub(anchor.pos, tail.pos);
             Vector ropeLeftNormal = VectPerp(ropeVector);
             Vector ropeRightNormal = VectRperp(ropeVector);
@@ -670,7 +670,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            ConstraintedPoint released = miceManager.ActiveMouseCarriedCandyPoint();
+            ConstrainedPoint released = miceManager.ActiveMouseCarriedCandyPoint();
             miceManager.ReleaseAllCandy();
             if (CandyForPointOrNull(released) is CandyContext releasedCandy)
             {
@@ -758,7 +758,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="point">Candy physics point whose motion cut the chain.</param>
         /// <returns>Motion angle in degrees, or -90 when no previous position is available.</returns>
-        internal static float GetChainCutSwingAngleDegrees(ConstraintedPoint point)
+        internal static float GetChainCutSwingAngleDegrees(ConstrainedPoint point)
         {
             return point == null || point.prevPos.X == UNDEFINED_COORDINATE
                 ? -90f
@@ -799,7 +799,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+                ConstrainedPoint bladePoint = axeCtx.WholeBody.Point;
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
                 {
                     CandyContext ctx = body.Owner;
@@ -947,7 +947,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="except">Grab whose candy is targeted and whose own rope is preserved.</param>
         private void DestroyRopesForCandy(Grab except)
         {
-            ConstraintedPoint candyPoint = except?.Rope?.tail;
+            ConstrainedPoint candyPoint = except?.Rope?.tail;
             if (candyPoint == null)
             {
                 return;
@@ -1004,7 +1004,7 @@ namespace CutTheRopeDX.GameMain
         /// Capture devices (hand grab, sock, bamboo, lantern) strip the mouse per-candy; a mouse
         /// carrying a different candy keeps it.
         /// </summary>
-        public void DropMouseCandyForPoint(ConstraintedPoint point)
+        public void DropMouseCandyForPoint(ConstrainedPoint point)
         {
             if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedCandyPoint(), point))
             {
@@ -1034,7 +1034,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="point">Candy physics point to count attached snails for.</param>
         /// <returns>The count of snails in the active state whose attached point is <paramref name="point"/>; 0 if none or <paramref name="point"/> is null.</returns>
-        public int ActiveSnailCountForPoint(ConstraintedPoint point)
+        public int ActiveSnailCountForPoint(ConstrainedPoint point)
         {
             if (snailobjects == null || snailobjects.Count <= 0 || point == null)
             {
@@ -1054,7 +1054,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Detaches active snails riding the given candy point (no-op if null).</summary>
-        public void DetachSnailsForPoint(ConstraintedPoint point)
+        public void DetachSnailsForPoint(ConstrainedPoint point)
         {
             if (snailobjects == null || snailobjects.Count <= 0 || point == null)
             {
@@ -1089,7 +1089,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
+                    ConstrainedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.ReleaseCandy();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
@@ -1109,7 +1109,7 @@ namespace CutTheRopeDX.GameMain
         /// silently in the release state until the mouse eventually carried it away. Marking the sound
         /// as played keeps the transition from repeating it. This mirrors the player tapping the claw.
         /// </remarks>
-        public void DetachHandsForPoint(ConstraintedPoint point)
+        public void DetachHandsForPoint(ConstrainedPoint point)
         {
             if (hands == null || hands.Count <= 0 || point == null)
             {
@@ -1121,7 +1121,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
+                    ConstrainedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
                     if (heldPoint != point)
                     {
                         continue;

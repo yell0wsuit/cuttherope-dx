@@ -12,9 +12,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="ghostPosition">World position of the ghost creating the rope.</param>
         /// <returns>The closest split half, or the primary candy's point when none is offered.</returns>
-        internal ConstraintedPoint GetGhostRopeAnchor(Vector ghostPosition)
+        internal ConstrainedPoint GetGhostRopeAnchor(Vector ghostPosition)
         {
-            ConstraintedPoint best = null;
+            ConstrainedPoint best = null;
             float bestDistance = float.MaxValue;
 
             foreach (CandyBody body in ActiveCandyBodies())

@@ -31,7 +31,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="bubbleAnimation">The bubble animation, or <see langword="null"/> when absent.</param>
         /// <param name="ghostBubbleAnimation">The ghost-bubble animation, or <see langword="null"/> when absent.</param>
         internal CandyBody(
-            ConstraintedPoint point,
+            ConstrainedPoint point,
             CandyBodyRole role,
             GameObject visual = null,
             GameObject main = null,
@@ -51,7 +51,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Gets the constrained physics point for this body.</summary>
-        public ConstraintedPoint Point { get; }
+        public ConstrainedPoint Point { get; }
 
         /// <summary>Gets the body's role within its logical candy.</summary>
         public CandyBodyRole Role { get; }

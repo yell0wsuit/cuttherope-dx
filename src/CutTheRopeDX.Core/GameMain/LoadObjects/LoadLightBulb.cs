@@ -24,7 +24,7 @@ namespace CutTheRopeDX.GameMain
             float litRadius = ParseFloatOrZero(xmlNode.Attribute("litRadius")?.Value) * scale;
             string bulbNumber = xmlNode.Attribute("bulbNumber")?.Value ?? string.Empty;
 
-            ConstraintedPoint constraint = new();
+            ConstrainedPoint constraint = new();
             constraint.SetWeight(1f);
             constraint.disableGravity = false;
             constraint.pos = Vect(x, y);

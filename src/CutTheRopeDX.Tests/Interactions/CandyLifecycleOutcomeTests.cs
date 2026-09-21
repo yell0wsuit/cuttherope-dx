@@ -133,9 +133,9 @@ namespace CutTheRopeDX.Tests.Interactions
                 .Grab(200, 120, length: 100)
                 .OmNom(30, 440)
                 .Build();
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             Bungee[] ropes = [scene.Grabs()[0].RopeOf(), scene.Grabs()[1].RopeOf()];
-            ConstraintedPoint[] ropeEnds = [ropes[0].parts[^2], ropes[1].parts[^2]];
+            ConstrainedPoint[] ropeEnds = [ropes[0].parts[^2], ropes[1].parts[^2]];
             Assert.All(ropeEnds, ropeEnd => Assert.True(candyPoint.HasConstraintTo(ropeEnd)));
 
             scene.SpiderWon(scene.Grabs()[0]);

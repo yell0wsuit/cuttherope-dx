@@ -268,7 +268,7 @@ namespace CutTheRopeDX.Tests
                 "the half that left the screen was never removed");
         }
 
-        private static void PinPointAt(ConstraintedPoint point, Vector position)
+        private static void PinPointAt(ConstrainedPoint point, Vector position)
         {
             point.pos = position;
             point.prevPos = position;

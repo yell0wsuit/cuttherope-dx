@@ -11,10 +11,10 @@ namespace CutTheRopeDX.GameMain
     /// Passing the ticket itself through the dispatcher prevents an obsolete callback from
     /// completing a newer capture for the same point.
     /// </summary>
-    internal sealed class PendingLanternCapture(ConstraintedPoint point, Lantern lantern) : FrameworkTypes
+    internal sealed class PendingLanternCapture(ConstrainedPoint point, Lantern lantern) : FrameworkTypes
     {
         /// <summary>Gets the candy point being captured.</summary>
-        public ConstraintedPoint Point { get; } = point ?? throw new ArgumentNullException(nameof(point));
+        public ConstrainedPoint Point { get; } = point ?? throw new ArgumentNullException(nameof(point));
 
         /// <summary>Gets the lantern that will complete the capture.</summary>
         public Lantern Lantern { get; } = lantern ?? throw new ArgumentNullException(nameof(lantern));

@@ -10,7 +10,7 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal static class LanternRelease
     {
-        public static int RestoreReleasedCandy(List<CandyContext> candies, ConstraintedPoint releasedPoint)
+        public static int RestoreReleasedCandy(List<CandyContext> candies, ConstrainedPoint releasedPoint)
         {
             for (int ci = 0; ci < candies.Count; ci++)
             {

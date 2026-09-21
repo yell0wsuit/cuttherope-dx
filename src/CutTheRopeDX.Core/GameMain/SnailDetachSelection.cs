@@ -18,8 +18,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="targetPoint">The candy point being removed.</param>
         public static bool ShouldDetach(
             bool snailActive,
-            ConstraintedPoint snailAttachedPoint,
-            ConstraintedPoint targetPoint)
+            ConstrainedPoint snailAttachedPoint,
+            ConstrainedPoint targetPoint)
         {
             return snailActive
                 && snailAttachedPoint != null

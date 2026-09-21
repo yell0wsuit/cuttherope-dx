@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="p">Pump producing the flow impulse.</param>
         /// <param name="s">Constrained point to receive the impulse.</param>
         /// <param name="c">Game object tested against the pump flow area.</param>
-        public static void HandlePumpFlowPtSkin(Pump p, ConstraintedPoint s, GameObject c)
+        public static void HandlePumpFlowPtSkin(Pump p, ConstrainedPoint s, GameObject c)
         {
             float flowLength = ActivePhysicsConstants.PumpFlowLength;
             if (GameObject.RectInObject(p.x - flowLength, p.y - flowLength, p.x + flowLength, p.y + flowLength, c))
@@ -54,7 +54,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="b">Bouncer source.</param>
         /// <param name="s">Constrained point affected by the bounce.</param>
         /// <param name="delta">Frame delta time used when applying impulse.</param>
-        public static void HandleBouncePtDelta(Bouncer b, ConstraintedPoint s, float delta)
+        public static void HandleBouncePtDelta(Bouncer b, ConstrainedPoint s, float delta)
         {
             if (!b.skip)
             {
@@ -97,7 +97,7 @@ namespace CutTheRopeDX.GameMain
             float rectRight = tube.x + (tubeWidth / 2f);
             float rectBottom = tube.y - collisionRadius;
 
-            bool ApplyImpulse(ConstraintedPoint pt)
+            bool ApplyImpulse(ConstrainedPoint pt)
             {
                 Vector position = Vect(pt.pos.X, pt.pos.Y);
                 Vector velocity = Vect(pt.v.X, pt.v.Y);
@@ -327,8 +327,8 @@ namespace CutTheRopeDX.GameMain
 
                 for (int j = 0; j < rope.parts.Count - 1; j++)
                 {
-                    ConstraintedPoint a = rope.parts[j];
-                    ConstraintedPoint b = rope.parts[j + 1];
+                    ConstrainedPoint a = rope.parts[j];
+                    ConstrainedPoint b = rope.parts[j + 1];
                     bool hit;
                     if (r == null)
                     {
@@ -440,10 +440,10 @@ namespace CutTheRopeDX.GameMain
 
         private bool TryCutAxeOnlyChain(CandyContext axeCtx, Bungee rope)
         {
-            ConstraintedPoint bladePoint = axeCtx.WholeBody.Point;
+            ConstrainedPoint bladePoint = axeCtx.WholeBody.Point;
             for (int i = 0; i < rope.parts.Count; i++)
             {
-                ConstraintedPoint part = rope.parts[i];
+                ConstrainedPoint part = rope.parts[i];
                 if (part == null || ReferenceEquals(part, bladePoint))
                 {
                     continue;
@@ -517,7 +517,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="sg">Grab whose spider captured the candy.</param>
         public void SpiderWon(Grab sg)
         {
-            ConstraintedPoint capturedPoint = sg.Rope?.tail;
+            ConstrainedPoint capturedPoint = sg.Rope?.tail;
             // spiderTookCandy = true;
             // The spider takes whichever body its rope ends on - a whole candy or one split half. A
             // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
@@ -626,13 +626,13 @@ namespace CutTheRopeDX.GameMain
             }
             for (int i = 0; i < rope.parts.Count - 1; i++)
             {
-                ConstraintedPoint constraintedPoint = rope.parts[i];
-                float distanceToConstraint = VectDistance(constraintedPoint.pos, v);
-                if (distanceToConstraint < closestDistance && (g.Wheel == null || !PointInRect(constraintedPoint.pos.X, constraintedPoint.pos.Y, g.x - WheelControl.TapHalfExtent, g.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)))
+                ConstrainedPoint constrainedPoint = rope.parts[i];
+                float distanceToConstraint = VectDistance(constrainedPoint.pos, v);
+                if (distanceToConstraint < closestDistance && (g.Wheel == null || !PointInRect(constrainedPoint.pos.X, constrainedPoint.pos.Y, g.x - WheelControl.TapHalfExtent, g.y - WheelControl.TapHalfExtent, WheelControl.TapHalfExtent * 2f, WheelControl.TapHalfExtent * 2f)))
                 {
                     closestDistance = distanceToConstraint;
                     result = rope;
-                    s = constraintedPoint.pos;
+                    s = constrainedPoint.pos;
                 }
             }
             return result;

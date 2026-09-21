@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="carriedByActiveMouse">The point the active mouse currently carries, or null.</param>
         /// <param name="candyPoint">The candy physics point being tested.</param>
-        public static bool CarriesCandy(ConstraintedPoint carriedByActiveMouse, ConstraintedPoint candyPoint)
+        public static bool CarriesCandy(ConstrainedPoint carriedByActiveMouse, ConstrainedPoint candyPoint)
         {
             return carriedByActiveMouse != null && ReferenceEquals(carriedByActiveMouse, candyPoint);
         }

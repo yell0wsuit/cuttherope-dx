@@ -275,7 +275,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>
         /// <see langword="true" /> if the target is within grab range; otherwise <see langword="false" />.
         /// </returns>
-        public bool IsWithinGrabRadius(ConstraintedPoint target)
+        public bool IsWithinGrabRadius(ConstrainedPoint target)
         {
             return VectDistance(Vect(x, y), target.pos) < grabRadius;
         }
@@ -286,7 +286,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="candyPoint">The candy's constrained physics point to attach.</param>
         /// <param name="candy">The candy game object being grabbed.</param>
-        public void GrabCandy(ConstraintedPoint candyPoint, GameObject candy)
+        public void GrabCandy(ConstrainedPoint candyPoint, GameObject candy)
         {
             carry = new MouseCarry(candyPoint, candy);
 
@@ -447,7 +447,7 @@ namespace CutTheRopeDX.GameMain
         public bool HasCandy => carry != null;
 
         /// <summary>Gets the physics point currently carried by this mouse.</summary>
-        public ConstraintedPoint CarriedCandyPoint => carry?.Point;
+        public ConstrainedPoint CarriedCandyPoint => carry?.Point;
 
         /// <summary>
         /// Determines whether the mouse can be clicked at the specified coordinates

@@ -51,7 +51,7 @@ namespace CutTheRopeDX.Tests
         public void FrozenCandySkipsNormalPointIntegrationBeforeTheFinalHold()
         {
             GameScene scene = FrozenSceneWithFallingCandy();
-            ConstraintedPoint point = scene.Candy().WholeBody.Point;
+            ConstrainedPoint point = scene.Candy().WholeBody.Point;
             point.totalForce = new Vector(123f, 456f);
 
             HeadlessGame.StepFrames(scene, 1);
@@ -75,7 +75,7 @@ namespace CutTheRopeDX.Tests
             Freeze(scene);
             Bungee rope = Assert.Single(scene.RegisteredRopes()).Rope;
             HeadlessGame.StepFrames(scene, 1);
-            ConstraintedPoint middle = rope.parts[rope.parts.Count / 2];
+            ConstrainedPoint middle = rope.parts[rope.parts.Count / 2];
             middle.prevPos = middle.pos;
             middle.pos = new Vector(middle.pos.X + 30f, middle.pos.Y);
             Vector displaced = middle.pos;
@@ -365,7 +365,7 @@ namespace CutTheRopeDX.Tests
                 .PauseSwitcher(60, 440)
                 .Build();
             _ = Act.BindRocket(scene, scene.Candy());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             candyPoint.v = new Vector(30f, -12f);
 
             HeadlessGame.StepFrames(scene, 1);
@@ -385,7 +385,7 @@ namespace CutTheRopeDX.Tests
                 .PauseSwitcher(60, 440)
                 .Build();
             _ = Act.BindRocket(scene, scene.Candy());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
 
             HeadlessGame.StepFrames(scene, 15);
             float earlyStep = VectLength(candyPoint.posDelta);
@@ -410,7 +410,7 @@ namespace CutTheRopeDX.Tests
                 .Rocket(160, 200, time: 2f)
                 .Build();
             _ = Act.BindRocket(scene, scene.Candy());
-            ConstraintedPoint candyPoint = scene.Candy().WholeBody.Point;
+            ConstrainedPoint candyPoint = scene.Candy().WholeBody.Point;
             Vector unrelatedForce = new(10f, 20f);
             candyPoint.SetForcewithID(unrelatedForce, 0);
 
@@ -756,7 +756,7 @@ namespace CutTheRopeDX.Tests
 
             // A hand turning its arm drags a held candy like this while time is frozen: position and
             // previous position move together, so the candy itself carries no velocity.
-            ConstraintedPoint point = candy.WholeBody.Point;
+            ConstrainedPoint point = candy.WholeBody.Point;
             Vector heldAt = new(point.pos.X - 120f, point.pos.Y - 120f);
             point.pos = heldAt;
             point.prevPos = heldAt;
@@ -882,7 +882,7 @@ namespace CutTheRopeDX.Tests
             Assert.Equal(0, rocket.cloudParticles.particleCount);
             Assert.Equal(0, rocket.cloudParticles.particleIdx);
 
-            ConstraintedPoint point = candy.WholeBody.Point;
+            ConstrainedPoint point = candy.WholeBody.Point;
             Vector heldAt = new(point.pos.X - 120f, point.pos.Y);
             point.pos = heldAt;
             point.prevPos = heldAt;
@@ -902,7 +902,7 @@ namespace CutTheRopeDX.Tests
         {
             (GameScene scene, Grab hook) = FrozenKickedCup();
             Bungee rope = hook.Rope;
-            ConstraintedPoint middle = rope.parts[rope.parts.Count / 2];
+            ConstrainedPoint middle = rope.parts[rope.parts.Count / 2];
             Vector anchor = rope.bungeeAnchor.pos;
             Vector middleAt = middle.pos;
 

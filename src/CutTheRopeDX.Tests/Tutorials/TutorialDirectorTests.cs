@@ -320,7 +320,7 @@ namespace CutTheRopeDX.Tests.Tutorials
 
         private static CandyBody Body(CandyBodyRole role, float x, float y)
         {
-            ConstraintedPoint point = new() { pos = new Vector(x, y) };
+            ConstrainedPoint point = new() { pos = new Vector(x, y) };
             return new CandyBody(point, role);
         }
 

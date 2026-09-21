@@ -54,7 +54,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="p">The point to evaluate.</param>
         /// <returns><see langword="true"/> when the point is beyond the allowed bounds; otherwise, <see langword="false"/>.</returns>
-        public bool PointOutOfScreen(ConstraintedPoint p)
+        public bool PointOutOfScreen(ConstrainedPoint p)
         {
             // Mobile matches the WP7 kill bounds (+100/-50, scaled x3); the horizontal
             // margin stays as a safety net in both modes (the reference kills on Y only).
@@ -660,7 +660,7 @@ namespace CutTheRopeDX.GameMain
         /// a split half only resolved that way by accident, because the primary happens to own the
         /// halves. Callers decide what an unowned point means.
         /// </returns>
-        private CandyContext CandyForPointOrNull(ConstraintedPoint point)
+        private CandyContext CandyForPointOrNull(ConstrainedPoint point)
         {
             if (point == null)
             {
@@ -692,7 +692,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="param">Released candy physics point.</param>
         private void Selector_revealCandyFromLantern(FrameworkTypes param)
         {
-            ConstraintedPoint releasedPoint = param as ConstraintedPoint;
+            ConstrainedPoint releasedPoint = param as ConstrainedPoint;
             _ = LanternRelease.RestoreReleasedCandy(candies, releasedPoint);
         }
 
@@ -1008,7 +1008,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
-        private ConstraintedPoint CandyPoint => candies[0].WholeBody.Point;
+        private ConstrainedPoint CandyPoint => candies[0].WholeBody.Point;
 
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
         private readonly List<CandyContext> candies = [];
@@ -1475,7 +1475,7 @@ namespace CutTheRopeDX.GameMain
             public RGBAColor c;
         }
 
-        // private sealed class SCandy : ConstraintedPoint
+        // private sealed class SCandy : ConstrainedPoint
         // {
         // public bool good;
 

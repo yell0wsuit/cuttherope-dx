@@ -47,7 +47,7 @@ namespace CutTheRopeDX.GameMain
                 timeline.delegateTimelineDelegate = this;
                 AddTimelinewithID(timeline, 2);
 
-                point = new ConstraintedPoint
+                point = new ConstrainedPoint
                 {
                     disableGravity = true
                 };
@@ -434,7 +434,7 @@ namespace CutTheRopeDX.GameMain
         private Vector firstTouch;
 
         /// <summary>The physics constraint point controlling the rocket's position.</summary>
-        public ConstraintedPoint point;
+        public ConstrainedPoint point;
 
         /// <summary>The rocket's current facing angle in radians.</summary>
         public float angle;

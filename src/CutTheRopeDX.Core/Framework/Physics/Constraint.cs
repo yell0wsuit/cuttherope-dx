@@ -22,14 +22,14 @@ namespace CutTheRopeDX.Framework.Physics
     }
 
     /// <summary>
-    /// Connection data describing how one <see cref="ConstraintedPoint"/> is constrained relative to another.
+    /// Connection data describing how one <see cref="ConstrainedPoint"/> is constrained relative to another.
     /// </summary>
     internal sealed class Constraint : FrameworkTypes
     {
         /// <summary>
         /// The other point referenced by this constraint.
         /// </summary>
-        public ConstraintedPoint cp;
+        public ConstrainedPoint cp;
 
         /// <summary>
         /// Target length used when enforcing the constraint.

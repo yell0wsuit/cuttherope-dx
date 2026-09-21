@@ -595,14 +595,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ty">Initial tail Y position.</param>
         /// <param name="len">Initial rope length used to roll out intermediate rope segments.</param>
         /// <returns>The initialized bungee instance.</returns>
-        public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstraintedPoint h, float hx, float hy, ConstraintedPoint t, float tx, float ty, float len)
+        public Bungee InitWithHeadAtXYTailAtTXTYandLength(ConstrainedPoint h, float hx, float hy, ConstrainedPoint t, float tx, float ty, float len)
         {
             relaxationTimes = 30;
             lineWidth = 10f;
             cut = -1;
             bungeeMode = 0;
             highlighted = false;
-            bungeeAnchor = h ?? new ConstraintedPoint();
+            bungeeAnchor = h ?? new ConstrainedPoint();
             ownsAnchor = h == null;
             if (t != null)
             {
@@ -611,7 +611,7 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                tail = new ConstraintedPoint();
+                tail = new ConstrainedPoint();
                 tail.SetWeight(1f);
                 ownsTail = true;
             }
@@ -657,12 +657,12 @@ namespace CutTheRopeDX.GameMain
             int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = parts[i];
+                ConstrainedPoint constrainedPoint = parts[i];
                 if (i > 0)
                 {
-                    totalLength += (int)VectDistance(pos, constraintedPoint.pos);
+                    totalLength += (int)VectDistance(pos, constrainedPoint.pos);
                 }
-                pos = constraintedPoint.pos;
+                pos = constrainedPoint.pos;
             }
             return totalLength;
         }
@@ -683,19 +683,19 @@ namespace CutTheRopeDX.GameMain
         /// <param name="off">Offset applied when placing new intermediate constraint points.</param>
         public void RollplacingWithOffset(float rollLen, Vector off)
         {
-            ConstraintedPoint i = parts[^2];
+            ConstrainedPoint i = parts[^2];
             int tailRestLength = (int)tail.RestLengthFor(i);
             while (rollLen > 0f)
             {
                 if (rollLen >= BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint constraintedPoint = parts[^2];
-                    ConstraintedPoint newPart = new();
+                    ConstrainedPoint constrainedPoint = parts[^2];
+                    ConstrainedPoint newPart = new();
                     newPart.SetWeight(0.02f);
-                    newPart.pos = VectAdd(constraintedPoint.pos, off);
+                    newPart.pos = VectAdd(constrainedPoint.pos, off);
                     AddPartAt(newPart, parts.Count - 1);
-                    tail.ChangeConstraintFromTowithRestLength(constraintedPoint, newPart, tailRestLength);
-                    newPart.AddConstraintwithRestLengthofType(constraintedPoint, BUNGEE_REST_LEN, ConstraintType.DISTANCE);
+                    tail.ChangeConstraintFromTowithRestLength(constrainedPoint, newPart, tailRestLength);
+                    newPart.AddConstraintwithRestLengthofType(constrainedPoint, BUNGEE_REST_LEN, ConstraintType.DISTANCE);
                     rollLen -= BUNGEE_REST_LEN;
                 }
                 else
@@ -708,7 +708,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        ConstraintedPoint secondToLastPart = parts[^2];
+                        ConstrainedPoint secondToLastPart = parts[^2];
                         tail.ChangeRestLengthToFor(newRestLength, secondToLastPart);
                         rollLen = 0f;
                     }
@@ -724,15 +724,15 @@ namespace CutTheRopeDX.GameMain
         public float RollBack(float amount)
         {
             float remainingAmount = amount;
-            ConstraintedPoint tailNeighbor = parts[^2];
+            ConstrainedPoint tailNeighbor = parts[^2];
             int currentRestLength = (int)tail.RestLengthFor(tailNeighbor);
             int partCount = parts.Count;
             while (remainingAmount > 0f)
             {
                 if (remainingAmount >= BUNGEE_REST_LEN)
                 {
-                    ConstraintedPoint removedPart = parts[partCount - 2];
-                    ConstraintedPoint newTailAnchor = parts[partCount - 3];
+                    ConstrainedPoint removedPart = parts[partCount - 2];
+                    ConstrainedPoint newTailAnchor = parts[partCount - 3];
                     tail.ChangeConstraintFromTowithRestLength(removedPart, newTailAnchor, currentRestLength);
                     parts.RemoveAt(parts.Count - 2);
                     partCount--;
@@ -748,7 +748,7 @@ namespace CutTheRopeDX.GameMain
                     }
                     else
                     {
-                        ConstraintedPoint tailAnchor = parts[partCount - 2];
+                        ConstrainedPoint tailAnchor = parts[partCount - 2];
                         tail.ChangeRestLengthToFor(nextRestLength, tailAnchor);
                         remainingAmount = 0f;
                     }
@@ -773,8 +773,8 @@ namespace CutTheRopeDX.GameMain
         public void RemovePart(int part)
         {
             forceWhite = false;
-            ConstraintedPoint cutPart = parts[part];
-            ConstraintedPoint nextPart = part + 1 >= parts.Count ? null : parts[part + 1];
+            ConstrainedPoint cutPart = parts[part];
+            ConstrainedPoint nextPart = part + 1 >= parts.Count ? null : parts[part + 1];
             if (nextPart == null)
             {
                 cutPart.RemoveConstraints();
@@ -787,7 +787,7 @@ namespace CutTheRopeDX.GameMain
                     if (constraint.cp == cutPart)
                     {
                         _ = nextPart.constraints.Remove(constraint);
-                        ConstraintedPoint stubPart = new();
+                        ConstrainedPoint stubPart = new();
                         stubPart.SetWeight(1E-05f);
                         stubPart.pos = nextPart.pos;
                         stubPart.prevPos = nextPart.prevPos;
@@ -799,7 +799,7 @@ namespace CutTheRopeDX.GameMain
             }
             for (int j = 0; j < parts.Count; j++)
             {
-                ConstraintedPoint bungeePart = parts[j];
+                ConstrainedPoint bungeePart = parts[j];
                 // Don't weaken an endpoint the rope doesn't own: tail is always external, and a
                 // non-owned head (a candy point in a candiesConnected link) must keep its mass.
                 // Owned anchors (normal/kicked grabs) still go limp, as before.
@@ -829,18 +829,18 @@ namespace CutTheRopeDX.GameMain
             int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = parts[i];
-                if (constraintedPoint != null)
+                ConstrainedPoint constrainedPoint = parts[i];
+                if (constrainedPoint != null)
                 {
                     if (bungeeAnchor.pin.X != -1f)
                     {
-                        if (constraintedPoint != tail)
+                        if (constrainedPoint != tail)
                         {
-                            constraintedPoint.SetWeight(0.5f);
+                            constrainedPoint.SetWeight(0.5f);
                         }
                         if (i != 0)
                         {
-                            constraintedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), ConstraintType.NOT_MORE_THAN);
+                            constrainedPoint.AddConstraintwithRestLengthofType(bungeeAnchor, i * (BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeConstraintSlack), ConstraintType.NOT_MORE_THAN);
                         }
                     }
                     i++;
@@ -872,13 +872,13 @@ namespace CutTheRopeDX.GameMain
             int count = parts.Count;
             for (int i = 0; i < count; i++)
             {
-                ConstraintedPoint constraintedPoint = parts[i];
+                ConstrainedPoint constrainedPoint = parts[i];
                 // Don't integrate an endpoint the rope doesn't own: tail is always external,
                 // and a non-owned head (a candy point in a candiesConnected link) is integrated
                 // by the candy system. Owned anchors (normal/kicked grabs) still integrate.
-                if (constraintedPoint != tail && (constraintedPoint != bungeeAnchor || ownsAnchor))
+                if (constrainedPoint != tail && (constrainedPoint != bungeeAnchor || ownsAnchor))
                 {
-                    ConstraintedPoint.Qcpupdate(constraintedPoint, delta, koeff);
+                    ConstrainedPoint.Qcpupdate(constrainedPoint, delta, koeff);
                 }
             }
             for (int j = 0; j < relaxationTimes; j++)
@@ -886,7 +886,7 @@ namespace CutTheRopeDX.GameMain
                 int count2 = parts.Count;
                 for (int k = 0; k < count2; k++)
                 {
-                    ConstraintedPoint.SatisfyConstraints(parts[k]);
+                    ConstrainedPoint.SatisfyConstraints(parts[k]);
                 }
             }
         }
@@ -903,8 +903,8 @@ namespace CutTheRopeDX.GameMain
                 Vector[] points = new Vector[count];
                 for (int i = 0; i < count; i++)
                 {
-                    ConstraintedPoint constraintedPoint = parts[i];
-                    points[i] = constraintedPoint.pos;
+                    ConstrainedPoint constrainedPoint = parts[i];
+                    points[i] = constrainedPoint.pos;
                 }
                 s_lightCounter = 0;
                 s_lightStartCoord = 8;
@@ -925,11 +925,11 @@ namespace CutTheRopeDX.GameMain
             int tailPartCount = 0;
             for (int j = 0; j < count; j++)
             {
-                ConstraintedPoint part = parts[j];
+                ConstrainedPoint part = parts[j];
                 bool connectedToPrevious = true;
                 if (j > 0)
                 {
-                    ConstraintedPoint previousPart = parts[j - 1];
+                    ConstrainedPoint previousPart = parts[j - 1];
                     if (!part.HasConstraintTo(previousPart))
                     {
                         connectedToPrevious = false;
@@ -1080,7 +1080,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (!ownsTail && tail != null)
                     {
-                        foreach (ConstraintedPoint part in parts)
+                        foreach (ConstrainedPoint part in parts)
                         {
                             if (part != tail)
                             {
@@ -1088,7 +1088,7 @@ namespace CutTheRopeDX.GameMain
                             }
                         }
                     }
-                    foreach (ConstraintedPoint part in parts)
+                    foreach (ConstrainedPoint part in parts)
                     {
                         bool ownsPart = (part == bungeeAnchor && ownsAnchor) || (part == tail && ownsTail) || (part != bungeeAnchor && part != tail);
                         if (ownsPart)
@@ -1117,7 +1117,7 @@ namespace CutTheRopeDX.GameMain
 
             if (parts != null)
             {
-                foreach (ConstraintedPoint part in parts)
+                foreach (ConstrainedPoint part in parts)
                 {
                     part.pos = Vect(part.pos.X + dx, part.pos.Y + dy);
 
@@ -1146,10 +1146,10 @@ namespace CutTheRopeDX.GameMain
         public static float BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
 
         /// <summary>Head anchor constraint point for the bungee.</summary>
-        public ConstraintedPoint bungeeAnchor;
+        public ConstrainedPoint bungeeAnchor;
 
         /// <summary>Tail constraint point for the bungee.</summary>
-        public ConstraintedPoint tail;
+        public ConstrainedPoint tail;
 
         /// <summary>Cut segment index, or <c>-1</c> when the bungee is uncut.</summary>
         public int cut;

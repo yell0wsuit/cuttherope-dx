@@ -9,7 +9,7 @@ namespace CutTheRopeDX.Tests
     {
         private static CandyBody Body(CandyBodyRole role)
         {
-            return new CandyBody(new ConstraintedPoint(), role);
+            return new CandyBody(new ConstrainedPoint(), role);
         }
 
         private static CandyLifecycle PresentLifecycle()

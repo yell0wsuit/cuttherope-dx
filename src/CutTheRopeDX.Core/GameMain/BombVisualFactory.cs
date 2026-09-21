@@ -67,7 +67,7 @@ namespace CutTheRopeDX.GameMain
 
     internal static class BombVisualFactory
     {
-        public static CandyContext Create(ConstraintedPoint point, string bombNumber)
+        public static CandyContext Create(ConstrainedPoint point, string bombNumber)
         {
             Bomb bomb = new(point, bombNumber);
 

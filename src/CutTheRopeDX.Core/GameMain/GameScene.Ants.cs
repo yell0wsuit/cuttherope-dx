@@ -45,7 +45,7 @@ namespace CutTheRopeDX.GameMain
         private void UpdateAntConveyorForCandy(CandyContext ctx, float delta)
         {
             // The caller only offers whole bodies, so this candy rides the conveyor on one point.
-            ConstraintedPoint point = ctx.WholeBody.Point;
+            ConstrainedPoint point = ctx.WholeBody.Point;
             CandyAttachments attachments = ctx.Lifecycle.Attachments;
 
             // Advance this candy's own carrier marker along its segment (replaces the segment-level
@@ -135,7 +135,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                ConstraintedPoint point = ctx.WholeBody.Point;
+                ConstrainedPoint point = ctx.WholeBody.Point;
                 if (ctx.Lifecycle.Attachments.AntSegment == null || point == null)
                 {
                     continue;
@@ -164,7 +164,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="tx">Touch X coordinate in screen space.</param>
         /// <param name="ty">Touch Y coordinate in screen space.</param>
         /// <returns><see langword="true"/> if the touch was consumed; otherwise, <see langword="false"/>.</returns>
-        private bool HandleConveyorTouchConstraintedPointXY(ConstraintedPoint point, float tx, float ty)
+        private bool HandleConveyorTouchConstrainedPointXY(ConstrainedPoint point, float tx, float ty)
         {
             if (point == null)
             {
@@ -200,7 +200,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ctx">The candy to brake.</param>
         private static void ApplyConveyorBrake(CandyContext ctx)
         {
-            ConstraintedPoint point = ctx?.WholeBody.Point;
+            ConstrainedPoint point = ctx?.WholeBody.Point;
             point?.ApplyImpulseDelta(new Vector(point.v.X * -0.7f, 0f), 0.01f);
         }
 
@@ -246,7 +246,7 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            ConstraintedPoint point = ctx.WholeBody.Point;
+            ConstrainedPoint point = ctx.WholeBody.Point;
             bool contains = point != null && segment.ContainsPoint(point.pos, useExternalBounds);
             if (!AntCandyInteraction.CanAttach(
                 candyPresent: point != null,
@@ -313,7 +313,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            ConstraintedPoint tail = rope.tail;
+            ConstrainedPoint tail = rope.tail;
             CandyContext ctx = CandyForPointOrNull(tail);
             bool carried = ctx != null && ctx.WholeBody.Point == tail && ctx.Lifecycle.Attachments.AntSegment != null;
             if (!carried)

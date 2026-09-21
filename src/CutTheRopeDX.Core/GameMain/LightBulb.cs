@@ -55,7 +55,7 @@ namespace CutTheRopeDX.GameMain
         /// The physics constraint point that determines the bulb's position.
         /// Used for rope attachment and physics simulation.
         /// </summary>
-        public readonly ConstraintedPoint constraint;
+        public readonly ConstrainedPoint constraint;
 
         /// <summary>
         /// Identifier string for this light bulb instance, used for level loading
@@ -90,7 +90,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="lightRadius">The radius of the light effect for gameplay mechanics.</param>
         /// <param name="constraint">The physics constraint point for positioning.</param>
         /// <param name="bulbNumber">An optional identifier for this light bulb instance.</param>
-        public LightBulb(float lightRadius, ConstraintedPoint constraint, string bulbNumber)
+        public LightBulb(float lightRadius, ConstrainedPoint constraint, string bulbNumber)
         {
             // Initialize state
             this.lightRadius = lightRadius;

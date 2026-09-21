@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
     /// <summary>Verifies the rope index the three merged sweeps run over.</summary>
     public class RopeRegistryTests
     {
-        private static Bungee MakeRope(ConstraintedPoint tail)
+        private static Bungee MakeRope(ConstrainedPoint tail)
         {
             _ = HeadlessGame.Boot();
             return new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, 0f, 0f, tail, 0f, 100f, 100f);
@@ -27,8 +27,8 @@ namespace CutTheRopeDX.Tests
         {
             RopeRegistry registry = new();
             Grab hook = NewHook();
-            Bungee hookRope = MakeRope(new ConstraintedPoint());
-            Bungee connector = MakeRope(new ConstraintedPoint());
+            Bungee hookRope = MakeRope(new ConstrainedPoint());
+            Bungee connector = MakeRope(new ConstrainedPoint());
 
             registry.Register(hookRope, hook);
             registry.RegisterConnector(connector);
@@ -46,7 +46,7 @@ namespace CutTheRopeDX.Tests
         public void UnregisterRemovesTheEntry()
         {
             RopeRegistry registry = new();
-            Bungee rope = MakeRope(new ConstraintedPoint());
+            Bungee rope = MakeRope(new ConstrainedPoint());
             registry.Register(rope, NewHook());
 
             registry.Unregister(rope);
@@ -57,19 +57,19 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void GrabRopeCutsAtItsTailEndOnly()
         {
-            ConstraintedPoint candy = new();
+            ConstrainedPoint candy = new();
             Bungee rope = MakeRope(candy);
             RopeEntry entry = new(rope, NewHook());
 
             Assert.Equal(rope.parts.Count - 2, entry.CutPartForCandy(candy));
-            Assert.Null(entry.CutPartForCandy(new ConstraintedPoint()));
+            Assert.Null(entry.CutPartForCandy(new ConstrainedPoint()));
         }
 
         [Fact]
         public void ConnectorCutsAtWhicheverEndTheCandyIsOn()
         {
             // The one asymmetry the merged destroy-on-candy sweep has to preserve.
-            ConstraintedPoint tailCandy = new();
+            ConstrainedPoint tailCandy = new();
             Bungee connector = MakeRope(tailCandy);
             RopeEntry entry = new(connector, null);
 

@@ -82,7 +82,7 @@ namespace CutTheRopeDX.GameMain
         /// <see langword="true" /> if the active mouse exists, is active, and within grab radius;
         /// otherwise <see langword="false" />.
         /// </returns>
-        public bool IsActiveMouseInRange(ConstraintedPoint target)
+        public bool IsActiveMouseInRange(ConstrainedPoint target)
         {
             Mouse active = activeMouse;
             return active != null && active.IsActive && active.IsWithinGrabRadius(target);
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="candyPoint">The candy's constrained physics point.</param>
         /// <param name="candy">The candy game object.</param>
-        public void GrabWithActiveMouse(ConstraintedPoint candyPoint, GameObject candy)
+        public void GrabWithActiveMouse(ConstrainedPoint candyPoint, GameObject candy)
         {
             if (activeMouse == null || activeMouse.HasCandy)
             {
@@ -118,13 +118,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>The point the active mouse is currently carrying, or null when it carries nothing.</summary>
-        public ConstraintedPoint ActiveMouseCarriedCandyPoint()
+        public ConstrainedPoint ActiveMouseCarriedCandyPoint()
         {
             return activeMouse?.CarriedCandyPoint;
         }
 
         /// <summary>Gets whether the active mouse owns the specified candy point.</summary>
-        public bool CarriesCandy(ConstraintedPoint point)
+        public bool CarriesCandy(ConstrainedPoint point)
         {
             return MouseOwnership.CarriesCandy(activeMouse?.CarriedCandyPoint, point);
         }
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
         /// <see langword="true" /> if the click was handled and candy was dropped;
         /// otherwise <see langword="false" />.
         /// </returns>
-        public bool HandleClick(float x, float y, out ConstraintedPoint droppedCandy)
+        public bool HandleClick(float x, float y, out ConstrainedPoint droppedCandy)
         {
             droppedCandy = null;
             if (activeMouse == null || !activeMouse.HasCandy)

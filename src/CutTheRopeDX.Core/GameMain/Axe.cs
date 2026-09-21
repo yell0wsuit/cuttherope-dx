@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
         private const int BladeQuad = 1;
         private const int PivotQuad = 2;
 
-        public readonly ConstraintedPoint constraint;
+        public readonly ConstrainedPoint constraint;
 
         public readonly string axeNumber;
 
@@ -32,7 +32,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Generic ghost-bubble overlay shown while this axe is carried by a ghost bubble.</summary>
         public readonly CandyInGhostBubbleAnimation ghostBubbleAnimation;
 
-        public Axe(ConstraintedPoint constraint, string axeNumber)
+        public Axe(ConstrainedPoint constraint, string axeNumber)
         {
             this.constraint = constraint;
             this.axeNumber = axeNumber ?? string.Empty;

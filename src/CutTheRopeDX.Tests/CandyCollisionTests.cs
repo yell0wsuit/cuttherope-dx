@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Tests
 
         private static CandyContext Context()
         {
-            return new CandyContext(new CandyBody(new ConstraintedPoint(), CandyBodyRole.Whole));
+            return new CandyContext(new CandyBody(new ConstrainedPoint(), CandyBodyRole.Whole));
         }
 
         [Fact]
@@ -207,12 +207,12 @@ namespace CutTheRopeDX.Tests
         public void HtmlNudgeImpulseIsEqualAndOppositeReverseVelocityScaled()
         {
             // a moved +2 in x last frame (prev 98 -> pos 100); b moved -2 in x (prev 122 -> pos 120): closing in.
-            ConstraintedPoint a = new()
+            ConstrainedPoint a = new()
             {
                 pos = new Vector(100f, 100f),
                 prevPos = new Vector(98f, 100f)
             };
-            ConstraintedPoint b = new()
+            ConstrainedPoint b = new()
             {
                 pos = new Vector(120f, 100f),
                 prevPos = new Vector(122f, 100f)

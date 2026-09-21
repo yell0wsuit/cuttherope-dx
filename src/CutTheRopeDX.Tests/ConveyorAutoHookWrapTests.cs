@@ -12,7 +12,7 @@ namespace CutTheRopeDX.Tests
         [Fact]
         public void DidMoveToOtherSideMovesAutoAttachedRopeWithHook()
         {
-            ConstraintedPoint candy = new()
+            ConstrainedPoint candy = new()
             {
                 pos = Vect(100f, 160f),
             };

@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Quad holding the intact bomb; the remaining quads are its debris fragments.</summary>
         private const int BodyQuad = 0;
 
-        public readonly ConstraintedPoint constraint;
+        public readonly ConstrainedPoint constraint;
 
         public readonly string bombNumber;
 
@@ -34,7 +34,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public bool Exploded { get; set; }
 
-        public Bomb(ConstraintedPoint constraint, string bombNumber)
+        public Bomb(ConstrainedPoint constraint, string bombNumber)
         {
             this.constraint = constraint;
             this.bombNumber = bombNumber ?? string.Empty;

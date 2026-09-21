@@ -156,7 +156,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="candyPoint">The candy physics point to test, or <see langword="null"/>.</param>
         /// <returns><see langword="true"/> if the candy entered a hole; otherwise <see langword="false"/>.</returns>
-        public bool TryCatchCandy(ConstraintedPoint candyPoint)
+        public bool TryCatchCandy(ConstrainedPoint candyPoint)
         {
             if (candyPoint == null)
             {
@@ -184,7 +184,7 @@ namespace CutTheRopeDX.GameMain
         /// impulse so the physics integrator launches it outward at <see cref="BambooThrowSpeed"/>.
         /// </summary>
         /// <param name="candyPoint">The candy physics point to teleport, or <see langword="null"/>.</param>
-        public void ThrowCandy(ConstraintedPoint candyPoint)
+        public void ThrowCandy(ConstrainedPoint candyPoint)
         {
             if (candyPoint == null)
             {
@@ -295,7 +295,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="candyPoint">The candy physics point to test.</param>
         /// <param name="holePosition">World-space position of the hole being tested.</param>
         /// <returns><see langword="true"/> if the candy is moving toward the hole; otherwise <see langword="false"/>.</returns>
-        private bool IsCandyMovingInside(ConstraintedPoint candyPoint, Vector holePosition)
+        private bool IsCandyMovingInside(ConstrainedPoint candyPoint, Vector holePosition)
         {
             Vector movement = candyPoint.prevPos.X == UNDEFINED_COORDINATE
                 ? candyPoint.posDelta

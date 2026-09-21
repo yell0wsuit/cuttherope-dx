@@ -46,7 +46,7 @@ namespace CutTheRopeDX.GameMain
         {
             rotatingSegment = null;
             State = MechanicalHandState.Idle;
-            cPoint = new ConstraintedPoint
+            cPoint = new ConstrainedPoint
             {
                 disableGravity = true
             };
@@ -471,7 +471,7 @@ namespace CutTheRopeDX.GameMain
         private Vector clawOffset;
 
         /// <summary>Lightweight constrained point used to attach candy to the claw.</summary>
-        public ConstraintedPoint cPoint;
+        public ConstrainedPoint cPoint;
 
         /// <summary>Ordered mechanical hand segment chain.</summary>
         public List<MechanicalHandSegment> segments;

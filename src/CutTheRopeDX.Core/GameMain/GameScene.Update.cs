@@ -230,7 +230,7 @@ namespace CutTheRopeDX.GameMain
                         if (rope != null)
                         {
                             MaterialPoint bungeeAnchor = rope.bungeeAnchor;
-                            ConstraintedPoint ropeEnd = rope.parts[^1];
+                            ConstrainedPoint ropeEnd = rope.parts[^1];
                             Vector anchorToEnd = VectSub(bungeeAnchor.pos, ropeEnd.pos);
                             // The body this rope ends on, unless another rope already steered it
                             // this frame: one rope drives one body's rotation per frame.
@@ -319,7 +319,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     // Time Travel relaxes each candy point the moment it has moved - and does so
                     // whether or not time is frozen, unlike the integration above.
-                    ConstraintedPoint.SatisfyConstraints(body.Point);
+                    ConstrainedPoint.SatisfyConstraints(body.Point);
                 }
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
@@ -337,21 +337,21 @@ namespace CutTheRopeDX.GameMain
             {
                 // ...then corrects the connector's own ends, which the candy integration has just
                 // pulled off their rest length. Unconditional in Time Travel - a cut connector too.
-                ConstraintedPoint.SatisfyConstraints(candyConnector.bungeeAnchor);
-                ConstraintedPoint.SatisfyConstraints(candyConnector.tail);
+                ConstrainedPoint.SatisfyConstraints(candyConnector.bungeeAnchor);
+                ConstrainedPoint.SatisfyConstraints(candyConnector.tail);
             }
             // Candy-to-candy collision once all candy points are integrated (multi-candy only).
             ResolveCandyCollisions(delta);
             if (primarySplit != null)
             {
-                ConstraintedPoint leftPoint = primarySplit.Left.Body.Point;
-                ConstraintedPoint rightPoint = primarySplit.Right.Body.Point;
+                ConstrainedPoint leftPoint = primarySplit.Left.Body.Point;
+                ConstrainedPoint rightPoint = primarySplit.Right.Body.Point;
                 if (primarySplit.Phase == SplitPhase.Merging)
                 {
                     for (int l = 0; l < 30; l++)
                     {
-                        ConstraintedPoint.SatisfyConstraints(leftPoint);
-                        ConstraintedPoint.SatisfyConstraints(rightPoint);
+                        ConstrainedPoint.SatisfyConstraints(leftPoint);
+                        ConstrainedPoint.SatisfyConstraints(rightPoint);
                     }
                 }
                 // A destroyed half already cancelled the merge on the split aggregate, which clears the
@@ -423,8 +423,8 @@ namespace CutTheRopeDX.GameMain
                         rightBody.ResidualRotation = 0f;
                         // The merge already detached the split, so the halves are reached through the
                         // aggregate captured above rather than through the lifecycle, which the merge just cleared.
-                        ConstraintedPoint mergedLeft = merging.Left.Body.Point;
-                        ConstraintedPoint mergedRight = merging.Right.Body.Point;
+                        ConstrainedPoint mergedLeft = merging.Left.Body.Point;
+                        ConstrainedPoint mergedRight = merging.Right.Body.Point;
                         CandyPoint.pos.X = mergedLeft.pos.X;
                         CandyPoint.pos.Y = mergedLeft.pos.Y;
                         Candy.x = CandyPoint.pos.X;
@@ -440,7 +440,7 @@ namespace CutTheRopeDX.GameMain
                             Bungee rope = bungees[m].Rope;
                             if (rope != null && rope.cut != rope.parts.Count - 3 && (rope.tail == mergedLeft || rope.tail == mergedRight))
                             {
-                                ConstraintedPoint secondToLastPart = rope.parts[^2];
+                                ConstrainedPoint secondToLastPart = rope.parts[^2];
                                 int restLength = (int)rope.tail.RestLengthFor(secondToLastPart);
                                 CandyPoint.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
                                 rope.tail = CandyPoint;
@@ -969,7 +969,7 @@ namespace CutTheRopeDX.GameMain
                     // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
                     // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
-                    ConstraintedPoint rocketCandyPoint = rocketCandy?.WholeBody.Point;
+                    ConstrainedPoint rocketCandyPoint = rocketCandy?.WholeBody.Point;
                     GameObject rocketCandyMain = rocketCandy?.WholeBody.Main;
                     // Every branch below steers the bound candy, and a rocket only reaches DIST or
                     // FLY by binding one. An unresolved rocket now does nothing instead of falling
@@ -1037,8 +1037,8 @@ namespace CutTheRopeDX.GameMain
                         {
                             for (int i = 0; i < 30; i++)
                             {
-                                ConstraintedPoint.SatisfyConstraints(rocketCandyPoint);
-                                ConstraintedPoint.SatisfyConstraints(rocket.point);
+                                ConstrainedPoint.SatisfyConstraints(rocketCandyPoint);
+                                ConstrainedPoint.SatisfyConstraints(rocket.point);
                             }
                         }
                         rocket.rotation = AngleTo0_360(rocket.startRotation + rocketCandyMain.rotation - rocket.startCandyRotation);
@@ -1374,7 +1374,7 @@ namespace CutTheRopeDX.GameMain
                     if (grab != null && grab.Mount?.IsMounted == false && grab.y > waterLayer.y && grab.Rope != null)
                     {
                         float damping = ActivePhysicsConstants.WaterDamping;
-                        ConstraintedPoint anchor = grab.Rope.bungeeAnchor;
+                        ConstrainedPoint anchor = grab.Rope.bungeeAnchor;
                         anchor.ApplyImpulseDelta(Vect(-anchor.v.X / damping, (-anchor.v.Y / damping) + ActivePhysicsConstants.WaterRopeAnchorImpulse), delta);
                     }
                 }
@@ -1450,7 +1450,7 @@ namespace CutTheRopeDX.GameMain
             for (int ci = 0; ActivePhysicsConstants.RocketDampsCandyVelocity && ci < candies.Count; ci++)
             {
                 CandyContext ctx = candies[ci];
-                ConstraintedPoint rocketPoint = ctx.WholeBody.Point;
+                ConstrainedPoint rocketPoint = ctx.WholeBody.Point;
                 if (ctx.Lifecycle.Attachments.Rocket != null)
                 {
                     // Experiments applies velocity damping as an impulse each frame instead.
@@ -1734,7 +1734,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="delta">Elapsed frame time in seconds.</param>
         private void UpdateCameraTracking(float delta)
         {
-            ConstraintedPoint focusPoint = CameraFocusPoint();
+            ConstrainedPoint focusPoint = CameraFocusPoint();
             float targetCameraX = focusPoint.pos.X - (SCREEN_WIDTH / 2f);
             float targetCameraY = focusPoint.pos.Y - (SCREEN_HEIGHT / 2f);
             Vector boundedCamera = BoundedCameraPosition(targetCameraX, targetCameraY);

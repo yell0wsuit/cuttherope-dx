@@ -64,7 +64,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the bomb went off.</returns>
         private bool DetonateOnTouchingBody(CandyContext bombCtx, float delta)
         {
-            ConstraintedPoint bombPoint = bombCtx.WholeBody.Point;
+            ConstrainedPoint bombPoint = bombCtx.WholeBody.Point;
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Hazard))
             {
                 if (body.Owner.bomb != null)
@@ -91,7 +91,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the bombs went off.</returns>
         private bool DetonateOnTouchingBomb(CandyContext bombCtx, float delta)
         {
-            ConstraintedPoint bombPoint = bombCtx.WholeBody.Point;
+            ConstrainedPoint bombPoint = bombCtx.WholeBody.Point;
             foreach (CandyContext otherCtx in LiveBombs().ToList())
             {
                 if (otherCtx == bombCtx)
@@ -115,7 +115,7 @@ namespace CutTheRopeDX.GameMain
         /// Brings a body to a dead stop where it is, clearing the Verlet history so the blast that
         /// follows is the only thing moving it.
         /// </summary>
-        private static void StopBodyAtImpact(ConstraintedPoint point)
+        private static void StopBodyAtImpact(ConstrainedPoint point)
         {
             point.v = vectZero;
             point.a = vectZero;

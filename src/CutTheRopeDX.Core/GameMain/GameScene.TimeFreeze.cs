@@ -195,7 +195,7 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (CandyBody body in ActiveCandyBodies())
             {
-                ConstraintedPoint point = body.Point;
+                ConstrainedPoint point = body.Point;
                 if (point == null)
                 {
                     continue;

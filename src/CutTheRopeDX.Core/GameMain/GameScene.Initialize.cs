@@ -167,7 +167,7 @@ namespace CutTheRopeDX.GameMain
             candyPairPrevDistance.Clear();
 
             // Initialize constraint points for ropes
-            ConstraintedPoint primaryPoint = new();
+            ConstrainedPoint primaryPoint = new();
             primaryPoint.SetWeight(1f);
 
             (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim, Animation primaryBubble, CandyInGhostBubbleAnimation primaryGhostBubble) = CreateCandyVisual();
@@ -208,7 +208,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The new half body.</returns>
         private static CandyBody CreateSplitHalfBody(CandyBodyRole role, float x, float y)
         {
-            ConstraintedPoint point = new();
+            ConstrainedPoint point = new();
             point.SetWeight(1f);
             point.pos.X = x;
             point.pos.Y = y;
@@ -274,7 +274,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private CandyContext CreateCandyContext(string candyNumber, float px, float py)
         {
-            ConstraintedPoint p = new();
+            ConstrainedPoint p = new();
             p.SetWeight(1f);
             p.pos.X = px;
             p.pos.Y = py;

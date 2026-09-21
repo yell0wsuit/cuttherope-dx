@@ -28,7 +28,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="candyPoint">The released candy's physics point.</param>
         /// <returns>The segment index to cut, or <see langword="null"/>.</returns>
-        public int? CutPartForCandy(ConstraintedPoint candyPoint)
+        public int? CutPartForCandy(ConstrainedPoint candyPoint)
         {
             return Rope.tail == candyPoint ? Rope.parts.Count - 2 : IsConnector && Rope.bungeeAnchor == candyPoint ? 0 : null;
         }

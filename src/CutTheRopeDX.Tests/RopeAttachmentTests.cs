@@ -10,7 +10,7 @@ namespace CutTheRopeDX.Tests
         private static Bungee MakeRope()
         {
             _ = HeadlessGame.Boot();
-            ConstraintedPoint tail = new();
+            ConstrainedPoint tail = new();
             tail.SetWeight(1f);
             return new Bungee().InitWithHeadAtXYTailAtTXTYandLength(null, 0f, 0f, tail, 0f, 100f, 100f);
         }
