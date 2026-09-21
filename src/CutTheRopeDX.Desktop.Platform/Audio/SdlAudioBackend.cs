@@ -4,7 +4,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Media;
+
+using Microsoft.Extensions.Logging;
 
 using SDL3;
 
@@ -75,13 +78,16 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
         /// </remarks>
         public static SdlAudioBackend TryOpen(string contentRoot)
         {
+            // Each failure is logged before cleanup runs, since cleanup can replace SDL's error.
             if (!SDL.InitSubSystem(SDL.InitFlags.Audio))
             {
+                ReportUnavailable("start SDL audio");
                 return null;
             }
 
             if (!AcquireLibrary())
             {
+                ReportUnavailable("start SDL_mixer");
                 SDL.QuitSubSystem(SDL.InitFlags.Audio);
                 return null;
             }
@@ -95,12 +101,21 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             nint mixer = CreateMixer(spec, specPointer => Mixer.CreateMixerDevice(SDL.AudioDeviceDefaultPlayback, specPointer));
             if (mixer == 0)
             {
+                ReportUnavailable("open the default playback device");
                 ReleaseLibrary();
                 SDL.QuitSubSystem(SDL.InitFlags.Audio);
                 return null;
             }
 
             return new SdlAudioBackend(mixer, MixerFrequency, contentRoot);
+        }
+
+        /// <summary>Logs why audio could not start, with the reason SDL gave.</summary>
+        /// <param name="step">What was being attempted when it failed.</param>
+        private static void ReportUnavailable(string step)
+        {
+            ILogger logger = Log.For(LogCategories.MediaSound);
+            SdlAudioBackendLog.Unavailable(logger, step, SDL.GetError());
         }
 
         /// <summary>
@@ -485,5 +500,12 @@ namespace CutTheRopeDX.Desktop.Platform.Audio
             Mixer.DestroyMixer(mixer);
             ReleaseLibrary();
         }
+    }
+
+    /// <summary>Log messages for the SDL_mixer audio backend.</summary>
+    internal static partial class SdlAudioBackendLog
+    {
+        [LoggerMessage(Level = LogLevel.Warning, Message = "Audio unavailable: could not {Step}: {Reason}")]
+        public static partial void Unavailable(ILogger logger, string step, string reason);
     }
 }
