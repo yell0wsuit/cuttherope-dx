@@ -36,7 +36,7 @@ namespace CutTheRopeDX.Desktop.Platform
         {
             WindowedMaximized = maximized;
             observedMaximized = (SDL.GetWindowFlags(window) & SDL.WindowFlags.Maximized) != 0;
-            Check(SDL.SetWindowMinimumSize(window, 320, 480));
+            _ = Request(SDL.SetWindowMinimumSize(window, 320, 480), "minimum size");
             ApplyWindowSize(width, height);
             Center();
             if (fullscreen != IsFullScreen)
@@ -51,8 +51,8 @@ namespace CutTheRopeDX.Desktop.Platform
             // asking again would shrink it.
             if (maximized && !IsFullScreen && (SDL.GetWindowFlags(window) & SDL.WindowFlags.Maximized) == 0)
             {
-                Check(SDL.MaximizeWindow(window));
-                _ = SDL.SyncWindow(window);
+                _ = Request(SDL.MaximizeWindow(window), "maximize");
+                Settle();
             }
 
             RefreshSurface();
@@ -64,12 +64,12 @@ namespace CutTheRopeDX.Desktop.Platform
         public void Show()
         {
             Check(SDL.ShowWindow(window));
-            _ = SDL.SyncWindow(window);
+            Settle();
         }
         public void ToggleFullScreen()
         {
             bool fullscreen = IsFullScreen;
-            Check(SDL.SetWindowFullscreen(window, !fullscreen)); Check(SDL.SyncWindow(window));
+            _ = Request(SDL.SetWindowFullscreen(window, !fullscreen), "fullscreen"); Settle();
             if (fullscreen)
             {
                 FitWindowedSizeToFrame();
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.Desktop.Platform
                 return;
             }
 
-            Check(SDL.SetWindowSize(window, width, height)); Check(SDL.SyncWindow(window));
+            _ = Request(SDL.SetWindowSize(window, width, height), "resize"); Settle();
             if (shrunk)
             {
                 Center();
@@ -163,14 +163,16 @@ namespace CutTheRopeDX.Desktop.Platform
         {
             (width, height) = FitToDisplay(width, height);
             WindowedWidth = width; WindowedHeight = height;
-            if (!IsFullScreen) { Check(SDL.SetWindowSize(window, width, height)); Check(SDL.SyncWindow(window)); }
+            if (!IsFullScreen) { _ = Request(SDL.SetWindowSize(window, width, height), "resize"); Settle(); }
             RefreshSurface(); SavePreferences();
         }
         /// <summary>Puts the window in the middle of the display it was placed on.</summary>
         /// <remarks>
         /// The window is born at the backend's probe size and only then resized to the saved one,
         /// and a resize keeps the top-left corner fixed, so whatever placement SDL chose for the
-        /// original size leaves the real window sitting off-center.
+        /// original size leaves the real window sitting off-center. Wayland leaves top-level
+        /// placement to the compositor and SDL refuses to position such a window at all, so there
+        /// the window stays where the compositor put it.
         /// </remarks>
         public void Center()
         {
@@ -180,8 +182,10 @@ namespace CutTheRopeDX.Desktop.Platform
             }
 
             int centered = (int)SDL.WindowPosCenteredDisplay((int)SDL.GetDisplayForWindow(window));
-            Check(SDL.SetWindowPosition(window, centered, centered));
-            Check(SDL.SyncWindow(window));
+            if (Request(SDL.SetWindowPosition(window, centered, centered), "center"))
+            {
+                Settle();
+            }
         }
         public void RefreshSurface()
         {
@@ -272,12 +276,45 @@ namespace CutTheRopeDX.Desktop.Platform
             Preferences.SetBooleanForKey(WindowedMaximized, "PREFS_WINDOW_MAXIMIZED", false);
             Preferences.SetBooleanForKey(IsFullScreen, "PREFS_WINDOW_FULLSCREEN", true);
         }
+        /// <summary>Throws on a failed query, which means SDL or the window itself is broken.</summary>
         private static void Check(bool ok)
         {
             if (!ok)
             {
                 throw new InvalidOperationException(SDL.GetError());
             }
+        }
+
+        /// <summary>Logs a window-manager request that was refused, and carries on.</summary>
+        /// <param name="ok">What SDL returned for the request.</param>
+        /// <param name="what">The request, for the log.</param>
+        /// <returns>Whether the request was accepted.</returns>
+        /// <remarks>
+        /// Placement, size, maximizing and fullscreen are requests the window manager is free to
+        /// refuse: Wayland will not let a top-level window be positioned, and tiling window
+        /// managers ignore sizes. Nothing here relies on a request having been honored, since the
+        /// window's real state is read back afterwards and resize events refresh it again.
+        /// </remarks>
+        private static bool Request(bool ok, string what)
+        {
+            if (!ok)
+            {
+                string reason = SDL.GetError();
+                ILogger logger = Log.For(LogCategories.SdlHost);
+                SdlWindowServiceLog.RequestRefused(logger, what, reason);
+            }
+
+            return ok;
+        }
+
+        /// <summary>Waits for the window manager to apply pending requests, for as long as SDL allows.</summary>
+        /// <remarks>
+        /// The only failure is a timeout, so the result is not an error: a change that lands later
+        /// arrives as a resize event and refreshes the surface then.
+        /// </remarks>
+        private void Settle()
+        {
+            _ = SDL.SyncWindow(window);
         }
     }
 
@@ -296,6 +333,9 @@ namespace CutTheRopeDX.Desktop.Platform
             int pixelHeight,
             float scale,
             bool fullScreen);
+
+        [LoggerMessage(Level = LogLevel.Information, Message = "Window {Request} refused: {Reason}")]
+        public static partial void RequestRefused(ILogger logger, string request, string reason);
 
         [LoggerMessage(Level = LogLevel.Information, Message = "Fullscreen {FullScreen} at {Width}x{Height}")]
         public static partial void FullScreenChanged(ILogger logger, bool fullScreen, int width, int height);
