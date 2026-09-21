@@ -38,7 +38,7 @@ namespace CutTheRopeDX.GameMain
         {
             RootController root = Application.SharedRootController();
             dd = new DelayedDispatcher();
-            initialCameraToStarDistance = -1f;
+            initialCameraToCandyDistance = -1f;
             aniPool = new AnimationsPool
             {
                 visible = false
@@ -142,7 +142,7 @@ namespace CutTheRopeDX.GameMain
         {
             dd.CancelAllDispatches();
             gameplayFlow.Reset();
-            initialCameraToStarDistance = -1f;
+            initialCameraToCandyDistance = -1f;
             animateRestartDim = false;
             RootController root = Application.SharedRootController();
             if (root.IsPicker())

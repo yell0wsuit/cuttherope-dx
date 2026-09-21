@@ -200,9 +200,9 @@ namespace CutTheRopeDX.GameMain
                                 {
                                     primaryCandyClaimed = true;
                                     candies[0].candyNumber = number;
-                                    Star.pos.X = cx;
-                                    Star.pos.Y = cy;
-                                    Star.prevPos = Star.pos;
+                                    CandyPoint.pos.X = cx;
+                                    CandyPoint.pos.Y = cy;
+                                    CandyPoint.prevPos = CandyPoint.pos;
                                     Candy.x = cx;
                                     Candy.y = cy;
                                 }

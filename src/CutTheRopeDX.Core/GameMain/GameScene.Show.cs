@@ -210,7 +210,7 @@ namespace CutTheRopeDX.GameMain
                 // rest from it, the way every later frame does.
                 camera.MoveToXYImmediate(cameraStartX, cameraStartY, true);
                 ApplyCameraFit(snapshot);
-                initialCameraToStarDistance = VectDistance(camera.pos, boundedCamera);
+                initialCameraToCandyDistance = VectDistance(camera.pos, boundedCamera);
                 return;
             }
 

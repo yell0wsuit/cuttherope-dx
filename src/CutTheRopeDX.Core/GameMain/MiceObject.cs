@@ -89,11 +89,11 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Commands the active mouse to grab a candy from a star point.
+        /// Commands the active mouse to grab a candy by its physics point.
         /// </summary>
-        /// <param name="star">The constrained star point.</param>
+        /// <param name="candyPoint">The candy's constrained physics point.</param>
         /// <param name="candy">The candy game object.</param>
-        public void GrabWithActiveMouse(ConstraintedPoint star, GameObject candy)
+        public void GrabWithActiveMouse(ConstraintedPoint candyPoint, GameObject candy)
         {
             if (activeMouse == null || activeMouse.HasCandy)
             {
@@ -102,10 +102,10 @@ namespace CutTheRopeDX.GameMain
 
             // Release only the ropes of the candy being grabbed, keyed by its own point.
             // Using the global ReleaseAllRopes here would cut the first candy's ropes when
-            // a later candy is grabbed, since that path matches the singleton star points.
-            scene.ReleaseRopesForPoint(star);
-            scene.DetachHandsForPoint(star);
-            activeMouse.GrabCandy(star, candy);
+            // a later candy is grabbed, since that path matches the singleton candy points.
+            scene.ReleaseRopesForPoint(candyPoint);
+            scene.DetachHandsForPoint(candyPoint);
+            activeMouse.GrabCandy(candyPoint, candy);
         }
 
         /// <summary>
@@ -118,15 +118,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>The point the active mouse is currently carrying, or null when it carries nothing.</summary>
-        public ConstraintedPoint ActiveMouseCarriedStar()
+        public ConstraintedPoint ActiveMouseCarriedCandyPoint()
         {
-            return activeMouse?.CarriedStar;
+            return activeMouse?.CarriedCandyPoint;
         }
 
         /// <summary>Gets whether the active mouse owns the specified candy point.</summary>
         public bool CarriesCandy(ConstraintedPoint point)
         {
-            return MouseOwnership.CarriesCandy(activeMouse?.CarriedStar, point);
+            return MouseOwnership.CarriesCandy(activeMouse?.CarriedCandyPoint, point);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace CutTheRopeDX.GameMain
 
             if (activeMouse.IsClickable(x, y))
             {
-                droppedCandy = ActiveMouseCarriedStar();
+                droppedCandy = ActiveMouseCarriedCandyPoint();
                 activeMouse.DropCandyAndRetreat();
                 return true;
             }
@@ -182,7 +182,7 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Advances control to the next mouse in index order, transferring
-        /// any carried candy and star state.
+        /// any carried candy and its physics point.
         /// </summary>
         public void AdvanceToNextMouse()
         {

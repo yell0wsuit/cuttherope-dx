@@ -517,11 +517,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="sg">Grab whose spider captured the candy.</param>
         public void SpiderWon(Grab sg)
         {
-            ConstraintedPoint capturedStar = sg.Rope?.tail;
+            ConstraintedPoint capturedPoint = sg.Rope?.tail;
             // spiderTookCandy = true;
             // The spider takes whichever body its rope ends on - a whole candy or one split half. A
             // rope that ends on no live body has nothing to steal; it used to steal the primary candy.
-            CandyBody capturedBody = CandyBodyForPointOrNull(capturedStar);
+            CandyBody capturedBody = CandyBodyForPointOrNull(capturedPoint);
             if (capturedBody == null)
             {
                 return;

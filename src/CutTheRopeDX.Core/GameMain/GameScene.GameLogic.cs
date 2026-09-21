@@ -670,7 +670,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            ConstraintedPoint released = miceManager.ActiveMouseCarriedStar();
+            ConstraintedPoint released = miceManager.ActiveMouseCarriedCandyPoint();
             miceManager.ReleaseAllCandy();
             if (CandyForPointOrNull(released) is CandyContext releasedCandy)
             {
@@ -1006,7 +1006,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void DropMouseCandyForPoint(ConstraintedPoint point)
         {
-            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedStar(), point))
+            if (MouseOwnership.CarriesCandy(miceManager?.ActiveMouseCarriedCandyPoint(), point))
             {
                 miceManager.ForceDropCandy();
                 CandyContext ctx = CandyForPointOrNull(point);
@@ -1089,7 +1089,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? Star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
                     hand.cPoint.RemoveConstraint(heldPoint);
                     hand.ReleaseCandy();
                     hand.AnimateReleaseWithAnimationsPool(aniPool);
@@ -1121,7 +1121,7 @@ namespace CutTheRopeDX.GameMain
                 if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
                 {
                     CandyContext held = HandHeldCandy(hand);
-                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? Star;
+                    ConstraintedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
                     if (heldPoint != point)
                     {
                         continue;

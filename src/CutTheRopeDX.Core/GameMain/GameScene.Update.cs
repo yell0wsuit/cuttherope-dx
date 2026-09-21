@@ -135,8 +135,8 @@ namespace CutTheRopeDX.GameMain
 
                     if (grab.GunSource is GunSource gunSource)
                     {
-                        gunSource.TrackAim(Vect(grab.x, grab.y), Star.pos);
-                        gunSource.TrackFiredCup(Star.pos, Candy.rotation);
+                        gunSource.TrackAim(Vect(grab.x, grab.y), CandyPoint.pos);
+                        gunSource.TrackFiredCup(CandyPoint.pos, Candy.rotation);
                     }
 
                     Bungee rope = grab.Rope;
@@ -425,15 +425,15 @@ namespace CutTheRopeDX.GameMain
                         // aggregate captured above rather than through the lifecycle, which the merge just cleared.
                         ConstraintedPoint mergedLeft = merging.Left.Body.Point;
                         ConstraintedPoint mergedRight = merging.Right.Body.Point;
-                        Star.pos.X = mergedLeft.pos.X;
-                        Star.pos.Y = mergedLeft.pos.Y;
-                        Candy.x = Star.pos.X;
-                        Candy.y = Star.pos.Y;
+                        CandyPoint.pos.X = mergedLeft.pos.X;
+                        CandyPoint.pos.Y = mergedLeft.pos.Y;
+                        Candy.x = CandyPoint.pos.X;
+                        Candy.y = CandyPoint.pos.Y;
                         CalculateTopLeft(Candy);
                         Vector leftVelocity = VectSub(mergedLeft.pos, mergedLeft.prevPos);
                         Vector rightVelocity = VectSub(mergedRight.pos, mergedRight.prevPos);
                         Vector mergedVelocity = Vect((leftVelocity.X + rightVelocity.X) / 2f, (leftVelocity.Y + rightVelocity.Y) / 2f);
-                        Star.prevPos = VectSub(Star.pos, mergedVelocity);
+                        CandyPoint.prevPos = VectSub(CandyPoint.pos, mergedVelocity);
                         int bungeeCount = bungees.Count;
                         for (int m = 0; m < bungeeCount; m++)
                         {
@@ -442,9 +442,9 @@ namespace CutTheRopeDX.GameMain
                             {
                                 ConstraintedPoint secondToLastPart = rope.parts[^2];
                                 int restLength = (int)rope.tail.RestLengthFor(secondToLastPart);
-                                Star.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
-                                rope.tail = Star;
-                                rope.parts[^1] = Star;
+                                CandyPoint.AddConstraintwithRestLengthofType(secondToLastPart, restLength, ConstraintType.DISTANCE);
+                                rope.tail = CandyPoint;
+                                rope.parts[^1] = CandyPoint;
                                 rope.initialCandleAngle = 0f;
                                 rope.chosenOne = false;
                             }
@@ -969,11 +969,11 @@ namespace CutTheRopeDX.GameMain
                     // earlier in the frame, and rocket.Update syncs the visual from point.pos — a
                     // post-Update snap would leave the rocket rendered at the old mouth for one frame.
                     CandyContext rocketCandy = RocketBoundCandy(rocket);
-                    ConstraintedPoint rocketStar = rocketCandy?.WholeBody.Point;
+                    ConstraintedPoint rocketCandyPoint = rocketCandy?.WholeBody.Point;
                     GameObject rocketCandyMain = rocketCandy?.WholeBody.Main;
                     // Every branch below steers the bound candy, and a rocket only reaches DIST or
                     // FLY by binding one. An unresolved rocket now does nothing instead of falling
-                    // back on candies[0]/star, which made a stray rocket thrust and de-spin whichever
+                    // back on candies[0], which made a stray rocket thrust and de-spin whichever
                     // candy happened to be the primary.
                     bool carriesCandy = rocketCandy != null
                         && rocket.state is Rocket.STATE_ROCKET_FLY or Rocket.STATE_ROCKET_DIST;
@@ -989,8 +989,8 @@ namespace CutTheRopeDX.GameMain
                     {
                         // prevPos too: rocket.Update integrates the point next, and a bare pos
                         // teleport would replay the whole jump as one frame of velocity.
-                        rocket.point.pos = rocketStar.pos;
-                        rocket.point.prevPos = rocketStar.pos;
+                        rocket.point.pos = rocketCandyPoint.pos;
+                        rocket.point.prevPos = rocketCandyPoint.pos;
                     }
                     rocket.Update(delta, timeFrozen);
                     rocket.UpdateRotation();
@@ -1002,8 +1002,8 @@ namespace CutTheRopeDX.GameMain
                             // while time is stopped (by a hand's turning arm) would otherwise leave
                             // prevPos behind, and the first running frame would replay the whole
                             // drag as one frame of velocity.
-                            rocket.point.pos = rocketStar.pos;
-                            rocket.point.prevPos = rocketStar.pos;
+                            rocket.point.pos = rocketCandyPoint.pos;
+                            rocket.point.prevPos = rocketCandyPoint.pos;
                         }
                         if (carriesCandy)
                         {
@@ -1024,9 +1024,9 @@ namespace CutTheRopeDX.GameMain
                     // reference's recurring `star->disableGravity = activeRocket != 0`.
                     if (carriesCandy)
                     {
-                        rocketStar.disableGravity = true;
+                        rocketCandyPoint.disableGravity = true;
                     }
-                    float dist = carriesCandy ? VectLength(VectSub(rocketStar.pos, rocket.point.pos)) : 0f;
+                    float dist = carriesCandy ? VectLength(VectSub(rocketCandyPoint.pos, rocket.point.pos)) : 0f;
                     if (carriesCandy)
                     {
                         // Time Travel relaxes the pair only through the reel-in; once the rocket is
@@ -1037,7 +1037,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             for (int i = 0; i < 30; i++)
                             {
-                                ConstraintedPoint.SatisfyConstraints(rocketStar);
+                                ConstraintedPoint.SatisfyConstraints(rocketCandyPoint);
                                 ConstraintedPoint.SatisfyConstraints(rocket.point);
                             }
                         }
@@ -1059,7 +1059,7 @@ namespace CutTheRopeDX.GameMain
                                     Bungee rope = bungee.Rope;
                                     bool candyIsFree = !ActivePhysicsConstants.RocketRopeAlignRequiresFreeCandy
                                         || rocketCandy?.Lifecycle.Attachments.Hand == null;
-                                    if (rope != null && rope.tail == rocketStar && rope.cut == -1 && rope.relaxed > 0 && candyIsFree)
+                                    if (rope != null && rope.tail == rocketCandyPoint && rope.cut == -1 && rope.relaxed > 0 && candyIsFree)
                                     {
                                         ropeRelaxed = true;
                                         AlignRocketAngleToRope(rocket, rope, delta);
@@ -1068,7 +1068,7 @@ namespace CutTheRopeDX.GameMain
                             }
                         }
                         // iOS steers the rocket off the candy connector too. It lives outside the grab
-                        // list and joins two candy points, so there is no rocketStar tail check and no
+                        // list and joins two candy points, so there is no rocketCandyPoint tail check and no
                         // hand gate. The connector counts as relaxed while it is nearly
                         // straight: |straight-line span - polyline length| < polyline length / 4.
                         if (candyConnector != null && candyConnector.cut == -1)
@@ -1097,15 +1097,15 @@ namespace CutTheRopeDX.GameMain
                         }
                         if (!parkedOnMouse)
                         {
-                            rocketStar.ApplyImpulseDelta(impulse, delta);
+                            rocketCandyPoint.ApplyImpulseDelta(impulse, delta);
                         }
-                        rocketStar.gravity = vectZero;
-                        rocket.point.pos.X = rocketStar.pos.X;
-                        rocket.point.pos.Y = rocketStar.pos.Y;
+                        rocketCandyPoint.gravity = vectZero;
+                        rocket.point.pos.X = rocketCandyPoint.pos.X;
+                        rocket.point.pos.Y = rocketCandyPoint.pos.Y;
                         if (rocket.time != -1f && Mover.MoveVariableToTarget(ref rocket.time, 0f, 1f, delta))
                         {
                             ExhaustRocketForCandy(rocketCandy);
-                            rocketStar.disableGravity = IsCandyGravitySuppressed(rocketCandy);
+                            rocketCandyPoint.disableGravity = IsCandyGravitySuppressed(rocketCandy);
                         }
                     }
                     if (carriesCandy && rocket.state == Rocket.STATE_ROCKET_DIST)
@@ -1121,15 +1121,15 @@ namespace CutTheRopeDX.GameMain
                             {
                                 // Time Travel hands the thrust a candy at rest: whatever the reel-in
                                 // built up is dropped as the flight starts.
-                                rocketStar.v = vectZero;
-                                rocketStar.a = vectZero;
-                                rocketStar.gravity = vectZero;
-                                rocketStar.prevPos = rocketStar.pos;
+                                rocketCandyPoint.v = vectZero;
+                                rocketCandyPoint.a = vectZero;
+                                rocketCandyPoint.gravity = vectZero;
+                                rocketCandyPoint.prevPos = rocketCandyPoint.pos;
                             }
                         }
                         else
                         {
-                            rocket.point.ChangeRestLengthToFor(dist, rocketStar);
+                            rocket.point.ChangeRestLengthToFor(dist, rocketCandyPoint);
                         }
                     }
                     if (rocket.state == Rocket.STATE_ROCKET_IDLE)
@@ -1764,7 +1764,7 @@ namespace CutTheRopeDX.GameMain
                         camera.speed *= 1.5f;
                     }
                 }
-                else if (cameraTargetDistance > initialCameraToStarDistance / 2)
+                else if (cameraTargetDistance > initialCameraToCandyDistance / 2)
                 {
                     camera.speed += delta * cameraAcceleration;
                     camera.speed = Math.Min(maxCameraSpeed, camera.speed);

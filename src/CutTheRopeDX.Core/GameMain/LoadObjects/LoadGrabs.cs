@@ -135,7 +135,7 @@ namespace CutTheRopeDX.GameMain
                 if (bindBulb)
                 {
                     CandyContext bulb = FindLightEmitterByNumber(bulbNumber);
-                    constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? Star;
+                    constraintedPoint = bulb != null ? bulb.WholeBody.Point : authoredHalf ?? CandyPoint;
                 }
                 else if (targetBomb != null)
                 {
@@ -152,7 +152,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 else
                 {
-                    constraintedPoint = authoredHalf ?? Star;
+                    constraintedPoint = authoredHalf ?? CandyPoint;
                 }
 
                 // A part="L"/"R" grab binds to a half, so the owner lookup has to resolve halves too;
@@ -182,7 +182,7 @@ namespace CutTheRopeDX.GameMain
             if (grab.GunSource != null && grab.GunSource.Arrow != null)
             {
                 SplitCandyState split = candies[0].Lifecycle.Split;
-                ConstraintedPoint constraintedPoint = split == null ? Star
+                ConstraintedPoint constraintedPoint = split == null ? CandyPoint
                     : isLeftPart ? split.Left.Body.Point : split.Right.Body.Point;
                 Vector vector = VectSub(Vect(grab.x, grab.y), constraintedPoint.pos);
                 grab.GunSource.Arrow.rotation = float.RadiansToDegrees(VectAngleNormalized(vector));

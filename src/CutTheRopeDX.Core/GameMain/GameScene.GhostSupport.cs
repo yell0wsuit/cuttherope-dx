@@ -32,7 +32,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            return best ?? Star;
+            return best ?? CandyPoint;
         }
     }
 }

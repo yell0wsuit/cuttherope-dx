@@ -28,9 +28,9 @@ namespace CutTheRopeDX.GameMain
             if (isCandyCaptured)
             {
                 _ = candies[0].Lifecycle.Attachments.CaptureInLantern();
-                lantern.CaptureCandy(Star);
-                Candy.x = Star.pos.X;
-                Candy.y = Star.pos.Y;
+                lantern.CaptureCandy(CandyPoint);
+                Candy.x = CandyPoint.pos.X;
+                Candy.y = CandyPoint.pos.Y;
                 Candy.color = RGBAColor.transparentRGBA;
             }
         }

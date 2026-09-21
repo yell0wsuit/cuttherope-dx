@@ -1012,7 +1012,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The constrained point currently representing the candy anchor.
         /// </summary>
-        private ConstraintedPoint Star => candies[0].WholeBody.Point;
+        private ConstraintedPoint CandyPoint => candies[0].WholeBody.Point;
 
         /// <summary>All independent candies in the level. Single-candy packs hold one element.</summary>
         private readonly List<CandyContext> candies = [];
@@ -1381,7 +1381,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The initial camera distance to the candy anchor.
         /// </summary>
-        public float initialCameraToStarDistance;
+        public float initialCameraToCandyDistance;
 
         /// <summary>Single owner of the restart-dim machine and the win/lose flags.</summary>
         public readonly LevelFlowState gameplayFlow = new();

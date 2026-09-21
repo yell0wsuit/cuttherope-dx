@@ -167,8 +167,8 @@ namespace CutTheRopeDX.GameMain
             candyPairPrevDistance.Clear();
 
             // Initialize constraint points for ropes
-            ConstraintedPoint starPoint = new();
-            starPoint.SetWeight(1f);
+            ConstraintedPoint primaryPoint = new();
+            primaryPoint.SetWeight(1f);
 
             (GameObject candyObj, GameObject candyMainObj, GameObject candyTopObj, Animation candyBlinkAnim, Animation primaryBubble, CandyInGhostBubbleAnimation primaryGhostBubble) = CreateCandyVisual();
 
@@ -179,7 +179,7 @@ namespace CutTheRopeDX.GameMain
             primaryCandyClaimed = false;
 
             CandyBody primaryBody = new(
-                starPoint,
+                primaryPoint,
                 CandyBodyRole.Whole,
                 candyObj,
                 candyMainObj,

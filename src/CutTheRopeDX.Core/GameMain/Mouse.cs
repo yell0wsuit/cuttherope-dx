@@ -281,20 +281,20 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Commands the mouse to grab candy from a star point, disabling gravity
+        /// Commands the mouse to grab candy by its physics point, disabling gravity
         /// and initiating the grab animation.
         /// </summary>
-        /// <param name="star">The constrained star point to attach.</param>
+        /// <param name="candyPoint">The candy's constrained physics point to attach.</param>
         /// <param name="candy">The candy game object being grabbed.</param>
-        public void GrabCandy(ConstraintedPoint star, GameObject candy)
+        public void GrabCandy(ConstraintedPoint candyPoint, GameObject candy)
         {
-            carry = new MouseCarry(star, candy);
+            carry = new MouseCarry(candyPoint, candy);
 
-            star.disableGravity = true;
-            star.v = default;
+            candyPoint.disableGravity = true;
+            candyPoint.v = default;
             Vector offset = entryOffsets[3];
-            star.pos = Vect(x + offset.X, y + offset.Y);
-            star.prevPos = star.pos;
+            candyPoint.pos = Vect(x + offset.X, y + offset.Y);
+            candyPoint.prevPos = candyPoint.pos;
             mouthPathPlayer.Play(CreateEntryPath());
             grabAnimating = true;
 
@@ -321,8 +321,8 @@ namespace CutTheRopeDX.GameMain
                 return false;
             }
 
-            released.Star.disableGravity = false;
-            released.Star.prevPos = released.Star.pos;
+            released.Point.disableGravity = false;
+            released.Point.prevPos = released.Point.pos;
             carry = null;
             grabAnimating = false;
             return true;
@@ -406,8 +406,8 @@ namespace CutTheRopeDX.GameMain
 
             if (carry != null)
             {
-                carry.Star.pos = Vect(x + mouthOffset.X, y + mouthOffset.Y);
-                carry.Star.prevPos = carry.Star.pos;
+                carry.Point.pos = Vect(x + mouthOffset.X, y + mouthOffset.Y);
+                carry.Point.prevPos = carry.Point.pos;
             }
 
             if (IsActive && !retreating && !grabAnimating)
@@ -432,11 +432,11 @@ namespace CutTheRopeDX.GameMain
         private void AttachExistingCandy(MouseCarry existingCarry)
         {
             carry = existingCarry;
-            existingCarry.Star.disableGravity = true;
-            existingCarry.Star.v = default;
+            existingCarry.Point.disableGravity = true;
+            existingCarry.Point.v = default;
             Vector offset = entryOffsets[3];
-            existingCarry.Star.pos = Vect(x + offset.X, y + offset.Y);
-            existingCarry.Star.prevPos = existingCarry.Star.pos;
+            existingCarry.Point.pos = Vect(x + offset.X, y + offset.Y);
+            existingCarry.Point.prevPos = existingCarry.Point.pos;
             mouthPathPlayer.Play(CreateEntryPath());
             grabAnimating = true;
         }
@@ -447,7 +447,7 @@ namespace CutTheRopeDX.GameMain
         public bool HasCandy => carry != null;
 
         /// <summary>Gets the physics point currently carried by this mouse.</summary>
-        public ConstraintedPoint CarriedStar => carry?.Star;
+        public ConstraintedPoint CarriedCandyPoint => carry?.Point;
 
         /// <summary>
         /// Determines whether the mouse can be clicked at the specified coordinates
@@ -515,7 +515,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Detaches and returns the currently carried candy and star, clearing
+        /// Detaches and returns the currently carried candy and its physics point, clearing
         /// internal references. Used when transferring candy between mice.
         /// </summary>
         /// <returns>
