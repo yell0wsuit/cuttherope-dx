@@ -20,7 +20,6 @@ namespace CutTheRopeDX.Tests
         /// </summary>
         private const int GreetingFrameCount = 39;
 
-
         /// <summary>The greeting runs at 24 fps, not the 20 fps the rest of the sheet uses.</summary>
         private const float GreetingFrameDelay = 1f / 24f;
 

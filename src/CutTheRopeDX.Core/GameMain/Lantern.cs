@@ -362,7 +362,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Shared candy point currently captured by any lantern.</summary>
         private static ConstrainedPoint SharedCandyPoint { get; set; }
 
-
         /// <summary>Texture quad index for the fire visual.</summary>
         private const int FireQuad = 0;
 

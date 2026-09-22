@@ -387,7 +387,6 @@ namespace CutTheRopeDX.GameMain
             child.PlayTimeline(0);
         }
 
-
         /// <summary>Current valve state: 0 = low, 1 = medium, 2 = high.</summary>
         public int steamState;
 

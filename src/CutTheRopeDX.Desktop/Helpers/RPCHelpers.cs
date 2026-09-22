@@ -10,7 +10,6 @@ using CutTheRopeDX.Helpers.Discord;
 
 using Microsoft.Extensions.Logging;
 
-
 namespace CutTheRopeDX.Helpers
 {
     /// <summary>

@@ -504,7 +504,6 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
-
         /// <summary>
         /// Handles a touch-up event for gameplay objects and active touch gestures.
         /// </summary>
@@ -670,7 +669,6 @@ namespace CutTheRopeDX.GameMain
             }
             return true;
         }
-
 
         /// <summary>
         /// Handles a touch-move event for active gameplay gestures, draggable objects, and rope cutting.
@@ -944,7 +942,6 @@ namespace CutTheRopeDX.GameMain
             }
             return true;
         }
-
 
         /// <summary>
         /// Records the latest dragged touch location.

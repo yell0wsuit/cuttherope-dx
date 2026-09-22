@@ -137,7 +137,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Loaded pack definitions in display order.</summary>
         private static readonly List<PackDefinition> packs;
 
-
         /// <summary>Video filename for the intro movie without extension, or <see langword="null"/> to skip.</summary>
         public static string IntroVideo { get; private set; }
 

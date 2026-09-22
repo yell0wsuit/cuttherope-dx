@@ -252,7 +252,6 @@ namespace CutTheRopeDX.Commons
         /// </summary>
         public int[] limitPoints;
 
-
         /// <summary>
         /// Index of the currently active scroll point.
         /// </summary>

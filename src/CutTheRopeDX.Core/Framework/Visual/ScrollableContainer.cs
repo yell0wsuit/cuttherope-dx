@@ -834,7 +834,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         private Vector[] spoints;
 
-
         /// <summary>
         /// Allocated capacity of the snap-point storage array.
         /// </summary>

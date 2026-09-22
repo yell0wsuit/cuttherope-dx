@@ -46,7 +46,6 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private BaseElement mainMenuGroup;
 
-
         /// <summary>The main menu's social-link tray, anchored to the bottom right.</summary>
         private BaseElement mainMenuSocial;
 

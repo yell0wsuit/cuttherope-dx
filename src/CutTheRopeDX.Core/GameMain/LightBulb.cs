@@ -38,7 +38,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Last frame index of the firefly animation sequence.</summary>
         private const int ImgObjLighterFireflyEnd = 42;
 
-
         /// <summary>Base scale factor applied to the light bulb root object.</summary>
         private const float LightBulbRootScale = 1f;
 

@@ -1071,7 +1071,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         protected Dictionary<int, Timeline> timelines;
 
-
         /// <summary>
         /// The currently active timeline, or <see langword="null"/> if none.
         /// </summary>

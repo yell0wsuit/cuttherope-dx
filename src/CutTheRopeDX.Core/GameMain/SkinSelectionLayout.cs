@@ -183,7 +183,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Authored distance the grid keeps from the bottom of the screen.</summary>
         private const float GridBottomMargin = 120f;
 
-
         /// <summary>Authored distance the tabs and the grid keep from the sides of the screen.</summary>
         private const float EdgeMargin = 10f;
     }

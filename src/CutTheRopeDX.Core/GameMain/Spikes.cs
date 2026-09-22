@@ -237,7 +237,6 @@ namespace CutTheRopeDX.GameMain
         {
         }
 
-
         /// <summary>Spike width/type index (1-4, 5 = electrodes) used to resolve the WP7 collision width.</summary>
         private int widthIndex;
 

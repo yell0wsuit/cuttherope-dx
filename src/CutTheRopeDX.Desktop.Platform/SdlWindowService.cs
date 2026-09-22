@@ -7,10 +7,10 @@ using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Diagnostics;
 using CutTheRopeDX.Framework.Platform;
 
-
 using Microsoft.Extensions.Logging;
 
 using SDL3;
+
 namespace CutTheRopeDX.Desktop.Platform
 {
     internal sealed class SdlWindowService(nint window) : IWindowService

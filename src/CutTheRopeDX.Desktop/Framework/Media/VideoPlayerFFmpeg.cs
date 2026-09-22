@@ -16,7 +16,6 @@ using FFmpeg.AutoGen;
 
 using Microsoft.Extensions.Logging;
 
-
 namespace CutTheRopeDX.Framework.Media
 {
     /// <summary>

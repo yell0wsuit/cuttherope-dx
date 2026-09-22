@@ -780,7 +780,6 @@ namespace CutTheRopeDX.Framework.Media
         /// </summary>
         private static IAudioBackend _backend;
 
-
         /// <summary>
         /// Cache of loaded sound effects keyed by localized resource name.
         /// </summary>

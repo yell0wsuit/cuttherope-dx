@@ -115,7 +115,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         private Vector lastPoint;
 
-
         /// <summary>
         /// Gets a value indicating whether the trace still has visible geometry or live particles.
         /// </summary>
