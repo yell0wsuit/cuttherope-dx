@@ -49,10 +49,10 @@ namespace CutTheRopeDX.GameMain
         /// capabilities permit it. The <c>Is*</c> form folds in presence; <see cref="CandyCapabilities"/>
         /// flags (e.g. <c>Capabilities.CanBeGrabbedByHand</c>) are the static capability alone.
         /// </summary>
-        public bool IsHandGrabbable => !HasNoWholeBodyInPlay && Capabilities.CanBeGrabbedByHand && !IsFlying;
+        public bool IsHandGrabbable => !HasNoWholeBodyInPlay && Capabilities.CanBeGrabbedByHand;
 
         /// <summary>True when this candy can attach to an ant conveyor right now: present and capable.</summary>
-        public bool IsAntAttachable => !HasNoWholeBodyInPlay && Capabilities.CanAttachAnts && !IsFlying;
+        public bool IsAntAttachable => !HasNoWholeBodyInPlay && Capabilities.CanAttachAnts;
 
         /// <summary>Behavior flags for this candy-like physics body.</summary>
         public CandyCapabilities Capabilities = CandyCapabilities.Candy;

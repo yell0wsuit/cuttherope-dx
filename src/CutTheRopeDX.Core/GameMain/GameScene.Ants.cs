@@ -274,6 +274,7 @@ namespace CutTheRopeDX.GameMain
                 interactionPoint.X + (segment.speed.X * 0.01f),
                 interactionPoint.Y + (segment.speed.Y * 0.01f));
             _ = ctx.Lifecycle.Attachments.BeginAntCarry(segment, interactionPoint, 0.3f, 0.01f);
+            BreakFlyingCandyWings(ctx, animate: true);
             ctx.WholeBody.Point.disableGravity = IsCandyGravitySuppressed(ctx);
 
             if (freshPickup)

@@ -756,6 +756,7 @@ namespace CutTheRopeDX.GameMain
                     }
 
                     CandyAttachmentSnapshot detached = ctx.Lifecycle.Attachments.CaptureInLantern();
+                    BreakFlyingCandyWings(ctx, animate: true);
                     ReleaseLanternCaptureAttachments(detached, body.Point);
                     body.Visual.passTransformationsToChilds = true;
                     body.Main.scaleX = body.Main.scaleY = 1f;
@@ -856,6 +857,7 @@ namespace CutTheRopeDX.GameMain
                             miceManager.GrabWithActiveMouse(body.Point, body.Visual);
                             if (miceManager.CarriesCandy(body.Point))
                             {
+                                BreakFlyingCandyWings(ctx, animate: true);
                                 tutorialDirector.Fire(TutorialEvent.MouseGrab, body);
                             }
                             break;
@@ -1996,6 +1998,8 @@ namespace CutTheRopeDX.GameMain
                     // The claw bursts the bubble where it snatched the candy, not where the candy
                     // ends up.
                     PopCandyBubbleAt(grabbedBody, hand.ClawPosition());
+                    // A candy snatched out of the air loses its wings.
+                    BreakFlyingCandyWings(ctx, animate: true);
 
                     if (ctx.Lifecycle.Attachments.HasActiveRocket)
                     {
