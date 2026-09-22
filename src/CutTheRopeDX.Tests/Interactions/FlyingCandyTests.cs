@@ -176,10 +176,9 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Theory]
-        [InlineData((int)CandyInteraction.Transport)]
         [InlineData((int)CandyInteraction.Pump)]
         [InlineData((int)CandyInteraction.Steam)]
-        public void TransportAndPushersLeaveAFlyingCandyAloneUntilItsWingsBreak(int interactionValue)
+        public void PushersLeaveAFlyingCandyAloneUntilItsWingsBreak(int interactionValue)
         {
             CandyInteraction interaction = (CandyInteraction)interactionValue;
             GameScene scene = Scenario.New()
@@ -256,33 +255,55 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AHatDoesNotSwallowAFlyingCandy()
+        public void AHatThrowsAFlyingCandyBackBesideItsLeader()
         {
-            GameScene scene = Scenario.New()
-                .OmNom(300, 20)
-                .Candy(80, 100, "first")
-                .Candy(220, 200, "second", isDriven: true)
-                .Hat(160, 300)
-                .Hat(40, 40)
+            AssertTransportThrowsTheFlierBack(
+                s => s.Hat(160, 300).Hat(40, 40),
+                (scene, flier) => Act.EnterHat(scene, flier));
+        }
+
+        [Fact]
+        public void ABambooTubeThrowsAFlyingCandyBackBesideItsLeader()
+        {
+            AssertTransportThrowsTheFlierBack(
+                s => s.BambooTube(160, 300, TubeMouth.CatchesFalling),
+                (scene, flier) => Act.EnterBambooTube(scene, flier, TubeMouth.CatchesFalling));
+        }
+
+        /// <summary>
+        /// As in Time Travel, a sock or tube catches a flying candy and drops its ropes, but the step
+        /// after it comes out pulls it straight back beside its leader, still flying - and at rest,
+        /// not flung by the jump.
+        /// </summary>
+        private static void AssertTransportThrowsTheFlierBack(Func<Scenario, Scenario> addTransport, Action<GameScene, CandyContext> enter)
+        {
+            GameScene scene = addTransport(Scenario.New()
+                    .OmNom(300, 440)
+                    .Candy(80, 100, "first")
+                    .Candy(220, 200, "second", isDriven: true)
+                    .Rope(220, 150, 60, candyNumber: "second"))
                 .Build();
+            CandyContext leader = scene.Candies()[0];
             CandyContext flier = scene.Candies()[1];
-            Sock hat = scene.Hats()[0];
+            Interaction.Hover(leader);
+            Vector startOffset = VectSub(flier.WholeBody.Point.pos, leader.WholeBody.Point.pos);
+            Assert.Equal(1, scene.AttachedRopeCount(flier));
 
-            // Keep the hat on the falling flier with its mouth turned into the candy's motion - what
-            // swallows an ordinary candy within a frame or two.
-            bool swallowed = Interaction.StepUntil(
-                scene,
-                () =>
-                {
-                    Act.MoveTo(hat, flier.WholeBody.Point.pos);
-                    hat.rotation = Act.MouthAngleFacing(flier.WholeBody.Point.posDelta, hat.rotation);
-                    hat.UpdateRotation();
-                },
-                () => flier.Lifecycle.Transport != null,
-                maxFrames: 30);
+            enter(scene, flier);
+            Assert.True(Interaction.StepUntil(scene, () => flier.Lifecycle.Transport == null), "the flying candy never came out");
 
-            Assert.False(swallowed, "the hat swallowed the flying candy");
+            // It comes out and is pulled back within one frame, so the check starts on that frame.
+            for (int frame = 0; frame < 5; frame++)
+            {
+                Vector offset = VectSub(flier.WholeBody.Point.pos, leader.WholeBody.Point.pos);
+                Assert.True(
+                    MathF.Abs(offset.X - startOffset.X) < 5f && MathF.Abs(offset.Y - startOffset.Y) < 5f,
+                    $"frame {frame}: the flier sits at {offset.X},{offset.Y} from its leader instead of {startOffset.X},{startOffset.Y}");
+                HeadlessGame.StepFrames(scene, 1);
+            }
+
             Assert.True(flier.IsFlying);
+            Assert.Equal(0, scene.AttachedRopeCount(flier));
         }
 
         [Fact]
