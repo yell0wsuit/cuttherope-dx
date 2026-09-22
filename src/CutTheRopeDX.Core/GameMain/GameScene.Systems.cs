@@ -223,11 +223,6 @@ namespace CutTheRopeDX.GameMain
             // Pump every body in the flow in one pass: whole candies and surviving split halves alike.
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Pump))
             {
-                // A flying candy goes where its leader goes; the air cannot push it.
-                if (body.Owner.IsFlying)
-                {
-                    continue;
-                }
                 HandlePumpFlowPtSkin(p, body.Point, body.Visual);
             }
             foreach (Grab grab in bungees)

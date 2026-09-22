@@ -116,7 +116,7 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (CandyBody body in ActiveCandyBodies())
             {
-                if (body.Allows(interaction))
+                if (body.Allows(interaction) && !FlyingCandyIgnores(body, interaction))
                 {
                     yield return body;
                 }

@@ -140,6 +140,29 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Whether a flying candy is out of reach of <paramref name="interaction"/>. Its position
+        /// belongs to its leader, so nothing that carries a candy off, swallows it, or blows it about
+        /// can take hold of it. Time Travel has none of these objects except the sock and the pump;
+        /// its sock does catch a flying candy, but only to drop its ropes and throw it to the far
+        /// sock, where the next step pulls it straight back beside its leader.
+        /// </summary>
+        /// <param name="body">Body the scene system is asking about.</param>
+        /// <param name="interaction">The scene system asking.</param>
+        /// <returns><see langword="true"/> when the system must leave the body alone.</returns>
+        private static bool FlyingCandyIgnores(CandyBody body, CandyInteraction interaction)
+        {
+            return body.Role == CandyBodyRole.Whole
+                && body.Owner?.IsFlying == true
+                && interaction is CandyInteraction.Pump
+                    or CandyInteraction.Steam
+                    or CandyInteraction.Mouse
+                    or CandyInteraction.Lantern
+                    or CandyInteraction.Ants
+                    or CandyInteraction.Transport
+                    or CandyInteraction.Hand;
+        }
+
+        /// <summary>
         /// Whether moving a flying candy to <paramref name="target"/> would stretch one of its
         /// intact ropes past its allowance.
         /// </summary>
