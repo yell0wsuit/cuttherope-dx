@@ -92,10 +92,18 @@ namespace CutTheRopeDX.GameMain
         public bool Hovering { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the leader was out of sight in transport last step, so the next
-        /// placement beside it is a jump rather than a step of the chase.
+        /// Gets or sets whether the flying candy or its leader was out of sight in a sock or tube
+        /// last step, so the next placement beside the leader is a jump rather than a step of the
+        /// chase.
         /// </summary>
-        public bool AwaitingLeader { get; set; }
+        public bool RejoinPending { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tube this flying candy last came out of, which ignores it until it has
+        /// moved clear of both holes. Coming out, it is pulled straight back beside its leader -
+        /// often right where it went in - and would otherwise be swallowed again at once.
+        /// </summary>
+        public BambooTube TubeToClear { get; set; }
 
         /// <summary>Gets whether the wings are still intact.</summary>
         public bool IsFlying { get; private set; } = true;

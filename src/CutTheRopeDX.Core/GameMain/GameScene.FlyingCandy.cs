@@ -110,6 +110,9 @@ namespace CutTheRopeDX.GameMain
                 flight.Hovering = false;
                 if (flier.HasNoWholeBodyInPlay)
                 {
+                    // Inside a sock or tube itself. Wherever it comes out, the next step pulls it
+                    // straight back beside its leader.
+                    flight.RejoinPending = true;
                     continue;
                 }
 
@@ -119,7 +122,7 @@ namespace CutTheRopeDX.GameMain
                     // The leader is inside a sock or a tube. Hold still, keeping the offset, and
                     // rejoin it wherever it comes out.
                     flight.Hovering = true;
-                    flight.AwaitingLeader = true;
+                    flight.RejoinPending = true;
                     continue;
                 }
 
@@ -138,12 +141,12 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                if (flight.AwaitingLeader)
+                if (flight.RejoinPending)
                 {
                     // Rejoining the leader is a jump across the level. Verlet would read the jump as
                     // velocity and throw the candy the same distance again past its leader for a
                     // frame, so the candy arrives at rest instead.
-                    flight.AwaitingLeader = false;
+                    flight.RejoinPending = false;
                     point.prevPos = target;
                 }
 
@@ -153,10 +156,10 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Whether a flying candy is out of reach of <paramref name="interaction"/>. Its position
-        /// belongs to its leader, so nothing that swallows it or blows it about can take hold of it.
-        /// Time Travel's sock does catch a flying candy, but only to drop its ropes and throw it to
-        /// the far sock, where the next step pulls it straight back beside its leader. A hand, a
-        /// mouse, ants or a lantern can still take it, and doing so breaks its wings.
+        /// belongs to its leader, so nothing that blows it about can move it. A sock or tube still
+        /// catches it, as Time Travel's sock does: its ropes drop and it is thrown to the far end,
+        /// where the next step pulls it straight back beside its leader, wings intact. A hand, a
+        /// mouse, ants or a lantern can take it too, and doing so breaks its wings.
         /// </summary>
         /// <param name="body">Body the scene system is asking about.</param>
         /// <param name="interaction">The scene system asking.</param>
@@ -166,8 +169,7 @@ namespace CutTheRopeDX.GameMain
             return body.Role == CandyBodyRole.Whole
                 && body.Owner?.IsFlying == true
                 && interaction is CandyInteraction.Pump
-                    or CandyInteraction.Steam
-                    or CandyInteraction.Transport;
+                    or CandyInteraction.Steam;
         }
 
         /// <summary>

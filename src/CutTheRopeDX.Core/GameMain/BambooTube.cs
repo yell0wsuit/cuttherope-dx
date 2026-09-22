@@ -180,6 +180,18 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Whether a point is within catching distance of either hole, whichever way it is moving.
+        /// </summary>
+        /// <param name="candyPoint">The candy physics point to test.</param>
+        /// <returns><see langword="true"/> when the point is near a hole.</returns>
+        public bool IsNearAHole(ConstrainedPoint candyPoint)
+        {
+            float captureRadius = ActivePhysicsConstants.BambooCaptureRadius * interactionScale;
+            return VectDistance(candyPoint.pos, bambooHole1) < captureRadius
+                || VectDistance(candyPoint.pos, bambooHole2) < captureRadius;
+        }
+
+        /// <summary>
         /// Teleports <paramref name="candyPoint"/> to the exit hole and applies a Verlet
         /// impulse so the physics integrator launches it outward at <see cref="BambooThrowSpeed"/>.
         /// </summary>

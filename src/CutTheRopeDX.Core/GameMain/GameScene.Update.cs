@@ -702,9 +702,21 @@ namespace CutTheRopeDX.GameMain
                     {
                         continue;
                     }
+                    if (ctx.Flight?.TubeToClear == bambooTube)
+                    {
+                        if (bambooTube.IsNearAHole(body.Point))
+                        {
+                            continue;
+                        }
+                        ctx.Flight.TubeToClear = null;
+                    }
                     bool inRange = bambooTube.TryCatchCandy(body.Point);
                     if (ctx.Lifecycle.CanEnterTransport && inRange)
                     {
+                        if (ctx.IsFlying)
+                        {
+                            ctx.Flight.TubeToClear = bambooTube;
+                        }
                         OperateBambooTube(bambooTube, ctx);
                         SoundMgr.PlaySound(Resources.Snd.ExpBambooChute);
                     }
@@ -929,6 +941,16 @@ namespace CutTheRopeDX.GameMain
                             tutorialDirector.Fire(TutorialEvent.SockCatch, body);
                             exitSock.state = Sock.SOCK_THROWING;
                             exitSock.idleTimeout = 0.8f;
+                            if (ctx.IsFlying)
+                            {
+                                // Time Travel also takes the catching sock out of service until
+                                // nothing has been in its mouth for its idle timeout. A flying
+                                // candy is pulled straight back beside its leader when it comes
+                                // out - often back into this sock - and would otherwise be
+                                // swallowed again at once. CTR HD leaves the catching sock idle,
+                                // so this stays with the flying candy.
+                                sock.state = Sock.SOCK_RECEIVING;
+                            }
                             ReleaseRopesForPoint(body.Point);
                             ReleaseTransportAttachments(detached, body.Point);
                             // The rocket teleports with the candy; hide it for the transit like the
