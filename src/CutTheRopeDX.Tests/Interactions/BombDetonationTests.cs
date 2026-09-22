@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Framework.Core;
@@ -25,8 +26,64 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.Null(bomb.candyNumber);
             Assert.False(bomb.Capabilities.CanBeEaten);
             Assert.False(bomb.Capabilities.CanLoseLevelWhenOffScreen);
-            Assert.False(bomb.Capabilities.CanRotateWithRopes);
+            Assert.True(bomb.Capabilities.CanRotateWithRopes);
             Assert.Equal(Scenario.WorldY(200), bomb.WholeBody.Point.pos.Y, 3);
+        }
+
+        [Fact]
+        public void ATautRopeTurnsTheBombItHolds()
+        {
+            // Time Travel turns a bomb with its rope exactly as it turns a candy, and draws it turned.
+            GameScene scene = Scenario.New()
+                .OmNom(300, 20)
+                .Candy(20, 20)
+                .Bomb(160, 200, "first")
+                .Grab(70, 200, length: 60, candyNumber: "first", bombed: true)
+                .Build();
+            CandyContext bomb = Assert.Single(scene.Bombs());
+            float start = bomb.WholeBody.Main.rotation;
+
+            for (int frame = 0; frame < 40; frame++)
+            {
+                scene.MeasureRopeStretchAsDrawn();
+                HeadlessGame.StepFrames(scene, 1);
+            }
+
+            Assert.True(MathF.Abs(bomb.WholeBody.Main.rotation - start) > 20f, $"the bomb only turned {bomb.WholeBody.Main.rotation - start} degrees as it swung");
+        }
+
+        [Fact]
+        public void ARocketTowingATetheredBombCirclesTheHook()
+        {
+            // Level 4-10: a rocket that takes a bomb still tied to a hook flies round that hook,
+            // steering by the bomb's rope-driven turn.
+            GameScene scene = Scenario.New()
+                .Design("useMobilePhysics", "true")
+                .Design("useTimeTravelRocketPhysics", "true")
+                .OmNom(300, 440)
+                .Candy(20, 20)
+                .Bomb(105, 231, "first")
+                .Grab(205, 125, length: 70, candyNumber: "first", bombed: true)
+                .Rocket(105, 231, angle: 180f, impulse: 5f)
+                .Build();
+            Rocket rocket = Assert.Single(scene.Rockets());
+            CandyContext bomb = Assert.Single(scene.Bombs());
+
+            float turned = 0f;
+            float last = rocket.rotation;
+            for (int frame = 0; frame < 140; frame++)
+            {
+                scene.MeasureRopeStretchAsDrawn();
+                HeadlessGame.StepFrames(scene, 1);
+                float step = rocket.rotation - last;
+                step -= 360f * MathF.Round(step / 360f);
+                turned += step;
+                last = rocket.rotation;
+            }
+
+            Assert.Same(rocket, bomb.Lifecycle.Attachments.Rocket);
+            // Steering by the rope alone, it turns barely half as far and falls behind the orbit.
+            Assert.True(MathF.Abs(turned) > 200f, $"the rocket turned {turned} degrees in all instead of circling the hook");
         }
 
         [Fact]

@@ -579,6 +579,30 @@ namespace CutTheRopeDX.Tests.Interactions
             return pool.GetChilds().Values.OfType<CandyBreak>().Count();
         }
 
+        /// <summary>
+        /// Fills in every intact rope's stretch level the way drawing it would. Headless scenes never
+        /// draw, and rope steering only runs on a stretched rope, so a test of that steering calls
+        /// this before each step.
+        /// </summary>
+        /// <param name="scene">Scene whose ropes to measure.</param>
+        public static void MeasureRopeStretchAsDrawn(this GameScene scene)
+        {
+            foreach (Grab grab in scene.Grabs())
+            {
+                Bungee rope = grab.Rope;
+                if (rope == null || rope.cut != -1 || rope.parts.Count < 2)
+                {
+                    continue;
+                }
+
+                Vector first = rope.parts[0].pos;
+                Vector second = rope.parts[1].pos;
+                float dx = first.X - second.X;
+                float dy = first.Y - second.Y;
+                rope.relaxed = Bungee.StretchLevelFor(MathF.Sqrt((dx * dx) + (dy * dy)));
+            }
+        }
+
         /// <summary>Number of live broken-wing bursts in the scene animation pool.</summary>
         /// <param name="scene">Scene to inspect.</param>
         /// <returns>The live wing-break effect count.</returns>
