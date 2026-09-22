@@ -23,8 +23,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Gives every candy authored with <c>isDriven</c> its wings and its leader, once all the
-        /// level's candies exist. The leader is the first other edible candy; the original only
-        /// ever pairs its first and second candy, which is the same pair on every authored level.
+        /// level's candies exist. The leader is the first edible candy that does not fly itself; the
+        /// original only ever pairs its first and second candy, which is the same pair on every
+        /// authored level. A flying candy with nothing to follow plays as an ordinary candy: two
+        /// candies copying each other have no motion of their own, and the original's single shared
+        /// offset throws such a pair off screen.
         /// </summary>
         private void InstallFlyingCandies()
         {
@@ -50,7 +53,7 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (CandyContext candidate in candies)
             {
-                if (candidate != flier && candidate.Capabilities.CanBeEaten)
+                if (candidate != flier && candidate.Capabilities.CanBeEaten && !pendingFlyingCandies.Contains(candidate))
                 {
                     return candidate;
                 }
