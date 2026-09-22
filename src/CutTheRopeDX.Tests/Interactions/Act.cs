@@ -436,7 +436,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="motion">The candy's per-frame travel.</param>
         /// <param name="current">Rotation to keep when the candy is not moving.</param>
         /// <returns>The rotation in degrees.</returns>
-        private static float MouthAngleFacing(Vector motion, float current)
+        internal static float MouthAngleFacing(Vector motion, float current)
         {
             const float stillThreshold = 1e-4f;
             return ((motion.X * motion.X) + (motion.Y * motion.Y)) < stillThreshold
