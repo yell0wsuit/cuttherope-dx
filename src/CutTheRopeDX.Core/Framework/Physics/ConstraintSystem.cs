@@ -48,10 +48,10 @@ namespace CutTheRopeDX.Framework.Physics
                 ConstrainedPoint constrainedPoint = parts[i];
                 constrainedPoint?.Update(delta);
             }
-            int count2 = parts.Count;
+            int partCount = parts.Count;
             for (int j = 0; j < relaxationTimes; j++)
             {
-                for (int k = 0; k < count2; k++)
+                for (int k = 0; k < partCount; k++)
                 {
                     ConstrainedPoint.SatisfyConstraints(parts[k]);
                 }

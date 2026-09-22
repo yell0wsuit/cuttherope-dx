@@ -29,8 +29,8 @@ namespace CutTheRopeDX.GameMain
                 y = centerY,
                 rotation = d
             };
-            rotatedCircle.inithanlde1 = rotatedCircle.handle1 = Vect(rotatedCircle.x - (circleSize * scale), rotatedCircle.y);
-            rotatedCircle.inithanlde2 = rotatedCircle.handle2 = Vect(rotatedCircle.x + (circleSize * scale), rotatedCircle.y);
+            rotatedCircle.initHandle1 = rotatedCircle.handle1 = Vect(rotatedCircle.x - (circleSize * scale), rotatedCircle.y);
+            rotatedCircle.initHandle2 = rotatedCircle.handle2 = Vect(rotatedCircle.x + (circleSize * scale), rotatedCircle.y);
             rotatedCircle.handle1 = VectRotateAround(rotatedCircle.handle1, float.DegreesToRadians(d), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.handle2 = VectRotateAround(rotatedCircle.handle2, float.DegreesToRadians(d), rotatedCircle.x, rotatedCircle.y);
             rotatedCircle.SetSize(circleSize);

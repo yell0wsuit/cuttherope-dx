@@ -1033,14 +1033,14 @@ namespace CutTheRopeDX.GameMain
                 if (!isComingSoon)
                 {
                     // drawing om nom and the background behind him in the box
-                    int q3 = 1;
+                    int omNomQuad = 1;
                     MonsterSlot monsterSlot = MonsterSlot.Create(PackConfig.GetBoxHoleBgColor(n), strip);
                     monsterSlot.c = c;
                     monsterSlot.anchor = 9;
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
                     _ = baseElement.AddChild(monsterSlot);
-                    Image omNom = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, q3);
+                    Image omNom = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, omNomQuad);
                     omNom.DoRestoreCutTransparency();
                     omNom.anchor = 17;
 
@@ -2035,8 +2035,8 @@ namespace CutTheRopeDX.GameMain
                         int currentPackIndex = currentPack;
                         int leftScrollCount = scrollPacksLeft + 1;
                         scrollPacksLeft = leftScrollCount;
-                        int sp2 = FixScrollPoint(currentPackIndex + leftScrollCount - scrollPacksRight);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp2, 0.8f);
+                        int scrollPoint = FixScrollPoint(currentPackIndex + leftScrollCount - scrollPacksRight);
+                        packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
                         return;
                     }
@@ -2045,8 +2045,8 @@ namespace CutTheRopeDX.GameMain
                         int currentPackIndex = currentPack;
                         int rightScrollCount = scrollPacksRight + 1;
                         scrollPacksRight = rightScrollCount;
-                        int sp3 = FixScrollPoint(currentPackIndex - rightScrollCount + scrollPacksLeft);
-                        packContainer.MoveToScrollPointmoveMultiplier(sp3, 0.8f);
+                        int scrollPoint = FixScrollPoint(currentPackIndex - rightScrollCount + scrollPacksLeft);
+                        packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
                         break;
                     }

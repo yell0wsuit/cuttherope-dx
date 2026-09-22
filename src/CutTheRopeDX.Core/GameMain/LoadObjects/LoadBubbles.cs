@@ -19,8 +19,8 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadBubble(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            int q2 = RND_RANGE(1, 3);
-            Bubble bubble = Image.CreateWithResID(new Bubble(), Resources.Img.ObjBubble, q2);
+            int quad = RND_RANGE(1, 3);
+            Bubble bubble = Image.CreateWithResID(new Bubble(), Resources.Img.ObjBubble, quad);
             bubble.DoRestoreCutTransparency();
             bubble.bb = GetBubbleBoundingBox();
             bubble.initial_x = bubble.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;

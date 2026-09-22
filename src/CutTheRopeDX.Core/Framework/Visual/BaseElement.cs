@@ -509,11 +509,11 @@ namespace CutTheRopeDX.Framework.Visual
                 }
                 childs.Add(i, c);
             }
-            else if (childs.TryGetValue(i, out BaseElement value2))
+            else if (childs.TryGetValue(i, out BaseElement existing))
             {
-                if (value2 != c)
+                if (existing != c)
                 {
-                    value2?.Dispose();
+                    existing?.Dispose();
                 }
                 childs[i] = c;
             }

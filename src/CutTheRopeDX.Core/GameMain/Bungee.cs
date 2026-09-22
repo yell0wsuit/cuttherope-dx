@@ -76,53 +76,53 @@ namespace CutTheRopeDX.GameMain
                 Vector leftInnerEnd = VectSub(leftEnd, normal);
                 Vector rightInnerStart = VectAdd(rightStart, normal);
                 Vector rightInnerEnd = VectAdd(rightEnd, normal);
-                float[] pointer = GetFloatCache(ref s_bungeePointerCache, 16);
+                float[] glowPositions = GetFloatCache(ref s_glowPositionsCache, 16);
                 int pointerIndex = 0;
-                WritePair(pointer, ref pointerIndex, leftOuterStart);
-                WritePair(pointer, ref pointerIndex, leftOuterEnd);
-                WritePair(pointer, ref pointerIndex, leftStart);
-                WritePair(pointer, ref pointerIndex, leftEnd);
-                WritePair(pointer, ref pointerIndex, rightStart);
-                WritePair(pointer, ref pointerIndex, rightEnd);
-                WritePair(pointer, ref pointerIndex, rightOuterStart);
-                WritePair(pointer, ref pointerIndex, rightOuterEnd);
+                WritePair(glowPositions, ref pointerIndex, leftOuterStart);
+                WritePair(glowPositions, ref pointerIndex, leftOuterEnd);
+                WritePair(glowPositions, ref pointerIndex, leftStart);
+                WritePair(glowPositions, ref pointerIndex, leftEnd);
+                WritePair(glowPositions, ref pointerIndex, rightStart);
+                WritePair(glowPositions, ref pointerIndex, rightEnd);
+                WritePair(glowPositions, ref pointerIndex, rightOuterStart);
+                WritePair(glowPositions, ref pointerIndex, rightOuterEnd);
                 RGBAColor whiteRGBA = RGBAColor.whiteRGBA;
                 whiteRGBA.AlphaChannel = 0.1f * color.AlphaChannel;
-                ccolors[2] = whiteRGBA;
-                ccolors[3] = whiteRGBA;
-                ccolors[4] = whiteRGBA;
-                ccolors[5] = whiteRGBA;
-                float[] pointer2 = GetFloatCache(ref s_bungeePointerCache2, 20);
+                glowColors[2] = whiteRGBA;
+                glowColors[3] = whiteRGBA;
+                glowColors[4] = whiteRGBA;
+                glowColors[5] = whiteRGBA;
+                float[] innerPositions = GetFloatCache(ref s_innerPositionsCache, 20);
                 int pointer2Index = 0;
-                WritePair(pointer2, ref pointer2Index, leftStart);
-                WritePair(pointer2, ref pointer2Index, leftEnd);
-                WritePair(pointer2, ref pointer2Index, leftInnerStart);
-                WritePair(pointer2, ref pointer2Index, leftInnerEnd);
-                WritePair(pointer2, ref pointer2Index, start);
-                WritePair(pointer2, ref pointer2Index, end);
-                WritePair(pointer2, ref pointer2Index, rightInnerStart);
-                WritePair(pointer2, ref pointer2Index, rightInnerEnd);
-                WritePair(pointer2, ref pointer2Index, rightStart);
-                WritePair(pointer2, ref pointer2Index, rightEnd);
+                WritePair(innerPositions, ref pointer2Index, leftStart);
+                WritePair(innerPositions, ref pointer2Index, leftEnd);
+                WritePair(innerPositions, ref pointer2Index, leftInnerStart);
+                WritePair(innerPositions, ref pointer2Index, leftInnerEnd);
+                WritePair(innerPositions, ref pointer2Index, start);
+                WritePair(innerPositions, ref pointer2Index, end);
+                WritePair(innerPositions, ref pointer2Index, rightInnerStart);
+                WritePair(innerPositions, ref pointer2Index, rightInnerEnd);
+                WritePair(innerPositions, ref pointer2Index, rightStart);
+                WritePair(innerPositions, ref pointer2Index, rightEnd);
                 RGBAColor rgbaColor = color;
                 float highlightAdditive = 0.15f * color.AlphaChannel;
                 color.RedColor += highlightAdditive;
                 color.GreenColor += highlightAdditive;
                 color.BlueColor += highlightAdditive;
-                ccolors2[2] = color;
-                ccolors2[3] = color;
-                ccolors2[4] = rgbaColor;
-                ccolors2[5] = rgbaColor;
-                ccolors2[6] = color;
-                ccolors2[7] = color;
+                innerColors[2] = color;
+                innerColors[3] = color;
+                innerColors[4] = rgbaColor;
+                innerColors[5] = rgbaColor;
+                innerColors[6] = color;
+                innerColors[7] = color;
                 if (highlighted)
                 {
                     Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONE);
-                    VertexPositionColor[] highlightVertices = BuildColoredVertices(pointer, ccolors, 8);
+                    VertexPositionColor[] highlightVertices = BuildColoredVertices(glowPositions, glowColors, 8);
                     Renderer.DrawTriangleStrip(highlightVertices, 8);
                 }
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
-                VertexPositionColor[] mainVertices = BuildColoredVertices(pointer2, ccolors2, 10);
+                VertexPositionColor[] mainVertices = BuildColoredVertices(innerPositions, innerColors, 10);
                 Renderer.DrawTriangleStrip(mainVertices, 10);
             }
         }
@@ -883,8 +883,8 @@ namespace CutTheRopeDX.GameMain
             }
             for (int j = 0; j < relaxationTimes; j++)
             {
-                int count2 = parts.Count;
-                for (int k = 0; k < count2; k++)
+                int partCount = parts.Count;
+                for (int k = 0; k < partCount; k++)
                 {
                     ConstrainedPoint.SatisfyConstraints(parts[k]);
                 }
@@ -1287,13 +1287,13 @@ namespace CutTheRopeDX.GameMain
         private static VertexPositionColor[] s_bungeeVerticesCache;
 
         /// <summary>Cached float array for outer glow vertex positions.</summary>
-        private static float[] s_bungeePointerCache;
+        private static float[] s_glowPositionsCache;
 
         /// <summary>Cached float array for inner rope vertex positions.</summary>
-        private static float[] s_bungeePointerCache2;
+        private static float[] s_innerPositionsCache;
 
         /// <summary>Per-vertex color array for the outer glow triangle strip.</summary>
-        private static readonly RGBAColor[] ccolors =
+        private static readonly RGBAColor[] glowColors =
         [
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,
@@ -1306,7 +1306,7 @@ namespace CutTheRopeDX.GameMain
         ];
 
         /// <summary>Per-vertex color array for the inner rope triangle strip.</summary>
-        private static readonly RGBAColor[] ccolors2 =
+        private static readonly RGBAColor[] innerColors =
         [
             RGBAColor.transparentRGBA,
             RGBAColor.transparentRGBA,

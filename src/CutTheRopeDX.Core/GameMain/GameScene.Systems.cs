@@ -61,8 +61,8 @@ namespace CutTheRopeDX.GameMain
                 // b.skip = true;
                 Vector vector = VectSub(s.prevPos, s.pos);
                 int directionSign = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y).Y >= b.y ? 1 : -1;
-                float s2 = Math.Max(VectLength(vector) * ActivePhysicsConstants.BouncerImpulseVelocityScale, ActivePhysicsConstants.BouncerMinImpulse) * directionSign;
-                Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), s2);
+                float impulseMagnitude = Math.Max(VectLength(vector) * ActivePhysicsConstants.BouncerImpulseVelocityScale, ActivePhysicsConstants.BouncerMinImpulse) * directionSign;
+                Vector impulse = VectMult(VectPerp(VectForAngle(b.angle)), impulseMagnitude);
                 s.pos = VectRotateAround(s.pos, 0f - b.angle, b.x, b.y);
                 s.prevPos = VectRotateAround(s.prevPos, 0f - b.angle, b.x, b.y);
                 s.prevPos.Y = s.pos.Y;

@@ -157,8 +157,8 @@ namespace CutTheRopeDX.Framework.Visual
                     }
                     else if (container.x < (-container.width + width) && container.x < 0)
                     {
-                        float speed2 = 50 + (MathF.Abs(-container.width + width - container.x) * 5);
-                        MoveToPointDeltaSpeed(Vect(-container.width + width, container.y), delta, speed2);
+                        float speed = 50 + (MathF.Abs(-container.width + width - container.x) * 5);
+                        MoveToPointDeltaSpeed(Vect(-container.width + width, container.y), delta, speed);
                     }
                 }
                 if (shouldBounceVertically)

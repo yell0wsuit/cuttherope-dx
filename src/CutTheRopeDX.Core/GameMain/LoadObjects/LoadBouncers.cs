@@ -17,11 +17,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadBouncer(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            float px2 = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-            float py2 = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
-            int w2 = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
-            float an2 = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
-            Bouncer bouncer = new Bouncer().InitWithPosXYWidthAndAngle(px2, py2, w2, an2);
+            float x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+            float y = (ParseCoordinateIntOrZero(xmlNode.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+            int size = ParseIntOrZero(xmlNode.Attribute("size")?.Value);
+            float angle = ParseIntOrZero(xmlNode.Attribute("angle")?.Value);
+            Bouncer bouncer = new Bouncer().InitWithPosXYWidthAndAngle(x, y, size, angle);
             bouncer.ParseMover(xmlNode);
             bouncers.Add(bouncer);
         }

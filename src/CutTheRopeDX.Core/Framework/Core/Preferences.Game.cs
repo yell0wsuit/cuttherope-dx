@@ -39,13 +39,13 @@ namespace CutTheRopeDX.Framework.Core
                         int levelsInPackCount = GetLevelsInPackCount(i);
                         while (j < levelsInPackCount)
                         {
-                            int intForKey2 = GetBoxIntForKey(PackConfig.GetSaveSlot(i), GetPackLevelKey("SCORE_", i, j));
-                            if (intForKey2 > 5999)
+                            int levelScore = GetBoxIntForKey(PackConfig.GetSaveSlot(i), GetPackLevelKey("SCORE_", i, j));
+                            if (levelScore > 5999)
                             {
                                 packScoreTotal = 150000;
                                 break;
                             }
-                            packScoreTotal += intForKey2;
+                            packScoreTotal += levelScore;
                             j++;
                         }
                         if (packScoreTotal > 149999)

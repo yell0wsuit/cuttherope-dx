@@ -754,8 +754,8 @@ namespace CutTheRopeDX.GameMain
                         rotatedCircle.rotation += float.RadiansToDegrees(rotationDelta);
                         float circleAngle = float.DegreesToRadians(rotatedCircle.rotation);
                         circleAngle = FBOUND_PI(circleAngle);
-                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.inithanlde1, circleAngle, rotatedCircle.x, rotatedCircle.y);
-                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.inithanlde2, circleAngle, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle1 = VectRotateAround(rotatedCircle.initHandle1, circleAngle, rotatedCircle.x, rotatedCircle.y);
+                        rotatedCircle.handle2 = VectRotateAround(rotatedCircle.initHandle2, circleAngle, rotatedCircle.x, rotatedCircle.y);
                         int scratchSoundState = rotationDelta > 0f ? 1 : 2;
                         if (MathF.Abs(rotationDelta) < 0.07f)
                         {

@@ -335,10 +335,10 @@ namespace CutTheRopeDX.GameMain
         public Vector handle2;
 
         /// <summary>Initial world-space position of the first controller handle.</summary>
-        public Vector inithanlde1;
+        public Vector initHandle1;
 
         /// <summary>Initial world-space position of the second controller handle.</summary>
-        public Vector inithanlde2;
+        public Vector initHandle2;
 
         /// <summary>Shared list of rotated circles in the level.</summary>
         public List<RotatedCircle> circlesArray;

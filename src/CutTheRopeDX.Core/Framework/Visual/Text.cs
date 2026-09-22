@@ -173,21 +173,21 @@ namespace CutTheRopeDX.Framework.Visual
                         }
                         if (isTruncated && k == visibleLineCount - 1)
                         {
-                            int charmapIndex2 = font.GetCharmapIndex('.');
-                            int charQuad2 = font.GetCharQuad('.');
+                            int dotCharmapIndex = font.GetCharmapIndex('.');
+                            int dotQuad = font.GetCharQuad('.');
 
                             // Only render ellipsis if '.' character is available
-                            if (charQuad2 >= 0)
+                            if (dotQuad >= 0)
                             {
-                                ImageMultiDrawer dotDrawer = multiDrawers[charmapIndex2];
+                                ImageMultiDrawer dotDrawer = multiDrawers[dotCharmapIndex];
                                 int dotWidth = (int)font.GetCharWidth('.');
                                 if (l == lineLength - 1 || (l == lineLength - 2 && lineX + (3 * (dotWidth + dotSpacing)) + font.GetCharWidth(' ') > wrapWidth))
                                 {
-                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(dotQuad, lineX, lineY, renderedCharCount++);
                                     lineX += dotWidth + dotSpacing;
-                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(dotQuad, lineX, lineY, renderedCharCount++);
                                     lineX += dotWidth + dotSpacing;
-                                    dotDrawer.MapTextureQuadAtXYatIndex(charQuad2, lineX, lineY, renderedCharCount++);
+                                    dotDrawer.MapTextureQuadAtXYatIndex(dotQuad, lineX, lineY, renderedCharCount++);
                                     break;
                                 }
                             }
