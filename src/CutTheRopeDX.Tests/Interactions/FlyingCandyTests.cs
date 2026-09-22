@@ -247,7 +247,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             AssertCarrierGroundsTheFlier(
                 s => s.Ants(180, 200, path: "80,0"),
-                (scene, flier) => Act.CarryByAnts(scene, flier));
+                Act.CarryByAnts);
         }
 
         [Fact]
@@ -255,7 +255,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             AssertCarrierGroundsTheFlier(
                 s => s.Lantern(20, 40),
-                (scene, flier) => Act.CaptureInLantern(scene, flier));
+                Act.CaptureInLantern);
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace CutTheRopeDX.Tests.Interactions
         {
             AssertTransportThrowsTheFlierBack(
                 s => s.Hat(160, 300).Hat(40, 40),
-                (scene, flier) => Act.EnterHat(scene, flier));
+                Act.EnterHat);
         }
 
         [Fact]
