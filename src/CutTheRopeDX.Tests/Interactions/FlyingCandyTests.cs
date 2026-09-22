@@ -164,6 +164,34 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void FlyingCandiesWithNothingToFollowPlayAsOrdinaryCandies()
+        {
+            GameScene scene = Scenario.New()
+                .OmNom(300, 440)
+                .Candy(80, 100, "first", isDriven: true)
+                .Candy(220, 200, "second", isDriven: true)
+                .Build();
+
+            Assert.All(scene.Candies(), candy => Assert.Null(candy.Flight));
+        }
+
+        [Fact]
+        public void TwoFlyingCandiesBothFollowTheOrdinaryOne()
+        {
+            GameScene scene = Scenario.New()
+                .OmNom(300, 440)
+                .Candy(80, 100, "first", isDriven: true)
+                .Candy(160, 300, "second")
+                .Candy(220, 200, "third", isDriven: true)
+                .Build();
+            CandyContext ordinary = scene.Candies()[1];
+
+            Assert.Same(ordinary, scene.Candies()[0].Flight.Leader);
+            Assert.Same(ordinary, scene.Candies()[2].Flight.Leader);
+            Assert.Null(ordinary.Flight);
+        }
+
+        [Fact]
         public void ACandyWithoutIsDrivenHasNoFlight()
         {
             GameScene scene = Scenario.New()
