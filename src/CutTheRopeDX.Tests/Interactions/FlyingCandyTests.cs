@@ -83,11 +83,23 @@ namespace CutTheRopeDX.Tests.Interactions
             // takes it back - but it never runs on after its leader.
             bool hovered = false;
             float maxReach = 0f;
+            bool wasHeld = false;
+            Vector heldAt = default;
             for (int frame = 0; frame < 45; frame++)
             {
                 HeadlessGame.StepFrames(scene, 1);
                 hovered |= flier.Flight.Hovering;
                 maxReach = MathF.Max(maxReach, VectDistance(rope.bungeeAnchor.pos, flier.WholeBody.Point.pos));
+
+                // Held back, it stays exactly where it is: the rope settles around it rather than
+                // reeling it in, which would make it saw up and down against its leader.
+                if (wasHeld && flier.Flight.Hovering)
+                {
+                    Assert.Equal(heldAt.X, flier.WholeBody.Point.pos.X, 0.001f);
+                    Assert.Equal(heldAt.Y, flier.WholeBody.Point.pos.Y, 0.001f);
+                }
+                wasHeld = flier.Flight.Hovering;
+                heldAt = flier.WholeBody.Point.pos;
             }
 
             Assert.True(hovered, "the rope never held the flying candy back");
