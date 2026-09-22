@@ -6,6 +6,7 @@ using CutTheRopeDX.Framework.Core;
 using SDL3;
 
 using Xunit;
+
 namespace CutTheRopeDX.Desktop.Platform.Tests
 {
     public sealed class InputRoutingTests

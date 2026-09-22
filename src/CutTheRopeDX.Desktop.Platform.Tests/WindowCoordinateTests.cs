@@ -1,6 +1,7 @@
 using System.Numerics;
 
 using Xunit;
+
 namespace CutTheRopeDX.Desktop.Platform.Tests
 {
     public sealed class WindowCoordinateTests

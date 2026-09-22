@@ -8,6 +8,7 @@ using CutTheRopeDX.Framework.Visual;
 using SkiaSharp;
 
 using Xunit;
+
 namespace CutTheRopeDX.Rendering.Skia.Tests
 {
     public sealed class RenderingParityTests

@@ -1,6 +1,7 @@
 using SDL3;
 
 using Xunit;
+
 namespace CutTheRopeDX.Desktop.Platform.Tests
 {
     public sealed class WindowMaximizedStateTests

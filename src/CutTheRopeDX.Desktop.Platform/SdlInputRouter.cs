@@ -5,6 +5,7 @@ using System.Numerics;
 using CutTheRopeDX.Framework.Core;
 
 using SDL3;
+
 namespace CutTheRopeDX.Desktop.Platform
 {
     /// <summary>Dispatches SDL edges once, preserving event order and excluding synthetic duplicate devices.</summary>

@@ -6,6 +6,7 @@ using CutTheRopeDX.Framework.Platform;
 using SDL3;
 
 using SkiaSharp;
+
 namespace CutTheRopeDX.Desktop.Platform
 {
     /// <summary>Owns the two native cursor variants, at a fixed size with a top-left hotspot.</summary>

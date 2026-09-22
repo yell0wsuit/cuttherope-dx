@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using Xunit;
+
 namespace CutTheRopeDX.Desktop.Platform.Tests
 {
     public sealed class HostTimingTests
