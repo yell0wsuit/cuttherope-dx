@@ -187,7 +187,15 @@ namespace CutTheRopeDX.GameMain
                             bool kickedRopeHeld = timeFrozen && grab.Mount?.IsMounted == false && rope.cut == -1;
                             if (!kickedRopeHeld)
                             {
+                                // A flying candy the rope is holding back stays exactly where it is:
+                                // the rope settles around it rather than reeling it in.
+                                ConstrainedPoint heldTail = HoveringFlyingCandyPoint(rope.tail);
+                                Vector heldAt = heldTail?.pos ?? default;
                                 UpdateRopeWithAntCarryOverride(rope, delta);
+                                if (heldTail != null)
+                                {
+                                    heldTail.pos = heldAt;
+                                }
                             }
                             if (grab.Spider is SpiderRider rider && rider.IsAttached)
                             {

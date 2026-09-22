@@ -220,6 +220,31 @@ namespace CutTheRopeDX.GameMain
             return false;
         }
 
+        /// <summary>
+        /// The point of the flying candy on <paramref name="ropeTail"/> when it hung still last
+        /// step, or <see langword="null"/>. Time Travel puts such a candy back where it was after
+        /// each rope update, so a rope holding it back cannot also pull it in.
+        /// </summary>
+        /// <param name="ropeTail">The rope's tail point.</param>
+        /// <returns>The held candy's point, or <see langword="null"/>.</returns>
+        private ConstrainedPoint HoveringFlyingCandyPoint(ConstrainedPoint ropeTail)
+        {
+            if (ropeTail == null)
+            {
+                return null;
+            }
+
+            foreach (CandyContext flier in candies)
+            {
+                if (flier.Flight?.Hovering == true && flier.WholeBody.Point == ropeTail)
+                {
+                    return ropeTail;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>Whether a body is a flying candy hanging still this step.</summary>
         private static bool IsHoveringFlyingCandy(CandyBody body)
         {
