@@ -117,6 +117,7 @@ namespace CutTheRopeDX.GameMain
                     // The leader is inside a sock or a tube. Hold still, keeping the offset, and
                     // rejoin it wherever it comes out.
                     flight.Hovering = true;
+                    flight.AwaitingLeader = true;
                     continue;
                 }
 
@@ -133,6 +134,15 @@ namespace CutTheRopeDX.GameMain
                 {
                     flight.Offset = VectSub(point.pos, leaderPoint.pos);
                     continue;
+                }
+
+                if (flight.AwaitingLeader)
+                {
+                    // Rejoining the leader is a jump across the level. Verlet would read the jump as
+                    // velocity and throw the candy the same distance again past its leader for a
+                    // frame, so the candy arrives at rest instead.
+                    flight.AwaitingLeader = false;
+                    point.prevPos = target;
                 }
 
                 point.pos = target;

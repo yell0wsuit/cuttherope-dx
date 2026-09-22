@@ -91,6 +91,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public bool Hovering { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether the leader was out of sight in transport last step, so the next
+        /// placement beside it is a jump rather than a step of the chase.
+        /// </summary>
+        public bool AwaitingLeader { get; set; }
+
         /// <summary>Gets whether the wings are still intact.</summary>
         public bool IsFlying { get; private set; } = true;
 
