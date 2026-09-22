@@ -505,7 +505,7 @@ namespace CutTheRopeDX.GameMain
             (BlendingFactor source, BlendingFactor destination) = GetChainFadeBlendFactors();
             Renderer.SetBlendFunc(source, destination);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(texture.Name());
+            Renderer.BindTexture(texture);
             Renderer.DrawTriangleList(vertexBuffer, indices, indices.Length);
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
         }

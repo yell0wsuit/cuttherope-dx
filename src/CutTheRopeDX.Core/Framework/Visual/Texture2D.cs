@@ -25,20 +25,11 @@ namespace CutTheRopeDX.Framework.Visual
             float texRight = texLeft + (texture._invWidth * rect.w);
             float texBottom = texTop + (texture._invHeight * rect.h);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(texture.Name());
+            Renderer.BindTexture(texture);
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, rect.w, rect.h,
                 texLeft, texTop, texRight, texBottom);
             Renderer.DrawTriangleStrip(vertices);
-        }
-
-        /// <summary>
-        /// Returns this texture instance (identity helper for renderer binding).
-        /// </summary>
-        /// <returns>This texture instance.</returns>
-        public Texture2D Name()
-        {
-            return this;
         }
 
         /// <summary>
@@ -106,7 +97,7 @@ namespace CutTheRopeDX.Framework.Visual
             float w = texture.quadRects[quadIndex].w;
             float h = texture.quadRects[quadIndex].h;
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(texture.Name());
+            Renderer.BindTexture(texture);
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, w, h,
                 quad2D.tlX, quad2D.tlY, quad2D.brX, quad2D.brY);
@@ -121,7 +112,7 @@ namespace CutTheRopeDX.Framework.Visual
         public static void DrawAtPoint(Texture2D texture, Vector point)
         {
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(texture.Name());
+            Renderer.BindTexture(texture);
             VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                 point.X, point.Y, texture._realWidth, texture._realHeight,
                 0f, 0f, texture._maxS, texture._maxT);

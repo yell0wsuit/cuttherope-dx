@@ -209,7 +209,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(image.Name());
+            Renderer.BindTexture(image);
             Renderer.DrawTriangleList(vertices, indices, indexCount);
             return true;
         }
@@ -766,7 +766,7 @@ namespace CutTheRopeDX.Framework.Visual
             if (fraction >= 1f)
             {
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
-                Renderer.BindTexture(texture.Name());
+                Renderer.BindTexture(texture);
                 VertexPositionNormalTexture[] fullQuad = QuadVertexCache.GetTexturedQuad(
                     x, y, w, h, quad.tlX, quad.tlY, quad.brX, quad.brY);
                 Renderer.DrawTriangleStrip(fullQuad);
@@ -853,7 +853,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
 
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(texture.Name());
+            Renderer.BindTexture(texture);
             Renderer.DrawTriangleList(vertices, indices, indexCount);
         }
 

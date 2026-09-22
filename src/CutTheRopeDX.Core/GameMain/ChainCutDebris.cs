@@ -77,7 +77,7 @@ namespace CutTheRopeDX.GameMain
             // Straight-alpha blend so the per-particle alpha fade reads correctly.
             Renderer.SetBlendFunc(BlendingFactor.GLSRCALPHA, BlendingFactor.GLONEMINUSSRCALPHA);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
-            Renderer.BindTexture(drawer.image.texture.Name());
+            Renderer.BindTexture(drawer.image.texture);
             int quadCount = particleIdx;
             if (quadCount > 0)
             {

@@ -97,15 +97,6 @@ namespace CutTheRopeDX.Framework.Core
         }
 
         /// <summary>
-        /// Creates the resource manager used by the application.
-        /// </summary>
-        /// <returns>New resource manager instance.</returns>
-        public virtual ResourceMgr CreateResourceMgr()
-        {
-            return new ResourceMgr();
-        }
-
-        /// <summary>
         /// Creates the shared sound manager instance.
         /// </summary>
         /// <returns>New sound manager instance.</returns>

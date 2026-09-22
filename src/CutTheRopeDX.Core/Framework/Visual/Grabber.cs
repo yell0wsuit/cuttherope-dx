@@ -28,7 +28,7 @@ namespace CutTheRopeDX.Framework.Visual
             if (t != null)
             {
                 Renderer.Enable(Renderer.GL_TEXTURE_2D);
-                Renderer.BindTexture(t.Name());
+                Renderer.BindTexture(t);
                 VertexPositionNormalTexture[] vertices = QuadVertexCache.GetTexturedQuad(
                     x, y, t._realWidth, t._realHeight,
                     0f, 0f, t._maxS, t._maxT);
