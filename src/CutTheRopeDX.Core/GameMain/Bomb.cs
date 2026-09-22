@@ -75,14 +75,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
-        /// <remarks>The original's <c>Bomb::draw</c> only writes the body position, so unlike the
-        /// axe there is nothing to spin and the frozen and running paths are identical.</remarks>
         public override void Update(float delta)
         {
             base.Update(delta);
             SyncToConstraint();
         }
 
+        /// <inheritdoc />
         public override void Draw()
         {
             if (!visible)

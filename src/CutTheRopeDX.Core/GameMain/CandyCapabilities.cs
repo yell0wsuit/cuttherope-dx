@@ -83,9 +83,10 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// A bomb: the axe's set of interactions - a physical, rocket/transport-capable body that is
-        /// neither candy nor a target for consumption - except that its sprite never turns, because
-        /// the original only writes the bomb's position when it draws.
+        /// neither candy nor a target for consumption. Its rope turns it like a candy, and a rocket
+        /// carrying it steers by that turn, which is what keeps a rocket towing a tethered bomb
+        /// circling the hook.
         /// </summary>
-        public static CandyCapabilities Bomb { get; } = Axe with { CanRotateWithRopes = false };
+        public static CandyCapabilities Bomb { get; } = Axe;
     }
 }
