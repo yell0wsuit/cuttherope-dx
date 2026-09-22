@@ -1,0 +1,85 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0021.png",
+            "frame": { "x": 1, "y": 478, "w": 216, "h": 40 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 69, "y": 116, "w": 216, "h": 40 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0022.png",
+            "frame": { "x": 1, "y": 151, "w": 219, "h": 100 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 67, "y": 75, "w": 219, "h": 100 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0023.png",
+            "frame": { "x": 1, "y": 253, "w": 222, "h": 92 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 68, "y": 71, "w": 222, "h": 92 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0024.png",
+            "frame": { "x": 1, "y": 413, "w": 177, "h": 63 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 90, "y": 75, "w": 177, "h": 63 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0025.png",
+            "frame": { "x": 1, "y": 520, "w": 131, "h": 33 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 112, "y": 125, "w": 131, "h": 33 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0026.png",
+            "frame": { "x": 151, "y": 38, "w": 61, "h": 30 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 94, "y": 103, "w": 61, "h": 30 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0027.png",
+            "frame": { "x": 151, "y": 1, "w": 61, "h": 35 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 76, "y": 80, "w": 61, "h": 35 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0028.png",
+            "frame": { "x": 1, "y": 1, "w": 148, "h": 148 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 99, "y": 112, "w": 148, "h": 148 },
+            "sourceSize": { "w": 354, "h": 376 }
+        },
+        {
+            "filename": "frame_0029.png",
+            "frame": { "x": 1, "y": 347, "w": 195, "h": 64 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 79, "y": 174, "w": 195, "h": 64 },
+            "sourceSize": { "w": 354, "h": 376 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "obj_candy_timetravel.png",
+        "format": "RGBA8888",
+        "size": { "w": 224, "h": 554 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:3807a4fdcbffcd36718e00081eb51bcc:c5fc5ca76e8af86d4c2d2acc5798f724:a77103e6ef8868a9d91fc3c316525718$"
+    }
+}
