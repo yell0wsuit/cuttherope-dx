@@ -122,7 +122,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (Animation.GetCurrentTimelineIndex() != 0)
+            if (Animation.CurrentTimelineIndex != 0)
             {
                 Position += delta * ActivePhysicsConstants.SpiderTraversalSpeed;
             }
@@ -157,7 +157,7 @@ namespace CutTheRopeDX.GameMain
                         HasReachedCandy = true;
                     }
 
-                    if (Animation.GetCurrentTimelineIndex() != 0)
+                    if (Animation.CurrentTimelineIndex != 0)
                     {
                         Animation.rotation = float.RadiansToDegrees(VectAngleNormalized(along)) + DEG_270;
                     }

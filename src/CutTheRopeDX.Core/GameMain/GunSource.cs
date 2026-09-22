@@ -99,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             CupRotation = InitialRotation + candyRotation - CandyInitialRotation;
 
             if (Cup == null
-                || Cup.GetCurrentTimelineIndex() == Grab.GUN_CUP_DROP_AND_HIDE)
+                || Cup.CurrentTimelineIndex == Grab.GUN_CUP_DROP_AND_HIDE)
             {
                 return;
             }

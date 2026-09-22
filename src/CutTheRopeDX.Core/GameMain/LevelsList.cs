@@ -14,7 +14,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         static LevelsList()
         {
-            int packCount = PackConfig.GetPackCount();
+            int packCount = PackConfig.PackCount;
             int maxLevels = Math.Max(1, PackConfig.MaxLevelsPerPack);
 
             LEVEL_NAMES = new string[packCount, maxLevels];

@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Tests
 
         private static void TapFromValve(GameScene scene, SteamTube tube, float distance)
         {
-            Vector valve = new(tube.x, tube.y + (28f * tube.GetHeightScale()));
+            Vector valve = new(tube.x, tube.y + (28f * tube.HeightScale));
             Vector tap = scene.ScreenPositionOf(new Vector(valve.X + distance, valve.Y));
             _ = scene.TouchDownXYIndex(tap.X, tap.Y, 1);
             _ = scene.TouchUpXYIndex(tap.X, tap.Y, 1);

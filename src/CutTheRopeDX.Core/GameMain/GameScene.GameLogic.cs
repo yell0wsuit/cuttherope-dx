@@ -1162,7 +1162,7 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (Spikes spike in spikes)
             {
-                if (spike.GetToggled() == sid)
+                if (spike.Toggled == sid)
                 {
                     spike.RotateSpikes();
                 }

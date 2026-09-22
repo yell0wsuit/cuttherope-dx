@@ -296,7 +296,7 @@ namespace CutTheRopeDX.GameMain
             {
                 if (parts[i].GetTimeline(timelineId) != null)
                 {
-                    return parts[i].GetCurrentTimelineIndex() == timelineId
+                    return parts[i].CurrentTimelineIndex == timelineId
                         && parts[i].GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_PLAYING;
                 }
             }
@@ -634,7 +634,7 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                return targetParts[i].GetCurrentTimelineIndex() == timelineId
+                return targetParts[i].CurrentTimelineIndex == timelineId
                     && targetParts[i].GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_PLAYING;
             }
 
@@ -716,7 +716,7 @@ namespace CutTheRopeDX.GameMain
             for (int i = 0; i < targetParts.Count; i++)
             {
                 Timeline timeline = targetParts[i].GetTimeline(timelineId);
-                if (timeline == null || targetParts[i].GetCurrentTimelineIndex() != timelineId)
+                if (timeline == null || targetParts[i].CurrentTimelineIndex != timelineId)
                 {
                     continue;
                 }
@@ -740,7 +740,7 @@ namespace CutTheRopeDX.GameMain
                 : timeSeconds;
 
             Timeline rootTimeline = TargetObject.GetTimeline(timelineId);
-            if (rootTimeline != null && TargetObject.GetCurrentTimelineIndex() == timelineId)
+            if (rootTimeline != null && TargetObject.CurrentTimelineIndex == timelineId)
             {
                 rootTimeline.DeactivateTracks();
                 rootTimeline.time = clampedTimeSeconds;

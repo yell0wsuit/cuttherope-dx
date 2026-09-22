@@ -41,7 +41,7 @@ namespace CutTheRopeDX.Tests.Tutorials
         {
             GameScene scene = Rig("steamBurst", s => s.SteamTube(160, 300));
             SteamTube tube = scene.SteamTubes()[0];
-            Vector valve = scene.ScreenPositionOf(new Vector(tube.x, tube.y + (28f * tube.GetHeightScale())));
+            Vector valve = scene.ScreenPositionOf(new Vector(tube.x, tube.y + (28f * tube.HeightScale)));
 
             Assert.True(scene.TouchDownXYIndex(valve.X, valve.Y, 0), "the tap on the steam valve was not handled");
 

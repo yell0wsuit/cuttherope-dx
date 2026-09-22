@@ -356,7 +356,7 @@ namespace CutTheRopeDX.GameMain
         {
             return state switch
             {
-                TargetAnimationState.IdleLoop => target.GetCurrentTimelineIndex() == IdleLoopTimeline,
+                TargetAnimationState.IdleLoop => target.CurrentTimelineIndex == IdleLoopTimeline,
                 TargetAnimationState.IdleVariationOne
                 or TargetAnimationState.IdleVariationTwo
                 or TargetAnimationState.IdleVariationThree
@@ -372,7 +372,7 @@ namespace CutTheRopeDX.GameMain
                 or TargetAnimationState.GreetUp
                 or TargetAnimationState.GreetDown => false,
                 TargetAnimationState.Sleeping => isNightLevel
-                    && target.GetAnimation(Resources.Img.CharAnimationsSleeping)?.GetCurrentTimelineIndex() == SleepingTimeline,
+                    && target.GetAnimation(Resources.Img.CharAnimationsSleeping)?.CurrentTimelineIndex == SleepingTimeline,
                 _ => false
             };
         }

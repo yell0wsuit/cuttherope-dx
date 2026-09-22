@@ -537,7 +537,7 @@ namespace CutTheRopeDX.GameMain
                         tutorialDirector.Fire(TutorialEvent.StarCollected, collectingBody);
                         starsCollected++;
                         // Update RPC with new star count
-                        PlatformServices.RichPresence?.SetLevelPresence(root.GetPack(), root.GetLevel(), starsCollected, false, levelName);
+                        PlatformServices.RichPresence?.SetLevelPresence(root.Pack, root.Level, starsCollected, false, levelName);
                         if (starsCollected <= hudStar.Length)
                         {
                             hudStar[starsCollected - 1].PlayTimeline(0);
@@ -721,7 +721,7 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            List<Lantern> lanterns = Lantern.GetAllLanterns();
+            List<Lantern> lanterns = Lantern.AllLanterns;
             foreach (Lantern lantern in lanterns)
             {
                 // Frozen time holds an empty lantern on its path and lets no lantern take a candy. A

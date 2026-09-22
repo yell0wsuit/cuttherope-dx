@@ -215,7 +215,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>The number of packs.</returns>
         public static int GetPacksCount()
         {
-            int packs = PackConfig.GetPackCount();
+            int packs = PackConfig.PackCount;
             return IsLiteVersion() ? Math.Min(packs, SharewareFreePacks()) : packs;
         }
 
@@ -247,7 +247,7 @@ namespace CutTheRopeDX.Framework.Core
         {
             if (Application.SharedRootController() is RootController rootController)
             {
-                int pack = rootController.GetPack();
+                int pack = rootController.Pack;
                 return GetTotalStarsInBox(PackConfig.GetSaveSlot(pack));
             }
 

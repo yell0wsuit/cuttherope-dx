@@ -750,7 +750,7 @@ namespace CutTheRopeDX.Framework.Core
         /// <returns>Load completion percentage from 0 to 100.</returns>
         public virtual int GetPercentLoaded()
         {
-            return loadCount == 0 ? 100 : 100 * loaded / GetLoadCount();
+            return loadCount == 0 ? 100 : 100 * loaded / loadCount;
         }
 
         /// <summary>
@@ -948,10 +948,6 @@ namespace CutTheRopeDX.Framework.Core
         /// Returns the number of resources currently queued for loading.
         /// </summary>
         /// <returns>Queued resource count.</returns>
-        private int GetLoadCount()
-        {
-            return loadCount;
-        }
 
         /// <summary>
         /// Loads queued resources for one frame and notifies the delegate when the batch is complete.
@@ -966,7 +962,7 @@ namespace CutTheRopeDX.Framework.Core
         public void Update()
         {
             long frameStartedTicks = Stopwatch.GetTimestamp();
-            while (loaded < GetLoadCount()
+            while (loaded < loadCount
                 && Stopwatch.GetElapsedTime(frameStartedTicks).TotalMilliseconds < FrameLoadBudgetMilliseconds)
             {
                 if (loadQueue.Count > 0)
@@ -994,14 +990,14 @@ namespace CutTheRopeDX.Framework.Core
 
             // Taken before the completion callback, which builds controllers that are not loading.
             longestUpdateMs = Math.Max(longestUpdateMs, Stopwatch.GetElapsedTime(frameStartedTicks).TotalMilliseconds);
-            if (loaded >= GetLoadCount())
+            if (loaded >= loadCount)
             {
                 if (Timer >= 0)
                 {
                     TimerManager.StopTimer(Timer);
                 }
                 Timer = -1;
-                ReportBatchComplete(GetLoadCount(), "incremental", longestUpdateMs);
+                ReportBatchComplete(loadCount, "incremental", longestUpdateMs);
                 resourcesDelegate.AllResourcesLoaded();
             }
         }

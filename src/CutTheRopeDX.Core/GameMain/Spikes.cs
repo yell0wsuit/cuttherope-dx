@@ -75,7 +75,7 @@ namespace CutTheRopeDX.GameMain
         public void UpdateRotation()
         {
             float halfWidth = !electro
-                ? ActivePhysicsConstants.SpikesCollisionLineWidth(toggled != -1, widthIndex)
+                ? ActivePhysicsConstants.SpikesCollisionLineWidth(Toggled != -1, widthIndex)
                 : ActivePhysicsConstants.ElectroSpikesCollisionObjectWidth() - ActivePhysicsConstants.ElectroSpikesWidthReduction;
             halfWidth /= 2f;
             float bandHalfHeight = ActivePhysicsConstants.SpikesCollisionBandHalfHeight;
@@ -159,17 +159,13 @@ namespace CutTheRopeDX.GameMain
         /// <param name="t">Toggle group id.</param>
         public void SetToggled(int t)
         {
-            toggled = t;
+            Toggled = t;
         }
 
         /// <summary>
         /// Gets the toggle group for this rotatable spike set.
         /// </summary>
-        /// <returns>The toggle group id.</returns>
-        public int GetToggled()
-        {
-            return toggled;
-        }
+        public int Toggled { get; private set; }
 
         /// <inheritdoc />
         public override void Update(float delta)
@@ -220,7 +216,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (n == SpikesButtonId.Rotate)
             {
-                delegateRotateAllSpikesWithID(toggled);
+                delegateRotateAllSpikesWithID(Toggled);
                 if (spikesNormal)
                 {
                     SoundMgr.PlaySound(Resources.Snd.SpikeRotateIn);
@@ -241,8 +237,6 @@ namespace CutTheRopeDX.GameMain
         {
         }
 
-        /// <summary>Toggle group id for rotating linked spike sets.</summary>
-        private int toggled;
 
         /// <summary>Spike width/type index (1-4, 5 = electrodes) used to resolve the WP7 collision width.</summary>
         private int widthIndex;

@@ -91,7 +91,7 @@ namespace CutTheRopeDX.GameMain
         private static string ResolveMapName(string source)
         {
             return string.IsNullOrWhiteSpace(source) || source.Contains("://", StringComparison.Ordinal)
-                ? Application.SharedRootController().GetMapName()
+                ? Application.SharedRootController().MapName
                 : Path.GetFileName(source);
         }
 

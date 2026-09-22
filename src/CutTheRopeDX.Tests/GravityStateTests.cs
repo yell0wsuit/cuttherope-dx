@@ -73,7 +73,7 @@ namespace CutTheRopeDX.Tests
             AssertVector(12f, 34f, MaterialPoint.globalGravity);
             Assert.False(MaterialPoint.globalDisableGravity);
             Assert.False(button.On());
-            Assert.Equal(-1, earth.GetCurrentTimelineIndex());
+            Assert.Equal(-1, earth.CurrentTimelineIndex);
             Assert.Equal(0f, earth.rotation);
 
             gravity.Toggle();
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.Tests
             AssertVector(12f, -34f, gravity.CurrentVector);
             AssertVector(12f, -34f, MaterialPoint.globalGravity);
             Assert.True(button.On());
-            Assert.Equal(1, earth.GetCurrentTimelineIndex());
+            Assert.Equal(1, earth.CurrentTimelineIndex);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace CutTheRopeDX.Tests
             AssertVector(-7f, 25f, gravity.CurrentVector);
             AssertVector(-7f, 25f, MaterialPoint.globalGravity);
             Assert.False(button.On());
-            Assert.Equal(-1, earth.GetCurrentTimelineIndex());
+            Assert.Equal(-1, earth.CurrentTimelineIndex);
             Assert.Equal(0f, earth.rotation);
             Assert.False(gravity.ReleaseToggleTouch(3));
         }

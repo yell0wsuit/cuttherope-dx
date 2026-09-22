@@ -370,7 +370,7 @@ namespace CutTheRopeDX.GameMain
                 }
             }
 
-            foreach (Lantern lantern in Lantern.GetAllLanterns())
+            foreach (Lantern lantern in Lantern.AllLanterns)
             {
                 if (lantern != null && lantern.OnTouchDown(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty), out ConstrainedPoint releasedCandyPoint))
                 {

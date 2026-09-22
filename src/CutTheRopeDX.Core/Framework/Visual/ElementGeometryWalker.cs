@@ -42,7 +42,7 @@ namespace CutTheRopeDX.Framework.Visual
             _ = builder.AppendFormat(
                 CultureInfo.InvariantCulture,
                 "{0} {1:0.##} {2:0.##} {3} {4} {5:0.###} {6:0.###} {7:0.##}\n",
-                element.GetName() ?? element.GetType().Name,
+                element.Name ?? element.GetType().Name,
                 element.drawX,
                 element.drawY,
                 element.width,

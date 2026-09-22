@@ -186,7 +186,7 @@ namespace CutTheRopeDX.Framework.Visual
                     move = vectZero;
                 }
             }
-            else if (canSkipScrollPoints && spointsNum > 0 && !VectEqual(move, vectZero) && VectLength(move) < 150f && targetSpoint == -1)
+            else if (canSkipScrollPoints && TotalScrollPoints > 0 && !VectEqual(move, vectZero) && VectLength(move) < 150f && targetSpoint == -1)
             {
                 StartMovingToSpointInDirection(move);
             }
@@ -355,7 +355,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
             touchState = TOUCH_STATE.UP;
             move = MeasureReleaseVelocity();
-            if (spointsNum > 0)
+            if (TotalScrollPoints > 0)
             {
                 if (!canSkipScrollPoints)
                 {
@@ -400,7 +400,7 @@ namespace CutTheRopeDX.Framework.Visual
             // float fixedDeltaSetting = ApplicationSettings.GetInt(5);
             // fixedDelta = (1 / fixedDeltaSetting);
             spoints = null;
-            spointsNum = -1;
+            TotalScrollPoints = -1;
             spointsCapacity = -1;
             targetSpoint = -1;
             lastTargetSpoint = -1;
@@ -471,7 +471,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             spointsCapacity = n;
             spoints = new Vector[spointsCapacity];
-            spointsNum = 0;
+            TotalScrollPoints = 0;
         }
 
         /// <summary>
@@ -482,8 +482,8 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>The index assigned to the new scroll point.</returns>
         public int AddScrollPointAtXY(float sx, float sy)
         {
-            AddScrollPointAtXYwithID(sx, sy, spointsNum);
-            return spointsNum - 1;
+            AddScrollPointAtXYwithID(sx, sy, TotalScrollPoints);
+            return TotalScrollPoints - 1;
         }
 
         /// <summary>
@@ -495,20 +495,16 @@ namespace CutTheRopeDX.Framework.Visual
         public void AddScrollPointAtXYwithID(float sx, float sy, int i)
         {
             spoints[i] = Vect(0f - sx, 0f - sy);
-            if (i > spointsNum - 1)
+            if (i > TotalScrollPoints - 1)
             {
-                spointsNum = i + 1;
+                TotalScrollPoints = i + 1;
             }
         }
 
         /// <summary>
         /// Returns the number of registered scroll points.
         /// </summary>
-        /// <returns>Total registered scroll points.</returns>
-        public int GetTotalScrollPoints()
-        {
-            return spointsNum;
-        }
+        public int TotalScrollPoints { get; private set; }
 
         /// <summary>
         /// Returns the stored container offset for the specified scroll point.
@@ -594,7 +590,7 @@ namespace CutTheRopeDX.Framework.Visual
             float nearestDistance = 9999999f;
             float directionAngle = AngleTo0_360(float.RadiansToDegrees(VectAngleNormalized(d)));
             Vector v = Vect(container.x, container.y);
-            for (int i = 0; i < spointsNum; i++)
+            for (int i = 0; i < TotalScrollPoints; i++)
             {
                 if (spoints[i].X <= 0f && (spoints[i].X >= (-container.width + width) || spoints[i].X >= 0f) && spoints[i].Y <= 0f && (spoints[i].Y >= (-container.height + height) || spoints[i].Y >= 0f))
                 {
@@ -838,10 +834,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         private Vector[] spoints;
 
-        /// <summary>
-        /// Number of snap points currently registered in <see cref="spoints"/>.
-        /// </summary>
-        private int spointsNum;
 
         /// <summary>
         /// Allocated capacity of the snap-point storage array.

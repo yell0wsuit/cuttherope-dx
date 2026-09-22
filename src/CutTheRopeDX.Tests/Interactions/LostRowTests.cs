@@ -173,7 +173,7 @@ namespace CutTheRopeDX.Tests.Interactions
         public void HazardRetirementCancelsPendingLanternCapture()
         {
             (GameScene scene, CandyContext candy) = Rig(s => s.Lantern(20, 40));
-            Lantern lantern = Lantern.GetAllLanterns()[0];
+            Lantern lantern = Lantern.AllLanterns[0];
             Assert.True(
                 Interaction.StepUntil(
                     scene,

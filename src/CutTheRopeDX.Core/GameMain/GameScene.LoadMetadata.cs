@@ -97,7 +97,7 @@ namespace CutTheRopeDX.GameMain
                             cameraBounds = new Rectangle(offsetX, 0f, mapWidth, mapHeight);
                             levelName = node.Attribute("levelName")?.Value ?? null;
 
-                            if (PackConfig.GetEarthBg(rc.GetPack()))
+                            if (PackConfig.GetEarthBg(rc.Pack))
                             {
                                 if (mapWidth > SCREEN_WIDTH)
                                 {

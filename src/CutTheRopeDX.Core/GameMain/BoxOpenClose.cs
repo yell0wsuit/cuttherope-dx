@@ -540,7 +540,7 @@ namespace CutTheRopeDX.GameMain
         {
             CreateOpenCloseAnims();
             RootController root = Application.SharedRootController();
-            string boxCover = PackConfig.GetBoxCoverOrDefault(root.GetPack());
+            string boxCover = PackConfig.GetBoxCoverOrDefault(root.Pack);
             Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 16);
             image.rotationCenterX = (-image.width / 2f) + 1f;
             image.rotationCenterY = (-image.height / 2f) + 1f;

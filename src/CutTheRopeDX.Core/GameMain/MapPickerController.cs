@@ -106,8 +106,8 @@ namespace CutTheRopeDX.GameMain
             if (rootNode != null)
             {
                 RootController root = Application.SharedRootController();
-                root.SetMap(rootNode);
-                root.SetMapName(selectedMap);
+                root.Map = rootNode;
+                root.MapName = selectedMap;
                 RootController.SetMapsList(maplist);
                 Deactivate();
             }

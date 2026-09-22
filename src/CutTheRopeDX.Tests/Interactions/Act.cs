@@ -263,7 +263,7 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="candy">Candy to capture.</param>
         public static void CaptureInLantern(GameScene scene, CandyContext candy)
         {
-            Lantern lantern = Lantern.GetAllLanterns()[0];
+            Lantern lantern = Lantern.AllLanterns[0];
             Chase(scene, candy, position => MoveTo(lantern, position), () => candy.Lifecycle.Attachments.InLantern, "the lantern never captured the candy");
         }
 

@@ -100,7 +100,7 @@ namespace CutTheRopeDX.Tests
                 {
                     Timeline timeline = effect.GetCurrentTimeline();
                     return (effect, effect.x, effect.y, effect.rotation, timeline,
-                        effect.GetCurrentTimelineIndex(), timeline.time, timeline.state);
+                        effect.CurrentTimelineIndex, timeline.time, timeline.state);
                 })];
 
             waves.Resize(1200f, 450f);
@@ -111,7 +111,7 @@ namespace CutTheRopeDX.Tests
             {
                 Assert.Equal(oldRotation, effect.rotation);
                 Assert.Same(timeline, effect.GetCurrentTimeline());
-                Assert.Equal(timelineIndex, effect.GetCurrentTimelineIndex());
+                Assert.Equal(timelineIndex, effect.CurrentTimelineIndex);
                 Assert.Equal(timelineTime, timeline.time);
                 Assert.Equal(timelineState, timeline.state);
 

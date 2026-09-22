@@ -51,7 +51,7 @@ namespace CutTheRopeDX.GameMain
             int p2Count = BackgroundTiling.GetP2Count(mapHeight, SCREEN_HEIGHT);
             if (p2Count > 0)
             {
-                int pack = Application.SharedRootController().GetPack();
+                int pack = Application.SharedRootController().Pack;
                 int p2Y = PackConfig.GetBoxBackgroundP2Y(pack);
                 if (p2Y > 0)
                 {
@@ -206,7 +206,7 @@ namespace CutTheRopeDX.GameMain
                 steamTube?.DrawBack();
             }
 
-            foreach (Lantern lantern in Lantern.GetAllLanterns())
+            foreach (Lantern lantern in Lantern.AllLanterns)
             {
                 lantern.Draw();
             }

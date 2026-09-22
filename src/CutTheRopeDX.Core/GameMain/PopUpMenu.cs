@@ -25,7 +25,7 @@ namespace CutTheRopeDX.GameMain
             const int textOffset = 20;
             RootController root = Application.SharedRootController();
             int totalStars = Preferences.GetTotalStars();
-            string requiredStars = (PackConfig.GetUnlockStars(root.GetPack() + 1) - totalStars)
+            string requiredStars = (PackConfig.GetUnlockStars(root.Pack + 1) - totalStars)
                 .ToString(CultureInfo.InvariantCulture);
 
             PopupTemplate template = PopupTemplate.Create(PopupSize.Large)

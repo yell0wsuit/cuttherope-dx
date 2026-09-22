@@ -33,7 +33,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadTarget(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            int pack = Application.SharedRootController().GetPack();
+            int pack = Application.SharedRootController().Pack;
             int sittingPlatform = PackConfig.GetSittingPlatform(pack);
 
             int targetType = ParseIntOrZero(xmlNode.Attribute("targetType")?.Value ?? string.Empty);

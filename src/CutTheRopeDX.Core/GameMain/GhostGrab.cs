@@ -109,7 +109,7 @@ namespace CutTheRopeDX.GameMain
             if (RadiusSource?.ShouldDrawCircle == true)
             {
                 RootController rootController = Application.SharedRootController();
-                int pack = rootController.GetPack();
+                int pack = rootController.Pack;
                 RGBAColor? ghostGrabOverride = PackConfig.GetGhostGrabColor(pack);
                 RGBAColor grabColor = ghostGrabOverride.HasValue
                     ? RGBAColor.MakeRGBA(ghostGrabOverride.Value.RedColor, ghostGrabOverride.Value.GreenColor, ghostGrabOverride.Value.BlueColor, RadiusSource.RadiusAlpha * color.AlphaChannel)

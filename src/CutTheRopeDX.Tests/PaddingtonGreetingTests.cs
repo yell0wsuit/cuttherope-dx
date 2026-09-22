@@ -50,7 +50,7 @@ namespace CutTheRopeDX.Tests
 
             Assert.True(hat.visible);
             Assert.False(target.GetAnimation(Resources.Img.CharAnimationsPaddington).visible);
-            Assert.Equal(OriginalTargetAnimationBackend.IdleLoopTimeline, target.GetCurrentTimelineIndex());
+            Assert.Equal(OriginalTargetAnimationBackend.IdleLoopTimeline, target.CurrentTimelineIndex);
         }
 
         [Fact]

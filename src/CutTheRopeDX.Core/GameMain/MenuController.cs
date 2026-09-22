@@ -1260,7 +1260,7 @@ namespace CutTheRopeDX.GameMain
             AttachSnowfallOverlay(menuView);
             AddViewwithID(menuView, 5);
             int lastPack = Preferences.GetLastBox();
-            Application.SharedRootController().SetBox(Preferences.GetLastGamePack());
+            Application.SharedRootController().Box = Preferences.GetLastGamePack();
             packContainer.PlaceToScrollPoint(lastPack);
             ScrollableContainerchangedTargetScrollPoint(packContainer, lastPack);
         }
@@ -1340,7 +1340,7 @@ namespace CutTheRopeDX.GameMain
                 childWithName.PlayTimeline(0);
             }
             RootController root = Application.SharedRootController();
-            if (showNextPackStatus && i == root.GetPack() + 1)
+            if (showNextPackStatus && i == root.Pack + 1)
             {
                 showNextPackStatus = false;
                 if (unlockedForPackLevel == UNLOCKEDSTATE.LOCKED)
@@ -1646,7 +1646,7 @@ namespace CutTheRopeDX.GameMain
             showNextPackStatus = false;
             base.Activate();
             RootController root = Application.SharedRootController();
-            pack = root.GetPack();
+            pack = root.Pack;
             if (IsSinglePack && viewToShow == VIEW_PACK_SELECT)
             {
                 pack = 0;
@@ -1677,7 +1677,7 @@ namespace CutTheRopeDX.GameMain
         public void ShowNextPack()
         {
             RootController root = Application.SharedRootController();
-            int currentPackIndex = root.GetPack();
+            int currentPackIndex = root.Pack;
             if (currentPackIndex < Preferences.GetPacksCount() - 1)
             {
                 packContainer.delegateScrollableContainerProtocol = this;
@@ -1688,7 +1688,7 @@ namespace CutTheRopeDX.GameMain
             replayingIntroMovie = false;
             if (PackConfig.OutroVideo != null)
             {
-                packContainer.PlaceToScrollPoint(root.GetPack() + 1);
+                packContainer.PlaceToScrollPoint(root.Pack + 1);
                 SoundMgr.StopMusic();
                 Application.SharedMovieMgr().delegateMovieMgrDelegate = this;
                 Application.SharedMovieMgr().PlayURL(PackConfig.OutroVideo, !Preferences.GetBooleanForKey("MUSIC_ON") && !Preferences.GetBooleanForKey("SOUND_ON"));
@@ -1786,9 +1786,9 @@ namespace CutTheRopeDX.GameMain
         {
             SoundMgr.StopMusic();
             RootController root = Application.SharedRootController();
-            root.SetBox(PackConfig.GetSaveSlot(pack));
-            root.SetPack(pack);
-            root.SetLevel(level);
+            root.Box = PackConfig.GetSaveSlot(pack);
+            root.Pack = pack;
+            root.Level = level;
             Application.SharedRootController().SetViewTransition(-1);
             ((MapPickerController)GetChild(0)).SetAutoLoadMap(LevelsList.LEVEL_NAMES[pack, level]);
             if (pack == 0 && level == 0 && Preferences.GetScoreForPackLevel(0, 0) != 0 && PackConfig.IntroVideo != null)
@@ -1907,8 +1907,8 @@ namespace CutTheRopeDX.GameMain
                     ShowView(1);
                     return;
                 case var id when id == MenuButtonId.PlayPack0:
-                    Application.SharedRootController().SetBox(PackConfig.GetSaveSlot(0));
-                    Application.SharedRootController().SetPack(0);
+                    Application.SharedRootController().Box = PackConfig.GetSaveSlot(0);
+                    Application.SharedRootController().Pack = 0;
                     PreLevelSelect();
                     Application.SharedRootController().SetViewTransition(-1);
                     ((MapPickerController)GetChild(0)).SetNormalMode();
@@ -1925,8 +1925,8 @@ namespace CutTheRopeDX.GameMain
                         resourceMgr.LoadPack(PackConfig.GetBoxCovers(pack));
                         resourceMgr.LoadImmediately();
                         root.SetSurvival(true);
-                        root.SetBox(PackConfig.GetSaveSlot(pack));
-                        root.SetPack(pack);
+                        root.Box = PackConfig.GetSaveSlot(pack);
+                        root.Pack = pack;
                         Deactivate();
                         return;
                     }
@@ -2186,9 +2186,9 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The clamped scroll point.</returns>
         private int FixScrollPoint(int moveToPack)
         {
-            if (moveToPack >= packContainer.GetTotalScrollPoints())
+            if (moveToPack >= packContainer.TotalScrollPoints)
             {
-                moveToPack = packContainer.GetTotalScrollPoints() - 1;
+                moveToPack = packContainer.TotalScrollPoints - 1;
             }
             else if (moveToPack < 0)
             {

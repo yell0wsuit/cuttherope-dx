@@ -56,11 +56,11 @@ namespace CutTheRopeDX.GameMain
             };
             _ = AddChild(staticAniPool);
             camera = new Camera2D().InitWithSpeedandType(14f, CAMERATYPE.CAMERASPEEDDELAY);
-            string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(root.GetPack());
+            string[] boxBackgrounds = PackConfig.GetBoxBackgrounds(root.Pack);
             string boxBackground = boxBackgrounds.FirstOrDefault(name => !string.IsNullOrWhiteSpace(name));
             if (string.IsNullOrWhiteSpace(boxBackground))
             {
-                throw new InvalidDataException($"Pack config is missing boxBackground for pack {root.GetPack()}.");
+                throw new InvalidDataException($"Pack config is missing boxBackground for pack {root.Pack}.");
             }
             back = new TileMap().InitWithRowsColumns(1, 1);
             // Wide levels can move the camera past one P1 width, so repeat it on both axes.
@@ -129,8 +129,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            int pack = root.GetPack();
-            int level = root.GetLevel();
+            int pack = root.Pack;
+            int level = root.Level;
             string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
             XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
         }
@@ -150,12 +150,12 @@ namespace CutTheRopeDX.GameMain
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml("mappicker://next"), "mappicker://next", true);
                 return;
             }
-            int pack = root.GetPack();
-            int level = root.GetLevel();
+            int pack = root.Pack;
+            int level = root.Level;
             if (level < Preferences.GetLevelsInPackCount(pack) - 1)
             {
-                root.SetLevel(++level);
-                root.SetMapName(LevelsList.LEVEL_NAMES[pack, level]);
+                root.Level = ++level;
+                root.MapName = LevelsList.LEVEL_NAMES[pack, level];
                 string mapPath = Path.Combine(ContentPaths.MapsDirectory, LevelsList.LEVEL_NAMES[pack, level]);
                 XmlLoaderFinishedWithfromwithSuccess(ContentPaths.LoadXml(mapPath), mapPath, true);
             }
@@ -189,7 +189,7 @@ namespace CutTheRopeDX.GameMain
             image.AddTimelinewithID(timeline, 0);
 
             RootController root = Application.SharedRootController();
-            Vector? earthBgPosition = PackConfig.GetEarthBgPosition(root.GetPack());
+            Vector? earthBgPosition = PackConfig.GetEarthBgPosition(root.Pack);
             if (earthBgPosition.HasValue)
             {
                 image.x = earthBgPosition.Value.X;

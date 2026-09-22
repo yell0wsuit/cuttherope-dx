@@ -43,7 +43,7 @@ namespace CutTheRopeDX.GameMain
             Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             PreDraw();
             RootController root = Application.SharedRootController();
-            string boxCover = PackConfig.GetBoxCoverOrDefault(root.GetPack());
+            string boxCover = PackConfig.GetBoxCoverOrDefault(root.Pack);
 
             // Smooth interpolation for loading percentage
             float targetPercent = Application.SharedResourceMgr().GetPercentLoaded();

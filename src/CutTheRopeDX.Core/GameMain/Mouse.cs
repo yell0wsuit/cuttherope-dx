@@ -537,8 +537,8 @@ namespace CutTheRopeDX.GameMain
         public void TimelineFinished(Timeline t)
         {
             SharedMouseSprites? sprites = sharedSprites;
-            MouseAnimationId currentId = sprites.HasValue && sprites.Value.Body.GetCurrentTimelineIndex() >= 0
-                ? (MouseAnimationId)sprites.Value.Body.GetCurrentTimelineIndex()
+            MouseAnimationId currentId = sprites.HasValue && sprites.Value.Body.CurrentTimelineIndex >= 0
+                ? (MouseAnimationId)sprites.Value.Body.CurrentTimelineIndex
                 : MouseAnimationId.Idle;
 
             switch (currentId)

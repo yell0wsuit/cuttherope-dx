@@ -82,7 +82,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="delta">Frame delta time used when applying impulses.</param>
         public void OperateSteamTube(SteamTube tube, float delta)
         {
-            float tubeScale = tube.GetHeightScale();
+            float tubeScale = tube.HeightScale;
             float damping = ActivePhysicsConstants.SteamTubeDamping;
             float angle = float.DegreesToRadians(tube.rotation);
             float tubeWidth = ActivePhysicsConstants.SteamTubeWidthScale * tubeScale;

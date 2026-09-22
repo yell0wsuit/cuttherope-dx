@@ -28,7 +28,7 @@ namespace CutTheRopeDX.GameMain
             TutorialPromptLoader loader = new(
                 tutorialDirector,
                 new TutorialVisualFactory(tutorialSignTints),
-                rootController.GetMapName(),
+                rootController.MapName,
                 LanguageHelper.CurrentCode,
                 levelAuthorsSplitCandy,
                 scale,

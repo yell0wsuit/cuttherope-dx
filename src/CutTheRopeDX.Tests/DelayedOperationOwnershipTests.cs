@@ -101,7 +101,7 @@ namespace CutTheRopeDX.Tests
                 .Lantern(20, 40)
                 .Build();
             CandyContext candy = scene.Candy();
-            Lantern lantern = Lantern.GetAllLanterns()[0];
+            Lantern lantern = Lantern.AllLanterns[0];
             PendingLanternCapture obsolete = new(candy.WholeBody.Point, lantern);
             PendingLanternCapture replacement = new(candy.WholeBody.Point, lantern);
             scene.SetPendingLanternCapture(replacement);

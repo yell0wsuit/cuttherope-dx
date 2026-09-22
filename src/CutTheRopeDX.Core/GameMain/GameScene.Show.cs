@@ -21,7 +21,7 @@ namespace CutTheRopeDX.GameMain
             InitializeHUDStars();
 
             RootController root = Application.SharedRootController();
-            XElement map = root.GetMap();
+            XElement map = root.Map;
 
             float mapScale = 3f;
             float mapOffsetY = 0f;
@@ -58,7 +58,7 @@ namespace CutTheRopeDX.GameMain
             tummyTeasers = 0;
             starsCollected = 0;
             // Update RPC with current level info (on start/restart)
-            PlatformServices.RichPresence?.SetLevelPresence(root.GetPack(), root.GetLevel(), starsCollected, false, levelName);
+            PlatformServices.RichPresence?.SetLevelPresence(root.Pack, root.Level, starsCollected, false, levelName);
             foreach (CandyBody body in ActiveCandyBodies())
             {
                 body.Bubble = null;
@@ -73,7 +73,7 @@ namespace CutTheRopeDX.GameMain
             ropesCutAtOnce = 0;
             ropeAtOnceTimer = 0f;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_doCandyBlink), null, 1);
-            string packAndLevelNumbers = (root.GetPack() + 1).ToString(CultureInfo.InvariantCulture) + " - " + (root.GetLevel() + 1).ToString(CultureInfo.InvariantCulture);
+            string packAndLevelNumbers = (root.Pack + 1).ToString(CultureInfo.InvariantCulture) + " - " + (root.Level + 1).ToString(CultureInfo.InvariantCulture);
             LevelLabelText levelLabel = LevelLabel.Resolve(
                 CustomLevelSession.IsActive,
                 ResolveLevelDisplayName(),

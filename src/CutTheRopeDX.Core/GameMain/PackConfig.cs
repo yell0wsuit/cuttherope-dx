@@ -137,8 +137,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Loaded pack definitions in display order.</summary>
         private static readonly List<PackDefinition> packs;
 
-        /// <summary>Number of packs that contain playable levels.</summary>
-        private static readonly int playablePackCount;
 
         /// <summary>Video filename for the intro movie without extension, or <see langword="null"/> to skip.</summary>
         public static string IntroVideo { get; private set; }
@@ -153,7 +151,7 @@ namespace CutTheRopeDX.GameMain
         {
             List<PackListEntry> packListEntries = LoadPackListEntries();
             packs = LoadPacksFromEntries(packListEntries);
-            playablePackCount = packs.Count(p => p.LevelCount > 0);
+            PackCount = packs.Count(p => p.LevelCount > 0);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
         }
 
@@ -170,11 +168,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Gets the number of packs that contain playable levels.
         /// </summary>
-        /// <returns>The playable pack count.</returns>
-        public static int GetPackCount()
-        {
-            return playablePackCount;
-        }
+        public static int PackCount { get; }
 
         /// <summary>
         /// Gets the level count for a pack.

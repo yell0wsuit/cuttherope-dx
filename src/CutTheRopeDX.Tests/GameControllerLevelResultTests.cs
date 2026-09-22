@@ -33,7 +33,7 @@ namespace CutTheRopeDX.Tests
         public void SuppliedResultDrivesPresentationAnimationAndPersistence()
         {
             (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
-            int saveBox = root.GetBox();
+            int saveBox = root.Box;
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);
             LevelResult result = LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2);
@@ -67,7 +67,7 @@ namespace CutTheRopeDX.Tests
         public void SuppliedResultControlsImprovementComparisons()
         {
             (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
-            int saveBox = root.GetBox();
+            int saveBox = root.Box;
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);
             LevelResult result = LevelResultCalculator.Calculate(elapsedTime: 20f, starsCollected: 2);
@@ -95,7 +95,7 @@ namespace CutTheRopeDX.Tests
         public void CustomLevelDisplaysResultWithoutPersistingIt()
         {
             (GameController controller, GameScene scene, BoxOpenClose box, RootController root) = Load();
-            int saveBox = root.GetBox();
+            int saveBox = root.Box;
             int originalScore = Preferences.GetScoreForPackLevel(saveBox, Pack, Level);
             int originalStars = Preferences.GetStarsForPackLevel(saveBox, Pack, Level);
             LevelResult result = LevelResultCalculator.Calculate(elapsedTime: 12.5f, starsCollected: 3);

@@ -35,7 +35,7 @@ namespace CutTheRopeDX.Commons
                 int touchExpandX = 45;
                 lift.SetTouchIncreaseLeftRightTopBottom(touchExpandX, touchExpandX, -5f, 10f);
                 _ = AddChild(lift);
-                spointsNum = 0;
+                TotalScrollPoints = 0;
                 spoints = null;
                 activeSpoint = 0;
             }
@@ -55,11 +55,7 @@ namespace CutTheRopeDX.Commons
         /// <summary>
         /// Returns the total number of scroll points.
         /// </summary>
-        /// <returns>The number of configured scroll points.</returns>
-        public int GetTotalScrollPoints()
-        {
-            return spointsNum;
-        }
+        public int TotalScrollPoints { get; private set; }
 
         /// <summary>
         /// Recalculates the active scroll point based on the current lift position and notifies the delegate if it changed.
@@ -67,7 +63,7 @@ namespace CutTheRopeDX.Commons
         public void UpdateActiveSpoint()
         {
             int i = 0;
-            while (i < spointsNum)
+            while (i < TotalScrollPoints)
             {
                 if (lift.x <= spointsLimits[i].X)
                 {
@@ -91,7 +87,7 @@ namespace CutTheRopeDX.Commons
         {
             base.Update(delta);
             UpdateLift();
-            for (int i = 0; i < spointsNum; i++)
+            for (int i = 0; i < TotalScrollPoints; i++)
             {
                 if (lift.x <= spointsLimits[i].X)
                 {
@@ -104,10 +100,10 @@ namespace CutTheRopeDX.Commons
                     return;
                 }
             }
-            if (lift.x >= spointsLimits[spointsNum - 1].X && activeSpoint != limitPoints[spointsNum - 1])
+            if (lift.x >= spointsLimits[TotalScrollPoints - 1].X && activeSpoint != limitPoints[TotalScrollPoints - 1])
             {
-                delegateLiftScrollbarDelegate?.ChangedActiveSpointFromTo(activeSpoint, limitPoints[spointsNum - 1]);
-                activeSpoint = limitPoints[spointsNum - 1];
+                delegateLiftScrollbarDelegate?.ChangedActiveSpointFromTo(activeSpoint, limitPoints[TotalScrollPoints - 1]);
+                activeSpoint = limitPoints[TotalScrollPoints - 1];
             }
         }
 
@@ -176,14 +172,14 @@ namespace CutTheRopeDX.Commons
         public void CalcScrollPoints()
         {
             Vector maxScroll = container.GetMaxScroll();
-            spointsNum = container.GetTotalScrollPoints();
+            TotalScrollPoints = container.TotalScrollPoints;
             spoints = null;
             spointsLimits = null;
             limitPoints = null;
-            spoints = new Vector[spointsNum];
-            spointsLimits = new Vector[spointsNum];
-            limitPoints = new int[spointsNum];
-            for (int i = 0; i < spointsNum; i++)
+            spoints = new Vector[TotalScrollPoints];
+            spointsLimits = new Vector[TotalScrollPoints];
+            limitPoints = new int[TotalScrollPoints];
+            for (int i = 0; i < TotalScrollPoints; i++)
             {
                 Vector vector = VectNeg(container.GetScrollPoint(i));
                 float scrollRatioX = 0f;
@@ -198,7 +194,7 @@ namespace CutTheRopeDX.Commons
                 float liftX = ((lift.maxX - lift.minX) * scrollRatioX) + lift.minX;
                 spoints[i] = Vect(liftX, 0f);
             }
-            for (int j = 0; j < spointsNum; j++)
+            for (int j = 0; j < TotalScrollPoints; j++)
             {
                 spointsLimits[j] = spoints[j];
                 limitPoints[j] = j;
@@ -207,7 +203,7 @@ namespace CutTheRopeDX.Commons
             while (swapped)
             {
                 swapped = false;
-                for (int k = 0; k < spointsNum - 1; k++)
+                for (int k = 0; k < TotalScrollPoints - 1; k++)
                 {
                     if (spointsLimits[k].X > spointsLimits[k + 1].X)
                     {
@@ -217,7 +213,7 @@ namespace CutTheRopeDX.Commons
                     }
                 }
             }
-            for (int l = 0; l < spointsNum - 1; l++)
+            for (int l = 0; l < TotalScrollPoints - 1; l++)
             {
                 Vector currentPoint = spointsLimits[l];
                 Vector nextPoint = spointsLimits[l + 1];
@@ -256,10 +252,6 @@ namespace CutTheRopeDX.Commons
         /// </summary>
         public int[] limitPoints;
 
-        /// <summary>
-        /// Total number of scroll points.
-        /// </summary>
-        public int spointsNum;
 
         /// <summary>
         /// Index of the currently active scroll point.

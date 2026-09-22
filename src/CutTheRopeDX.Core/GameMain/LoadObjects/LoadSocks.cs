@@ -59,7 +59,7 @@ namespace CutTheRopeDX.GameMain
             {
                 sock.mover.angle_ += DEG_90;
                 sock.mover.angle_initial = sock.mover.angle_;
-                if (root.GetPack() == 3 && root.GetLevel() == 24)
+                if (root.Pack == 3 && root.Level == 24)
                 {
                     sock.mover.use_angle_initial = true;
                 }

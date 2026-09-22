@@ -40,7 +40,7 @@ namespace CutTheRopeDX.GameMain
         {
             x = position.X;
             y = position.Y;
-            this.heightScale = heightScale;
+            HeightScale = heightScale;
             rotation = angle;
             anchor = 18;
             steamBack = new BaseElement();
@@ -104,17 +104,13 @@ namespace CutTheRopeDX.GameMain
         public float GetCurrentHeightModulated()
         {
             float currentHeight = GetCurrentHeight();
-            return currentHeight + (heightScale * MathF.Sin(6f * phase));
+            return currentHeight + (HeightScale * MathF.Sin(6f * phase));
         }
 
         /// <summary>
         /// Gets the height scale factor applied to this steam tube.
         /// </summary>
-        /// <returns>The height scale multiplier.</returns>
-        public float GetHeightScale()
-        {
-            return heightScale;
-        }
+        public float HeightScale { get; private set; } = 1f;
 
         /// <inheritdoc />
         public override void Update(float delta)
@@ -142,11 +138,11 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)
         {
-            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * heightScale), float.DegreesToRadians(rotation)));
+            Vector vector = VectAdd(Vect(x, y), VectRotate(Vect(0f, 28f * HeightScale), float.DegreesToRadians(rotation)));
             float touchZone = VectLength(VectSub(Vect(tx, ty), vector));
             // The Windows Phone reach of 40 grows with the tube like the valve offset above it, or
             // the valve would be a third of its authored size to tap in DX's larger world.
-            if (touchZone < 40f * heightScale)
+            if (touchZone < 40f * HeightScale)
             {
                 int valveTimelineIndex = 0;
                 switch (steamState)
@@ -270,7 +266,7 @@ namespace CutTheRopeDX.GameMain
                 2 => 141f,
                 _ => 0f,
             };
-            return baseHeight * heightScale;
+            return baseHeight * HeightScale;
         }
 
         /// <summary>
@@ -391,8 +387,6 @@ namespace CutTheRopeDX.GameMain
             child.PlayTimeline(0);
         }
 
-        /// <summary>Scale factor applied to tube dimensions and steam heights.</summary>
-        private float heightScale = 1f;
 
         /// <summary>Current valve state: 0 = low, 1 = medium, 2 = high.</summary>
         public int steamState;

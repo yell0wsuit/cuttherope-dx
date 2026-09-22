@@ -124,7 +124,7 @@ namespace CutTheRopeDX.GameMain
             if (Apparition is GhostGrab grab
                 && grab.Rope != null
                 && grab.Rope.cut != -1
-                && grab.GetCurrentTimelineIndex() == 10)
+                && grab.CurrentTimelineIndex == 10)
             {
                 ResetToForm(GhostForm.Idle);
             }
@@ -150,7 +150,7 @@ namespace CutTheRopeDX.GameMain
                 BeginRetiringApparition(outgoing);
                 retiringApparitions.Add(new RetiringGhostApparition(outgoingForm, newForm, outgoing));
             }
-            else if (ghostImage.GetCurrentTimelineIndex() == 10)
+            else if (ghostImage.CurrentTimelineIndex == 10)
             {
                 ghostImage.PlayTimeline(11);
             }
@@ -392,7 +392,7 @@ namespace CutTheRopeDX.GameMain
             {
                 RetiringGhostApparition retirement = retiringApparitions[i];
                 BaseElement element = retirement.Apparition.Element;
-                if (element.GetCurrentTimelineIndex() != 11
+                if (element.CurrentTimelineIndex != 11
                     || element.GetCurrentTimeline()?.state != Timeline.TimelineState.TIMELINE_STOPPED)
                 {
                     continue;
@@ -431,7 +431,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             BaseElement incoming = Apparition?.Element ?? ghostImage;
-            if (incoming.GetCurrentTimelineIndex() == 10
+            if (incoming.CurrentTimelineIndex == 10
                 && incoming.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
             {
                 MorphPhase = null;

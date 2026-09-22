@@ -57,7 +57,7 @@ namespace CutTheRopeDX.GameMain
 
             RootController root = Application.SharedRootController();
             string[] required = LevelResourceScanner.GetRequiredResources(map);
-            CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.GetSessionResources());
+            CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.SessionResources);
             ILogger logger = Log.For(LogCategories.Playtest);
             PlaytestLog.LevelChanged(logger, kind, required.Length);
 
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            root.SetMap(map);
+            root.Map = map;
             exitCode = EXIT_CODE_CUSTOM_RELOAD;
             SoundMgr.StopAll();
             Deactivate();
@@ -170,7 +170,7 @@ namespace CutTheRopeDX.GameMain
             mapNameLabel = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
             mapNameLabel.SetName("mapNameLabel");
             RootController root = Application.SharedRootController();
-            _ = Preferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
+            _ = Preferences.GetScoreForPackLevel(root.Box, root.Pack, root.Level);
             mapNameLabel.anchor = mapNameLabel.parentAnchor = 12;
             float labelXOffset = LanguageHelper.IsCurrent(Language.LANGJA) ? 200f : 256f;
             mapNameLabel.x = RTD(-10) + labelXOffset;
@@ -295,9 +295,9 @@ namespace CutTheRopeDX.GameMain
         {
             _ = Application.SharedPreferences();
             RootController root = Application.SharedRootController();
-            int box = root.GetBox();
-            int pack = root.GetPack();
-            _ = root.GetLevel();
+            int box = root.Box;
+            int pack = root.Pack;
+            _ = root.Level;
             bool packComplete = true;
             for (int levelIndex = Preferences.GetLevelsInPackCount(pack) - 1; levelIndex >= 0; levelIndex--)
             {
@@ -371,9 +371,9 @@ namespace CutTheRopeDX.GameMain
             };
             ((Text)boxOpenClose.result.GetChildWithName("passText")).SetString(Application.GetString(clearText));
             EnterOverlayMode(GameControllerOverlayMode.Results);
-            int box = root.GetBox();
-            int pack = root.GetPack();
-            int level = root.GetLevel();
+            int box = root.Box;
+            int pack = root.Pack;
+            int level = root.Level;
             int scoreForPackLevel = Preferences.GetScoreForPackLevel(box, pack, level);
             int starsForPackLevel = Preferences.GetStarsForPackLevel(box, pack, level);
             boxOpenClose.shouldShowImprovedResult = false;
@@ -413,7 +413,7 @@ namespace CutTheRopeDX.GameMain
 
             // Update RPC to show win state with stars and score
             LevelResultRpcPayload rpcPayload = LevelResultRpcPayload.From(result);
-            PlatformServices.RichPresence?.SetLevelPresence(root.GetPack(), root.GetLevel(), rpcPayload.Stars, true, gameScene.levelName, rpcPayload.Score, rpcPayload.ElapsedSeconds);
+            PlatformServices.RichPresence?.SetLevelPresence(root.Pack, root.Level, rpcPayload.Stars, true, gameScene.levelName, rpcPayload.Score, rpcPayload.ElapsedSeconds);
 
             if (!CustomLevelSession.IsActive)
             {
@@ -455,7 +455,7 @@ namespace CutTheRopeDX.GameMain
         public bool LastLevelInPack()
         {
             RootController root = Application.SharedRootController();
-            if (root.GetLevel() == Preferences.GetLevelsInPackCount(root.GetPack()) - 1)
+            if (root.Level == Preferences.GetLevelsInPackCount(root.Pack) - 1)
             {
                 exitCode = 2;
                 SoundMgr.StopAll();
@@ -470,9 +470,9 @@ namespace CutTheRopeDX.GameMain
         public static void UnlockNextLevel()
         {
             RootController root = Application.SharedRootController();
-            int box = root.GetBox();
-            int pack = root.GetPack();
-            int level = root.GetLevel();
+            int box = root.Box;
+            int pack = root.Pack;
+            int level = root.Level;
             if (level < Preferences.GetLevelsInPackCount(pack) - 1 && Preferences.GetUnlockedForPackLevel(box, pack, level + 1) == UNLOCKEDSTATE.LOCKED)
             {
                 Preferences.SetUnlockedForPackLevel(box, UNLOCKEDSTATE.UNLOCKED, pack, level + 1);
@@ -776,7 +776,7 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                int scoreForPackLevel = Preferences.GetScoreForPackLevel(root.GetBox(), root.GetPack(), root.GetLevel());
+                int scoreForPackLevel = Preferences.GetScoreForPackLevel(root.Box, root.Pack, root.Level);
                 mapNameLabel.SetString(Application.GetString("BEST_SCORE") + ": " + scoreForPackLevel);
             }
 
@@ -1210,11 +1210,11 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                string musicPack = PackConfig.GetMusicPackOrDefault(root.GetPack());
+                string musicPack = PackConfig.GetMusicPackOrDefault(root.Pack);
                 switch (musicPack)
                 {
                     case null:
-                        string[] musicList = PackConfig.GetMusicListOrDefault(root.GetPack());
+                        string[] musicList = PackConfig.GetMusicListOrDefault(root.Pack);
                         if (musicList.Length > 0)
                         {
                             SoundMgr.PlayRandomMusic(musicList);
@@ -1222,7 +1222,7 @@ namespace CutTheRopeDX.GameMain
                         else
                         {
                             GameControllerLog.MissingMusicList(
-                                Log.For(LogCategories.GameMusic), root.GetPack());
+                                Log.For(LogCategories.GameMusic), root.Pack);
                         }
                         break;
                     case var p when p == MusicPackNames.Original:

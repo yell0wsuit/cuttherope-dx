@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             SharedCandyPoint = null;
-            GetAllLanterns().Add(this);
+            AllLanterns.Add(this);
 
             x = position.X;
             y = position.Y;
@@ -158,7 +158,7 @@ namespace CutTheRopeDX.GameMain
             candyPoint.disableGravity = true;
             candyPoint.pos = candyPoint.prevPos = Vect(x, y);
 
-            foreach (Lantern lantern in GetAllLanterns())
+            foreach (Lantern lantern in AllLanterns)
             {
                 lantern.lanternState = LanternStateActive;
                 lantern.idleForm.PlayTimeline((int)LanternActivation.Activation);
@@ -176,12 +176,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Gets the shared list of lanterns in the current level.
         /// </summary>
-        /// <returns>The shared lantern list.</returns>
-        public static List<Lantern> GetAllLanterns()
-        {
-            allLanterns ??= [];
-            return allLanterns;
-        }
+        public static List<Lantern> AllLanterns { get; } = [];
 
         /// <summary>
         /// Clears the current level lantern registry and any shared captured candy point.
@@ -189,7 +184,7 @@ namespace CutTheRopeDX.GameMain
         public static void RemoveAllLanterns()
         {
             SharedCandyPoint = null;
-            GetAllLanterns().Clear();
+            AllLanterns.Clear();
         }
 
         /// <summary>
@@ -206,7 +201,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             SharedCandyPoint = null;
-            foreach (Lantern lantern in GetAllLanterns())
+            foreach (Lantern lantern in AllLanterns)
             {
                 lantern.delayedDispatcher.CancelAllDispatches();
                 lantern.lanternState = LanternStateInactive;
@@ -299,7 +294,7 @@ namespace CutTheRopeDX.GameMain
         private void InitiateReleasingCandy()
         {
             SoundMgr.PlaySound(Resources.Snd.LanternTeleportOut);
-            foreach (Lantern lantern in GetAllLanterns())
+            foreach (Lantern lantern in AllLanterns)
             {
                 lantern.idleForm.PlayTimeline((int)LanternActivation.Deactivation);
                 lantern.activeForm.PlayTimeline((int)LanternActivation.Deactivation);
@@ -367,8 +362,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Shared candy point currently captured by any lantern.</summary>
         private static ConstrainedPoint SharedCandyPoint { get; set; }
 
-        /// <summary>Shared lantern registry for the current level.</summary>
-        private static List<Lantern> allLanterns;
 
         /// <summary>Texture quad index for the fire visual.</summary>
         private const int FireQuad = 0;

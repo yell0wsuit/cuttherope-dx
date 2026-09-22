@@ -110,11 +110,11 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public override void PlayTimeline(int timelineIndex)
         {
-            if (GetCurrentTimelineIndex() == 11)
+            if (CurrentTimelineIndex == 11)
             {
                 return;
             }
-            if (timelineIndex != 11 && GetCurrentTimelineIndex() == 10 && GetCurrentTimeline().state != Timeline.TimelineState.TIMELINE_STOPPED)
+            if (timelineIndex != 11 && CurrentTimelineIndex == 10 && GetCurrentTimeline().state != Timeline.TimelineState.TIMELINE_STOPPED)
             {
                 color = RGBAColor.solidOpaqueRGBA;
             }
