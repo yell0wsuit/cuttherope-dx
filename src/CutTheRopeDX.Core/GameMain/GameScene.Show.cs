@@ -49,10 +49,10 @@ namespace CutTheRopeDX.GameMain
             conveyors.ProcessItems(pumps);
             conveyors.ProcessItems(bungees);
 
-            foreach (RotatedCircle rotatedCircle2 in rotatedCircles)
+            foreach (RotatedCircle circle in rotatedCircles)
             {
-                rotatedCircle2.operating = -1;
-                rotatedCircle2.circlesArray = rotatedCircles;
+                circle.operating = -1;
+                circle.circlesArray = rotatedCircles;
             }
             StartCamera();
             tummyTeasers = 0;

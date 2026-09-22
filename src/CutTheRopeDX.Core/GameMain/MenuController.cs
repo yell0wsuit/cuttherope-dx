@@ -472,35 +472,6 @@ namespace CutTheRopeDX.GameMain
             return toggleButton;
         }
 
-        /*public static Button CreateLanguageButtonWithIDDelegate(ButtonId bid, IButtonDelegation d)
-        {
-            int q = LanguageHelper.GetLanguageFlagQuadIndex();
-            string string2 = Application.GetString("LANGUAGE");
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
-            Image image2 = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
-            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
-            Text text = new Text().InitWithFont(font);
-            text.SetString(string2);
-            Text text2 = new Text().InitWithFont(font);
-            text2.SetString(string2);
-            text.anchor = text.parentAnchor = 18;
-            text2.anchor = text2.parentAnchor = 18;
-            _ = image.AddChild(text);
-            _ = image2.AddChild(text2);
-            Image image3 = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtons, q);
-            Image image4 = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtons, q);
-            image4.parentAnchor = image3.parentAnchor = 20;
-            image4.anchor = image3.anchor = 20;
-            _ = text.AddChild(image3);
-            _ = text2.AddChild(image4);
-            text.width += (int)(image3.width + RTPD(10));
-            text2.width += (int)(image4.width + RTPD(10));
-            Button button = new Button().InitWithUpElementDownElementandID(image, image2, bid);
-            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
-            button.delegateButtonDelegate = d;
-            return button;
-        }*/
-
         /// <summary>
         /// Creates an image element for a resource quad, or an empty element when no valid quad is provided.
         /// </summary>
@@ -2086,22 +2057,8 @@ namespace CutTheRopeDX.GameMain
                     ShowView(VIEW_OPTIONS);
                     return;
                 case var id when id == MenuButtonId.BackFromPackSelect || id == MenuButtonId.BackFromOptions || id == MenuButtonId.BackFromLeaderboards || id == MenuButtonId.BackFromAchievements:
-                    {
-                        string[] array4 =
-                        [
-                    "BS",
-                    "OP",
-                    "LB",
-                    "AC"
-                        ];
-                        string[] array5 = new string[4];
-                        array5[0] = "BS_BACK_PRESSED";
-                        array5[1] = "OP_BACK_PRESSED";
-                        string nsstring = array4[n.Value - MenuButtonId.BackFromPackSelect.Value];
-                        string nsstring2 = array5[n.Value - MenuButtonId.BackFromPackSelect.Value];
-                        ShowView(0);
-                        return;
-                    }
+                    ShowView(0);
+                    return;
                 case var id when id == MenuButtonId.QuitGame:
                     PlatformServices.Host?.Exit();
                     return;

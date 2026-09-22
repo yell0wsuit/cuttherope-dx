@@ -135,41 +135,41 @@ namespace CutTheRopeDX.Framework.Visual
             float lineY = 0f;
             int fontHeight = (int)font.FontHeight();
             int renderedCharCount = 0;
-            char[] characters2 = "..".ToCharArray();
-            int dotSpacing = (int)font.GetCharOffset(characters2, 0, 2);
+            char[] dots = "..".ToCharArray();
+            int dotSpacing = (int)font.GetCharOffset(dots, 0, 2);
             int visibleLineCount = (int)(maxHeight == -1f ? formattedStrings.Count : Math.Min(formattedStrings.Count, maxHeight / (fontHeight + font.GetLineOffset())));
             bool isTruncated = visibleLineCount != formattedStrings.Count;
-            int[] array2 = new int[totalCharmaps];
+            int[] nextDrawIndex = new int[totalCharmaps];
             for (int k = 0; k < visibleLineCount; k++)
             {
                 FormattedString formattedString = formattedStrings[k];
                 int lineLength = formattedString.string_.Length;
-                char[] characters3 = formattedString.string_.ToCharArray();
+                char[] lineChars = formattedString.string_.ToCharArray();
                 float lineX = align == 1 ? 0f : align != 2 ? wrapWidth - formattedString.width : (wrapWidth - formattedString.width) / 2f;
                 for (int l = 0; l < lineLength; l++)
                 {
-                    if (characters3[l] != '*')
+                    if (lineChars[l] != '*')
                     {
-                        if (characters3[l] == ' ')
+                        if (lineChars[l] == ' ')
                         {
-                            lineX += font.GetCharWidth(' ') + font.GetCharOffset(characters3, l, lineLength);
+                            lineX += font.GetCharWidth(' ') + font.GetCharOffset(lineChars, l, lineLength);
                         }
                         else
                         {
-                            int charmapIndex = font.GetCharmapIndex(characters3[l]);
-                            int charQuad = font.GetCharQuad(characters3[l]);
+                            int charmapIndex = font.GetCharmapIndex(lineChars[l]);
+                            int charQuad = font.GetCharQuad(lineChars[l]);
 
                             // Skip rendering if character is not in the font
                             if (charQuad >= 0)
                             {
                                 ImageMultiDrawer drawer = multiDrawers[charmapIndex];
-                                int drawIndex = array2[charmapIndex];
-                                array2[charmapIndex] = drawIndex + 1;
+                                int drawIndex = nextDrawIndex[charmapIndex];
+                                nextDrawIndex[charmapIndex] = drawIndex + 1;
                                 drawer.MapTextureQuadAtXYatIndex(charQuad, lineX, lineY, drawIndex);
                                 renderedCharCount++;
                             }
 
-                            lineX += font.GetCharWidth(characters3[l]) + font.GetCharOffset(characters3, l, lineLength);
+                            lineX += font.GetCharWidth(lineChars[l]) + font.GetCharOffset(lineChars, l, lineLength);
                         }
                         if (isTruncated && k == visibleLineCount - 1)
                         {

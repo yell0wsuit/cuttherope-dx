@@ -338,13 +338,13 @@ namespace CutTheRopeDX.GameMain
             {
                 bulb?.DrawBottleAndFirefly();
             }
-            foreach (SteamTube steamTube2 in tubes)
+            foreach (SteamTube tube in tubes)
             {
-                steamTube2?.DrawFront();
+                tube?.DrawFront();
             }
-            foreach (Grab bungee3 in bungees)
+            foreach (Grab grab in bungees)
             {
-                if (bungee3.Spider is SpiderRider drawnRider && drawnRider.IsAttached)
+                if (grab.Spider is SpiderRider drawnRider && drawnRider.IsAttached)
                 {
                     drawnRider.Animation.Draw();
                 }

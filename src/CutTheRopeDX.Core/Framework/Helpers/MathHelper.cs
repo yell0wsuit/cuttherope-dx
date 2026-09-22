@@ -163,17 +163,9 @@ namespace CutTheRopeDX.Framework.Helpers
         /// <returns><see langword="true"/> if the two OBBs overlap.</returns>
         public static bool ObbInOBB(Vector tl1, Vector tr1, Vector br1, Vector bl1, Vector tl2, Vector tr2, Vector br2, Vector bl2)
         {
-            Vector[] array = new Vector[4];
-            Vector[] array2 = new Vector[4];
-            array[0] = tl1;
-            array[1] = tr1;
-            array[2] = br1;
-            array[3] = bl1;
-            array2[0] = tl2;
-            array2[1] = tr2;
-            array2[2] = br2;
-            array2[3] = bl2;
-            return Overlaps1Way(array, array2) && Overlaps1Way(array2, array);
+            Vector[] first = [tl1, tr1, br1, bl1];
+            Vector[] second = [tl2, tr2, br2, bl2];
+            return Overlaps1Way(first, second) && Overlaps1Way(second, first);
         }
 
         /// <summary>

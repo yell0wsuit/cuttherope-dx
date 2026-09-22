@@ -381,43 +381,43 @@ namespace CutTheRopeDX.GameMain
             RotatedCircle rotatedCircle = null;
             bool hasContainedCircle = false;
             bool hasOverlappingCircle = false;
-            foreach (RotatedCircle rotatedCircle2 in rotatedCircles)
+            foreach (RotatedCircle circle in rotatedCircles)
             {
-                float distanceToLeftHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle1);
-                float distanceToRightHandle = VectDistance(camera.ScreenToWorld(tx, ty), rotatedCircle2.handle2);
-                if ((distanceToLeftHandle < 90f && !rotatedCircle2.HasOneHandle()) || distanceToRightHandle < 90f)
+                float distanceToLeftHandle = VectDistance(camera.ScreenToWorld(tx, ty), circle.handle1);
+                float distanceToRightHandle = VectDistance(camera.ScreenToWorld(tx, ty), circle.handle2);
+                if ((distanceToLeftHandle < 90f && !circle.HasOneHandle()) || distanceToRightHandle < 90f)
                 {
-                    foreach (RotatedCircle rotatedCircle3 in rotatedCircles)
+                    foreach (RotatedCircle other in rotatedCircles)
                     {
-                        if (rotatedCircles.IndexOf(rotatedCircle3) > rotatedCircles.IndexOf(rotatedCircle2))
+                        if (rotatedCircles.IndexOf(other) > rotatedCircles.IndexOf(circle))
                         {
-                            float circleDistance = VectDistance(Vect(rotatedCircle3.x, rotatedCircle3.y), Vect(rotatedCircle2.x, rotatedCircle2.y));
-                            if (circleDistance + rotatedCircle3.sizeInPixels <= rotatedCircle2.sizeInPixels)
+                            float circleDistance = VectDistance(Vect(other.x, other.y), Vect(circle.x, circle.y));
+                            if (circleDistance + other.sizeInPixels <= circle.sizeInPixels)
                             {
                                 hasContainedCircle = true;
                             }
-                            if (circleDistance <= rotatedCircle2.sizeInPixels + rotatedCircle3.sizeInPixels)
+                            if (circleDistance <= circle.sizeInPixels + other.sizeInPixels)
                             {
                                 hasOverlappingCircle = true;
                             }
                         }
                     }
-                    rotatedCircle2.lastTouch = camera.ScreenToWorld(tx, ty);
-                    bool discWasIdle = rotatedCircle2.operating == -1;
-                    rotatedCircle2.operating = ti;
+                    circle.lastTouch = camera.ScreenToWorld(tx, ty);
+                    bool discWasIdle = circle.operating == -1;
+                    circle.operating = ti;
                     if (discWasIdle)
                     {
                         tutorialDirector.Fire(TutorialEvent.DiscSpin);
                     }
                     if (distanceToLeftHandle < 90f)
                     {
-                        rotatedCircle2.SetIsLeftControllerActive(true);
+                        circle.SetIsLeftControllerActive(true);
                     }
                     if (distanceToRightHandle < 90f)
                     {
-                        rotatedCircle2.SetIsRightControllerActive(true);
+                        circle.SetIsRightControllerActive(true);
                     }
-                    rotatedCircle = rotatedCircle2;
+                    rotatedCircle = circle;
                     break;
                 }
             }
@@ -708,11 +708,11 @@ namespace CutTheRopeDX.GameMain
                     }
                 }
             }
-            foreach (Pump pump3 in pumps)
+            foreach (Pump pump in pumps)
             {
-                if (pump3.pumpTouch == ti && pump3.pumpTouchTimer != 0 && VectDistance(gesture.StartPosition, vector) > 10)
+                if (pump.pumpTouch == ti && pump.pumpTouchTimer != 0 && VectDistance(gesture.StartPosition, vector) > 10)
                 {
-                    pump3.pumpTouchTimer = 0f;
+                    pump.pumpTouchTimer = 0f;
                 }
             }
 

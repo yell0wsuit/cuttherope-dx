@@ -72,15 +72,15 @@ namespace CutTheRopeDX.GameMain
             RootController rc = Application.SharedRootController();
 
             // Single pass through XML metadata nodes, ignoring duplicate settings layers.
-            foreach (XElement xmlnode in LevelMetadataLayerSelection.SelectLayers(mapNode))
+            foreach (XElement layer in LevelMetadataLayerSelection.SelectLayers(mapNode))
             {
-                foreach (XElement item2 in xmlnode.Elements())
+                foreach (XElement node in layer.Elements())
                 {
-                    switch (item2.Name.LocalName)
+                    switch (node.Name.LocalName)
                     {
                         case "map":
-                            mapWidth = ParseFloatOrZero(item2.Attribute("width")?.Value);
-                            mapHeight = ParseFloatOrZero(item2.Attribute("height")?.Value);
+                            mapWidth = ParseFloatOrZero(node.Attribute("width")?.Value);
+                            mapHeight = ParseFloatOrZero(node.Attribute("height")?.Value);
                             mapWidth *= scale;
                             mapHeight *= scale;
 
@@ -95,7 +95,7 @@ namespace CutTheRopeDX.GameMain
                                 MathF.Min(mapHeight, SCREEN_HEIGHT));
                             offsetX = (SCREEN_WIDTH - mapWidth) / 2f;
                             cameraBounds = new Rectangle(offsetX, 0f, mapWidth, mapHeight);
-                            levelName = item2.Attribute("levelName")?.Value ?? null;
+                            levelName = node.Attribute("levelName")?.Value ?? null;
 
                             if (PackConfig.GetEarthBg(rc.GetPack()))
                             {
@@ -111,10 +111,10 @@ namespace CutTheRopeDX.GameMain
                             }
                             break;
                         case "gameDesign":
-                            mapOffsetX = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetX")?.Value);
-                            mapOffsetY = ParseCoordinateIntOrZero(item2.Attribute("mapOffsetY")?.Value);
-                            ropePhysicsSpeed = ParseFloatOrZero(item2.Attribute("ropePhysicsSpeed")?.Value);
-                            _ = bool.TryParse(item2.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
+                            mapOffsetX = ParseCoordinateIntOrZero(node.Attribute("mapOffsetX")?.Value);
+                            mapOffsetY = ParseCoordinateIntOrZero(node.Attribute("mapOffsetY")?.Value);
+                            ropePhysicsSpeed = ParseFloatOrZero(node.Attribute("ropePhysicsSpeed")?.Value);
+                            _ = bool.TryParse(node.Attribute("useMobilePhysics")?.Value, out bool useMobilePhysics);
                             ActivePhysicsConstants.UseMobilePhysicsModel = useMobilePhysics;
                             // Time Travel's rocket tuning is a mode of the mobile model, not a peer of
                             // it: the game it comes from is a mobile one, and its authored values are in
@@ -122,11 +122,11 @@ namespace CutTheRopeDX.GameMain
                             // it without mobile physics is ignored rather than half-honoured. Everything
                             // downstream keeps reading UseTimeTravelRocketModel on its own, so the
                             // per-constant gates are unchanged.
-                            _ = bool.TryParse(item2.Attribute("useTimeTravelRocketPhysics")?.Value, out bool useTimeTravelRocketPhysics);
+                            _ = bool.TryParse(node.Attribute("useTimeTravelRocketPhysics")?.Value, out bool useTimeTravelRocketPhysics);
                             ActivePhysicsConstants.UseTimeTravelRocketModel = useMobilePhysics && useTimeTravelRocketPhysics;
                             Bungee.BUNGEE_REST_LEN = ActivePhysicsConstants.BungeeRestLength;
-                            _ = bool.TryParse(item2.Attribute("nightLevel")?.Value, out nightLevel);
-                            _ = bool.TryParse(item2.Attribute("twoParts")?.Value, out bool twoPartsBool);
+                            _ = bool.TryParse(node.Attribute("nightLevel")?.Value, out nightLevel);
+                            _ = bool.TryParse(node.Attribute("twoParts")?.Value, out bool twoPartsBool);
                             levelAuthorsSplitCandy = twoPartsBool;
                             if (levelAuthorsSplitCandy)
                             {
@@ -138,12 +138,12 @@ namespace CutTheRopeDX.GameMain
                                 // instead of the first one taking the split candy's place.
                                 primaryCandyClaimed = true;
                             }
-                            waterLevel = ParseFloatOrZero(item2.Attribute("water")?.Value);
+                            waterLevel = ParseFloatOrZero(node.Attribute("water")?.Value);
                             if (waterLevel != 0f)
                             {
                                 waterLevel *= scale;
                             }
-                            waterSpeed = ParseFloatOrZero(item2.Attribute("waterSpeed")?.Value) * scale;
+                            waterSpeed = ParseFloatOrZero(node.Attribute("waterSpeed")?.Value) * scale;
                             if (waterLevel > 0f)
                             {
                                 float waterWorldX = offsetX + mapOffsetX;
@@ -168,31 +168,31 @@ namespace CutTheRopeDX.GameMain
                                 }
                             }
                             ropePhysicsSpeed *= ActivePhysicsConstants.RopePhysicsSpeedMultiplier;
-                            float globalGravityX = (item2.Attribute("globalGravityX") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityX")?.Value) : 0f;
-                            float globalGravityY = (item2.Attribute("globalGravityY") != null) ? ParseFloatOrZero(item2.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
+                            float globalGravityX = (node.Attribute("globalGravityX") != null) ? ParseFloatOrZero(node.Attribute("globalGravityX")?.Value) : 0f;
+                            float globalGravityY = (node.Attribute("globalGravityY") != null) ? ParseFloatOrZero(node.Attribute("globalGravityY")?.Value) : ActivePhysicsConstants.GravityEarthY;
                             gravityState.ConfigureBase(new Vector(globalGravityX, globalGravityY));
-                            _ = bool.TryParse(item2.Attribute("candiesConnected")?.Value, out candiesConnected);
-                            candiesConnectedLength = ParseFloatOrZero(item2.Attribute("candiesConnectedLength")?.Value) * scale;
-                            candiesConnectedBreakable = GetBoolAttribute(item2, "candiesConnectedBreakable", defaultValue: true);
+                            _ = bool.TryParse(node.Attribute("candiesConnected")?.Value, out candiesConnected);
+                            candiesConnectedLength = ParseFloatOrZero(node.Attribute("candiesConnectedLength")?.Value) * scale;
+                            candiesConnectedBreakable = GetBoolAttribute(node, "candiesConnectedBreakable", defaultValue: true);
                             break;
                         case "candyL":
                             pendingLeftHalf = CreateSplitHalfBody(
                                 CandyBodyRole.LeftHalf,
-                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
-                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
+                                (ParseCoordinateIntOrZero(node.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(node.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candyR":
                             pendingRightHalf = CreateSplitHalfBody(
                                 CandyBodyRole.RightHalf,
-                                (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
-                                (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
+                                (ParseCoordinateIntOrZero(node.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX,
+                                (ParseCoordinateIntOrZero(node.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY);
                             break;
                         case "candy":
                             {
-                                float cx = (ParseCoordinateIntOrZero(item2.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
-                                float cy = (ParseCoordinateIntOrZero(item2.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
+                                float cx = (ParseCoordinateIntOrZero(node.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
+                                float cy = (ParseCoordinateIntOrZero(node.Attribute("y")?.Value) * scale) + offsetY + mapOffsetY;
                                 // Key comes straight from XML; null for legacy single-candy packs (never matched).
-                                string number = item2.Attribute("candyNumber")?.Value;
+                                string number = node.Attribute("candyNumber")?.Value;
 
                                 // The first <candy> parsed claims the pre-built primary candy (candies[0])
                                 // and takes its key from XML; later <candy> elements are built fresh.

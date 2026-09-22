@@ -17,7 +17,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadObjectsFromMap(XElement map, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            List<XElement> list = [.. map.Elements()];
+            List<XElement> layers = [.. map.Elements()];
             List<XElement> tutorialNodes = [];
             // Establish captured state before grabs are loaded so XML object order cannot attach a
             // fixed rope to candy that starts inside a lantern.
@@ -28,44 +28,44 @@ namespace CutTheRopeDX.GameMain
 
             // Preload candy-like auxiliary bodies (light bulbs, axes, bombs) so grabs can resolve them
             // regardless of XML order.
-            foreach (XElement xmlnode2 in list)
+            foreach (XElement layer in layers)
             {
-                foreach (XElement item3 in xmlnode2.Elements())
+                foreach (XElement node in layer.Elements())
                 {
-                    switch (item3.Name.LocalName)
+                    switch (node.Name.LocalName)
                     {
                         case "lightBulb":
                         case "lightbulb":
-                            LoadLightBulb(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadLightBulb(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "axe":
-                            LoadAxe(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadAxe(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "bomb":
-                            LoadBomb(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadBomb(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         default:
                             break;
                     }
                 }
             }
-            foreach (XElement xmlnode2 in list)
+            foreach (XElement layer in layers)
             {
-                foreach (XElement item3 in xmlnode2.Elements())
+                foreach (XElement node in layer.Elements())
                 {
-                    switch (item3.Name.LocalName)
+                    switch (node.Name.LocalName)
                     {
                         case "gravitySwitch":
-                            LoadGravityButton(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadGravityButton(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "pauseSwitcher":
-                            LoadPauseSwitcher(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadPauseSwitcher(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "star":
-                            LoadStar(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadStar(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "tutorialText":
-                            tutorialNodes.Add(item3);
+                            tutorialNodes.Add(node);
                             break;
                         case "tutorial01":
                         case "tutorial02":
@@ -78,64 +78,64 @@ namespace CutTheRopeDX.GameMain
                         case "tutorial09":
                         case "tutorial10":
                         case "tutorial11":
-                            tutorialNodes.Add(item3);
+                            tutorialNodes.Add(node);
                             break;
                         case "bubble":
-                            LoadBubble(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadBubble(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "pump":
-                            LoadPump(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadPump(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "sock":
-                            LoadSock(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadSock(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "spike1":
                         case "spike2":
                         case "spike3":
                         case "spike4":
                         case "electro":
-                            LoadSpike(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadSpike(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "rotatedCircle":
-                            LoadRotatedCircle(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadRotatedCircle(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "bouncer1":
                         case "bouncer2":
-                            LoadBouncer(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadBouncer(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "load":
-                            LoadSnail(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadSnail(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "grab":
-                            LoadGrab(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadGrab(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "target":
-                            LoadTarget(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadTarget(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "steamTube":
-                            LoadSteamTube(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadSteamTube(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "pipe":
-                            LoadBambooTube(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadBambooTube(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "ants":
-                            LoadAnts(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadAnts(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "ghost":
-                            LoadGhost(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadGhost(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "rocket":
-                            LoadRocket(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadRocket(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "hand":
-                            LoadHand(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadHand(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "conveyorBelt":
                         case "transporter":
-                            LoadConveyorBelt(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadConveyorBelt(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "lantern":
-                            LoadLantern(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadLantern(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         case "lightBulb":
                         case "lightbulb":
@@ -145,7 +145,7 @@ namespace CutTheRopeDX.GameMain
                             break;
                         case "gap":
                         case "mouse":
-                            LoadMouse(item3, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
+                            LoadMouse(node, scale, offsetX + mapOffsetX, offsetY + mapOffsetY, 0, 0);
                             break;
                         default:
                             break;
