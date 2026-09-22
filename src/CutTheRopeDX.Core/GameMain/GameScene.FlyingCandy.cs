@@ -228,7 +228,13 @@ namespace CutTheRopeDX.GameMain
         /// <see cref="CandyFlightDefinition.BouncerStandOff"/> in front of it, at rest. A flying
         /// candy is never bounced; the bouncer only blocks it.
         /// </summary>
-        private void PushFlyingCandiesOutOfBouncers()
+        /// <remarks>
+        /// Time Travel updates every bouncer again inside this pass, once per flying candy, so a
+        /// bouncer on a path travels an extra step each frame while a candy flies. That is kept:
+        /// its level 9_13 is timed around a moving bouncer running at that speed.
+        /// </remarks>
+        /// <param name="delta">Elapsed time in seconds since the last update.</param>
+        private void PushFlyingCandiesOutOfBouncers(float delta)
         {
             float half = CandyFlightDefinition.BouncerProbeHalfExtent;
             foreach (CandyContext flier in candies)
@@ -241,6 +247,7 @@ namespace CutTheRopeDX.GameMain
                 ConstrainedPoint point = flier.WholeBody.Point;
                 foreach (Bouncer bouncer in bouncers)
                 {
+                    bouncer.Update(delta, timeFrozen);
                     float x = point.pos.X - half;
                     float y = point.pos.Y - half;
                     float size = half * 2f;

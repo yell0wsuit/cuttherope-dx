@@ -1338,7 +1338,7 @@ namespace CutTheRopeDX.GameMain
                     bouncer.skip = false;
                 }
             }
-            PushFlyingCandiesOutOfBouncers();
+            PushFlyingCandiesOutOfBouncers(delta);
             if (waterLayer != null && waterLevel > -SCREEN_HEIGHT && waterSpeed > 0f)
             {
                 _ = Mover.MoveVariableToTarget(ref waterLevel, -SCREEN_HEIGHT, waterSpeed, delta);
