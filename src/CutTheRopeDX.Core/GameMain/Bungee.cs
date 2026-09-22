@@ -1322,17 +1322,5 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Default dark base color used when setting the renderer before drawing.</summary>
         private static Color s_ropeDrawColor = new(0f, 0f, 0.4f, 1f);
-
-        /// <summary>
-        /// Bungee behavior modes.
-        /// </summary>
-        private enum BUNGEE_MODE
-        {
-            /// <summary>Normal bungee behavior.</summary>
-            NORMAL,
-
-            /// <summary>Locked bungee that does not respond to physics updates.</summary>
-            LOCKED
-        }
     }
 }

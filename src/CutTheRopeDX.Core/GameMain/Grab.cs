@@ -771,23 +771,5 @@ namespace CutTheRopeDX.GameMain
         {
             return RND_RANGE(0, 1) == 0 ? Hook01BackQuad : Hook02BackQuad;
         }
-
-        /// <summary>
-        /// Spider animation identifiers.
-        /// </summary>
-        private enum SPIDER_ANI
-        {
-            /// <summary>Spider start animation.</summary>
-            SPIDER_START_ANI,
-
-            /// <summary>Spider walk animation.</summary>
-            SPIDER_WALK_ANI,
-
-            /// <summary>Spider busted animation.</summary>
-            SPIDER_BUSTED_ANI,
-
-            /// <summary>Spider catch animation.</summary>
-            SPIDER_CATCH_ANI
-        }
     }
 }

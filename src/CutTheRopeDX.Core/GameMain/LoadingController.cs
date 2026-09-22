@@ -128,15 +128,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Seconds the loading screen has been visible since the last activation.</summary>
         private float shownSeconds;
-
-        /// <summary>
-        /// View identifiers owned by the loading controller.
-        /// </summary>
-        private enum ViewID
-        {
-            /// <summary>Loading view identifier.</summary>
-            VIEW_LOADING
-        }
     }
 
     /// <summary>Log messages for the loading screen.</summary>

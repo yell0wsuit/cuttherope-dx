@@ -336,30 +336,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Electrode animation timeline identifiers.
-        /// </summary>
-        private enum SPIKES_ANIM
-        {
-            /// <summary>Base electrodes timeline.</summary>
-            ELECTRODES_BASE,
-
-            /// <summary>Electric electrodes timeline.</summary>
-            ELECTRODES_ELECTRIC,
-
-            /// <summary>Rotation adjustment timeline.</summary>
-            ROTATION_ADJUSTED
-        }
-
-        /// <summary>
-        /// Spike rotation button identifiers.
-        /// </summary>
-        private enum SPIKES_ROTATION
-        {
-            /// <summary>Rotate button identifier.</summary>
-            BUTTON
-        }
-
-        /// <summary>
         /// Delegate used to rotate all spikes in a toggle group.
         /// </summary>
         /// <param name="sid">Toggle group id to rotate.</param>

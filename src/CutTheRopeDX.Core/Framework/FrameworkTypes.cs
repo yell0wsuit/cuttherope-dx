@@ -261,19 +261,6 @@ namespace CutTheRopeDX.Framework
             || ScreenPresentation.Instance.Snapshot.SurfaceHeight > 500;
 
         /// <summary>
-        /// Stub API surface retained from the original analytics integration.
-        /// </summary>
-        public sealed class FlurryAPI
-        {
-            /// <summary>
-            /// No-op: Log an analytics event.
-            /// </summary>
-            public static void LogEvent()
-            {
-            }
-        }
-
-        /// <summary>
         /// Opens the specified URL through the host. Hosts that cannot open one do nothing.
         /// </summary>
         /// <param name="url">URL to open.</param>

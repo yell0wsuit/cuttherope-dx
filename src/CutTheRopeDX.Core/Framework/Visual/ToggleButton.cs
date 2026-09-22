@@ -90,21 +90,5 @@ namespace CutTheRopeDX.Framework.Visual
         /// Button for the second toggle state.
         /// </summary>
         private Button b2;
-
-        /// <summary>
-        /// Internal toggle state identifiers.
-        /// </summary>
-        private enum TOGGLE_BUTTON
-        {
-            /// <summary>
-            /// First button face (state 1).
-            /// </summary>
-            BUTTON_FACE1,
-
-            /// <summary>
-            /// Second button face (state 2).
-            /// </summary>
-            BUTTON_FACE2
-        }
     }
 }

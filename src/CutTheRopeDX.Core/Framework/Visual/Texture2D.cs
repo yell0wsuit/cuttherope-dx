@@ -324,7 +324,6 @@ namespace CutTheRopeDX.Framework.Visual
             Renderer.ResetRenderTarget();
             Application.SharedRootController().transitionTime = transitionTime;
             textureHandle_ = renderTargetHandle;
-            //_format = Texture2DPixelFormat.kTexture2DPixelFormat_RGBA8888;
             //_size = new Vector(realWidth, realHeight);
             _width = (uint)realWidth;
             _height = (uint)realHeight;
@@ -449,8 +448,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// </summary>
         private float _scaleY;
 
-        // private Texture2DPixelFormat _format;
-
         // private Vector _size;
 
         /// <summary>
@@ -528,47 +525,6 @@ namespace CutTheRopeDX.Framework.Visual
         /// Previous texture in the global linked list.
         /// </summary>
         private Texture2D prev;
-
-        /// <summary>
-        /// Pixel format types for texture storage.
-        /// </summary>
-        public enum Texture2DPixelFormat
-        {
-            /// <summary>
-            /// 32-bit RGBA (8 bits per channel).
-            /// </summary>
-            kTexture2DPixelFormat_RGBA8888,
-
-            /// <summary>
-            /// 16-bit RGB (5-6-5 bits).
-            /// </summary>
-            kTexture2DPixelFormat_RGB565,
-
-            /// <summary>
-            /// 16-bit RGBA (4 bits per channel).
-            /// </summary>
-            kTexture2DPixelFormat_RGBA4444,
-
-            /// <summary>
-            /// 16-bit RGBA (5-5-5-1 bits).
-            /// </summary>
-            kTexture2DPixelFormat_RGB5A1,
-
-            /// <summary>
-            /// 8-bit alpha only.
-            /// </summary>
-            kTexture2DPixelFormat_A8,
-
-            /// <summary>
-            /// PVRTC 2 bits per pixel compressed format.
-            /// </summary>
-            kTexture2DPixelFormat_PVRTC2,
-
-            /// <summary>
-            /// PVRTC 4 bits per pixel compressed format.
-            /// </summary>
-            kTexture2DPixelFormat_PVRTC4
-        }
 
         /// <summary>
         /// Placeholder struct for texture parameter storage.
