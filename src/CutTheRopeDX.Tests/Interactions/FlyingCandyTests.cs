@@ -176,14 +176,10 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Theory]
-        [InlineData((int)CandyInteraction.Hand)]
-        [InlineData((int)CandyInteraction.Mouse)]
-        [InlineData((int)CandyInteraction.Ants)]
-        [InlineData((int)CandyInteraction.Lantern)]
         [InlineData((int)CandyInteraction.Transport)]
         [InlineData((int)CandyInteraction.Pump)]
         [InlineData((int)CandyInteraction.Steam)]
-        public void CarriersAndPushersLeaveAFlyingCandyAloneUntilItsWingsBreak(int interactionValue)
+        public void TransportAndPushersLeaveAFlyingCandyAloneUntilItsWingsBreak(int interactionValue)
         {
             CandyInteraction interaction = (CandyInteraction)interactionValue;
             GameScene scene = Scenario.New()
@@ -204,17 +200,59 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AHandCannotGrabAFlyingCandy()
+        public void AHandTakesAFlyingCandyAndBreaksItsWings()
         {
-            GameScene scene = Scenario.New()
-                .OmNom(300, 20)
-                .Candy(80, 100, "first")
-                .Candy(220, 200, "second", isDriven: true)
-                .Build();
-            CandyContext flier = scene.Candies()[1];
+            AssertCarrierGroundsTheFlier(
+                s => s.Hand(20, 40, segmentLength: 20, segmentAngle: 90f),
+                (scene, flier) => Act.GrabWithHand(scene, flier));
+        }
 
-            Assert.False(flier.IsHandGrabbable);
-            Assert.False(flier.IsAntAttachable);
+        [Fact]
+        public void AMouseTakesAFlyingCandyAndBreaksItsWings()
+        {
+            AssertCarrierGroundsTheFlier(
+                s => s.Mouse(220, 200, index: 1).Mouse(300, 300, index: 2),
+                (scene, flier) => Act.CarryByMouse(scene, flier));
+        }
+
+        [Fact]
+        public void AntsTakeAFlyingCandyAndBreakItsWings()
+        {
+            AssertCarrierGroundsTheFlier(
+                s => s.Ants(180, 200, path: "80,0"),
+                (scene, flier) => Act.CarryByAnts(scene, flier));
+        }
+
+        [Fact]
+        public void ALanternTakesAFlyingCandyAndBreaksItsWings()
+        {
+            AssertCarrierGroundsTheFlier(
+                s => s.Lantern(20, 40),
+                (scene, flier) => Act.CaptureInLantern(scene, flier));
+        }
+
+        /// <summary>
+        /// A carrier taking a flying candy breaks its wings with the full burst, and leaves the
+        /// leader where it was.
+        /// </summary>
+        private static void AssertCarrierGroundsTheFlier(Func<Scenario, Scenario> addCarrier, Action<GameScene, CandyContext> take)
+        {
+            GameScene scene = addCarrier(Scenario.New()
+                    .OmNom(300, 440)
+                    .Candy(80, 100, "first")
+                    .Candy(220, 200, "second", isDriven: true))
+                .Build();
+            CandyContext leader = scene.Candies()[0];
+            CandyContext flier = scene.Candies()[1];
+            Interaction.Hover(leader);
+            Assert.True(flier.IsFlying);
+
+            take(scene, flier);
+
+            Assert.False(flier.IsFlying);
+            Assert.False(flier.Flight.Wings.visible);
+            Assert.Equal(2, scene.WingsBreakEffectCount());
+            Assert.True(leader.WholeBody.Point.pos.Y < Scenario.WorldY(120), "the leader should still be hovering where it started");
         }
 
         [Fact]
