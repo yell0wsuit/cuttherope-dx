@@ -48,6 +48,7 @@ namespace CutTheRopeDX.GameMain
             }
             pauseSwitcherWaves?.Update(delta);
             SyncBubbleAnimationsToFreeze();
+            SyncFlyingCandyWingsToFreeze();
             for (int ti = 0; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
@@ -247,7 +248,8 @@ namespace CutTheRopeDX.GameMain
                             {
                                 float ropeAngle = float.RadiansToDegrees(VectAngleNormalized(anchorToEnd));
                                 GameObject rotatedVisual = RotatedVisualOf(rotateBody);
-                                if (rotateBody.Owner.Capabilities.CanRotateWithRopes)
+                                // A flying candy keeps its heading: its rope never turns it.
+                                if (rotateBody.Owner.Capabilities.CanRotateWithRopes && !rotateBody.Owner.IsFlying)
                                 {
                                     if (!rope.chosenOne)
                                     {
@@ -276,7 +278,7 @@ namespace CutTheRopeDX.GameMain
                 // holding THIS body's candy freezes that coast.
                 foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Rope))
                 {
-                    if (!body.Owner.Capabilities.CanRotateWithRopes)
+                    if (!body.Owner.Capabilities.CanRotateWithRopes || body.Owner.IsFlying)
                     {
                         body.ResidualRotation = 0f;
                     }
@@ -302,6 +304,9 @@ namespace CutTheRopeDX.GameMain
                 && primarySplit.Right.IsPresent
                 && GameObject.ObjectsIntersect(primarySplit.Left.Body.Visual, primarySplit.Right.Body.Visual);
 
+            // Flying candies take their place beside their leaders before anything integrates.
+            StepFlyingCandies();
+
             // Step every active body's point and visual in one pass: whole candies and surviving
             // split halves alike. A removed, hidden, or split candy offers no body, so the old
             // presence guards are the enumerator's job.
@@ -311,11 +316,13 @@ namespace CutTheRopeDX.GameMain
                 {
                     body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
                 }
-                if (!timeFrozen)
+                // A hovering flying candy is held exactly where it is: neither integrated nor relaxed.
+                bool hovering = IsHoveringFlyingCandy(body);
+                if (!timeFrozen && !hovering)
                 {
                     body.Point.Update(delta * ropePhysicsSpeed);
                 }
-                if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration)
+                if (ActivePhysicsConstants.RelaxCandyPointsAfterIntegration && !hovering)
                 {
                     // Time Travel relaxes each candy point the moment it has moved - and does so
                     // whether or not time is frozen, unlike the integration above.
@@ -1306,7 +1313,9 @@ namespace CutTheRopeDX.GameMain
                     {
                         anyCandyHit = true;
 
-                        if (timeFrozen)
+                        // A flying candy is blocked by a bouncer, never bounced off it; that is
+                        // settled after the bouncers have all moved.
+                        if (timeFrozen || body.Owner.IsFlying)
                         {
                             continue;
                         }
@@ -1329,6 +1338,7 @@ namespace CutTheRopeDX.GameMain
                     bouncer.skip = false;
                 }
             }
+            PushFlyingCandiesOutOfBouncers();
             if (waterLayer != null && waterLevel > -SCREEN_HEIGHT && waterSpeed > 0f)
             {
                 _ = Mover.MoveVariableToTarget(ref waterLevel, -SCREEN_HEIGHT, waterSpeed, delta);
@@ -1435,7 +1445,8 @@ namespace CutTheRopeDX.GameMain
             // Per-body bubble lift: every body carrying a bubble floats, whole candy or split half.
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Bubble))
             {
-                if (body.Bubble == null)
+                // A bubble holds a flying candy but cannot lift it: it goes where its leader goes.
+                if (body.Bubble == null || body.Owner.IsFlying)
                 {
                     continue;
                 }

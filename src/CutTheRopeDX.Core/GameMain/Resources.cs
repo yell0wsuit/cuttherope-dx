@@ -389,6 +389,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjAxe = "obj_axe";
             public const string ObjBomb = "obj_bomb";
             public const string FxExplosion = "fx_explosion";
+            public const string ObjCandyTimeTravel = "obj_candy_timetravel";
             public const string WaterTile = "water_tile";
             public const string ObjSnail = "obj_snail";
             public const string ObjRoboHand = "obj_robohand";
@@ -752,6 +753,8 @@ namespace CutTheRopeDX.GameMain
             public const string TTCyborgSleep01 = "Cyborg_sleep01";
             public const string TTCyborgSleep02 = "Cyborg_sleep02";
             public const string TTCyborgSleep03 = "Cyborg_sleep03";
+            public const string TTSynchroIdle = "synchro_idle";
+            public const string TTWingsBomb = "wings_bomb";
         }
 
         /// <summary>

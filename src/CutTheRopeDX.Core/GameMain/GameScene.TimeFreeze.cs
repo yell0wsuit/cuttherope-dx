@@ -140,6 +140,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Silences looping sounds whose gameplay sources stop when time is frozen.</summary>
         private void StopLoopingMoverSounds()
         {
+            StopFlyingCandyFlapSounds();
             foreach (Spikes spike in spikes)
             {
                 spike.SuspendElectricLoop();
@@ -165,6 +166,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Restarts looping sounds for sources that remain active when time resumes.</summary>
         private void RestartLoopingMoverSounds()
         {
+            RestartFlyingCandyFlapSounds();
             foreach (Spikes spike in spikes)
             {
                 spike.ResumeElectricLoop();

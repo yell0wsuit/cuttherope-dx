@@ -196,6 +196,7 @@ namespace CutTheRopeDX.GameMain
 
                                 // The first <candy> parsed claims the pre-built primary candy (candies[0])
                                 // and takes its key from XML; later <candy> elements are built fresh.
+                                CandyContext loaded;
                                 if (!primaryCandyClaimed)
                                 {
                                     primaryCandyClaimed = true;
@@ -205,10 +206,18 @@ namespace CutTheRopeDX.GameMain
                                     CandyPoint.prevPos = CandyPoint.pos;
                                     Candy.x = cx;
                                     Candy.y = cy;
+                                    loaded = candies[0];
                                 }
                                 else
                                 {
-                                    _ = CreateCandyContext(number, cx, cy);
+                                    loaded = CreateCandyContext(number, cx, cy);
+                                }
+
+                                // Time Travel's flying candy. Its leader is only known once every
+                                // candy has loaded, so it is installed after the parse.
+                                if (GetBoolAttribute(node, "isDriven", defaultValue: false))
+                                {
+                                    pendingFlyingCandies.Add(loaded);
                                 }
                             }
                             break;
@@ -219,6 +228,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             InstallSplitCandyState();
+            InstallFlyingCandies();
 
             // Re-apply per-level collision boxes after metadata is fully parsed, so XML order cannot leak stale mode.
             Candy.bb = GetCandyBoundingBox(Candy);

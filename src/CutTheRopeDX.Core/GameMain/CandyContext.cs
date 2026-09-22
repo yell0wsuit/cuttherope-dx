@@ -75,6 +75,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Bomb visual root for Time Travel bomb bodies.</summary>
         public Bomb bomb;
 
+        /// <summary>
+        /// Time Travel flying-candy state, or <see langword="null"/> for a candy authored without
+        /// <c>isDriven</c>. Stays attached after the wings break; read <see cref="IsFlying"/>.
+        /// </summary>
+        public CandyFlight Flight;
+
+        /// <summary>True while this candy's wings are intact and it repeats its leader's movements.</summary>
+        public bool IsFlying => Flight?.IsFlying == true;
+
         /// <summary>Light radius when this context emits light.</summary>
         public float lightRadius;
 

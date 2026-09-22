@@ -205,7 +205,8 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (CandyBody body in ActiveCandyBodies(CandyInteraction.Physics).ToList())
             {
-                if (body.Owner == source || body.Owner.bomb?.Exploded is true)
+                // A flying candy rides out the blast beside its leader.
+                if (body.Owner == source || body.Owner.bomb?.Exploded is true || body.Owner.IsFlying)
                 {
                     continue;
                 }

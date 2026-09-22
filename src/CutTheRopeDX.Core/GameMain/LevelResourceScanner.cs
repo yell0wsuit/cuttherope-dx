@@ -68,6 +68,14 @@ namespace CutTheRopeDX.GameMain
                             _ = resources.Add(Resources.Img.ObjStarNight);
                         }
                         break;
+                    case "candy":
+                        if (ParseBool(node.Attribute("isDriven")?.Value))
+                        {
+                            _ = resources.Add(Resources.Img.ObjCandyTimeTravel);
+                            _ = resources.Add(Resources.Snd.TTSynchroIdle);
+                            _ = resources.Add(Resources.Snd.TTWingsBomb);
+                        }
+                        break;
                     case "candyL":
                     case "candyR":
                         _ = resources.Add(Resources.Snd.CandyLink);
