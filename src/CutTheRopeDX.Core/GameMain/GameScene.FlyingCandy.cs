@@ -67,6 +67,8 @@ namespace CutTheRopeDX.GameMain
             Animation wings = Image.InitializeFromResource(new Animation(), Resources.Img.ObjCandyTimeTravel);
             wings.DoRestoreCutTransparency();
             wings.anchor = wings.parentAnchor = 18;
+            wings.scaleX = 0.8f;
+            wings.scaleY = 0.8f;
             wings.AddAnimationWithIDDelayLoopFirstLast(
                 0,
                 CandyFlightDefinition.FlapFrameDelay,
