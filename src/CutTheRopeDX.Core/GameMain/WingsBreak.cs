@@ -29,6 +29,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Magnitude of the starting sideways drift, run down to zero over the lifetime.</summary>
         private float baseGravityX;
 
+        /// <summary>Time the system has been running, advanced once per particle step.</summary>
+        private float runTime;
+
         /// <summary>Initializes one wing's burst.</summary>
         /// <param name="grid">The <see cref="Resources.Img.ObjCandyTimeTravel"/> atlas.</param>
         /// <param name="angle">Emission direction in degrees.</param>
@@ -78,7 +81,16 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
-            base.Update(delta);
+
+            // Time Travel's particle system stops itself once its duration has run, emitting or not,
+            // which is what lets the finished burst be cleared away. Its clock advances with each of
+            // the two steps.
+            runTime += 2f * delta;
+            if (active && runTime > duration)
+            {
+                StopSystem();
+            }
+
             float gravityX = gravity.X;
             _ = Mover.MoveVariableToTarget(ref gravityX, 0f, baseGravityX / life, delta);
             gravity.X = gravityX;
