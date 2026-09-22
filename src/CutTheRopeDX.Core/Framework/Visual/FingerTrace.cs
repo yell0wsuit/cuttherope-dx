@@ -337,7 +337,7 @@ namespace CutTheRopeDX.Framework.Visual
         {
             if (!imageCache.TryGetValue(resourceName, out Image image))
             {
-                image = Image.Image_createWithResID(resourceName);
+                image = Image.FromResource(resourceName);
                 image.DoRestoreCutTransparency();
                 image.anchor = CENTER;
                 imageCache[resourceName] = image;

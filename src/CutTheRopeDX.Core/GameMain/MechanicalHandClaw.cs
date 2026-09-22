@@ -15,9 +15,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public MechanicalHandClaw()
         {
-            clawIdle = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 5);
-            clawActive = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 6);
-            clawActiveFingers = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 7);
+            clawIdle = Image.FromResource(Resources.Img.ObjRoboHand, 5);
+            clawActive = Image.FromResource(Resources.Img.ObjRoboHand, 6);
+            clawActiveFingers = Image.FromResource(Resources.Img.ObjRoboHand, 7);
 
             clawIdle.anchor = 18;
             clawActive.anchor = 18;

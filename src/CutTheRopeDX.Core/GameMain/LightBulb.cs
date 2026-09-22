@@ -98,28 +98,28 @@ namespace CutTheRopeDX.GameMain
             scaleX = scaleY = LightBulbRootScale;
 
             // Create light glow with additive blending for a soft halo effect
-            lightGlow = CreateWithResID(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterLight);
+            lightGlow = InitializeFromResource(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterLight);
             lightGlow.anchor = lightGlow.parentAnchor = 18; // Center anchor
             lightGlow.color = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f); // Semi-transparent white
             lightGlow.blendingMode = 2; // Additive blending (SRC_ALPHA, ONE)
             _ = AddChild(lightGlow);
 
             // Create bottle sprite with normal alpha blending
-            bottle = CreateWithResID(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterBottle);
+            bottle = InitializeFromResource(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterBottle);
             bottle.anchor = bottle.parentAnchor = 18;
             bottle.DoRestoreCutTransparency();
             bottle.blendingMode = 1; // Normal blending (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
             _ = AddChild(bottle);
 
             // Create bottle top/lid sprite
-            top = CreateWithResID(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterTop);
+            top = InitializeFromResource(new GameObject(), Resources.Img.ObjLighter, ImgObjLighterTop);
             top.anchor = top.parentAnchor = 18;
             top.DoRestoreCutTransparency();
             top.blendingMode = 1; // Normal blending
             _ = AddChild(top);
 
             // Create animated firefly that loops through frames 3-42
-            firefly = CreateWithResID(new Animation(), Resources.Img.ObjLighter);
+            firefly = InitializeFromResource(new Animation(), Resources.Img.ObjLighter);
             firefly.anchor = firefly.parentAnchor = 18;
             firefly.blendingMode = 1; // Normal blending
             _ = firefly.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, ImgObjLighterFireflyStart, ImgObjLighterFireflyEnd);

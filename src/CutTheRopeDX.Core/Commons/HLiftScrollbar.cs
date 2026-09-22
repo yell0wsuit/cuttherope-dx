@@ -21,8 +21,8 @@ namespace CutTheRopeDX.Commons
             if (InitWithTexture(Application.GetTexture(resourceName)) != null)
             {
                 SetDrawQuad(bq);
-                Image up = Image_createWithResIDQuad(resourceName, lq);
-                Image image = Image_createWithResIDQuad(resourceName, lqp);
+                Image up = FromResource(resourceName, lq);
+                Image image = FromResource(resourceName, lqp);
                 Vector relativeQuadOffset = GetRelativeQuadOffset(resourceName, lq, lqp);
                 image.x += relativeQuadOffset.X;
                 image.y += relativeQuadOffset.Y;

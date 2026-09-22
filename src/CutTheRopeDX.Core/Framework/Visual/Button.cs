@@ -17,8 +17,8 @@ namespace CutTheRopeDX.Framework.Visual
         /// <returns>A new <see cref="Button"/> initialized with the given textures and identifier.</returns>
         public static Button CreateWithTextureUpDownID(Texture2D up, Texture2D down, ButtonId bID)
         {
-            Image upImage = Image.Image_create(up);
-            Image downImage = Image.Image_create(down);
+            Image upImage = Image.FromTexture(up);
+            Image downImage = Image.FromTexture(down);
             return new Button().InitWithUpElementDownElementandID(upImage, downImage, bID);
         }
 

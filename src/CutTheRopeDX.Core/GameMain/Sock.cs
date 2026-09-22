@@ -30,7 +30,7 @@ namespace CutTheRopeDX.GameMain
         public void CreateAnimations(string resourceName)
         {
             XmasSock = resourceName;
-            light = CreateWithResID(new Animation(), XmasSock);
+            light = InitializeFromResource(new Animation(), XmasSock);
             light.anchor = 34;
             light.parentAnchor = 10;
             light.y = 270f;
@@ -66,7 +66,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The added layer.</returns>
         private Image AddBandLayer(int quad)
         {
-            Image layer = Image_createWithResIDQuad(Resources.Img.ObjHatMaskable, quad);
+            Image layer = FromResource(Resources.Img.ObjHatMaskable, quad);
 
             // Anchored to the hat's own top-left corner: both atlases place their frames within the
             // same source drawing, so each layer landing on its own offset lands where it was drawn.

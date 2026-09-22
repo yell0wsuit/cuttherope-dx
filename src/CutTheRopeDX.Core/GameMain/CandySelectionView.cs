@@ -271,11 +271,11 @@ namespace CutTheRopeDX.GameMain
             int bgUpQuad = isEquipped ? 2 : 0;
             int bgDownQuad = isEquipped ? 3 : 1;
 
-            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
-            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
+            Image slotBgUp = Image.FromResource(Resources.Img.SkinSelection, bgUpQuad);
+            Image slotBgDown = Image.FromResource(Resources.Img.SkinSelection, bgDownQuad);
 
             // Add item image to both up and down states
-            Image itemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
+            Image itemImage = Image.FromResource(itemResourceName, itemQuadIndex);
             itemImage.anchor = itemImage.parentAnchor = 18;
             itemImage.y = itemYOffset;
             if (doRestoreTransparency)
@@ -284,7 +284,7 @@ namespace CutTheRopeDX.GameMain
             }
             _ = slotBgUp.AddChild(itemImage);
 
-            Image downItemImage = Image.Image_createWithResIDQuad(itemResourceName, itemQuadIndex);
+            Image downItemImage = Image.FromResource(itemResourceName, itemQuadIndex);
             downItemImage.anchor = downItemImage.parentAnchor = 18;
             downItemImage.y = itemYOffset;
             if (doRestoreTransparency)
@@ -986,8 +986,8 @@ namespace CutTheRopeDX.GameMain
             int bgUpQuad = isEquipped ? 2 : 0;
             int bgDownQuad = isEquipped ? 3 : 1;
 
-            Image slotBgUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgUpQuad);
-            Image slotBgDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, bgDownQuad);
+            Image slotBgUp = Image.FromResource(Resources.Img.SkinSelection, bgUpQuad);
+            Image slotBgDown = Image.FromResource(Resources.Img.SkinSelection, bgDownQuad);
 
             Button slotButton = new Button().InitWithUpElementDownElementandID(slotBgUp, slotBgDown, buttonId);
             slotButton.delegateButtonDelegate = currentButtonDelegate;
@@ -1141,8 +1141,8 @@ namespace CutTheRopeDX.GameMain
             FontGeneric font,
             IButtonDelegation buttonDelegate)
         {
-            Image buttonUp = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 4);
-            Image buttonDown = Image.Image_createWithResIDQuad(Resources.Img.SkinSelection, 5);
+            Image buttonUp = Image.FromResource(Resources.Img.SkinSelection, 4);
+            Image buttonDown = Image.FromResource(Resources.Img.SkinSelection, 5);
 
             Text upText = new Text().InitWithFont(font);
             upText.SetString(Application.GetString(textKey));
@@ -1324,7 +1324,7 @@ namespace CutTheRopeDX.GameMain
                 height = (int)visibleBounds.h
             }; // ensure child anchors use the full screen bounds instead of 0x0
 
-            Image bgImage = Image.Image_createWithResID(Resources.BackgroundImg.SkinBackground);
+            Image bgImage = Image.FromResource(Resources.BackgroundImg.SkinBackground);
             bgImage.anchor = bgImage.parentAnchor = 18; // center
             _ = background.AddChild(bgImage);
             backgroundRoot = background;

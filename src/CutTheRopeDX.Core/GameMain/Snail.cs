@@ -170,24 +170,24 @@ namespace CutTheRopeDX.GameMain
                 height = height
             };
 
-            sleepyEyes = Image_createWithResIDQuad(Resources.Img.ObjSnail, SnailSleepyEyesQuad);
+            sleepyEyes = FromResource(Resources.Img.ObjSnail, SnailSleepyEyesQuad);
             sleepyEyes.DoRestoreCutTransparency();
             sleepyEyes.parentAnchor = sleepyEyes.anchor = 9;
             _ = backContainer.AddChild(sleepyEyes);
 
-            eye1 = Image_createWithResIDQuad(Resources.Img.ObjSnail, SnailEye1Quad);
+            eye1 = FromResource(Resources.Img.ObjSnail, SnailEye1Quad);
             eye1.DoRestoreCutTransparency();
             eye1.parentAnchor = eye1.anchor = 9;
             eye1.SetEnabled(false);
             _ = backContainer.AddChild(eye1);
 
-            eye2 = Image_createWithResIDQuad(Resources.Img.ObjSnail, SnailEye2Quad);
+            eye2 = FromResource(Resources.Img.ObjSnail, SnailEye2Quad);
             eye2.DoRestoreCutTransparency();
             eye2.parentAnchor = eye2.anchor = 9;
             eye2.SetEnabled(false);
             _ = backContainer.AddChild(eye2);
 
-            wakeUp = CreateWithResID(new Animation(), Resources.Img.ObjSnail);
+            wakeUp = InitializeFromResource(new Animation(), Resources.Img.ObjSnail);
             wakeUp.SetDrawQuad(SnailWakeStartQuad);
             wakeUp.parentAnchor = wakeUp.anchor = 9;
             wakeUp.SetEnabled(false);
@@ -197,7 +197,7 @@ namespace CutTheRopeDX.GameMain
             wakeUpTimeline.delegateTimelineDelegate = this;
             _ = backContainer.AddChild(wakeUp);
 
-            sleep = CreateWithResID(new Animation(), Resources.Img.ObjSnail);
+            sleep = InitializeFromResource(new Animation(), Resources.Img.ObjSnail);
             sleep.SetDrawQuad(SnailSleepStartQuad);
             sleep.parentAnchor = sleep.anchor = 9;
             sleep.SetEnabled(false);

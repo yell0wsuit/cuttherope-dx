@@ -40,11 +40,11 @@ namespace CutTheRopeDX.GameMain
                 visible = false,
                 color = RGBAColor.transparentRGBA,
                 blendingMode = 2,
-                plate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 2)
+                plate = Image.FromResource(Resources.Img.ObjPause, 2)
             };
 
             overlay.plate.anchor = overlay.plate.parentAnchor = 18;
-            overlay.innerPlate = Image.Image_createWithResIDQuad(Resources.Img.ObjPause, 3);
+            overlay.innerPlate = Image.FromResource(Resources.Img.ObjPause, 3);
             overlay.innerPlate.anchor = overlay.innerPlate.parentAnchor = 18;
             overlay.innerPlate.blendingMode = 2;
             _ = overlay.plate.AddChild(overlay.innerPlate);

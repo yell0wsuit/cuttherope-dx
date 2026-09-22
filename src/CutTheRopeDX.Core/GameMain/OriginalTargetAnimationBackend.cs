@@ -181,7 +181,7 @@ namespace CutTheRopeDX.GameMain
             bool isPaddington = false,
             bool paddingtonGreetingPending = false)
         {
-            target = Image.CreateWithResID(new CharAnimations(), Resources.Img.CharAnimations);
+            target = Image.InitializeFromResource(new CharAnimations(), Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
             target.passColorToChilds = false;
 
@@ -628,7 +628,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Blink animation instance attached to Om Nom.</returns>
         private Animation CreateBlinkAnimation()
         {
-            Animation blink = Image.CreateWithResID(new Animation(), Resources.Img.CharAnimations);
+            Animation blink = Image.InitializeFromResource(new Animation(), Resources.Img.CharAnimations);
             blink.parentAnchor = 9;
             blink.visible = false;
             blink.AddAnimationWithIDDelayLoopCountSequence(0, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 41, [41, 42, 42, 42]);
@@ -666,7 +666,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Hat prop image, sharing Om Nom's anchor so it lands where he set it down.</returns>
         private Image CreatePaddingtonHat()
         {
-            Image hat = Image.Image_createWithResIDQuad(Resources.Img.CharAnimationsPaddington, PaddingtonHatQuad);
+            Image hat = Image.FromResource(Resources.Img.CharAnimationsPaddington, PaddingtonHatQuad);
             hat.DoRestoreCutTransparency();
             // The hat is drawn straight at Om Nom's position rather than parented to him, so it has
             // to carry his anchor to land where the greeting's own last frame left it. AddImage
@@ -682,7 +682,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>Configured ZZZ image, initially hidden.</returns>
         private static Image CreateZzzOverlay()
         {
-            Image zzz = Image.Image_createWithResID(Resources.Img.FxSleep);
+            Image zzz = Image.FromResource(Resources.Img.FxSleep);
             zzz.rotationCenterX = ZzzRotationCenterX;
             zzz.visible = false;
             return zzz;

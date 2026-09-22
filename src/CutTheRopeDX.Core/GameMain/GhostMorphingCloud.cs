@@ -24,7 +24,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The initialized ghost morphing cloud.</returns>
         public GhostMorphingCloud Init()
         {
-            if (InitWithTotalParticlesandImageGrid(5, Image.Image_createWithResID(Resources.Img.ObjGhost)) != null)
+            if (InitWithTotalParticlesandImageGrid(5, Image.FromResource(Resources.Img.ObjGhost)) != null)
             {
                 angle = RND_RANGE(0, 360);
                 size = 1.6f;

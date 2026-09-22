@@ -44,7 +44,7 @@ namespace CutTheRopeDX.Commons
             BaseElement contentRoot = popup.ContentRoot;
             ApplyTemplateScale(popup, template, out float backgroundScaleX, out float backgroundScaleY);
 
-            Image background = Image.Image_createWithResIDQuad(Resources.Img.MenuPopup, 0);
+            Image background = Image.FromResource(Resources.Img.MenuPopup, 0);
             background.DoRestoreCutTransparency();
             background.scaleX = backgroundScaleX;
             background.scaleY = backgroundScaleY;

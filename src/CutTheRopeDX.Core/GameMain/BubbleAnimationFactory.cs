@@ -27,7 +27,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured bubble animation (not yet added to a parent).</returns>
         public static Animation CreateBubble()
         {
-            Animation bubble = Image.CreateWithResID(new Animation(), Resources.Img.ObjBubble);
+            Animation bubble = Image.InitializeFromResource(new Animation(), Resources.Img.ObjBubble);
             bubble.anchor = bubble.parentAnchor = CenterAnchor;
             _ = bubble.AddAnimationDelayLoopFirstLast(FrameDelaySeconds, Timeline.LoopType.TIMELINE_REPLAY, FirstFrame, LastFrame);
             bubble.PlayTimeline(0);
@@ -41,7 +41,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured ghost-bubble animation (not yet added to a parent).</returns>
         public static CandyInGhostBubbleAnimation CreateGhostBubble()
         {
-            CandyInGhostBubbleAnimation ghostBubble = Image.CreateWithResID(new CandyInGhostBubbleAnimation(), Resources.Img.ObjBubble);
+            CandyInGhostBubbleAnimation ghostBubble = Image.InitializeFromResource(new CandyInGhostBubbleAnimation(), Resources.Img.ObjBubble);
             ghostBubble.anchor = ghostBubble.parentAnchor = CenterAnchor;
             ghostBubble.visible = false;
             ghostBubble.AddSupportingCloudsTimelines();

@@ -153,7 +153,7 @@ namespace CutTheRopeDX.GameMain
                 anchor = 9;
                 parentAnchor = 9;
 
-                plateSection = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlate);
+                plateSection = Image.FromResource(Resources.Img.ObjConveyor, ImgObjConveyorPlate);
                 plateSection.parent = this;
                 plateSection.anchor = 10;
                 plateSection.parentAnchor = 10;
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
 
                 if (direction != 0)
                 {
-                    plateArrow = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, ImgObjConveyorPlateArrow);
+                    plateArrow = Image.FromResource(Resources.Img.ObjConveyor, ImgObjConveyorPlateArrow);
                     plateArrow.anchor = 18;
                     plateArrow.parentAnchor = 18;
                     if (direction < 0)
@@ -870,7 +870,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured <see cref="Image"/> piece.</returns>
         private static Image CreatePiece(int quad, int anchors)
         {
-            Image piece = Image.Image_createWithResIDQuad(Resources.Img.ObjConveyor, quad);
+            Image piece = Image.FromResource(Resources.Img.ObjConveyor, quad);
             piece.anchor = (sbyte)anchors;
             piece.parentAnchor = (sbyte)anchors;
             return piece;

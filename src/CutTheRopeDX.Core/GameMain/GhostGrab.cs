@@ -23,7 +23,7 @@ namespace CutTheRopeDX.GameMain
         {
             x = px;
             y = py;
-            Image smallCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
+            Image smallCloud = FromResource(Resources.Img.ObjGhost, 5);
             smallCloud.x = x - 60f;
             smallCloud.y = y + 2f;
             smallCloud.anchor = 18;
@@ -44,7 +44,7 @@ namespace CutTheRopeDX.GameMain
             smallCloud.AddTimelinewithID(smallCloudTimeline, 0);
             smallCloud.PlayTimeline(0);
 
-            Image midCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
+            Image midCloud = FromResource(Resources.Img.ObjGhost, 4);
             midCloud.x = x + 58f;
             midCloud.y = y + 18f;
             midCloud.anchor = 18;
@@ -65,7 +65,7 @@ namespace CutTheRopeDX.GameMain
             midCloud.AddTimelinewithID(midCloudTimeline, 0);
             midCloud.PlayTimeline(0);
 
-            Image bigCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
+            Image bigCloud = FromResource(Resources.Img.ObjGhost, 2);
             bigCloud.x = x - 15f;
             bigCloud.y = y + 45f;
             bigCloud.anchor = 18;

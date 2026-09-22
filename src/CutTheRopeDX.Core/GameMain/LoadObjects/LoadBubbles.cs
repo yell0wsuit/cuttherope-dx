@@ -20,7 +20,7 @@ namespace CutTheRopeDX.GameMain
         private void LoadBubble(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
             int quad = RND_RANGE(1, 3);
-            Bubble bubble = Image.CreateWithResID(new Bubble(), Resources.Img.ObjBubble, quad);
+            Bubble bubble = Image.InitializeFromResource(new Bubble(), Resources.Img.ObjBubble, quad);
             bubble.DoRestoreCutTransparency();
             bubble.bb = GetBubbleBoundingBox();
             bubble.initial_x = bubble.x = (ParseCoordinateIntOrZero(xmlNode.Attribute("x")?.Value) * scale) + offsetX + mapOffsetX;
@@ -29,7 +29,7 @@ namespace CutTheRopeDX.GameMain
             bubble.initial_rotatedCircle = null;
             bubble.anchor = 18;
             bubble.popped = false;
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBubble, 0);
+            Image image = Image.FromResource(Resources.Img.ObjBubble, 0);
             image.DoRestoreCutTransparency();
             image.parentAnchor = image.anchor = 18;
             _ = bubble.AddChild(image);

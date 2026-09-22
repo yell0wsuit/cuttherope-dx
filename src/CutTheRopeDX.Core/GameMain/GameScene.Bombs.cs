@@ -251,7 +251,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="y">World-space Y for the debris.</param>
         private void SpawnBombDebrisAtXY(float x, float y)
         {
-            Image grid = Image.Image_createWithResID(Resources.Img.ObjBomb);
+            Image grid = Image.FromResource(Resources.Img.ObjBomb);
             grid.DoRestoreCutTransparency();
             BombBreak debris = (BombBreak)new BombBreak().InitWithTotalParticlesandImageGrid(
                 BombDefinition.DebrisParticleCount, grid);

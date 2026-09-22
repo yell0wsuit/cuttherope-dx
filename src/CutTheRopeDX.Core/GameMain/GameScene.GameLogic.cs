@@ -736,7 +736,7 @@ namespace CutTheRopeDX.GameMain
         public void PopBubbleAtXY(float bx, float by)
         {
             SoundMgr.PlaySound(Resources.Snd.BubbleBreak);
-            Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjBubble);
+            Animation animation = Image.InitializeFromResource(new Animation(), Resources.Img.ObjBubble);
             animation.DoRestoreCutTransparency();
             animation.x = bx;
             animation.y = by;
@@ -829,7 +829,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="swingAngleDegrees">Direction the sparks are flung (the cutter's swing direction in the original).</param>
         private void SpawnChainFlashLight(float x, float y, float swingAngleDegrees)
         {
-            Image grid = Image.Image_createWithResID(Resources.Img.FxCutChain);
+            Image grid = Image.FromResource(Resources.Img.FxCutChain);
             grid.DoRestoreCutTransparency();
             ChainFlashLight sparks = (ChainFlashLight)new ChainFlashLight().InitWithTotalParticlesandImageGrid(10, grid);
             sparks.angle = swingAngleDegrees;
@@ -853,7 +853,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="swingAngleDegrees">Direction the fragments are flung (the cutter's swing direction in the original).</param>
         private void SpawnChainCutDebris(float x, float y, float swingAngleDegrees)
         {
-            Image grid = Image.Image_createWithResID(Resources.Img.FxCutChain);
+            Image grid = Image.FromResource(Resources.Img.FxCutChain);
             grid.DoRestoreCutTransparency();
             ChainCutDebris debris = (ChainCutDebris)new ChainCutDebris().InitWithTotalParticlesandImageGrid(2, grid);
             debris.angle = swingAngleDegrees;
@@ -878,7 +878,7 @@ namespace CutTheRopeDX.GameMain
         {
             int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
             string candyResource = CandySkinHelper.GetCandyResource(selectedCandySkin);
-            Image candyImage = Image.Image_createWithResID(candyResource);
+            Image candyImage = Image.FromResource(candyResource);
             candyImage.DoRestoreCutTransparency();
             CandyBreak candyBreak = (CandyBreak)new CandyBreak().InitWithTotalParticlesandImageGrid(5, candyImage);
             if (gravityState.IsInverted)

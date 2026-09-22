@@ -633,7 +633,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         if (mount.TakeStain(out float stainAlpha))
                         {
-                            Image stain = Image.Image_createWithResIDQuad(Resources.Img.ObjSticker, 0);
+                            Image stain = Image.FromResource(Resources.Img.ObjSticker, 0);
                             stain.DoRestoreCutTransparency();
                             stain.x = bungee.Rope.bungeeAnchor.pos.X;
                             stain.y = bungee.Rope.bungeeAnchor.pos.Y;

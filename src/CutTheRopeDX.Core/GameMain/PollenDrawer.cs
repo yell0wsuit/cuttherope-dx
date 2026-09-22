@@ -21,7 +21,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public PollenDrawer()
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjBee, PollenQuad);
+            Image image = Image.FromResource(Resources.Img.ObjBee, PollenQuad);
             qw = image.width * 1.5f;
             qh = image.height * 1.5f;
             totalCapacity = 200;

@@ -38,8 +38,8 @@ namespace CutTheRopeDX.GameMain
                 DoRestoreCutTransparency();
                 int buttonQuad = ButtonFirstQuad + ((t - 1) * ButtonFramesPerToggle);
                 int q = ButtonFirstQuad + ButtonPressedQuadOffset + ((t - 1) * ButtonFramesPerToggle);
-                Image upImage = Image_createWithResIDQuad(Resources.Img.ObjSpikes, buttonQuad);
-                Image downImage = Image_createWithResIDQuad(Resources.Img.ObjSpikes, q);
+                Image upImage = FromResource(Resources.Img.ObjSpikes, buttonQuad);
+                Image downImage = FromResource(Resources.Img.ObjSpikes, q);
                 upImage.DoRestoreCutTransparency();
                 downImage.DoRestoreCutTransparency();
                 rotateButton = new Button().InitWithUpElementDownElementandID(upImage, downImage, SpikesButtonId.Rotate);

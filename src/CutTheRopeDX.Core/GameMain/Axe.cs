@@ -37,17 +37,17 @@ namespace CutTheRopeDX.GameMain
             this.constraint = constraint;
             this.axeNumber = axeNumber ?? string.Empty;
 
-            baseSprite = CreateWithResID(new GameObject(), Resources.Img.ObjAxe, BaseQuad);
+            baseSprite = InitializeFromResource(new GameObject(), Resources.Img.ObjAxe, BaseQuad);
             baseSprite.anchor = baseSprite.parentAnchor = 18;
             baseSprite.blendingMode = 1;
             _ = AddChild(baseSprite);
 
-            bladeSprite = CreateWithResID(new GameObject(), Resources.Img.ObjAxe, BladeQuad);
+            bladeSprite = InitializeFromResource(new GameObject(), Resources.Img.ObjAxe, BladeQuad);
             bladeSprite.anchor = bladeSprite.parentAnchor = 18;
             bladeSprite.blendingMode = 1;
             _ = AddChild(bladeSprite);
 
-            pivotSprite = CreateWithResID(new GameObject(), Resources.Img.ObjAxe, PivotQuad);
+            pivotSprite = InitializeFromResource(new GameObject(), Resources.Img.ObjAxe, PivotQuad);
             pivotSprite.anchor = pivotSprite.parentAnchor = 18;
             pivotSprite.blendingMode = 1;
             _ = AddChild(pivotSprite);

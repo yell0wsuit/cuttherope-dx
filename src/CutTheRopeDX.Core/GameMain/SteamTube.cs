@@ -47,7 +47,7 @@ namespace CutTheRopeDX.GameMain
             steamBack.anchor = steamBack.parentAnchor = 18;
             steamFront = new BaseElement();
             steamFront.anchor = steamFront.parentAnchor = 18;
-            tube = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 0);
+            tube = Image.FromResource(Resources.Img.ObjPipe, 0);
             tube.x = 0f;
             tube.y = 0f;
             tube.anchor = 10;
@@ -55,7 +55,7 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(tube);
             width = tube.width;
             height = tube.height;
-            valve = Image.Image_createWithResIDQuad(Resources.Img.ObjPipe, 1);
+            valve = Image.FromResource(Resources.Img.ObjPipe, 1);
             valve.x = 0f;
             valve.y = 27f * heightScale;
             valve.anchor = 18;
@@ -352,7 +352,7 @@ namespace CutTheRopeDX.GameMain
                     {
                         horizontalOffset *= -steamState;
                     }
-                    Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjPipe);
+                    Animation animation = Image.InitializeFromResource(new Animation(), Resources.Img.ObjPipe);
                     animation.DoRestoreCutTransparency();
                     _ = animation.AddAnimationDelayLoopFirstLast(frameDelay, Timeline.LoopType.TIMELINE_REPLAY, animationStartFrame, animationEndFrame);
                     animation.anchor = animation.parentAnchor = 18;

@@ -452,7 +452,7 @@ namespace CutTheRopeDX.GameMain.FingerTraces
                 return;
             }
 
-            glowImage = Image.Image_createWithResIDQuad(Resources.Img.FingerTraceGlow, GlowQuadIndex);
+            glowImage = Image.FromResource(Resources.Img.FingerTraceGlow, GlowQuadIndex);
             glowImage.anchor = CENTER;
             glowImage.translateY = GlowTranslateY;
         }

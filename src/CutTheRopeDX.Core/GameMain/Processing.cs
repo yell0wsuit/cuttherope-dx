@@ -23,7 +23,7 @@ namespace CutTheRopeDX.GameMain
             blendingMode = 0;
             if (loading)
             {
-                Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuProcessingHd, 0);
+                Image image = Image.FromResource(Resources.Img.MenuProcessingHd, 0);
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0f));
                 timeline.AddKeyFrame(KeyFrame.MakeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));

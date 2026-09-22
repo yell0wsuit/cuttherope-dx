@@ -57,7 +57,7 @@ namespace CutTheRopeDX.GameMain
             Texture2D supportTexture = Application.GetTexture(supportResource);
             int quadIndex = (requestedQuad >= 0 && requestedQuad < supportTexture.quadRects.Length) ? requestedQuad : 0;
 
-            support = Image.Image_createWithResIDQuad(supportResource, quadIndex);
+            support = Image.FromResource(supportResource, quadIndex);
             support.DoRestoreCutTransparency();
             support.anchor = 18;
 

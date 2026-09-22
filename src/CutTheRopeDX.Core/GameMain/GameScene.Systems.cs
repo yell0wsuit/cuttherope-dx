@@ -210,7 +210,7 @@ namespace CutTheRopeDX.GameMain
             p.PlayTimeline(0);
             tutorialDirector.Fire(TutorialEvent.PumpFire);
             SoundMgr.PlayRandomSound(Resources.Snd.Pump1, Resources.Snd.Pump2, Resources.Snd.Pump3, Resources.Snd.Pump4);
-            Image grid = Image.Image_createWithResID(Resources.Img.ObjPump);
+            Image grid = Image.FromResource(Resources.Img.ObjPump);
             float flowLength = MathF.Max(0f, ActivePhysicsConstants.PumpFlowLength - Pump.MouthOffset);
             PumpDirt pumpDirt = new PumpDirt().InitWithTotalParticlesAngleandImageGrid(5, float.RadiansToDegrees(p.angle) - DEG_90, grid, flowLength);
             pumpDirt.particlesDelegate = new Particles.ParticlesFinished(aniPool.ParticlesFinished);
@@ -485,7 +485,7 @@ namespace CutTheRopeDX.GameMain
                 Scorer.PostAchievementName("1058341284", "\"Spider Tammer\"");
             }
             SoundMgr.PlaySound(Resources.Snd.SpiderFall);
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 11);
+            Image image = Image.FromResource(Resources.Img.ObjSpider, 11);
             image.DoRestoreCutTransparency();
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             if (gravityState.IsInverted)
@@ -538,7 +538,7 @@ namespace CutTheRopeDX.GameMain
             tutorialDirector.Fire(TutorialEvent.SpiderSteal, capturedBody);
             SoundMgr.PlaySound(Resources.Snd.SpiderWin);
             GameObject capturedCandy = capturedBody.Visual;
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjSpider, 12);
+            Image image = Image.FromResource(Resources.Img.ObjSpider, 12);
             image.DoRestoreCutTransparency();
             capturedCandy.anchor = capturedCandy.parentAnchor = 18;
             capturedCandy.x = 0f;

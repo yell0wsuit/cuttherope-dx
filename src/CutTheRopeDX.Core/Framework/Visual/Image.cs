@@ -94,34 +94,36 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
-        /// Creates an image from the specified texture.
+        /// Creates an image from the specified texture. The engine's <c>+[Image create:]</c>.
         /// </summary>
         /// <param name="t">Texture to create the image from.</param>
         /// <returns>A new <see cref="Image"/> bound to <paramref name="t"/>.</returns>
-        public static Image Image_create(Texture2D t)
+        public static Image FromTexture(Texture2D t)
         {
             return new Image().InitWithTexture(t);
         }
 
         /// <summary>
-        /// Creates an image from the specified texture resource name.
+        /// Creates an image from the specified texture resource name. The engine's
+        /// <c>+[Image createWithResID:]</c>.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <returns>A new <see cref="Image"/> bound to the resolved texture.</returns>
-        public static Image Image_createWithResID(string resourceName)
+        public static Image FromResource(string resourceName)
         {
-            return CreateWithResID(new Image(), resourceName);
+            return InitializeFromResource(new Image(), resourceName);
         }
 
         /// <summary>
-        /// Creates an image from the specified texture resource name and sets the draw quad.
+        /// Creates an image from the specified texture resource name and sets the draw quad. The
+        /// engine's <c>+[Image createWithResID:Quad:]</c>.
         /// </summary>
         /// <param name="resourceName">Texture resource name.</param>
         /// <param name="q">Quad index to draw.</param>
         /// <returns>A new <see cref="Image"/> configured to draw the specified quad.</returns>
-        public static Image Image_createWithResIDQuad(string resourceName, int q)
+        public static Image FromResource(string resourceName, int q)
         {
-            return CreateWithResID(new Image(), resourceName, q);
+            return InitializeFromResource(new Image(), resourceName, q);
         }
 
         /// <summary>
@@ -137,7 +139,7 @@ namespace CutTheRopeDX.Framework.Visual
         /// The element is passed in rather than constructed from a <c>new()</c> constraint so that
         /// no <see cref="Activator"/> call reaches the ahead-of-time compiled browser build.
         /// </remarks>
-        public static T CreateWithResID<T>(T element, string resourceName, int quad = -1)
+        public static T InitializeFromResource<T>(T element, string resourceName, int quad = -1)
             where T : Image
         {
             _ = element.InitWithTexture(Application.GetTexture(resourceName));

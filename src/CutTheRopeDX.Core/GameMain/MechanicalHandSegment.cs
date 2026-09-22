@@ -39,12 +39,12 @@ namespace CutTheRopeDX.GameMain
             };
             _ = AddChild(claw);
 
-            _base = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 4);
-            buttonNone = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 2);
+            _base = Image.FromResource(Resources.Img.ObjRoboHand, 4);
+            buttonNone = Image.FromResource(Resources.Img.ObjRoboHand, 2);
             if (rotatable)
             {
-                Image buttonUp = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 1);
-                Image buttonDown = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 0);
+                Image buttonUp = Image.FromResource(Resources.Img.ObjRoboHand, 1);
+                Image buttonDown = Image.FromResource(Resources.Img.ObjRoboHand, 0);
                 button = (MechanicalHandButton)new MechanicalHandButton().InitWithUpElementDownElementandID(buttonUp, buttonDown, 0);
                 button.anchor = 18;
                 button.segment = this;
@@ -56,7 +56,7 @@ namespace CutTheRopeDX.GameMain
 
             _base.anchor = buttonNone.anchor = 18;
 
-            armImage = Image.CreateWithResID(new TiledImage(), Resources.Img.ObjRoboHand);
+            armImage = Image.InitializeFromResource(new TiledImage(), Resources.Img.ObjRoboHand);
             armImage.SetTile(3);
             armImage.width = (int)length;
             armImage.height = (int)Image.GetQuadSize(Resources.Img.ObjRoboHand, 3).Y;

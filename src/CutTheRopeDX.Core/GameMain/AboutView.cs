@@ -134,7 +134,7 @@ namespace CutTheRopeDX.GameMain
 
             // Fan work credit section
 
-            Image topLogo = Image.Image_createWithResID(Resources.Img.CutTheRopeDXLogo);
+            Image topLogo = Image.FromResource(Resources.Img.CutTheRopeDXLogo);
             _ = vBox.AddChild(topLogo);
 
             Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth, scale);
@@ -170,7 +170,7 @@ namespace CutTheRopeDX.GameMain
 
             // Original Zeptolab credit section
 
-            Image ZeptolabLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 1);
+            Image ZeptolabLogo = Image.FromResource(Resources.Img.MenuLogo, 1);
             _ = vBox.AddChild(ZeptolabLogo);
 
             string aboutText = ResolveVersionPlaceholder(
@@ -178,7 +178,7 @@ namespace CutTheRopeDX.GameMain
             Text aboutBody = CreateCenteredTextBlock(aboutText, containerWidth, scale);
             _ = vBox.AddChild(aboutBody);
 
-            Image bottomLogo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogo, 2);
+            Image bottomLogo = Image.FromResource(Resources.Img.MenuLogo, 2);
             _ = vBox.AddChild(bottomLogo);
 
             string specialThanksText = Application.GetString("ABOUT_SPECIAL_THANKS");

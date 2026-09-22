@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
             restartButton.x = -button.width - 16f;
             restartButton.y = 8f;
             _ = gameView.AddChildwithID(restartButton, 2);
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuPause, 0);
+            Image image = Image.FromResource(Resources.Img.MenuPause, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = PausePlateScale;
             image.rotationCenterY = -image.height / 2;

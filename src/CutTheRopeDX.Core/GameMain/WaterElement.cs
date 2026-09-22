@@ -129,7 +129,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured light <see cref="Image"/> with pulse and delayed-start timelines.</returns>
         private static Image CreateLightWithXPosquadalphaColordelegate(float x, int quad, RGBAColor color, ITimelineDelegate d)
         {
-            Image light = Image_createWithResIDQuad(Resources.Img.WaterTile, quad);
+            Image light = FromResource(Resources.Img.WaterTile, quad);
             light.parentAnchor = 9;
             light.anchor = 9;
             light.x = x;
@@ -203,7 +203,7 @@ namespace CutTheRopeDX.GameMain
             };
             _ = AddChild(aniPool);
 
-            Image bubbleGrid = Image_createWithResID(Resources.Img.WaterTile);
+            Image bubbleGrid = FromResource(Resources.Img.WaterTile);
             if (new WaterBubbles().InitWithTotalParticlesandImageGrid(40, bubbleGrid) is WaterBubbles waterBubbles)
             {
                 bubbles = waterBubbles;
@@ -350,7 +350,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            Image image = Image_createWithResID(Resources.Img.WaterTile);
+            Image image = FromResource(Resources.Img.WaterTile);
             // image.DoRestoreCutTransparency();
             if (new WaterDrops().InitWithTotalParticlesandImageGrid(10, image) is WaterDrops drops)
             {

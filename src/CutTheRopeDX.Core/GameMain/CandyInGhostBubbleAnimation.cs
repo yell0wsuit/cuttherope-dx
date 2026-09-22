@@ -12,7 +12,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void AddSupportingCloudsTimelines()
         {
-            backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
+            backCloud = FromResource(Resources.Img.ObjGhost, 6);
             backCloud.x = x + 85f;
             backCloud.y = y + 25f;
             backCloud.anchor = backCloud.parentAnchor = 18;
@@ -32,7 +32,7 @@ namespace CutTheRopeDX.GameMain
             backCloud.AddTimelinewithID(timeline, 0);
             backCloud.PlayTimeline(0);
 
-            backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
+            backCloud2 = FromResource(Resources.Img.ObjGhost, 5);
             backCloud2.x = x + 65f;
             backCloud2.y = y + 55f;
             backCloud2.anchor = backCloud2.parentAnchor = 18;
@@ -52,7 +52,7 @@ namespace CutTheRopeDX.GameMain
             backCloud2.AddTimelinewithID(backCloud2Timeline, 0);
             backCloud2.PlayTimeline(0);
 
-            backCloud3 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
+            backCloud3 = FromResource(Resources.Img.ObjGhost, 5);
             backCloud3.x = x - 90f;
             backCloud3.y = y + 15f;
             backCloud3.anchor = backCloud3.parentAnchor = 18;
@@ -72,7 +72,7 @@ namespace CutTheRopeDX.GameMain
             backCloud3.AddTimelinewithID(backCloud3Timeline, 0);
             backCloud3.PlayTimeline(0);
 
-            Image smallCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
+            Image smallCloud = FromResource(Resources.Img.ObjGhost, 6);
             smallCloud.x = x - 75f;
             smallCloud.y = y + 45f;
             smallCloud.anchor = smallCloud.parentAnchor = 18;
@@ -93,7 +93,7 @@ namespace CutTheRopeDX.GameMain
             smallCloud.AddTimelinewithID(smallCloudTimeline, 0);
             smallCloud.PlayTimeline(0);
 
-            Image bigCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
+            Image bigCloud = FromResource(Resources.Img.ObjGhost, 2);
             bigCloud.x = x - 20f;
             bigCloud.y = y + 75f;
             bigCloud.anchor = bigCloud.parentAnchor = 18;

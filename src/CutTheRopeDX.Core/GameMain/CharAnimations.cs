@@ -20,7 +20,7 @@ namespace CutTheRopeDX.GameMain
             animations ??= [];
             animationNameToIndex ??= [];
 
-            CharAnimationLayer layer = CreateWithResID(new CharAnimationLayer(), resourceName);
+            CharAnimationLayer layer = InitializeFromResource(new CharAnimationLayer(), resourceName);
             // Use the same anchor as the base animation (18) for proper centering
             layer.parentAnchor = layer.anchor = anchor;
             layer.DoRestoreCutTransparency();

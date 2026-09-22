@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="mapOffsetY">The additional map Y offset applied during loading.</param>
         private void LoadPump(XElement xmlNode, float scale, float offsetX, float offsetY, int mapOffsetX, int mapOffsetY)
         {
-            Pump pump = Image.CreateWithResID(new Pump(), Resources.Img.ObjPump);
+            Pump pump = Image.InitializeFromResource(new Pump(), Resources.Img.ObjPump);
             pump.DoRestoreCutTransparency();
             _ = pump.AddAnimationWithDelayLoopedCountSequence(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, 4, 1, [2, 3, 0]);
             pump.bb = GetPumpBoundingBox();

@@ -150,7 +150,7 @@ namespace CutTheRopeDX.GameMain
             {
                 Looped = false;
 
-                startHole = Image.Image_createWithResIDQuad(Resources.Img.ObjAnt, 6);
+                startHole = Image.FromResource(Resources.Img.ObjAnt, 6);
                 startHole.anchor = CENTER;
                 startHole.x = first.startPoint.X;
                 startHole.y = first.startPoint.Y;
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
                 startHole.y += firstDir.Y * -halfWidth;
                 StartAntOffset = halfWidth;
 
-                endHole = Image.Image_createWithResIDQuad(Resources.Img.ObjAnt, 6);
+                endHole = Image.FromResource(Resources.Img.ObjAnt, 6);
                 endHole.anchor = CENTER;
                 endHole.x = last.endPoint.X;
                 endHole.y = last.endPoint.Y;
@@ -403,7 +403,7 @@ namespace CutTheRopeDX.GameMain
         private Ant CreateAntForOffset(float offset)
         {
             Ant ant = new();
-            Animation anim = Image.CreateWithResID(new Animation(), Resources.Img.ObjAnt);
+            Animation anim = Image.InitializeFromResource(new Animation(), Resources.Img.ObjAnt);
             int maxFrame = anim.texture?.quadsCount > 0
                 ? Math.Min(5, anim.texture.quadsCount - 1)
                 : 0;

@@ -168,7 +168,7 @@ namespace CutTheRopeDX.GameMain
                 anchor = 18,
                 parentAnchor = 18
             };
-            holeSprite = Image.Image_createWithResIDQuad(Resources.Img.ObjMouse, HoleQuad);
+            holeSprite = Image.FromResource(Resources.Img.ObjMouse, HoleQuad);
             holeSprite.anchor = 18;
             holeSprite.parentAnchor = 18;
             holeSprite.scaleX = 1f;

@@ -27,8 +27,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured menu button.</returns>
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
-            Image upImage = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
-            Image downImage = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
+            Image upImage = Image.FromResource(Resources.Img.MenuButtons, 0);
+            Image downImage = Image.FromResource(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text upLabel = new Text().InitWithFont(font);
             upLabel.SetString(str);
@@ -59,8 +59,8 @@ namespace CutTheRopeDX.GameMain
             // When selected, swap quads so the "down" look is the default state
             int upQuad = selected ? 2 : 3;
             int downQuad = selected ? 3 : 2;
-            Image upImage = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, upQuad);
-            Image downImage = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, downQuad);
+            Image upImage = Image.FromResource(Resources.Img.MenuButtons, upQuad);
+            Image downImage = Image.FromResource(Resources.Img.MenuButtons, downQuad);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text upLabel = new Text().InitWithFont(font);
             upLabel.SetString(str);
@@ -88,10 +88,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured toggle button.</returns>
         public static ToggleButton CreateToggleButtonWithText1Text2IDDelegate(string str1, string str2, ButtonId bid, IButtonDelegation d)
         {
-            Image state1Up = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
-            Image state1Down = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
-            Image state2Up = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 0);
-            Image state2Down = Image.Image_createWithResIDQuad(Resources.Img.MenuButtons, 1);
+            Image state1Up = Image.FromResource(Resources.Img.MenuButtons, 0);
+            Image state1Down = Image.FromResource(Resources.Img.MenuButtons, 1);
+            Image state2Up = Image.FromResource(Resources.Img.MenuButtons, 0);
+            Image state2Down = Image.FromResource(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
             Text state1UpLabel = new Text().InitWithFont(font);
             state1UpLabel.SetString(str1);
@@ -142,8 +142,8 @@ namespace CutTheRopeDX.GameMain
         public static Button CreateButtonWithImageIDDelegate(string resourceName, ButtonId bid, IButtonDelegation d)
         {
             Texture2D texture = Application.GetTexture(resourceName);
-            Image up = Image.Image_create(texture);
-            Image image = Image.Image_create(texture);
+            Image up = Image.FromTexture(texture);
+            Image image = Image.FromTexture(texture);
             image.scaleX = 1.2f;
             image.scaleY = 1.2f;
             Button button = new Button().InitWithUpElementDownElementandID(up, image, bid);
@@ -163,8 +163,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured image button.</returns>
         public static Button CreateButton2WithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
-            Image up = Image.Image_createWithResIDQuad(resourceName, q1);
-            Image image = Image.Image_createWithResIDQuad(resourceName, q2);
+            Image up = Image.FromResource(resourceName, q1);
+            Image image = Image.FromResource(resourceName, q2);
             Vector relativeQuadOffset = Image.GetRelativeQuadOffset(resourceName, q2, q1);
             image.x -= relativeQuadOffset.X;
             image.y -= relativeQuadOffset.Y;
@@ -184,8 +184,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageQuad1Quad2IDDelegate(string resourceName, int q1, int q2, ButtonId bid, IButtonDelegation d)
         {
-            Image upImage = Image.Image_createWithResIDQuad(resourceName, q1);
-            Image downImage = Image.Image_createWithResIDQuad(resourceName, q2);
+            Image upImage = Image.FromResource(resourceName, q1);
+            Image downImage = Image.FromResource(resourceName, q2);
             Button button = new Button().InitWithUpElementDownElementandID(upImage, downImage, bid);
             button.delegateButtonDelegate = d;
             Texture2D texture = Application.GetTexture(resourceName);
@@ -203,9 +203,9 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured image button.</returns>
         public static Button CreateButtonWithImageQuadIDDelegate(string resourceName, int quad, int bid, IButtonDelegation d)
         {
-            Image up = Image.Image_createWithResIDQuad(resourceName, quad);
+            Image up = Image.FromResource(resourceName, quad);
             up.color.AlphaChannel = 0.6f;
-            Image down = Image.Image_createWithResIDQuad(resourceName, quad);
+            Image down = Image.FromResource(resourceName, quad);
             Button button = new Button().InitWithUpElementDownElementandID(up, down, bid);
             button.delegateButtonDelegate = d;
             Texture2D texture = Application.GetTexture(resourceName);
@@ -252,7 +252,7 @@ namespace CutTheRopeDX.GameMain
                     break;
             }
 
-            Image image = Image.Image_createWithResIDQuad(backgroundResource, backgroundQuad);
+            Image image = Image.FromResource(backgroundResource, backgroundQuad);
             image.anchor = image.parentAnchor = 34;
             image.scaleX = image.scaleY = 1.25f;
             image.rotationCenterY = image.height / 2;
@@ -277,7 +277,7 @@ namespace CutTheRopeDX.GameMain
                         break;
                 }
 
-                Image secondaryBackground = Image.Image_createWithResIDQuad(backgroundSecondaryResource, backgroundSecondaryQuad);
+                Image secondaryBackground = Image.FromResource(backgroundSecondaryResource, backgroundSecondaryQuad);
                 secondaryBackground.anchor = secondaryBackground.parentAnchor = 34;
                 secondaryBackground.scaleX = secondaryBackground.scaleY = 1.25f;
                 secondaryBackground.passTransformationsToChilds = false;
@@ -290,7 +290,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     case var _ when SpecialEvents.IsXmas:
                         // Hat background layer (behind the logo) - add to baseElement before logo
-                        Image hatBackground = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoXmasHat, 0);
+                        Image hatBackground = Image.FromResource(Resources.Img.MenuLogoXmasHat, 0);
                         hatBackground.anchor = 9;  // Top-left of the hat sprite
                         hatBackground.parentAnchor = 9;  // Relative to top-left of base (no positioning limits)
                         hatBackground.x = 965f;  // Adjust horizontal position (positive = right)
@@ -305,7 +305,7 @@ namespace CutTheRopeDX.GameMain
                 // The logo is design-space content: it belongs to the fitted group where the scene
                 // has one, and to the backdrop where it does not.
                 BaseElement logoParent = designGroup ?? baseElement;
-                Image logo = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, 52);
+                Image logo = Image.FromResource(Resources.Img.MenuLogoNew, 52);
                 logo.anchor = 10;
                 logo.parentAnchor = 10;
                 logo.y = 55f;
@@ -313,8 +313,8 @@ namespace CutTheRopeDX.GameMain
                 // Candy on rope (positioned under the logo)
                 // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
                 int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                Image candyUp = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
-                Image candyDown = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoNew, selectedCandySkin);
+                Image candyUp = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
+                Image candyDown = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
                 candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
                 Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
                 candyButton.SetName("logoCandyButton");
@@ -332,7 +332,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
                     /*
-                    Image glowImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 0);
+                    Image glowImage = Image.FromResource(Resources.Img.CandySelectionFx, 0);
                     glowImage.x = -25f;
                     glowImage.y = -25f;
                     Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
@@ -350,7 +350,7 @@ namespace CutTheRopeDX.GameMain
                     */
 
                     // Pointing hand indicator
-                    Image handImage = Image.Image_createWithResIDQuad(Resources.Img.CandySelectionFx, 1);
+                    Image handImage = Image.FromResource(Resources.Img.CandySelectionFx, 1);
                     // Hand pointing animation - horizontal jabbing/pointing motion
                     // Keep y constant for horizontal movement only
                     Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -368,7 +368,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     case var _ when SpecialEvents.IsXmas:
                         // Hat foreground layer (on top of the text logo)
-                        Image hatForeground = Image.Image_createWithResIDQuad(Resources.Img.MenuLogoXmasHat, 1);
+                        Image hatForeground = Image.FromResource(Resources.Img.MenuLogoXmasHat, 1);
                         hatForeground.anchor = 9;  // Top-left of the hat sprite
                         hatForeground.parentAnchor = 9;  // Relative to top-left of logo
                         hatForeground.x = 30f;  // Adjust horizontal position (positive = right)
@@ -384,7 +384,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (s)
             {
-                Image shadowImage = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
+                Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
                 shadowImage.anchor = shadowImage.parentAnchor = 18;
                 shadowImage.scaleX = shadowImage.scaleY = 2f;
                 Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -436,8 +436,8 @@ namespace CutTheRopeDX.GameMain
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
         {
             int pressedStateQuad = p ? 1 : 0;
-            Image background = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, pressedStateQuad);
-            Image icon = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
+            Image background = Image.FromResource(Resources.Img.MenuOptions, pressedStateQuad);
+            Image icon = Image.FromResource(Resources.Img.MenuOptions, q);
             icon.parentAnchor = icon.anchor = 9;
             icon.x = (background.width - icon.width) / 2f;
             icon.y = (background.height - icon.height) / 2f;
@@ -445,7 +445,7 @@ namespace CutTheRopeDX.GameMain
             if (b)
             {
                 icon.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
-                Image cross = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 4);
+                Image cross = Image.FromResource(Resources.Img.MenuOptions, 4);
                 cross.parentAnchor = cross.anchor = 9;
                 cross.x = icon.x + icon.width - (cross.width / 2f);
                 cross.y = icon.y + icon.height - cross.height;
@@ -480,7 +480,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The created image or empty element.</returns>
         public static BaseElement CreateElementWithResIdquad(string resourceName, int quad)
         {
-            return !string.IsNullOrEmpty(resourceName) && quad != -1 ? Image.Image_createWithResIDQuad(resourceName, quad) : new BaseElement();
+            return !string.IsNullOrEmpty(resourceName) && quad != -1 ? Image.FromResource(resourceName, quad) : new BaseElement();
         }
 
         /// <summary>
@@ -535,7 +535,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured control option element.</returns>
         public static BaseElement CreateControlButtontitleAnchortextbuttonIDdelegate(int q, string str, int bId, IButtonDelegation delegateValue)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, q);
+            Image image = Image.FromResource(Resources.Img.MenuOptions, q);
             int illustrationHeight = image.height;
             image.height = illustrationHeight + 140;
             Text text = Text.CreateWithFontandString(Resources.Fnt.SmallFont, str);
@@ -561,7 +561,7 @@ namespace CutTheRopeDX.GameMain
                 toggleButton.parentAnchor = 9;
                 toggleButton.x = (image.width - toggleButton.width) / 2f;
                 toggleButton.y = checkY;
-                Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 9);
+                Image checkBg = Image.FromResource(Resources.Img.MenuOptions, 9);
                 checkBg.parentAnchor = 9;
                 checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
                 checkBg.y = toggleButton.y + toggleButton.height - checkBg.height;
@@ -572,11 +572,11 @@ namespace CutTheRopeDX.GameMain
             }
             else
             {
-                Image checkIcon = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 7);
+                Image checkIcon = Image.FromResource(Resources.Img.MenuOptions, 7);
                 checkIcon.parentAnchor = 9;
                 checkIcon.x = (image.width - checkIcon.width) / 2f;
                 checkIcon.y = checkY;
-                Image checkBg = Image.Image_createWithResIDQuad(Resources.Img.MenuOptions, 10);
+                Image checkBg = Image.FromResource(Resources.Img.MenuOptions, 10);
                 checkBg.parentAnchor = 9;
                 checkBg.x = ((image.width - checkBg.width) / 2f) - 10;
                 checkBg.y = checkIcon.y + checkIcon.height - checkBg.height;
@@ -594,8 +594,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured scores button image.</returns>
         public static Image CreateBlankScoresButtonWithIconpressed(int quad, bool pressed)
         {
-            Image buttonBackground = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, pressed ? 1 : 0);
-            Image icon = Image.Image_createWithResIDQuad(Resources.Img.MenuButtonAchivCup, quad);
+            Image buttonBackground = Image.FromResource(Resources.Img.MenuButtonAchivCup, pressed ? 1 : 0);
+            Image icon = Image.FromResource(Resources.Img.MenuButtonAchivCup, quad);
             _ = buttonBackground.AddChild(icon);
             icon.parentAnchor = 9;
             Image.SetElementPositionWithRelativeQuadOffset(icon, Resources.Img.MenuButtonAchivCup, 0, quad);
@@ -679,7 +679,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     _ = socialContainer.AddChild(facebookButton);
                 }
-                Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuExtraButtonsEn, 0);
+                Image image = Image.FromResource(Resources.Img.MenuExtraButtonsEn, 0);
                 image.anchor = 9;
                 image.parentAnchor = 36;
                 Image.SetElementPositionWithQuadOffset(image, Resources.Img.MenuExtraButtonsEn, 0);
@@ -709,7 +709,7 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(dragToCutOption);
             _ = hBox.AddChild(clickToCutOption);
             _ = designGroup.AddChild(hBox);
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
+            Image image = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
             image.anchor = image.parentAnchor = 18;
             image.scaleX = image.scaleY = 2f;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
@@ -911,7 +911,7 @@ namespace CutTheRopeDX.GameMain
             text.rotationCenterX = -text.width / 2;
             text.width = (int)(text.width * 0.7f);
             _ = hbox.AddChild(text);
-            Image c = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 3);
+            Image c = Image.FromResource(Resources.Img.MenuPackUI, 3);
             _ = hbox.AddChild(c);
             return hbox;
         }
@@ -996,7 +996,7 @@ namespace CutTheRopeDX.GameMain
             bool isLockedPack = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
             PackStripLayout strip = PackStrip();
-            Image image = Image.Image_createWithResIDQuad(resourceName, q);
+            Image image = Image.FromResource(resourceName, q);
             image.DoRestoreCutTransparency();
 
             // Centered in the tile rather than pinned to its top left, because the tile is the
@@ -1009,7 +1009,7 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = baseElement.AddChild(image);
                 int requiredStars = PackConfig.GetUnlockStars(n);
-                Image lockOverlay = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
+                Image lockOverlay = Image.FromResource(Resources.Img.MenuPackUI, 2);
                 lockOverlay.DoRestoreCutTransparency();
                 lockOverlay.anchor = lockOverlay.parentAnchor = 9;
                 _ = image.AddChild(lockOverlay);
@@ -1040,7 +1040,7 @@ namespace CutTheRopeDX.GameMain
                     monsterSlot.parentAnchor = 9;
                     monsterSlot.y = image.y;
                     _ = baseElement.AddChild(monsterSlot);
-                    Image omNom = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, omNomQuad);
+                    Image omNom = Image.FromResource(Resources.Img.MenuPackUI, omNomQuad);
                     omNom.DoRestoreCutTransparency();
                     omNom.anchor = 17;
 
@@ -1059,7 +1059,7 @@ namespace CutTheRopeDX.GameMain
                 if (Preferences.IsPackPerfect(n) & !isComingSoon)
                 {
                     // Create perfect pack badge
-                    Image packPerfect = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 8);
+                    Image packPerfect = Image.FromResource(Resources.Img.MenuPackUI, 8);
                     packPerfect.parentAnchor = packPerfect.anchor = 33; // bottom-left
                     packPerfect.x = 100f;
                     packPerfect.y = -100f;
@@ -1067,7 +1067,7 @@ namespace CutTheRopeDX.GameMain
                 }
                 if (unlockedForPackLevel == UNLOCKEDSTATE.JUSTUNLOCKED && !isComingSoon)
                 {
-                    Image justUnlockedLock = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 2);
+                    Image justUnlockedLock = Image.FromResource(Resources.Img.MenuPackUI, 2);
                     justUnlockedLock.SetName("lockHideMe");
                     justUnlockedLock.DoRestoreCutTransparency();
                     justUnlockedLock.anchor = justUnlockedLock.parentAnchor = 9;
@@ -1092,7 +1092,7 @@ namespace CutTheRopeDX.GameMain
             string boxLabelTextKey = PackConfig.GetBoxLabelText(n);
             if (!string.IsNullOrEmpty(boxLabelTextKey))
             {
-                Image boxLabel = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 9);
+                Image boxLabel = Image.FromResource(Resources.Img.MenuPackUI, 9);
                 boxLabel.parentAnchor = boxLabel.anchor = 36; // bottom-right
                 boxLabel.x = -90f;
                 boxLabel.y = -90f;
@@ -1186,7 +1186,7 @@ namespace CutTheRopeDX.GameMain
                 scrollPointX += touchBaseElement.width + strip.Spacing;
             }
             packRow.width += 1000;
-            Image leftFrame = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
+            Image leftFrame = Image.FromResource(Resources.Img.MenuPackUI, 4);
             leftFrame.anchor = 17;
             leftFrame.y += VisibleBounds.h / 2f;
             PlacePackEdge(
@@ -1196,7 +1196,7 @@ namespace CutTheRopeDX.GameMain
                 mirroredX: false,
                 mirroredY: false);
             _ = baseElement.AddChild(leftFrame);
-            Image rightFrame = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 4);
+            Image rightFrame = Image.FromResource(Resources.Img.MenuPackUI, 4);
             rightFrame.anchor = 20;
             rightFrame.y += VisibleBounds.h / 2f;
             PlacePackEdge(
@@ -1207,7 +1207,7 @@ namespace CutTheRopeDX.GameMain
                 mirroredY: true);
             _ = baseElement.AddChild(rightFrame);
             _ = baseElement.AddChild(packContainer);
-            Image leftSeam = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
+            Image leftSeam = Image.FromResource(Resources.Img.MenuPackUI, 5);
             leftSeam.anchor = 20;
             leftSeam.y += VisibleBounds.h / 2f;
             PlacePackEdge(
@@ -1217,7 +1217,7 @@ namespace CutTheRopeDX.GameMain
                 mirroredX: false,
                 mirroredY: false);
             _ = baseElement.AddChild(leftSeam);
-            Image rightSeam = Image.Image_createWithResIDQuad(Resources.Img.MenuPackUI, 5);
+            Image rightSeam = Image.FromResource(Resources.Img.MenuPackUI, 5);
             rightSeam.anchor = 17;
             rightSeam.y += VisibleBounds.h / 2f;
             PlacePackEdge(
@@ -1407,13 +1407,13 @@ namespace CutTheRopeDX.GameMain
             if (isLocked)
             {
                 touchBaseElement.bid = new MenuButtonId(-1);
-                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 1);
+                image = Image.FromResource(Resources.Img.MenuLevelUi, 1);
                 image.DoRestoreCutTransparency();
             }
             else
             {
                 touchBaseElement.bid = MenuButtonId.ForLevel(l);
-                image = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 0);
+                image = Image.FromResource(Resources.Img.MenuLevelUi, 0);
                 image.DoRestoreCutTransparency();
                 Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
                 string @string = (l + 1).ToString(CultureInfo.InvariantCulture);
@@ -1421,7 +1421,7 @@ namespace CutTheRopeDX.GameMain
                 text.anchor = text.parentAnchor = 18;
                 text.y -= 5f;
                 _ = image.AddChild(text);
-                Image starsBadge = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 2 + starsForPackLevel);
+                Image starsBadge = Image.FromResource(Resources.Img.MenuLevelUi, 2 + starsForPackLevel);
                 starsBadge.DoRestoreCutTransparency();
                 starsBadge.anchor = starsBadge.parentAnchor = 9;
                 _ = image.AddChild(starsBadge);
@@ -1440,8 +1440,8 @@ namespace CutTheRopeDX.GameMain
             float transitionDuration = 0.3f;
             MenuView menuView = new();
             string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
-            Image coverLeft = Image.Image_createWithResIDQuad(boxCover, 0);
-            Image coverRight = Image.Image_createWithResIDQuad(boxCover, 0);
+            Image coverLeft = Image.FromResource(boxCover, 0);
+            Image coverRight = Image.FromResource(boxCover, 0);
             float x = (VisibleBounds.w / 2f) - coverLeft.width;
             coverLeft.x = x;
             coverLeft.passTransformationsToChilds = false;
@@ -1457,8 +1457,8 @@ namespace CutTheRopeDX.GameMain
             coverLeft.SetName("levelsBack");
             _ = coverLeft.AddChild(coverRight);
             _ = menuView.AddChild(coverLeft);
-            Image spineLeft = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
-            Image spineRight = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
+            Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
+            Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
             spineLeft.y = 80f;
             spineRight.y = 80f;
             levelsSpineLeft = spineLeft;
@@ -1466,7 +1466,7 @@ namespace CutTheRopeDX.GameMain
             PlaceLevelSpines(VisibleBounds);
             _ = menuView.AddChild(spineLeft);
             _ = menuView.AddChild(spineRight);
-            Image shadowImage = Image.Image_createWithResIDQuad(Resources.Img.MenuBgrShadow, 0);
+            Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
             shadowImage.SetName("shadow");
             shadowImage.anchor = shadowImage.parentAnchor = 18;
             shadowImage.scaleX = shadowImage.scaleY = 2f;

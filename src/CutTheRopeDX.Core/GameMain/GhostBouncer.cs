@@ -18,7 +18,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (base.InitWithPosXYWidthAndAngle(px, py, width, angle) != null)
             {
-                backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
+                backCloud2 = FromResource(Resources.Img.ObjGhost, 4);
                 float radius = MathF.Sqrt(9000);
                 backCloud2.x = x + (radius * MathF.Cos(float.DegreesToRadians(170 + angle)));
                 backCloud2.y = y + (radius * MathF.Sin(float.DegreesToRadians(170 + angle)));
@@ -40,7 +40,7 @@ namespace CutTheRopeDX.GameMain
                 backCloud2.AddTimelinewithID(timeline, 0);
                 backCloud2.PlayTimeline(0);
 
-                backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 4);
+                backCloud = FromResource(Resources.Img.ObjGhost, 4);
                 float radius2 = MathF.Sqrt(9000);
                 backCloud.x = x + (radius2 * MathF.Cos(float.DegreesToRadians(10 + angle)));
                 backCloud.y = y + (radius2 * MathF.Sin(float.DegreesToRadians(10 + angle)));
@@ -62,7 +62,7 @@ namespace CutTheRopeDX.GameMain
                 backCloud.AddTimelinewithID(backCloudTimeline, 0);
                 backCloud.PlayTimeline(0);
 
-                Image frontCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 3);
+                Image frontCloud = FromResource(Resources.Img.ObjGhost, 3);
                 frontCloud.x = x + 60f;
                 frontCloud.y = y + 55f;
                 frontCloud.anchor = 18;
@@ -83,7 +83,7 @@ namespace CutTheRopeDX.GameMain
                 frontCloud.AddTimelinewithID(frontCloudTimeline, 0);
                 frontCloud.PlayTimeline(0);
 
-                Image bigCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
+                Image bigCloud = FromResource(Resources.Img.ObjGhost, 2);
                 bigCloud.x = x - 50f;
                 bigCloud.y = y + 55f;
                 bigCloud.anchor = 18;

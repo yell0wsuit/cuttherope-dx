@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
         public void AddSupportingCloudsTimelines()
         {
             // first right cloud
-            backCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
+            backCloud = FromResource(Resources.Img.ObjGhost, 6);
             backCloud.x = x + 85f;
             backCloud.y = y + 25f;
             backCloud.anchor = 18;
@@ -36,7 +36,7 @@ namespace CutTheRopeDX.GameMain
             backCloud.AddTimelinewithID(timeline, 0);
             backCloud.PlayTimeline(0);
 
-            backCloud2 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
+            backCloud2 = FromResource(Resources.Img.ObjGhost, 5);
             backCloud2.x = x + 65f;
             backCloud2.y = y + 55f;
             backCloud2.anchor = 18;
@@ -57,7 +57,7 @@ namespace CutTheRopeDX.GameMain
             backCloud2.PlayTimeline(0);
 
             // first left small cloud
-            backCloud3 = Image_createWithResIDQuad(Resources.Img.ObjGhost, 5);
+            backCloud3 = FromResource(Resources.Img.ObjGhost, 5);
             backCloud3.x = x - 90f;
             backCloud3.y = y + 15f;
             backCloud3.anchor = 18;
@@ -78,7 +78,7 @@ namespace CutTheRopeDX.GameMain
             backCloud3.PlayTimeline(0);
 
             // second left small cloud
-            Image smallCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 6);
+            Image smallCloud = FromResource(Resources.Img.ObjGhost, 6);
             smallCloud.x = x - 75f;
             smallCloud.y = y + 45f;
             smallCloud.anchor = 18;
@@ -100,7 +100,7 @@ namespace CutTheRopeDX.GameMain
             smallCloud.PlayTimeline(0);
 
             // big cloud
-            Image bigCloud = Image_createWithResIDQuad(Resources.Img.ObjGhost, 2);
+            Image bigCloud = FromResource(Resources.Img.ObjGhost, 2);
             bigCloud.x = x - 20f;
             bigCloud.y = y + 75f;
             bigCloud.anchor = 18;

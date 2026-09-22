@@ -39,7 +39,7 @@ namespace CutTheRopeDX.GameMain
             this.constraint = constraint;
             this.bombNumber = bombNumber ?? string.Empty;
 
-            bodySprite = CreateWithResID(new GameObject(), Resources.Img.ObjBomb, BodyQuad);
+            bodySprite = InitializeFromResource(new GameObject(), Resources.Img.ObjBomb, BodyQuad);
             bodySprite.anchor = bodySprite.parentAnchor = 18;
             bodySprite.blendingMode = 1;
             _ = AddChild(bodySprite);

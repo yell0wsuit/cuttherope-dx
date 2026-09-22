@@ -311,17 +311,17 @@ namespace CutTheRopeDX.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.5f));
             result.AddTimelinewithID(timeline, 1);
-            Image star1 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            Image star1 = Image.FromResource(Resources.Img.MenuResults, 14);
             star1.anchor = 18;
             star1.SetName("star1");
             Image.SetElementPositionWithQuadOffset(star1, Resources.Img.MenuResults, 0);
             AddPanelPiece(star1);
-            Image star2 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            Image star2 = Image.FromResource(Resources.Img.MenuResults, 14);
             star2.anchor = 18;
             star2.SetName("star2");
             Image.SetElementPositionWithQuadOffset(star2, Resources.Img.MenuResults, 1);
             AddPanelPiece(star2);
-            Image star3 = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 14);
+            Image star3 = Image.FromResource(Resources.Img.MenuResults, 14);
             star3.anchor = 18;
             star3.SetName("star3");
             Image.SetElementPositionWithQuadOffset(star3, Resources.Img.MenuResults, 2);
@@ -332,11 +332,11 @@ namespace CutTheRopeDX.GameMain
             passText.anchor = 18;
             passText.SetName("passText");
             AddPanelPiece(passText);
-            Image dataPlate = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 15);
+            Image dataPlate = Image.FromResource(Resources.Img.MenuResults, 15);
             dataPlate.anchor = 18;
             Image.SetElementPositionWithQuadOffset(dataPlate, Resources.Img.MenuResults, 4);
             AddPanelPiece(dataPlate);
-            stamp = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, ResourceMgr.GetResultStampQuad());
+            stamp = Image.FromResource(Resources.Img.MenuResults, ResourceMgr.GetResultStampQuad());
             Timeline stampTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(7);
             stampTimeline.AddKeyFrame(KeyFrame.MakeScale(3, 3, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             stampTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.5f));
@@ -392,7 +392,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured confetti particle element.</returns>
         public static BaseElement CreateConfettiParticleNear()
         {
-            Confetti confetti = Image.CreateWithResID(new Confetti(), Resources.Img.ConfettiParticles);
+            Confetti confetti = Image.InitializeFromResource(new Confetti(), Resources.Img.ConfettiParticles);
 
             // Spawned across the design box and animated in design coordinates, so it travels with
             // the panel it bursts over instead of falling where the design size alone would put it.
@@ -541,7 +541,7 @@ namespace CutTheRopeDX.GameMain
             CreateOpenCloseAnims();
             RootController root = Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(root.Pack);
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.MenuResults, 16);
+            Image image = Image.FromResource(Resources.Img.MenuResults, 16);
             image.rotationCenterX = (-image.width / 2f) + 1f;
             image.rotationCenterY = (-image.height / 2f) + 1f;
             image.scaleX = image.scaleY = 4f;
@@ -573,8 +573,8 @@ namespace CutTheRopeDX.GameMain
             // thing while one cover is exactly half the box.
             float seamX = boxWidth / 2f;
             float leftCoverX = seamX - quadSize.X;
-            Image coverBackgroundLeft = Image.Image_createWithResIDQuad(boxCover, 0);
-            Image coverBackgroundRight = Image.Image_createWithResIDQuad(boxCover, 0);
+            Image coverBackgroundLeft = Image.FromResource(boxCover, 0);
+            Image coverBackgroundRight = Image.FromResource(boxCover, 0);
             coverBackgroundLeft.x = leftCoverX;
             coverBackgroundLeft.rotationCenterX = -coverBackgroundLeft.width / 2f;
             coverBackgroundRight.rotationCenterX = coverBackgroundLeft.rotationCenterX;
@@ -615,8 +615,8 @@ namespace CutTheRopeDX.GameMain
             }
             coverBackgroundRight.AddTimelinewithID(timeline, 0);
             coverBackgroundRight.PlayTimeline(0);
-            Image spineLeft = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 6);
-            Image spineRight = Image.Image_createWithResIDQuad(Resources.Img.MenuLevelUi, 7);
+            Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
+            Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
             float loadingY = 80f;
             float leftOpenOffset = 50f;
             float rightRestInset = 10f;
@@ -656,8 +656,8 @@ namespace CutTheRopeDX.GameMain
             }
             spineRight.AddTimelinewithID(timeline, 0);
             spineRight.PlayTimeline(0);
-            Image coverSideLeft = Image.Image_createWithResIDQuad(boxCover, 1);
-            Image coverSideRight = Image.Image_createWithResIDQuad(boxCover, 1);
+            Image coverSideLeft = Image.FromResource(boxCover, 1);
+            Image coverSideRight = Image.FromResource(boxCover, 1);
             coverSideLeft.rotationCenterX = -coverSideLeft.width / 2f;
             coverSideRight.rotationCenterX = coverSideLeft.rotationCenterX;
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);

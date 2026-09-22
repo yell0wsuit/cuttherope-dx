@@ -449,7 +449,7 @@ namespace CutTheRopeDX.GameMain
                                 rope.chosenOne = false;
                             }
                         }
-                        Animation animation = Image.CreateWithResID(new Animation(), Resources.Img.ObjCandyFx);
+                        Animation animation = Image.InitializeFromResource(new Animation(), Resources.Img.ObjCandyFx);
                         animation.x = Candy.x;
                         animation.y = Candy.y;
                         animation.anchor = 18;
@@ -542,7 +542,7 @@ namespace CutTheRopeDX.GameMain
                         {
                             hudStar[starsCollected - 1].PlayTimeline(0);
                         }
-                        Animation starDisappear = Image.CreateWithResID(new Animation(), Resources.Img.ObjStarDisappear);
+                        Animation starDisappear = Image.InitializeFromResource(new Animation(), Resources.Img.ObjStarDisappear);
                         starDisappear.DoRestoreCutTransparency();
                         starDisappear.x = star.x;
                         starDisappear.y = star.y;
@@ -1209,7 +1209,7 @@ namespace CutTheRopeDX.GameMain
                             rocket.isOperating = -1;
                             rocket.startCandyRotation = body.Main.rotation;
 
-                            Image grid = Image.Image_createWithResID(Resources.Img.ObjRocket);
+                            Image grid = Image.FromResource(Resources.Img.ObjRocket);
                             grid.DoRestoreCutTransparency();
 
                             if (new RocketSparks().InitWithTotalParticlesAngleandImageGrid(40, rocket.rotation, grid) is RocketSparks rocketSparks)
@@ -2043,7 +2043,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="position">World position where the effect should appear.</param>
         private void PlayMechanicalHandClapEffectAt(Vector position)
         {
-            Image clapEffect = Image.Image_createWithResIDQuad(Resources.Img.ObjRoboHand, 9);
+            Image clapEffect = Image.FromResource(Resources.Img.ObjRoboHand, 9);
             clapEffect.anchor = 18;
             clapEffect.x = position.X;
             clapEffect.y = position.Y;

@@ -108,7 +108,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (drawerIndex == -1)
             {
-                Image image = Image.Image_create(t);
+                Image image = Image.FromTexture(t);
                 ImageMultiDrawer item = new ImageMultiDrawer().InitWithImageandCapacity(image, maxRowsOnScreen * maxColsOnScreen);
                 drawerIndex = drawers.Count;
                 drawers.Add(item);

@@ -35,7 +35,7 @@ namespace CutTheRopeDX.GameMain
 
             delayedDispatcher ??= new DelayedDispatcher();
 
-            fire = Image_createWithResIDQuad(Resources.Img.ObjLantern, FireQuad);
+            fire = FromResource(Resources.Img.ObjLantern, FireQuad);
             fire.anchor = fire.parentAnchor = 18;
             fire.color = RGBAColor.transparentRGBA;
             fire.DoRestoreCutTransparency();
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.GameMain
             timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_PING_PONG);
             fire.AddTimelinewithID(timeline, (int)LanternActivation.FireBounce);
 
-            idleForm = Image_createWithResIDQuad(Resources.Img.ObjLantern, LanternStartQuad);
+            idleForm = FromResource(Resources.Img.ObjLantern, LanternStartQuad);
             idleForm.anchor = idleForm.parentAnchor = 18;
             idleForm.DoRestoreCutTransparency();
             _ = AddChild(idleForm);
@@ -64,7 +64,7 @@ namespace CutTheRopeDX.GameMain
             timeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
             idleForm.AddTimelinewithID(timeline, (int)LanternActivation.Deactivation);
 
-            activeForm = Image_createWithResIDQuad(Resources.Img.ObjLantern, LanternEndQuad);
+            activeForm = FromResource(Resources.Img.ObjLantern, LanternEndQuad);
             activeForm.anchor = activeForm.parentAnchor = 18;
             activeForm.color = RGBAColor.transparentRGBA;
             activeForm.y = 1f;
@@ -87,12 +87,12 @@ namespace CutTheRopeDX.GameMain
             // Variants 3+ use the _lantern quad (quad 10) from their respective candy textures
             if (candyVariant < 3)
             {
-                innerCandy = Image_createWithResIDQuad(Resources.Img.ObjLantern, InnerCandyStartQuad + candyVariant);
+                innerCandy = FromResource(Resources.Img.ObjLantern, InnerCandyStartQuad + candyVariant);
             }
             else
             {
                 string candyResource = CandySkinHelper.GetCandyResource(candyVariant);
-                innerCandy = Image_createWithResIDQuad(candyResource, LanternQuadInCandyTexture);
+                innerCandy = FromResource(candyResource, LanternQuadInCandyTexture);
             }
 
             innerCandy.anchor = innerCandy.parentAnchor = 18;

@@ -22,10 +22,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The initialized gravity toggle button.</returns>
         public static ToggleButton CreateGravityButtonWithDelegate(IButtonDelegation d)
         {
-            Image normalUp = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
-            Image normalDown = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 21);
-            Image invertedUp = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
-            Image invertedDown = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 22);
+            Image normalUp = Image.FromResource(Resources.Img.ObjStarIdle, 21);
+            Image normalDown = Image.FromResource(Resources.Img.ObjStarIdle, 21);
+            Image invertedUp = Image.FromResource(Resources.Img.ObjStarIdle, 22);
+            Image invertedDown = Image.FromResource(Resources.Img.ObjStarIdle, 22);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(normalUp, normalDown, invertedUp, invertedDown, GameSceneButtonId.GravityToggle);
             toggleButton.delegateButtonDelegate = d;
             return toggleButton;
@@ -76,7 +76,7 @@ namespace CutTheRopeDX.GameMain
             {
                 const int HudUiStarFirstQuad = 1;
                 const int HudUiStarLastQuad = 11;
-                hudStar[i] = Image.CreateWithResID(new Animation(), Resources.Img.HudUi);
+                hudStar[i] = Image.InitializeFromResource(new Animation(), Resources.Img.HudUi);
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
                 _ = hudStar[i].AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_NO_LOOP, HudUiStarFirstQuad, HudUiStarLastQuad);
                 hudStar[i].SetPauseAtIndexforAnimation(10, 0);
@@ -177,7 +177,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="ys">Additional Y offset for the image.</param>
         public void CreateEarthImageWithOffsetXY(float xs, float ys)
         {
-            Image image = Image.Image_createWithResIDQuad(Resources.Img.ObjStarIdle, 23);
+            Image image = Image.FromResource(Resources.Img.ObjStarIdle, 23);
             image.anchor = 18;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             timeline.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));

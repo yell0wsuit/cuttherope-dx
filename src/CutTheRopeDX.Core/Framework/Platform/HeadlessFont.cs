@@ -70,7 +70,7 @@ namespace CutTheRopeDX.Framework.Platform
         public override Image GetCharmap(int i)
         {
             // Any loaded atlas works; Text only needs a real Image to build its quad drawer.
-            return charmap ??= Image.Image_createWithResIDQuad(Resources.Img.HudUi, 0);
+            return charmap ??= Image.FromResource(Resources.Img.HudUi, 0);
         }
     }
 }

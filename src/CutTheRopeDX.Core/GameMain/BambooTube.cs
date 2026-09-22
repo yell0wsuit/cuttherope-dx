@@ -218,7 +218,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            Image grid = Image_createWithResID(Resources.Img.ObjBambooTube);
+            Image grid = FromResource(Resources.Img.ObjBambooTube);
             grid.DoRestoreCutTransparency();
             float angle = float.RadiansToDegrees(VectAngleNormalized(VectSub(bambooHoleOut, Vect(x, y))));
             if (new LeafParticles().Init(5, angle, grid, 0f) is LeafParticles bambooParticles)
@@ -328,13 +328,13 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         private void SetupBambooShellSprites()
         {
-            bambooBackSprite = Image_createWithResIDQuad(Resources.Img.ObjBambooTube, BambooBackQuad);
+            bambooBackSprite = FromResource(Resources.Img.ObjBambooTube, BambooBackQuad);
             bambooBackSprite.DoRestoreCutTransparency();
             bambooBackSprite.anchor = 9;
             bambooBackSprite.parentAnchor = 9;
             _ = AddChild(bambooBackSprite);
 
-            bambooFrontSprite = Image_createWithResIDQuad(Resources.Img.ObjBambooTube, BambooFrontQuad);
+            bambooFrontSprite = FromResource(Resources.Img.ObjBambooTube, BambooFrontQuad);
             bambooFrontSprite.DoRestoreCutTransparency();
             bambooFrontSprite.anchor = 9;
             bambooFrontSprite.parentAnchor = 9;

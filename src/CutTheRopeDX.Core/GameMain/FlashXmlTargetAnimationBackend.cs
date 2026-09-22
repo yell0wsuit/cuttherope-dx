@@ -521,7 +521,7 @@ namespace CutTheRopeDX.GameMain
             {
                 FlashXmlPartDefinition partDefinition = definition.Parts[i];
 
-                FlashXmlImage part = Image.CreateWithResID(new FlashXmlImage(), partDefinition.TextureResourceName);
+                FlashXmlImage part = Image.InitializeFromResource(new FlashXmlImage(), partDefinition.TextureResourceName);
                 part.anchor = 9;
                 part.parentAnchor = 9;
                 part.visible = ShouldStartVisible(partDefinition, idleLoopTimelineId);
