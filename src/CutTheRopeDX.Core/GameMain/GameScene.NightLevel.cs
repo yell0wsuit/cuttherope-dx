@@ -73,7 +73,7 @@ namespace CutTheRopeDX.GameMain
                 {
                     if (body.Role != CandyBodyRole.Whole)
                     {
-                        HandleCandyIntersection(ctx.WholeBody.Point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
+                        CandyCollision.HandleCandyIntersection(ctx.WholeBody.Point, body.Point, ctx.collisionDistanceOverride ?? LightBulbDefinition.CollisionDistance);
                     }
                 }
             }
