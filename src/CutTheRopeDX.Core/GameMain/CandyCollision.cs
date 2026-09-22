@@ -145,28 +145,27 @@ namespace CutTheRopeDX.GameMain
 
             if (fullResolve)
             {
-                // Equal-mass elastic velocity exchange along the contact axis. The engine
-                // normalizes the solve by collisionDist (the radius sum), not the live distance.
-                float avX = a.v.X;
-                float avY = a.v.Y;
-                float bvX = b.v.X;
+                // Velocity exchange: split each velocity into its component along the contact axis
+                // and its tangent, then swap the axis components. The engine normalizes the axis by
+                // collisionDist (the radius sum), not the live distance, so the exchanged
+                // velocities also shrink by (distance / collisionDist)^2.
+                //
+                // b's two components read a.v.X where b.v.Y would make this a true elastic swap.
+                // Both Cut the Rope and Time Travel on iOS do exactly this, e.g. a bulb dropped
+                // onto a candy lands dead instead of knocking it down,
+                // and a side-on hit kicks b vertically. Kept for parity with the original.
+                float axisX = -dx / collisionDist;
+                float axisY = -dy / collisionDist;
 
-                float dxBA = -dx; // b.x - a.x
-                float dyBA = -dy; // b.y - a.y
-                float c = dxBA / collisionDist;
-                float s = dyBA / collisionDist;
+                float aAlong = (a.v.X * axisX) + (a.v.Y * axisY);
+                float aAcross = (a.v.Y * axisX) - (a.v.X * axisY);
+                float bAlong = (b.v.X * axisX) + (a.v.X * axisY);
+                float bAcross = (a.v.X * axisX) - (b.v.X * axisY);
 
-                float t28 = dxBA * avX;
-                float t29 = (t28 + (dyBA * avY)) / collisionDist;
-                float t30 = dyBA * avX;
-                float t31 = (t30 + (dxBA * bvX)) / collisionDist;
-                float t32 = ((dxBA * avY) - t30) / collisionDist;
-                float t35 = (t28 - (bvX * dyBA)) / collisionDist;
-
-                a.v.X = (t31 * c) - (t32 * s);
-                a.v.Y = (t32 * c) + (t31 * s);
-                b.v.X = (t29 * c) - (t35 * s);
-                b.v.Y = (t35 * c) + (t29 * s);
+                a.v.X = (bAlong * axisX) - (aAcross * axisY);
+                a.v.Y = (aAcross * axisX) + (bAlong * axisY);
+                b.v.X = (aAlong * axisX) - (bAcross * axisY);
+                b.v.Y = (bAcross * axisX) + (aAlong * axisY);
 
                 a.pos.X += nx * half;
                 a.pos.Y += ny * half;
