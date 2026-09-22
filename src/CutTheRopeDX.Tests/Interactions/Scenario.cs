@@ -66,13 +66,18 @@ namespace CutTheRopeDX.Tests.Interactions
         /// <param name="x">Level-space X.</param>
         /// <param name="y">Level-space Y.</param>
         /// <param name="number">Optional candy key, for ropes that bind by <c>candyNumber</c>.</param>
+        /// <param name="isDriven">Makes it a Time Travel flying candy that copies the other candy.</param>
         /// <returns>This scenario.</returns>
-        public Scenario Candy(int x, int y, string number = null)
+        public Scenario Candy(int x, int y, string number = null, bool isDriven = false)
         {
             XElement candy = Node("candy", x, y);
             if (number != null)
             {
                 candy.SetAttributeValue("candyNumber", number);
+            }
+            if (isDriven)
+            {
+                candy.SetAttributeValue("isDriven", Flag(true));
             }
 
             return Add(candy);

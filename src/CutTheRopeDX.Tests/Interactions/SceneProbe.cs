@@ -579,6 +579,15 @@ namespace CutTheRopeDX.Tests.Interactions
             return pool.GetChilds().Values.OfType<CandyBreak>().Count();
         }
 
+        /// <summary>Number of live broken-wing bursts in the scene animation pool.</summary>
+        /// <param name="scene">Scene to inspect.</param>
+        /// <returns>The live wing-break effect count.</returns>
+        public static int WingsBreakEffectCount(this GameScene scene)
+        {
+            AnimationsPool pool = Field<AnimationsPool>(scene, "aniPool");
+            return pool.GetChilds().Values.OfType<WingsBreak>().Count();
+        }
+
         /// <summary>Number of live bubble-pop animations in the scene animation pool.</summary>
         /// <param name="scene">Scene to inspect.</param>
         /// <returns>The live bubble-pop effect count.</returns>
