@@ -189,6 +189,22 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// How stretched a rope is, read from the length of its first drawn segment: 0 at or near
+        /// its rest length, then 1 to 3 as it is pulled tighter. Rope steering - a candy turning with
+        /// its rope, a rocket aligning to it - only runs while this is above 0.
+        /// </summary>
+        /// <param name="segmentLength">Length of the rope's first segment.</param>
+        /// <returns>The stretch level, 0 to 3.</returns>
+        internal static int StretchLevelFor(float segmentLength)
+        {
+            return segmentLength <= BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeRelaxThresholdSoft
+                ? 0
+                : segmentLength <= BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeRelaxThresholdMedium
+                    ? 1
+                    : segmentLength <= BUNGEE_REST_LEN + ActivePhysicsConstants.BungeeRelaxThresholdHard ? 2 : 3;
+        }
+
+        /// <summary>
         /// Draws an entire bungee rope by sampling a bezier curve through the given constraint points.
         /// </summary>
         /// <param name="b">The bungee instance being drawn.</param>
@@ -215,14 +231,7 @@ namespace CutTheRopeDX.GameMain
             RGBAColor shadeColor1 = drawColors.ShadeColor1;
             RGBAColor shadeColor2 = drawColors.ShadeColor2;
 
-            float relaxThresholdSoft = ActivePhysicsConstants.BungeeRelaxThresholdSoft;
-            float relaxThresholdMedium = ActivePhysicsConstants.BungeeRelaxThresholdMedium;
-            float relaxThresholdHard = ActivePhysicsConstants.BungeeRelaxThresholdHard;
-            b.relaxed = segmentLength <= BUNGEE_REST_LEN + relaxThresholdSoft
-                ? 0
-                : segmentLength <= BUNGEE_REST_LEN + relaxThresholdMedium
-                    ? 1
-                    : segmentLength <= BUNGEE_REST_LEN + relaxThresholdHard ? 2 : 3;
+            b.relaxed = StretchLevelFor(segmentLength);
             bool useAlternateStripe = false;
             int sampleCount = (count - 1) * points;
             float[] pointBuffer = new float[sampleCount * 2];
