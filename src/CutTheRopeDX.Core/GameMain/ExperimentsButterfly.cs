@@ -21,10 +21,8 @@ namespace CutTheRopeDX.GameMain
     /// <see cref="stripScale"/>.
     /// </para>
     /// <para>
-    /// The wings flap in 3D: iOS rotates them about horizontal axes under an orthographic
-    /// projection. Seen through that projection a 3D rotation is only a 2D linear map, so the
-    /// same result is drawn here with the renderer's 2D rotate and scale; see
-    /// <see cref="ApplyRotations"/>.
+    /// The wings flap in 3D: they rotate about axes in the screen's plane under the orthographic
+    /// projection, which foreshortens them as they swing.
     /// </para>
     /// </remarks>
     internal sealed class ExperimentsButterfly : BaseElement
@@ -240,6 +238,7 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <inheritdoc />
+        /// <remarks>The iOS <c>-[Butterfly draw]</c>, call for call.</remarks>
         public override void Draw()
         {
             PreDraw();
@@ -251,7 +250,8 @@ namespace CutTheRopeDX.GameMain
             Renderer.Translate(cx, cy, 0f);
             if (perched)
             {
-                ApplyRotations(1f, (-15f, 0f, 0f, 1f), (35f, -0.5f, 0.5f, 0f));
+                Renderer.Rotate(-15f, 0f, 0f, 1f);
+                Renderer.Rotate(35f, -0.5f, 0.5f, 0f);
             }
             Renderer.Translate(-cx, -cy, 0f);
             body.Draw();
@@ -261,11 +261,14 @@ namespace CutTheRopeDX.GameMain
             Renderer.Translate(cx, cy, 0f);
             if (perched)
             {
-                ApplyRotations(0.95f - (wingAngle * 0.1f / 70f), (35f, -0.5f, 0.5f, 0f), (wingAngle, 1f, -0.5f, 0f));
+                float shrink = 0.95f - (wingAngle * 0.1f / 70f);
+                Renderer.Scale(shrink, shrink, 1f);
+                Renderer.Rotate(35f, -0.5f, 0.5f, 0f);
+                Renderer.Rotate(wingAngle, 1f, -0.5f, 0f);
             }
             else
             {
-                ApplyRotations(1f, (wingAngle, 1f, 0f, 0f));
+                Renderer.Rotate(wingAngle, 1f, 0f, 0f);
             }
             Renderer.Translate(-cx, -cy, 0f);
             rearWing.Draw();
@@ -275,94 +278,17 @@ namespace CutTheRopeDX.GameMain
             Renderer.Translate(cx, cy, 0f);
             if (perched)
             {
-                ApplyRotations(1f, (35f, -0.5f, 0.5f, 0f), (-wingAngle, 1f, -0.5f, 0f));
+                Renderer.Rotate(35f, -0.5f, 0.5f, 0f);
+                Renderer.Rotate(-wingAngle, 1f, -0.5f, 0f);
             }
             else
             {
-                ApplyRotations(1f, (-180f - wingAngle, 1f, 0f, 0f));
+                Renderer.Rotate(-180f - wingAngle, 1f, 0f, 0f);
             }
             Renderer.Translate(-cx, -cy, 0f);
             frontWing.Draw();
             Renderer.PopMatrix();
             PostDraw();
-        }
-
-        /// <summary>
-        /// Applies what a chain of OpenGL <c>glRotatef</c> calls does to the plane under an
-        /// orthographic projection, after a uniform scale.
-        /// </summary>
-        /// <remarks>
-        /// The rotations are multiplied as 3D matrices in call order and the depth row and
-        /// column are dropped, which is all an orthographic projection keeps. What remains is a
-        /// 2D linear map; it is split into a rotation, a scale that may mirror, and a second
-        /// rotation (a 2x2 singular value decomposition), which the renderer applies natively.
-        /// </remarks>
-        /// <param name="scale">Uniform scale applied first.</param>
-        /// <param name="rotations">Angle in degrees and axis for each <c>glRotatef</c>, in call order.</param>
-        private static void ApplyRotations(float scale, params (float Degrees, float X, float Y, float Z)[] rotations)
-        {
-            float[,] m = { { scale, 0f, 0f }, { 0f, scale, 0f }, { 0f, 0f, scale } };
-            foreach ((float degrees, float ax, float ay, float az) in rotations)
-            {
-                m = Multiply(m, RotationMatrix(degrees, ax, ay, az));
-            }
-
-            float e = (m[0, 0] + m[1, 1]) / 2f;
-            float f = (m[0, 0] - m[1, 1]) / 2f;
-            float g = (m[1, 0] + m[0, 1]) / 2f;
-            float h = (m[1, 0] - m[0, 1]) / 2f;
-            float q = MathF.Sqrt((e * e) + (h * h));
-            float r = MathF.Sqrt((f * f) + (g * g));
-            float a1 = MathF.Atan2(g, f);
-            float a2 = MathF.Atan2(h, e);
-            float first = (a2 + a1) / 2f;
-            float second = (a2 - a1) / 2f;
-            Renderer.Rotate(first * 180f / MathF.PI, 0f, 0f, 1f);
-            Renderer.Scale(q + r, q - r, 1f);
-            Renderer.Rotate(second * 180f / MathF.PI, 0f, 0f, 1f);
-        }
-
-        /// <summary>
-        /// Builds the matrix <c>glRotatef</c> multiplies by, for column vectors.
-        /// </summary>
-        /// <param name="degrees">Rotation angle in degrees.</param>
-        /// <param name="x">Axis X.</param>
-        /// <param name="y">Axis Y.</param>
-        /// <param name="z">Axis Z.</param>
-        /// <returns>The 3x3 rotation matrix.</returns>
-        private static float[,] RotationMatrix(float degrees, float x, float y, float z)
-        {
-            float length = MathF.Sqrt((x * x) + (y * y) + (z * z));
-            x /= length;
-            y /= length;
-            z /= length;
-            float radians = degrees * MathF.PI / 180f;
-            float c = MathF.Cos(radians);
-            float s = MathF.Sin(radians);
-            float t = 1f - c;
-            return new float[,]
-            {
-                { (t * x * x) + c, (t * x * y) - (s * z), (t * x * z) + (s * y) },
-                { (t * x * y) + (s * z), (t * y * y) + c, (t * y * z) - (s * x) },
-                { (t * x * z) - (s * y), (t * y * z) + (s * x), (t * z * z) + c },
-            };
-        }
-
-        /// <summary>Multiplies two 3x3 matrices.</summary>
-        /// <param name="a">Left matrix.</param>
-        /// <param name="b">Right matrix.</param>
-        /// <returns><paramref name="a"/> times <paramref name="b"/>.</returns>
-        private static float[,] Multiply(float[,] a, float[,] b)
-        {
-            float[,] result = new float[3, 3];
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    result[i, j] = (a[i, 0] * b[0, j]) + (a[i, 1] * b[1, j]) + (a[i, 2] * b[2, j]);
-                }
-            }
-            return result;
         }
 
         /// <summary>

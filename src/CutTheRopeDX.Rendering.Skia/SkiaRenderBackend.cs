@@ -228,7 +228,7 @@ namespace CutTheRopeDX.Rendering.Skia
         /// <inheritdoc />
         public void Rotate(float angle, float x, float y, float z)
         {
-            _matrices.RotateDegrees(angle);
+            _matrices.RotateDegrees(angle, x, y, z);
         }
 
         /// <inheritdoc />

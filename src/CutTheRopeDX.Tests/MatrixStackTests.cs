@@ -29,6 +29,28 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void RotatingAboutZMatchesTheFlatRotation()
+        {
+            MatrixStack flat = new();
+            flat.RotateDegrees(30f);
+            MatrixStack axis = new();
+            axis.RotateDegrees(30f, 0f, 0f, 1f);
+            Assert.Equal(flat.ModelView, axis.ModelView);
+        }
+
+        [Fact]
+        public void RotatingAboutXForeshortensLikeGlRotatef()
+        {
+            // glRotatef(60, 1, 0, 0) under an orthographic projection keeps X and scales Y by
+            // cos 60: the sprite tips away from the screen without any perspective.
+            MatrixStack stack = new();
+            stack.RotateDegrees(60f, 1f, 0f, 0f);
+            Vector3 moved = Vector3.Transform(new Vector3(10f, 10f, 0f), stack.ModelView);
+            Assert.Equal(10f, moved.X, Tolerance);
+            Assert.Equal(5f, moved.Y, Tolerance);
+        }
+
+        [Fact]
         public void PushAndPopRestoreTheMatrix()
         {
             MatrixStack stack = new();
