@@ -211,6 +211,54 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Builds the sheet the loading screen, the level picker and the level transition share:
+        /// the backdrop with the scroll hung along its bottom edge, laid out over the design box.
+        /// </summary>
+        /// <param name="onSheet">Drawn over the backdrop and under the scroll, or <see langword="null"/>.</param>
+        /// <returns>The sheet, <see cref="ViewportLayout.DesignWidth"/> by <see cref="ViewportLayout.DesignHeight"/>.</returns>
+        internal static BaseElement CreateExperimentsSheet(BaseElement onSheet = null)
+        {
+            float width = ViewportLayout.DesignWidth;
+            float height = ViewportLayout.DesignHeight;
+            BaseElement sheet = new()
+            {
+                width = (int)width,
+                height = (int)height,
+            };
+            sheet.anchor = sheet.parentAnchor = 9;
+
+            Image backdrop = Image.FromResource(Resources.BackgroundImg.MenuExpLoadingBgr);
+            backdrop.anchor = backdrop.parentAnchor = 9;
+            backdrop.scaleX = width / backdrop.width;
+            backdrop.scaleY = height / backdrop.height;
+            backdrop.x = (width - backdrop.width) / 2f;
+            backdrop.y = (height - backdrop.height) / 2f;
+            _ = sheet.AddChild(backdrop);
+            if (onSheet != null)
+            {
+                _ = sheet.AddChild(onSheet);
+            }
+
+            Image scroll = Image.FromResource(Resources.Img.MenuExpLoadingScroll, 0);
+            scroll.anchor = scroll.parentAnchor = 9;
+            scroll.scaleX = width / scroll.width;
+            scroll.scaleY = ExpScrollScaleY;
+            scroll.x = (width - scroll.width) / 2f;
+            scroll.y = height + ExpScrollCenterBelow - (scroll.height / 2f);
+            _ = sheet.AddChild(scroll);
+            return sheet;
+        }
+
+        /// <summary>
+        /// How far the sheet's scroll hangs below the sheet's bottom edge, pull ring included.
+        /// </summary>
+        /// <returns>The overhang in design units.</returns>
+        internal static float ExperimentsSheetOverhang()
+        {
+            return ExpScrollCenterBelow + (Image.GetQuadSize(Resources.Img.MenuExpLoadingScroll, 0).Y * ExpScrollScaleY / 2f);
+        }
+
+        /// <summary>
         /// Where iOS's portrait frame, which the porthole machine is drawn in, lands on the screen.
         /// </summary>
         /// <param name="visible">The logical region the viewport exposes.</param>

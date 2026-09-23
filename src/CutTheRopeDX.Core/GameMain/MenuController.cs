@@ -1459,33 +1459,48 @@ namespace CutTheRopeDX.GameMain
         {
             float transitionDuration = 0.3f;
             MenuView menuView = new();
-            string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
-            Image coverLeft = Image.FromResource(boxCover, 0);
-            Image coverRight = Image.FromResource(boxCover, 0);
-            float x = (VisibleBounds.w / 2f) - coverLeft.width;
-            coverLeft.x = x;
-            coverLeft.passTransformationsToChilds = false;
-            coverRight.x = VisibleBounds.w / 2f;
-            coverRight.rotation = 180f;
-            coverRight.y -= 0.5f;
-            levelsCoverLeft = coverLeft;
-            levelsCoverRight = coverRight;
             Timeline coverDimTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
-            _ = coverLeft.AddTimeline(coverDimTimeline);
-            coverLeft.SetName("levelsBack");
-            _ = coverLeft.AddChild(coverRight);
-            _ = menuView.AddChild(coverLeft);
-            Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
-            Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
-            spineLeft.y = 80f;
-            spineRight.y = 80f;
-            levelsSpineLeft = spineLeft;
-            levelsSpineRight = spineRight;
-            PlaceLevelSpines(VisibleBounds);
-            _ = menuView.AddChild(spineLeft);
-            _ = menuView.AddChild(spineRight);
+            if (MenuTheme.IsExperiments)
+            {
+                // Experiments draws the loading screen's sheet here instead of the box's cover.
+                BaseElement sheet = LoadingView.CreateExperimentsSheet();
+                sheet.SetName("levelsBack");
+                _ = sheet.AddTimeline(coverDimTimeline);
+                levelsSheet = sheet;
+                levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
+                PlaceLevelsSheet(VisibleBounds);
+                _ = menuView.AddChild(sheet);
+            }
+            else
+            {
+                levelsSheet = null;
+                string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
+                Image coverLeft = Image.FromResource(boxCover, 0);
+                Image coverRight = Image.FromResource(boxCover, 0);
+                float x = (VisibleBounds.w / 2f) - coverLeft.width;
+                coverLeft.x = x;
+                coverLeft.passTransformationsToChilds = false;
+                coverRight.x = VisibleBounds.w / 2f;
+                coverRight.rotation = 180f;
+                coverRight.y -= 0.5f;
+                levelsCoverLeft = coverLeft;
+                levelsCoverRight = coverRight;
+                _ = coverLeft.AddTimeline(coverDimTimeline);
+                coverLeft.SetName("levelsBack");
+                _ = coverLeft.AddChild(coverRight);
+                _ = menuView.AddChild(coverLeft);
+                Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
+                Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
+                spineLeft.y = 80f;
+                spineRight.y = 80f;
+                levelsSpineLeft = spineLeft;
+                levelsSpineRight = spineRight;
+                PlaceLevelSpines(VisibleBounds);
+                _ = menuView.AddChild(spineLeft);
+                _ = menuView.AddChild(spineRight);
+            }
             Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
             shadowImage.SetName("shadow");
             shadowImage.anchor = shadowImage.parentAnchor = 18;
@@ -1503,7 +1518,8 @@ namespace CutTheRopeDX.GameMain
             shadowImage.PlayTimeline(1);
             _ = menuView.AddChild(shadowImage);
             levelsShadow = shadowImage;
-            HBox hBox = CreateTextWithStar(Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
+            string packStars = Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture);
+            HBox hBox = MenuTheme.IsExperiments ? CreateExperimentsTextWithStar(packStars) : CreateTextWithStar(packStars);
 
             hBox.x = -30f;
             hBox.y = 40f;
