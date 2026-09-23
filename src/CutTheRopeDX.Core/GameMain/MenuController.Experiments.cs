@@ -92,6 +92,7 @@ namespace CutTheRopeDX.GameMain
         private ExperimentsButterfly expButterfly;
 
         /// <summary>Audio atlas quads: two button plates, three icons and the cross.</summary>
+        private const int ExpAudioQuadVoice = 2;
         private const int ExpAudioQuadSound = 3;
         private const int ExpAudioQuadMusic = 4;
         private const int ExpAudioQuadCross = 5;
@@ -143,6 +144,25 @@ namespace CutTheRopeDX.GameMain
                 _ = plate.AddChild(cross);
             }
             return plate;
+        }
+
+        /// <summary>
+        /// Creates the Experiments voice toggle, which the classic menus have no art for. The
+        /// engine's <c>+[MenuController createAudioButtonWithQuad:Delegate:ID:]</c> with the
+        /// speech bubble.
+        /// </summary>
+        /// <param name="delegateValue">Button delegate that receives press events.</param>
+        /// <returns>The toggle, showing the voice as on.</returns>
+        private static ToggleButton CreateExperimentsVoiceToggle(IButtonDelegation delegateValue)
+        {
+            ToggleButton toggle = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(
+                CreateExperimentsAudioElement(ExpAudioQuadVoice, false, false),
+                CreateExperimentsAudioElement(ExpAudioQuadVoice, false, true),
+                CreateExperimentsAudioElement(ExpAudioQuadVoice, true, false),
+                CreateExperimentsAudioElement(ExpAudioQuadVoice, true, true),
+                MenuButtonId.ToggleVoice);
+            toggle.delegateButtonDelegate = delegateValue;
+            return toggle;
         }
 
         /// <summary>

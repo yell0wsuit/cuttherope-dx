@@ -144,7 +144,7 @@ namespace CutTheRopeDX.Tests
         {
             WithExperiments(2560, 1440, controller =>
             {
-                // Sound and music; the click-to-cut switch is a toggle too, drawn with its own art.
+                // Sound, music and voice; the click-to-cut switch is a toggle too, drawn with its own art.
                 Texture2D audio = Application.GetTexture(Resources.Img.MenuExpAudio);
                 int audioToggles = 0;
                 foreach (ToggleButton toggle in All<ToggleButton>(controller.GetView(MenuController.VIEW_OPTIONS)))
@@ -154,8 +154,29 @@ namespace CutTheRopeDX.Tests
                         audioToggles++;
                     }
                 }
-                Assert.Equal(2, audioToggles);
+                Assert.Equal(3, audioToggles);
             });
+        }
+
+        [Fact]
+        public void TheVoiceToggleFlipsTheVoicePreference()
+        {
+            bool original = Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON");
+            try
+            {
+                WithExperiments(2560, 1440, controller =>
+                {
+                    Preferences.SetBooleanForKey(true, "PREFS_EXP_VOICE_ON", false);
+                    controller.OnButtonPressed(MenuButtonId.ToggleVoice);
+                    Assert.False(Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON"));
+                    controller.OnButtonPressed(MenuButtonId.ToggleVoice);
+                    Assert.True(Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON"));
+                });
+            }
+            finally
+            {
+                Preferences.SetBooleanForKey(original, "PREFS_EXP_VOICE_ON", false);
+            }
         }
 
         [Theory]

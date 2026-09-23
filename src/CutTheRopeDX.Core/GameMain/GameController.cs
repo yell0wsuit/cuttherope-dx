@@ -242,6 +242,7 @@ namespace CutTheRopeDX.GameMain
             navigationExitActive = false;
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
+            ExperimentsVoice.LevelStarted();
         }
 
         /// <summary>
@@ -353,6 +354,7 @@ namespace CutTheRopeDX.GameMain
             //RootController.SetHacked();
             //}
             SoundMgr.PlaySound(Resources.Snd.Win);
+            ExperimentsVoice.LevelWon(result.StarsCollected);
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);

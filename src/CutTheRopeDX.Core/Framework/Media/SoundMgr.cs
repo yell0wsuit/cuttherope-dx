@@ -69,6 +69,39 @@ namespace CutTheRopeDX.Framework.Media
         }
 
         /// <summary>
+        /// Plays a spoken line on the voice channel, when the voice is on. Voices get one channel
+        /// between them, as in the iOS <c>+[CTRSoundMgr playVoice:]</c>: a line that would talk
+        /// over one still playing is dropped rather than queued.
+        /// </summary>
+        /// <param name="soundResourceName">The voice line to play.</param>
+        public static void PlayVoice(string soundResourceName)
+        {
+            if (string.IsNullOrWhiteSpace(soundResourceName)
+                || !Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON")
+                || s_voice?.State == AudioPlaybackState.Playing)
+            {
+                return;
+            }
+
+            s_voice = Application.SharedSoundMgr().PlaySoundTrackedCore(soundResourceName);
+        }
+
+        /// <summary>
+        /// Stops the voice line playing, if any.
+        /// </summary>
+        public static void StopVoice()
+        {
+            if (s_voice != null)
+            {
+                StopSound(s_voice);
+                s_voice = null;
+            }
+        }
+
+        /// <summary>The voice line last started, which holds the voice channel while it plays.</summary>
+        private static ISoundInstance s_voice;
+
+        /// <summary>
         /// Plays an Om Nom sound, swapping to a skin-specific variant when available.
         /// </summary>
         /// <param name="soundResourceName">The base sound resource name to resolve and play.</param>

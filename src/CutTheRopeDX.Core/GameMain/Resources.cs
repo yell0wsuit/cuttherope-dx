@@ -774,6 +774,26 @@ namespace CutTheRopeDX.GameMain
             public const string TTCyborgSleep03 = "Cyborg_sleep03";
             public const string TTSynchroIdle = "synchro_idle";
             public const string TTWingsBomb = "wings_bomb";
+
+            // The professor voice.
+            public const string VoiceFail01 = "voice_fail_01";
+            public const string VoiceFail02 = "voice_fail_02";
+            public const string VoiceStar00A = "voice_star_00a";
+            public const string VoiceStar00B = "voice_star_00b";
+            public const string VoiceStar01A = "voice_star_01a";
+            public const string VoiceStar01B = "voice_star_01b";
+            public const string VoiceStar02A = "voice_star_02a";
+            public const string VoiceStar02B = "voice_star_02b";
+            public const string VoiceStar02C = "voice_star_02c";
+            public const string VoiceStar03A = "voice_star_03a";
+            public const string VoiceStar03B = "voice_star_03b";
+            public const string VoiceStar03C = "voice_star_03c";
+            public const string VoiceStar03D = "voice_star_03d";
+            public const string VoiceStar03E = "voice_star_03e";
+            public const string VoiceStar03F = "voice_star_03f";
+            public const string VoiceStart01 = "voice_start_01";
+            public const string VoiceStart02 = "voice_start_02";
+            public const string VoiceStart03 = "voice_start_03";
         }
 
         /// <summary>
