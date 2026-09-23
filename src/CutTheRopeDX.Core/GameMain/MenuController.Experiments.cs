@@ -70,6 +70,7 @@ namespace CutTheRopeDX.GameMain
         private const int ExpQuadFirstMonster = 5;
         private const int ExpMonsterCount = 8;
         private const int ExpQuadStar = 13;
+        private const int ExpQuadPerfect = 14;
         private const int ExpQuadBambooLock = 18;
 
         /// <summary>The pack iOS closes with bamboo instead of the padlock.</summary>
@@ -351,6 +352,12 @@ namespace CutTheRopeDX.GameMain
                 timeline.AddKeyFrame(KeyFrame.MakeScale(2, 2, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.5f));
                 _ = lockImage.AddTimeline(timeline);
                 _ = boxContainer.AddChild(lockImage);
+            }
+
+            // Every star in the pack collected: the badge sits on the box's corner, over the lock.
+            if (!isComingSoon && Preferences.IsPackPerfect(n))
+            {
+                _ = boxContainer.AddChild(CreateExperimentsBoxLayer(ExpQuadPerfect, "perfect"));
             }
 
             Timeline pressBounce = new Timeline().InitWithMaxKeyFramesOnTrack(4);
