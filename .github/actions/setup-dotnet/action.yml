@@ -12,6 +12,11 @@ description: Installs the .NET SDK and restores the NuGet package cache.
 #
 # No packages.lock.json in this repo: versions are pinned centrally in Directory.Packages.props,
 # so the project and props files decide what a restore produces.
+#
+# Pull requests only restore. A cache saved from a PR is scoped to that PR's merge ref, so no
+# other PR or branch can ever read it, yet each one is several hundred MB against the
+# repository's 10GB quota and pushes main's caches out. Main saves them instead, and every PR
+# reads from there.
 runs:
     using: composite
     steps:
@@ -19,10 +24,26 @@ runs:
           with:
               dotnet-version: "10.x"
 
-        - uses: actions/cache@v6
+        - id: key
+          shell: bash
+          run: |
+              echo "prefix=nuget-${{ runner.os }}-${{ github.job }}-" >> "$GITHUB_OUTPUT"
+              echo "hash=${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json', 'nuget.config') }}" >> "$GITHUB_OUTPUT"
+
+        - if: github.event_name != 'pull_request'
+          uses: actions/cache@v6
           with:
               path: ~/.nuget/packages
-              key: nuget-${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/*.csproj', 'Directory.*.props', 'global.json', 'nuget.config') }}
+              key: ${{ steps.key.outputs.prefix }}${{ steps.key.outputs.hash }}
               restore-keys: |
-                  nuget-${{ runner.os }}-${{ github.job }}-
+                  ${{ steps.key.outputs.prefix }}
+                  nuget-${{ runner.os }}-
+
+        - if: github.event_name == 'pull_request'
+          uses: actions/cache/restore@v6
+          with:
+              path: ~/.nuget/packages
+              key: ${{ steps.key.outputs.prefix }}${{ steps.key.outputs.hash }}
+              restore-keys: |
+                  ${{ steps.key.outputs.prefix }}
                   nuget-${{ runner.os }}-

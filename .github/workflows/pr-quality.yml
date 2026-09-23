@@ -1,9 +1,11 @@
 name: PR Code Quality
 
+# Also runs on main so the caches the PR runs restore from exist there: a PR can read main's
+# caches but never save one that another PR could use.
 on:
-    pull_request:
+    push:
         branches: [main]
-        paths:
+        paths: &quality-paths
             - "**/*.cs"
             - "**/*.csproj"
             - "**/*.props"
@@ -22,6 +24,9 @@ on:
             # The page decides which of the two published runtimes it can run, and that
             # decision lives entirely in these files.
             - "src/CutTheRopeDX.Browser/wwwroot/**"
+    pull_request:
+        branches: [main]
+        paths: *quality-paths
 
 permissions:
     contents: read
