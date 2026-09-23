@@ -79,6 +79,54 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void OnlyTheLastPackIsCagedAndItsCageShowsNoPrice()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                List<BaseElement> containers = Named(controller.GetView(MenuController.VIEW_PACK_SELECT), "boxContainer");
+                Texture2D packAtlas = Application.GetTexture(Resources.Img.MenuExpPackSelection);
+                int caged = Preferences.GetPacksCount() - 1;
+                for (int i = 1; i < Preferences.GetPacksCount(); i++)
+                {
+                    if (Preferences.GetUnlockedForPackLevel(i, 0) != UNLOCKEDSTATE.LOCKED)
+                    {
+                        continue;
+                    }
+                    Image cage = All<Image>(containers[i]).Find(image => image.texture == packAtlas && image.quadToDraw == 18);
+                    Assert.Equal(i == caged, cage != null);
+                    if (cage != null)
+                    {
+                        Assert.Empty(All<HBox>(cage));
+                    }
+                }
+            });
+        }
+
+        [Fact]
+        public void TheButterflyKeepsTheLockedCagedBoxCompany()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                int caged = Preferences.GetPacksCount() - 1;
+                ExperimentsButterfly butterfly = Find<ExperimentsButterfly>(controller.GetView(MenuController.VIEW_PACK_SELECT));
+                Assert.Equal(Preferences.GetUnlockedForPackLevel(caged, 0) == UNLOCKEDSTATE.LOCKED, butterfly != null);
+                if (butterfly == null)
+                {
+                    return;
+                }
+
+                // Heading for the caged box sends it in to land; it perches once there. The view is
+                // never scrolled here, so it crosses most of the strip at its on-screen speed.
+                controller.ScrollableContainerchangedTargetScrollPoint(null, caged);
+                for (int frame = 0; frame < 3000 && butterfly.Mode != ExperimentsButterfly.FlightMode.Landed; frame++)
+                {
+                    butterfly.Update(1f / 60f);
+                }
+                Assert.Equal(ExperimentsButterfly.FlightMode.Landed, butterfly.Mode);
+            });
+        }
+
+        [Fact]
         public void PackSelectRebuildsForANewShape()
         {
             WithExperiments(2560, 1440, controller =>

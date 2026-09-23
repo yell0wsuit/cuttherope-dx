@@ -73,8 +73,23 @@ namespace CutTheRopeDX.GameMain
         private const int ExpQuadPerfect = 14;
         private const int ExpQuadBambooLock = 18;
 
-        /// <summary>The pack iOS closes with bamboo instead of the padlock.</summary>
-        private const int ExpBambooPack = 7;
+        /// <summary>
+        /// How far right of the butterfly body's own spot on the box it perches (iOS 20), in
+        /// atlas pixels.
+        /// </summary>
+        private const float ExpButterflyPerchNudge = 20f * IosToAsset;
+
+        /// <summary>Speed the strip scrolls to the caged box when the butterfly is tapped (iOS 1.8).</summary>
+        private const float ExpButterflyScrollMultiplier = 1.8f;
+
+        /// <summary>
+        /// Whether the butterfly is still flying about this session. Every launch starts it
+        /// flying, as iOS does; tapping it sends it to perch on the caged box instead.
+        /// </summary>
+        private static bool expButterflyFlying = true;
+
+        /// <summary>The butterfly by the caged box, or <see langword="null"/> once that box is open.</summary>
+        private ExperimentsButterfly expButterfly;
 
         /// <summary>Audio atlas quads: two button plates, three icons and the cross.</summary>
         private const int ExpAudioQuadSound = 3;
@@ -198,6 +213,7 @@ namespace CutTheRopeDX.GameMain
                 _ = packRow.AddChild(element);
                 _ = packContainer.AddScrollPointAtXY(i * step, 0f);
             }
+            AddExperimentsButterfly(packRow, visible, scale, elementSize);
             _ = baseElement.AddChild(packContainer);
 
             HBox starTotal = CreateExperimentsTextWithStar(
@@ -323,11 +339,16 @@ namespace CutTheRopeDX.GameMain
                 int requiredStars = PackConfig.GetUnlockStars(n);
                 Image lockImage = CreateExperimentsLock(n);
                 _ = boxContainer.AddChild(lockImage);
-                HBox stars = CreateExperimentsTextWithStar(requiredStars.ToString(CultureInfo.InvariantCulture));
-                stars.anchor = stars.parentAnchor = 18;
-                stars.x = ExpLockStarsOffset.X;
-                stars.y = ExpLockStarsOffset.Y;
-                _ = lockImage.AddChild(stars);
+
+                // The padlock shows its price; the bamboo cage leaves it to the hint below.
+                if (!IsExperimentsCagedPack(n))
+                {
+                    HBox stars = CreateExperimentsTextWithStar(requiredStars.ToString(CultureInfo.InvariantCulture));
+                    stars.anchor = stars.parentAnchor = 18;
+                    stars.x = ExpLockStarsOffset.X;
+                    stars.y = ExpLockStarsOffset.Y;
+                    _ = lockImage.AddChild(stars);
+                }
 
                 Text hint = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 hint.SetName("hintText");
@@ -385,14 +406,25 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Creates the lock drawn over a closed box: bamboo on the last Experiments pack, the
-        /// padlock everywhere else.
+        /// Gets whether a pack is caged in bamboo rather than padlocked. iOS cages its last pack;
+        /// here that is the last of the packs.
+        /// </summary>
+        /// <param name="n">Displayed pack index.</param>
+        /// <returns><see langword="true"/> for the last pack.</returns>
+        private static bool IsExperimentsCagedPack(int n)
+        {
+            return n == Preferences.GetPacksCount() - 1;
+        }
+
+        /// <summary>
+        /// Creates the lock drawn over a closed box: bamboo on the last pack, the padlock
+        /// everywhere else.
         /// </summary>
         /// <param name="n">Displayed pack index.</param>
         /// <returns>The lock, in the box's frame.</returns>
         private static Image CreateExperimentsLock(int n)
         {
-            Image lockImage = n % ExpMonsterCount == ExpBambooPack
+            Image lockImage = IsExperimentsCagedPack(n)
                 ? Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadBambooLock)
                 : Image.FromResource(Resources.Img.MenuExpLock, 0);
             lockImage.DoRestoreCutTransparency();
@@ -418,6 +450,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             float scroll = packContainer.GetScroll().X;
+            expButterfly?.ViewLeft = scroll;
             float step = packContainer.TotalScrollPoints > 1
                 ? packContainer.GetScrollPoint(1).X - packContainer.GetScrollPoint(0).X
                 : 1f;
@@ -440,6 +473,107 @@ namespace CutTheRopeDX.GameMain
                     ExpMonsterIdle.GreenColor + ((ExpMonsterSelected.GreenColor - ExpMonsterIdle.GreenColor) * closeness),
                     ExpMonsterIdle.BlueColor + ((ExpMonsterSelected.BlueColor - ExpMonsterIdle.BlueColor) * closeness),
                     1f);
+            }
+        }
+
+        /// <summary>
+        /// Adds the butterfly while the caged box is still locked. iOS
+        /// <c>-[MenuController createPackSelect]</c>: it perches on the cage at once when the
+        /// picker opens on that box or has already been sent there this session, and otherwise
+        /// flies in.
+        /// </summary>
+        /// <param name="packRow">The strip's content, which the butterfly scrolls with.</param>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        /// <param name="scale">Scale the strip is drawn at.</param>
+        /// <param name="elementSize">Side of a pack element in logical units.</param>
+        private void AddExperimentsButterfly(BaseElement packRow, Rectangle visible, float scale, float elementSize)
+        {
+            expButterfly = null;
+            int caged = Preferences.GetPacksCount() - 1;
+            if (caged < 0 || boxes[caged] == null || Preferences.GetUnlockedForPackLevel(caged, 0) != UNLOCKEDSTATE.LOCKED)
+            {
+                return;
+            }
+
+            // Perched where the atlas draws the body on the box: the top of the cage's left pole.
+            BaseElement box = boxes[caged];
+            float boxTop = (visible.h / 2f) + box.y - (elementSize / 2f);
+            Vector bodyOffset = Image.GetQuadOffset(Resources.Img.MenuExpPackSelection, 19);
+            Vector bodySize = Image.GetQuadSize(Resources.Img.MenuExpPackSelection, 19);
+            Vector perch = new(
+                box.x + ((bodyOffset.X + (bodySize.X / 2f) + ExpButterflyPerchNudge) * scale),
+                boxTop + ((bodyOffset.Y + (bodySize.Y / 2f)) * scale));
+
+            ExperimentsButterfly butterfly = new(scale)
+            {
+                ViewSize = new Vector(visible.w, visible.h),
+            };
+            butterfly.SetLandingPoint(perch);
+            int lastPack = Math.Min(Preferences.GetLastBox(), Preferences.GetPacksCount());
+            butterfly.ViewLeft = ExperimentsViewLeftAt(lastPack);
+            butterfly.SetViewRect(butterfly.ViewLeft);
+            if (lastPack == caged || !expButterflyFlying)
+            {
+                butterfly.SetFlyingMode(ExperimentsButterfly.FlightMode.Landed);
+                butterfly.x = perch.X;
+                butterfly.y = perch.Y;
+            }
+            else
+            {
+                // Starts a little off the left of the screen and flies in.
+                butterfly.x = butterfly.ViewLeft - (butterfly.width * scale);
+                butterfly.y = visible.h / 3f;
+            }
+            butterfly.Tapped = () =>
+            {
+                expButterflyFlying = false;
+                butterfly.SetFlyingMode(ExperimentsButterfly.FlightMode.Landing);
+                packContainer.MoveToScrollPointmoveMultiplier(caged, ExpButterflyScrollMultiplier);
+            };
+            butterfly.Gone = () => expButterfly = null;
+            _ = packRow.AddChild(butterfly);
+            expButterfly = butterfly;
+        }
+
+        /// <summary>
+        /// Steers the butterfly as the picker heads for another box: toward the cage to land if
+        /// that is where it is going, otherwise over to the new box. iOS
+        /// <c>-[MenuController scrollableContainer:changedTargetScrollPoint:]</c>.
+        /// </summary>
+        /// <param name="i">Box the picker is heading for.</param>
+        private void SteerExperimentsButterfly(int i)
+        {
+            if (expButterfly == null || !expButterflyFlying || i >= packContainer.TotalScrollPoints)
+            {
+                return;
+            }
+
+            expButterfly.SetViewRect(ExperimentsViewLeftAt(i));
+            expButterfly.SetFlyingMode(IsExperimentsCagedPack(i)
+                ? ExperimentsButterfly.FlightMode.Landing
+                : ExperimentsButterfly.FlightMode.Transition);
+        }
+
+        /// <summary>
+        /// Gets where the screen's left edge falls in the strip's content once it rests on a box.
+        /// The container keeps its scroll points as negative offsets.
+        /// </summary>
+        /// <param name="i">Box index.</param>
+        /// <returns>The left edge in content coordinates.</returns>
+        private float ExperimentsViewLeftAt(int i)
+        {
+            return -packContainer.GetScrollPoint(i).X;
+        }
+
+        /// <summary>
+        /// Sends the butterfly away when the caged box opens.
+        /// </summary>
+        /// <param name="i">Box whose lock just came off.</param>
+        private void ReleaseExperimentsButterfly(int i)
+        {
+            if (expButterfly != null && IsExperimentsCagedPack(i))
+            {
+                expButterfly.FlyAway();
             }
         }
 

@@ -1358,6 +1358,10 @@ namespace CutTheRopeDX.GameMain
             {
                 Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
                 childWithName.PlayTimeline(0);
+                if (MenuTheme.IsExperiments)
+                {
+                    ReleaseExperimentsButterfly(i);
+                }
             }
             RootController root = Application.SharedRootController();
             if (showNextPackStatus && i == root.Pack + 1)
@@ -1381,6 +1385,10 @@ namespace CutTheRopeDX.GameMain
             pack = i;
             Preferences.SetLastBox(i);
             Preferences.SetLastGamePack(PackConfig.GetSaveSlot(i));
+            if (MenuTheme.IsExperiments)
+            {
+                SteerExperimentsButterfly(i);
+            }
         }
 
         /// <summary>
@@ -2074,6 +2082,12 @@ namespace CutTheRopeDX.GameMain
                         int scrollPoint = FixScrollPoint(currentPackIndex + leftScrollCount - scrollPacksRight);
                         packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
+
+                        // An arrow moves the strip without the container announcing a new target.
+                        if (MenuTheme.IsExperiments)
+                        {
+                            SteerExperimentsButterfly(scrollPoint);
+                        }
                         return;
                     }
                 case var id when id == MenuButtonId.PreviousPack:
@@ -2084,6 +2098,10 @@ namespace CutTheRopeDX.GameMain
                         int scrollPoint = FixScrollPoint(currentPackIndex - rightScrollCount + scrollPacksLeft);
                         packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
+                        if (MenuTheme.IsExperiments)
+                        {
+                            SteerExperimentsButterfly(scrollPoint);
+                        }
                         break;
                     }
                 case var id when id == MenuButtonId.ShowLanguage:
