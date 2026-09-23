@@ -299,6 +299,7 @@ namespace CutTheRopeDX.GameMain
             {
                 Image monster = CreateExperimentsBoxLayer(ExpQuadFirstMonster + (n % ExpMonsterCount), "boxPic");
                 monster.color = ExpMonsterIdle;
+                monster.hasColor = true;
                 _ = boxContainer.AddChild(monster);
             }
 
