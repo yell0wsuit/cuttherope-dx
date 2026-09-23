@@ -30,9 +30,48 @@ on:
 
 permissions:
     contents: read
+    pull-requests: read
 
 jobs:
+    # The trigger paths above also wake this workflow for Python and JavaScript changes, which
+    # the .NET job has no business spending minutes on. It still runs for content/ (the tests
+    # read the maps, locales and image manifest), for the icons the browser project links from
+    # distribution/, and for changes to this workflow or the shared actions.
+    changes:
+        runs-on: ubuntu-latest
+        outputs:
+            dotnet: ${{ steps.filter.outputs.dotnet }}
+        steps:
+            - id: filter
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  GH_REPO: ${{ github.repository }}
+                  EVENT: ${{ github.event_name }}
+                  PR: ${{ github.event.pull_request.number }}
+                  BEFORE: ${{ github.event.before }}
+                  AFTER: ${{ github.sha }}
+              run: |
+                  if [ "$EVENT" = pull_request ]; then
+                      files=$(gh api "repos/$GH_REPO/pulls/$PR/files" --paginate --jq '.[].filename')
+                  elif [ -n "$BEFORE" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ]; then
+                      files=$(gh api "repos/$GH_REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename')
+                  else
+                      # A new branch has no "before" to compare with; build rather than guess.
+                      echo "dotnet=true" >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+                  pattern='^(.*\.(cs|csproj|props|targets|slnx)|global\.json|nuget\.config|content/.*|distribution/icons/.*|\.github/actions/.*|\.github/workflows/pr-quality\.yml)$'
+                  if printf '%s\n' "$files" | grep -Eq "$pattern"; then
+                      echo "dotnet=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "dotnet=false" >> "$GITHUB_OUTPUT"
+                      echo "No C#, project or content changes; skipping the .NET job."
+                  fi
+
     code-quality:
+        needs: changes
+        # Runs if the filter failed too, so a broken check never silently skips the build.
+        if: ${{ !cancelled() && needs.changes.outputs.dotnet != 'false' }}
         runs-on: ubuntu-latest
 
         steps:
