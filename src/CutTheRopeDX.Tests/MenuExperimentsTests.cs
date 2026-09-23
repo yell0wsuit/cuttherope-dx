@@ -43,6 +43,42 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void OnlyAPerfectPackWearsTheBadge()
+        {
+            _ = HeadlessGame.Boot();
+            const int Pack = 0;
+            int slot = PackConfig.GetSaveSlot(Pack);
+            int levels = Preferences.GetLevelsInPackCount(Pack);
+            int[] original = new int[levels];
+            for (int level = 0; level < levels; level++)
+            {
+                original[level] = Preferences.GetStarsForPackLevel(slot, Pack, level);
+                Preferences.SetStarsForPackLevel(slot, 3, Pack, level);
+            }
+
+            try
+            {
+                WithExperiments(2560, 1440, controller =>
+                {
+                    List<BaseElement> containers = Named(controller.GetView(MenuController.VIEW_PACK_SELECT), "boxContainer");
+                    for (int i = 0; i < containers.Count; i++)
+                    {
+                        bool perfect = i < Preferences.GetPacksCount() && Preferences.IsPackPerfect(i);
+                        Assert.Equal(perfect, containers[i].GetChildWithName("perfect") != null);
+                    }
+                    Assert.NotNull(containers[Pack].GetChildWithName("perfect"));
+                });
+            }
+            finally
+            {
+                for (int level = 0; level < levels; level++)
+                {
+                    Preferences.SetStarsForPackLevel(slot, original[level], Pack, level);
+                }
+            }
+        }
+
+        [Fact]
         public void PackSelectRebuildsForANewShape()
         {
             WithExperiments(2560, 1440, controller =>
