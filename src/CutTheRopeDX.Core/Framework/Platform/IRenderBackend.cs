@@ -93,7 +93,10 @@ namespace CutTheRopeDX.Framework.Platform
         void Scale(float x, float y, float z);
 
         /// <summary>
-        /// Applies a rotation transformation around the Z axis (2D rotation).
+        /// Applies a rotation of <paramref name="angle"/> degrees about the axis
+        /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), as <c>glRotatef</c>
+        /// does. Flat sprites rotate about Z; other axes foreshorten under the orthographic
+        /// projection.
         /// </summary>
         void Rotate(float angle, float x, float y, float z);
 
