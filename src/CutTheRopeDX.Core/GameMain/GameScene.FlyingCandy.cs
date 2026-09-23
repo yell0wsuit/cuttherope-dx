@@ -130,12 +130,15 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 ConstrainedPoint leaderPoint = flight.Leader.WholeBody.Point;
-                if (LeaderIsCarried(flight.Leader))
+                if (LeaderIsPinned(flight.Leader))
                 {
-                    // A carrier can move the leader clear across the level - a lantern hands it to
-                    // its pair, a mouse to another hole. Copying that would teleport the flying
-                    // candy with it, so it hangs where it is and picks the chase back up from
-                    // whatever gap it is left with once the leader is free again.
+                    // A lantern and a mouse do not carry the leader along, they hold it at a spot
+                    // and write it there: a lantern hands it to whichever of the pair holds it
+                    // next, a mouse takes it to another hole, and the spot changes to one clear
+                    // across the level. Copying that would teleport the flying candy with it, so
+                    // it hangs where it is and picks the chase back up from whatever gap it is
+                    // left with. A hand turning its arm or ants walking the leader along move it
+                    // the ordinary way and are followed as usual.
                     flight.Hovering = true;
                     flight.RejoinPending = true;
                     flight.Offset = VectSub(point.pos, leaderPoint.pos);
@@ -188,16 +191,15 @@ namespace CutTheRopeDX.GameMain
                     or CandyInteraction.Steam;
         }
 
-        /// <summary>Whether a hand, a mouse, ants or a lantern is holding this candy.</summary>
+        /// <summary>
+        /// Whether a lantern or a mouse is holding this candy at a spot of its own, rather than
+        /// carrying it along the way a hand or ants do.
+        /// </summary>
         /// <param name="leader">The candy a flying candy follows.</param>
-        /// <returns><see langword="true"/> while a carrier has hold of it.</returns>
-        private bool LeaderIsCarried(CandyContext leader)
+        /// <returns><see langword="true"/> while one of them holds it.</returns>
+        private bool LeaderIsPinned(CandyContext leader)
         {
-            CandyAttachments attachments = leader.Lifecycle.Attachments;
-            return attachments.InLantern
-                || attachments.Hand != null
-                || attachments.AntSegment != null
-                || MouseCarries(leader);
+            return leader.Lifecycle.Attachments.InLantern || MouseCarries(leader);
         }
 
         /// <summary>
