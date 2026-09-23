@@ -152,15 +152,16 @@ namespace CutTheRopeDX.GameMain
         /// speech bubble.
         /// </summary>
         /// <param name="delegateValue">Button delegate that receives press events.</param>
+        /// <param name="bid">Button identifier assigned to the toggle.</param>
         /// <returns>The toggle, showing the voice as on.</returns>
-        private static ToggleButton CreateExperimentsVoiceToggle(IButtonDelegation delegateValue)
+        internal static ToggleButton CreateExperimentsVoiceToggle(IButtonDelegation delegateValue, ButtonId bid)
         {
             ToggleButton toggle = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(
                 CreateExperimentsAudioElement(ExpAudioQuadVoice, false, false),
                 CreateExperimentsAudioElement(ExpAudioQuadVoice, false, true),
                 CreateExperimentsAudioElement(ExpAudioQuadVoice, true, false),
                 CreateExperimentsAudioElement(ExpAudioQuadVoice, true, true),
-                MenuButtonId.ToggleVoice);
+                bid);
             toggle.delegateButtonDelegate = delegateValue;
             return toggle;
         }

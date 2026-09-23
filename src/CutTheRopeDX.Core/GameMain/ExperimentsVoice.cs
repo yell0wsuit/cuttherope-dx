@@ -1,3 +1,4 @@
+using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Media;
 
@@ -50,8 +51,29 @@ namespace CutTheRopeDX.GameMain
             Resources.Snd.VoiceFail02,
         ];
 
-        /// <summary>The line played when the voice is switched back on in the options.</summary>
-        public const string ToggleOnLine = Resources.Snd.VoiceStart03;
+        /// <summary>The line played when the voice is switched back on.</summary>
+        private const string ToggleOnLine = Resources.Snd.VoiceStart03;
+
+        /// <summary>Preference that keeps the voice on or off.</summary>
+        public const string PreferenceKey = "PREFS_EXP_VOICE_ON";
+
+        /// <summary>
+        /// Switches the voice on or off, from the options or the pause menu. Switching it off cuts
+        /// the line being spoken; switching it on says one.
+        /// </summary>
+        public static void Toggle()
+        {
+            bool wasOn = Preferences.GetBooleanForKey(PreferenceKey);
+            Preferences.SetBooleanForKey(!wasOn, PreferenceKey, true);
+            if (wasOn)
+            {
+                SoundMgr.StopVoice();
+            }
+            else
+            {
+                SoundMgr.PlayVoice(ToggleOnLine);
+            }
+        }
 
         /// <summary>Speaks as a level opens after loading.</summary>
         public static void LevelStarted()
