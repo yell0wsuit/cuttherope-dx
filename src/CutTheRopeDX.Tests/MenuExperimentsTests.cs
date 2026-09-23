@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
@@ -70,6 +71,27 @@ namespace CutTheRopeDX.Tests
                     }
                 }
                 Assert.Equal(2, audioToggles);
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void LevelSelectCoversTheScreenWithTheLoadingSheet(string name, int width, int height)
+        {
+            _ = name;
+            WithExperiments(width, height, controller =>
+            {
+                controller.CreateLevelSelect();
+                View view = controller.GetView(MenuController.VIEW_LEVEL_SELECT);
+                BaseElement sheet = view.GetChildWithName("levelsBack");
+                Image backdrop = (Image)sheet.GetChild(0);
+                Assert.Same(Application.GetTexture(Resources.BackgroundImg.MenuExpLoadingBgr), backdrop.texture);
+
+                controller.ShowView(MenuController.VIEW_LEVEL_SELECT);
+                controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Assert.True(sheet.width * sheet.scaleX >= visible.w - 0.5f, $"the sheet is {sheet.width * sheet.scaleX} wide on a {visible.w} viewport");
+                Assert.True(sheet.height * sheet.scaleY >= visible.h - 0.5f, $"the sheet is {sheet.height * sheet.scaleY} tall on a {visible.h} viewport");
             });
         }
 

@@ -76,6 +76,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The right half of the binding drawn over the box cover's seam.</summary>
         private Image levelsSpineRight;
 
+        /// <summary>
+        /// The level picker's Experiments backdrop, the loading screen's sheet, in place of the
+        /// box cover and its spine. <see langword="null"/> for the classic menus.
+        /// </summary>
+        private BaseElement levelsSheet;
+
         /// <summary>The level picker's rotating light shaft.</summary>
         private Image levelsShadow;
 
@@ -224,29 +230,37 @@ namespace CutTheRopeDX.GameMain
         /// <param name="snapshot">The viewport to lay out against.</param>
         private void LayOutLevelSelect(ViewportLayoutSnapshot snapshot)
         {
-            if (levelsCoverLeft == null)
+            if (levelsCoverLeft == null && levelsSheet == null)
             {
                 return;
             }
 
             Rectangle visible = snapshot.VisibleBounds;
-            float scale = FullScreenScale(visible, 1f);
-            float seam = visible.w / 2f;
-            float coverWidth = levelsCoverLeft.width;
-            float coverTopEdge = LevelCoverTopEdge(visible, levelsCoverLeft.height, scale);
-            float coverTop = coverTopEdge + LayoutMath.CornerAnchoredOffset(
-                0f, levelsCoverLeft.height, scale, farEdge: false);
+            if (levelsSheet != null)
+            {
+                PlaceLevelsSheet(visible);
+            }
+            else
+            {
+                float scale = FullScreenScale(visible, 1f);
+                float seam = visible.w / 2f;
+                float coverWidth = levelsCoverLeft.width;
+                float coverTopEdge = LevelCoverTopEdge(visible, levelsCoverLeft.height, scale);
+                float coverTop = coverTopEdge + LayoutMath.CornerAnchoredOffset(
+                    0f, levelsCoverLeft.height, scale, farEdge: false);
 
-            // Each half is scaled about its own center, so its position is chosen to put the
-            // scaled inner edge on the seam and the scaled top edge where the cover starts.
-            levelsCoverLeft.scaleX = levelsCoverLeft.scaleY = scale;
-            levelsCoverLeft.x = seam - (coverWidth * (1f + scale) / 2f);
-            levelsCoverLeft.y = coverTop;
-            levelsCoverRight.scaleX = levelsCoverRight.scaleY = scale;
-            levelsCoverRight.x = seam - (coverWidth * (1f - scale) / 2f);
-            levelsCoverRight.y = coverTop - 0.5f;
+                // Each half is scaled about its own center, so its position is chosen to put the
+                // scaled inner edge on the seam and the scaled top edge where the cover starts.
+                levelsCoverLeft.scaleX = levelsCoverLeft.scaleY = scale;
+                levelsCoverLeft.x = seam - (coverWidth * (1f + scale) / 2f);
+                levelsCoverLeft.y = coverTop;
+                levelsCoverRight.scaleX = levelsCoverRight.scaleY = scale;
+                levelsCoverRight.x = seam - (coverWidth * (1f - scale) / 2f);
+                levelsCoverRight.y = coverTop - 0.5f;
 
-            PlaceLevelSpines(visible);
+                PlaceLevelSpines(visible);
+            }
+
             SetScale(levelsShadow, FullScreenScale(visible, 2f));
 
             // A pack with more levels than fit scrolls inside a container sized to the screen; one
@@ -290,6 +304,22 @@ namespace CutTheRopeDX.GameMain
             }
 
             PlaceStarTotal(levelsStarText);
+        }
+
+        /// <summary>
+        /// Covers the viewport with the level picker's Experiments sheet, the way the loading
+        /// screen and the level transition cover it, so the three line up.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void PlaceLevelsSheet(Rectangle visible)
+        {
+            Rectangle covered = LayoutMath.CoverInside(levelsSheet.width, levelsSheet.height, visible);
+            float scale = covered.w / levelsSheet.width;
+            levelsSheet.scaleX = levelsSheet.scaleY = scale;
+
+            // Scaled about its own center, so the drift that puts on its top left comes back out.
+            levelsSheet.x = covered.x - visible.x - (levelsSheet.width / 2f * (1f - scale));
+            levelsSheet.y = covered.y - visible.y - (levelsSheet.height / 2f * (1f - scale));
         }
 
         /// <summary>
