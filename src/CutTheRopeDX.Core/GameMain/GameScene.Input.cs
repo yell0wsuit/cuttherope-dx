@@ -93,6 +93,22 @@ namespace CutTheRopeDX.GameMain
                 spike.rotateButton?.SetState(Button.BUTTON_STATE.BUTTON_UP);
             }
 
+            if (hands != null)
+            {
+                foreach (MechanicalHand hand in hands)
+                {
+                    if (hand?.segments == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (MechanicalHandSegment segment in hand.segments)
+                    {
+                        segment?.button?.SetState(Button.BUTTON_STATE.BUTTON_UP);
+                    }
+                }
+            }
+
             foreach (Grab grab in bungees)
             {
                 if (grab.Wheel is WheelControl wheel)

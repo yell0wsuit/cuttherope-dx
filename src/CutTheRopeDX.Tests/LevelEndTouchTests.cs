@@ -36,6 +36,25 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void LevelEndReleasesHandButton(bool won)
+        {
+            GameScene scene = Scenario.New().Candy(160, 350)
+                .Hand(160, 100, segmentLength: 60, segmentAngle: 90f, rotatable: true)
+                .Build();
+            MechanicalHand hand = Assert.Single(scene.Hands());
+            MechanicalHandButton button = hand.SegmentAtIndex(0).button;
+            Vector screen = scene.ScreenPositionOf(hand.JointAtIndexPosition(0));
+            _ = scene.TouchDownXYIndex(screen.X, screen.Y, 1);
+            Assert.Equal(Button.BUTTON_STATE.BUTTON_DOWN, button.state);
+
+            EndLevel(scene, won);
+
+            Assert.Equal(Button.BUTTON_STATE.BUTTON_UP, button.state);
+        }
+
+        [Theory]
         [InlineData(false, false)]
         [InlineData(false, true)]
         [InlineData(true, false)]
