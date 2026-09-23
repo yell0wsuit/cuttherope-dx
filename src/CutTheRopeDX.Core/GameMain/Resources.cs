@@ -333,6 +333,7 @@ namespace CutTheRopeDX.GameMain
             public const string MenuExpLoading = "menu_loading_exp_candy";
             public const string MenuExpLoadingScroll = "menu_loading_exp_scroll";
             public const string MenuExpPauseTop = "menu_pause_top_horiz";
+            public const string ConfettiParticlesExp = "confetti_particles_exp";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";

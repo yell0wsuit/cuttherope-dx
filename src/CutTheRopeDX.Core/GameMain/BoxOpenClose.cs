@@ -392,7 +392,9 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured confetti particle element.</returns>
         public static BaseElement CreateConfettiParticleNear()
         {
-            Confetti confetti = Image.InitializeFromResource(new Confetti(), Resources.Img.ConfettiParticles);
+            Confetti confetti = Image.InitializeFromResource(
+                new Confetti(),
+                MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp));
 
             // Spawned across the design box and animated in design coordinates, so it travels with
             // the panel it bursts over instead of falling where the design size alone would put it.
