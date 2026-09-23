@@ -829,6 +829,7 @@ namespace CutTheRopeDX.Framework.Core
             MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop),
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
+            .. MenuTheme.IsExperiments ? (string[])[Resources.Img.ProfessorHand] : [],
             null
         ];
 

@@ -120,6 +120,7 @@ namespace CutTheRopeDX.GameMain
                 ResetBungeeHighlight();
             }
             PlatformServices.Cursor?.ReleaseButtons();
+            StartProfessorHand();
             RootController.LogEvent("IG_SHOWN");
         }
 
@@ -288,6 +289,10 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
+            if (TryAdvanceProfessorHand(t))
+            {
+                return;
+            }
             if (t.element == Candy)
             {
                 RestoreCandyProperties();
