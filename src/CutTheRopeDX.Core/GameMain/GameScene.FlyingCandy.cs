@@ -130,10 +130,23 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 ConstrainedPoint leaderPoint = flight.Leader.WholeBody.Point;
+                if (LeaderIsCarried(flight.Leader))
+                {
+                    // A carrier can move the leader clear across the level - a lantern hands it to
+                    // its pair, a mouse to another hole. Copying that would teleport the flying
+                    // candy with it, so it hangs where it is and picks the chase back up from
+                    // whatever gap it is left with once the leader is free again.
+                    flight.Hovering = true;
+                    flight.RejoinPending = true;
+                    flight.Offset = VectSub(point.pos, leaderPoint.pos);
+                    continue;
+                }
+
                 Vector target = VectAdd(leaderPoint.pos, flight.Offset);
                 if (FlyingCandyRopeWouldOverstretch(point, target))
                 {
                     flight.Hovering = true;
+                    flight.RejoinPending = true;
                     flight.Offset = VectSub(point.pos, leaderPoint.pos);
                     continue;
                 }
@@ -146,9 +159,9 @@ namespace CutTheRopeDX.GameMain
 
                 if (flight.RejoinPending)
                 {
-                    // Rejoining the leader is a jump across the level. Verlet would read the jump as
-                    // velocity and throw the candy the same distance again past its leader for a
-                    // frame, so the candy arrives at rest instead.
+                    // It hung still for a while, held by a rope or a carrier, or out of sight in a
+                    // sock, so the distance it now covers is not speed it built up. Verlet would
+                    // read it as speed and fling the candy for a frame, so it arrives at rest.
                     flight.RejoinPending = false;
                     point.prevPos = target;
                 }
@@ -173,6 +186,18 @@ namespace CutTheRopeDX.GameMain
                 && body.Owner?.IsFlying == true
                 && interaction is CandyInteraction.Pump
                     or CandyInteraction.Steam;
+        }
+
+        /// <summary>Whether a hand, a mouse, ants or a lantern is holding this candy.</summary>
+        /// <param name="leader">The candy a flying candy follows.</param>
+        /// <returns><see langword="true"/> while a carrier has hold of it.</returns>
+        private bool LeaderIsCarried(CandyContext leader)
+        {
+            CandyAttachments attachments = leader.Lifecycle.Attachments;
+            return attachments.InLantern
+                || attachments.Hand != null
+                || attachments.AntSegment != null
+                || MouseCarries(leader);
         }
 
         /// <summary>

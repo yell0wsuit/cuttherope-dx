@@ -92,9 +92,9 @@ namespace CutTheRopeDX.GameMain
         public bool Hovering { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the flying candy or its leader was out of sight in a sock or tube
-        /// last step, so the next placement beside the leader is a jump rather than a step of the
-        /// chase.
+        /// Gets or sets whether the flying candy hung still last step, held back, or out of sight
+        /// in a sock or tube, so the next placement beside the leader is a jump rather than a step
+        /// of the chase, and must not be read as speed.
         /// </summary>
         public bool RejoinPending { get; set; }
 
