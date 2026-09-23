@@ -135,10 +135,10 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void AFlyingCandyStaysPutWhileALanternCarriesItsLeaderAcrossTheLevel()
+        public void AFlyingCandyStaysPutWhileALanternHoldsItsLeader()
         {
-            // A lantern pair hands the leader from one to the other: copying that jump would
-            // teleport the flying candy across the level with it.
+            // A lantern holds the leader at its own spot and hands it to its pair, clear across the
+            // level; copying that would teleport the flying candy with it.
             GameScene scene = Scenario.New()
                 .OmNom(100, 416)
                 .Candy(40, 88, "0")
@@ -157,7 +157,6 @@ namespace CutTheRopeDX.Tests.Interactions
 
             HeadlessGame.StepFrames(scene, 60);
 
-            // The lantern hands the leader to its pair, well across the level.
             Assert.True(MathF.Abs(leader.WholeBody.Point.pos.X - leaderX) > 200f, "the lantern never carried the leader away");
             Assert.Equal(heldAt.X, flier.WholeBody.Point.pos.X, 1f);
             Assert.Equal(heldAt.Y, flier.WholeBody.Point.pos.Y, 1f);
@@ -184,6 +183,41 @@ namespace CutTheRopeDX.Tests.Interactions
 
             Assert.Equal(heldAt.X, flier.WholeBody.Point.pos.X, 1f);
             Assert.Equal(heldAt.Y, flier.WholeBody.Point.pos.Y, 1f);
+            Assert.True(flier.IsFlying);
+        }
+
+        [Fact]
+        public void AHandCarryingTheLeaderTakesTheFlyingCandyAlong()
+        {
+            GameScene scene = Scenario.New()
+                .OmNom(300, 440)
+                .Candy(80, 100, "first")
+                .Candy(220, 200, "second", isDriven: true)
+                .Hand(40, 40, segmentLength: 20, segmentAngle: 90f)
+                .Build();
+            CandyContext leader = scene.Candies()[0];
+            CandyContext flier = scene.Candies()[1];
+            MechanicalHand hand = Act.GrabWithHand(scene, leader);
+
+            // Swinging the arm walks the leader across, and the flying candy copies every step.
+            Vector startFlier = flier.WholeBody.Point.pos;
+            Vector startLeader = leader.WholeBody.Point.pos;
+            for (int frame = 0; frame < 30; frame++)
+            {
+                Vector claw = hand.ClawPosition();
+                Act.MoveClawTo(hand, new Vector(claw.X + 6f, claw.Y + 3f));
+                HeadlessGame.StepFrames(scene, 1);
+            }
+
+            // It tracks its leader a step behind, so the two cover the same ground.
+            Vector leaderTravel = VectSub(leader.WholeBody.Point.pos, startLeader);
+            Vector flierTravel = VectSub(flier.WholeBody.Point.pos, startFlier);
+            Assert.True(
+                MathF.Sqrt((leaderTravel.X * leaderTravel.X) + (leaderTravel.Y * leaderTravel.Y)) > 50f,
+                "the hand never carried the leader anywhere");
+            Assert.True(
+                MathF.Abs(flierTravel.X - leaderTravel.X) < 10f && MathF.Abs(flierTravel.Y - leaderTravel.Y) < 10f,
+                $"the flier covered {flierTravel.X},{flierTravel.Y} where its leader covered {leaderTravel.X},{leaderTravel.Y}");
             Assert.True(flier.IsFlying);
         }
 
