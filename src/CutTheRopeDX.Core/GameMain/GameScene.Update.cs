@@ -192,10 +192,7 @@ namespace CutTheRopeDX.GameMain
                                 ConstrainedPoint heldTail = HoveringFlyingCandyPoint(rope.tail);
                                 Vector heldAt = heldTail?.pos ?? default;
                                 UpdateRopeWithAntCarryOverride(rope, delta);
-                                if (heldTail != null)
-                                {
-                                    heldTail.pos = heldAt;
-                                }
+                                heldTail?.pos = heldAt;
                             }
                             if (grab.Spider is SpiderRider rider && rider.IsAttached)
                             {
