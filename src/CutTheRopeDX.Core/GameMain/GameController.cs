@@ -198,6 +198,15 @@ namespace CutTheRopeDX.GameMain
             HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
             _ = hBox.AddChild(soundToggle);
             _ = hBox.AddChild(musicToggle);
+            if (MenuTheme.IsExperiments)
+            {
+                ToggleButton voiceToggle = MenuController.CreateExperimentsVoiceToggle(this, GameControllerButtonId.ToggleVoice);
+                _ = hBox.AddChild(voiceToggle);
+                if (!Preferences.GetBooleanForKey(ExperimentsVoice.PreferenceKey))
+                {
+                    voiceToggle.Toggle();
+                }
+            }
             _ = vBox.AddChild(hBox);
             vBox.y = (DesignBox.h - vBox.height) / 2f;
             bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
@@ -582,6 +591,9 @@ namespace CutTheRopeDX.GameMain
                     }
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
+                    return;
+                case var id when id == GameControllerButtonId.ToggleVoice:
+                    ExperimentsVoice.Toggle();
                     return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
