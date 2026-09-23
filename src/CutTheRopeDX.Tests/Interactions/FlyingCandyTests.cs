@@ -135,6 +135,97 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
+        public void AFlyingCandyStaysPutWhileALanternCarriesItsLeaderAcrossTheLevel()
+        {
+            // A lantern pair hands the leader from one to the other: copying that jump would
+            // teleport the flying candy across the level with it.
+            GameScene scene = Scenario.New()
+                .OmNom(100, 416)
+                .Candy(40, 88, "0")
+                .Candy(200, 104, "1", isDriven: true)
+                .Lantern(44, 284)
+                .Lantern(332, 156)
+                .Build();
+            CandyContext leader = scene.Candies()[0];
+            CandyContext flier = scene.Candies()[1];
+
+            Assert.True(
+                Interaction.StepUntil(scene, () => leader.Lifecycle.Attachments.InLantern),
+                "the lantern never took the leader");
+            Vector heldAt = flier.WholeBody.Point.pos;
+            float leaderX = leader.WholeBody.Point.pos.X;
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            // The lantern hands the leader to its pair, well across the level.
+            Assert.True(MathF.Abs(leader.WholeBody.Point.pos.X - leaderX) > 200f, "the lantern never carried the leader away");
+            Assert.Equal(heldAt.X, flier.WholeBody.Point.pos.X, 1f);
+            Assert.Equal(heldAt.Y, flier.WholeBody.Point.pos.Y, 1f);
+            Assert.True(flier.IsFlying);
+        }
+
+        [Fact]
+        public void AFlyingCandyStaysPutWhileAMouseHoldsItsLeader()
+        {
+            GameScene scene = Scenario.New()
+                .OmNom(160, 460)
+                .Candy(60, 120, "first")
+                .Candy(260, 60, "second", isDriven: true)
+                .Mouse(60, 120, index: 1)
+                .Mouse(300, 430, index: 2)
+                .Build();
+            CandyContext leader = scene.Candies()[0];
+            CandyContext flier = scene.Candies()[1];
+
+            _ = Act.CarryByMouse(scene, leader);
+            Vector heldAt = flier.WholeBody.Point.pos;
+
+            HeadlessGame.StepFrames(scene, 60);
+
+            Assert.Equal(heldAt.X, flier.WholeBody.Point.pos.X, 1f);
+            Assert.Equal(heldAt.Y, flier.WholeBody.Point.pos.Y, 1f);
+            Assert.True(flier.IsFlying);
+        }
+
+        [Fact]
+        public void AFlyingCandyPicksTheChaseBackUpSmoothlyWhenItsLeaderIsDropped()
+        {
+            GameScene scene = Scenario.New()
+                .OmNom(300, 440)
+                .Candy(80, 100, "first")
+                .Candy(220, 200, "second", isDriven: true)
+                .Hand(40, 40, segmentLength: 20, segmentAngle: 90f)
+                .Build();
+            CandyContext leader = scene.Candies()[0];
+            CandyContext flier = scene.Candies()[1];
+            MechanicalHand hand = Act.GrabWithHand(scene, leader);
+
+            // Held for a while: the flying candy hangs still, so it banks no speed of its own.
+            HeadlessGame.StepFrames(scene, 60);
+            Act.TapClaw(scene, hand);
+            Assert.True(
+                Interaction.StepUntil(scene, () => leader.Lifecycle.Attachments.Hand == null),
+                "the claw never let the leader go");
+
+            // Following again, it tracks the leader step for step instead of lurching after it.
+            Vector lastFlier = flier.WholeBody.Point.pos;
+            Vector lastLeader = leader.WholeBody.Point.pos;
+            for (int frame = 0; frame < 10; frame++)
+            {
+                HeadlessGame.StepFrames(scene, 1);
+                Vector flierStep = VectSub(flier.WholeBody.Point.pos, lastFlier);
+                Vector leaderStep = VectSub(leader.WholeBody.Point.pos, lastLeader);
+                Assert.True(
+                    MathF.Abs(flierStep.X - leaderStep.X) < 5f && MathF.Abs(flierStep.Y - leaderStep.Y) < 5f,
+                    $"frame {frame}: the flier moved {flierStep.X},{flierStep.Y} where its leader moved {leaderStep.X},{leaderStep.Y}");
+                lastFlier = flier.WholeBody.Point.pos;
+                lastLeader = leader.WholeBody.Point.pos;
+            }
+
+            Assert.True(flier.IsFlying);
+        }
+
+        [Fact]
         public void EatingTheLeaderBreaksTheWings()
         {
             GameScene scene = Scenario.New()
