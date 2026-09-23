@@ -13,7 +13,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Manages the level transition, result panel, score countdown, and confetti effects.
     /// </summary>
-    internal sealed class BoxOpenClose : BaseElement, ITimelineDelegate
+    internal sealed partial class BoxOpenClose : BaseElement, ITimelineDelegate
     {
         /// <inheritdoc />
         public override void Update(float delta)
@@ -539,6 +539,12 @@ namespace CutTheRopeDX.GameMain
         public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();
+            if (MenuTheme.IsExperiments)
+            {
+                ShowExperimentsBlind(open);
+                return;
+            }
+
             RootController root = Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(root.Pack);
             Image image = Image.FromResource(Resources.Img.MenuResults, 16);
