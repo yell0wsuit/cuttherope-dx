@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
             restartButton.x = -button.width - 16f;
             restartButton.y = 8f;
             _ = gameView.AddChildwithID(restartButton, 2);
-            Image image = Image.FromResource(Resources.Img.MenuPause, 0);
+            Image image = Image.FromResource(PausePlateResource, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = PausePlateScale;
             image.rotationCenterY = -image.height / 2;
@@ -1116,9 +1116,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Scale the pause plate is drawn at on the design shape, where the sheet's own width
-        /// reaches the sides exactly.
+        /// reaches the sides exactly: 1.25 for the classic sheet, which is 2048 wide.
         /// </summary>
-        private const float PausePlateScale = 1.25f;
+        private static float PausePlateScale => ViewportLayout.DesignWidth / Image.GetQuadSize(PausePlateResource, 0).X;
+
+        /// <summary>The torn sheet the pause menu hangs from the top of the screen.</summary>
+        private static string PausePlateResource => MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop);
 
         /// <summary>
         /// Shows or hides a HUD button independently of whether it accepts input, which

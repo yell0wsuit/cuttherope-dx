@@ -10,11 +10,13 @@ namespace CutTheRopeDX.GameMain
     /// <param name="LevelPath">Absolute path to the requested level file, or <see langword="null"/> when unavailable.</param>
     /// <param name="ErrorMessage">Reason the arguments are unusable, or <see langword="null"/> when they are valid.</param>
     /// <param name="IsHeadless">Whether the <c>--headless</c> switch was present.</param>
+    /// <param name="Menu">Menu style chosen with <c>--menu</c>; <see cref="MenuStyle.Classic"/> when absent.</param>
     internal readonly record struct CommandLineResult(
         bool IsCustomLevel,
         string LevelPath,
         string ErrorMessage,
-        bool IsHeadless);
+        bool IsHeadless,
+        MenuStyle Menu = MenuStyle.Classic);
 
     /// <summary>
     /// Parses the game's command line switches. Performs no file access.
@@ -30,6 +32,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Command line switch that runs the game without a window or graphics device.</summary>
         public const string HeadlessSwitch = "--headless";
+
+        /// <summary>Command line switch that picks which game's menus are drawn.</summary>
+        public const string MenuSwitch = "--menu";
 
         /// <summary>
         /// Parses command line arguments for the supported switches.
@@ -47,6 +52,12 @@ namespace CutTheRopeDX.GameMain
                 args,
                 arg => string.Equals(arg, HeadlessSwitch, StringComparison.Ordinal));
 
+            string menuError = ParseMenu(args, out MenuStyle menu);
+            if (menuError != null)
+            {
+                return new CommandLineResult(false, null, menuError, isHeadless, menu);
+            }
+
             for (int i = 0; i < args.Length; i++)
             {
                 if (!string.Equals(args[i], LevelSwitch, StringComparison.Ordinal))
@@ -59,8 +70,9 @@ namespace CutTheRopeDX.GameMain
                         true,
                         null,
                         LevelSwitch + " requires a path to a level XML file.",
-                        isHeadless)
-                    : new CommandLineResult(true, Path.GetFullPath(args[i + 1]), null, isHeadless);
+                        isHeadless,
+                        menu)
+                    : new CommandLineResult(true, Path.GetFullPath(args[i + 1]), null, isHeadless, menu);
             }
 
             for (int i = 0; i < args.Length; i++)
@@ -74,10 +86,37 @@ namespace CutTheRopeDX.GameMain
                     continue;
                 }
 
-                return new CommandLineResult(true, Path.GetFullPath(arg), null, isHeadless);
+                return new CommandLineResult(true, Path.GetFullPath(arg), null, isHeadless, menu);
             }
 
-            return new CommandLineResult(false, null, null, isHeadless);
+            return new CommandLineResult(false, null, null, isHeadless, menu);
+        }
+
+        /// <summary>
+        /// Reads the <c>--menu</c> switch.
+        /// </summary>
+        /// <param name="args">Raw process arguments.</param>
+        /// <param name="menu">The chosen style, or <see cref="MenuStyle.Classic"/> when absent or invalid.</param>
+        /// <returns>Why the switch is unusable, or <see langword="null"/> when it is valid or absent.</returns>
+        private static string ParseMenu(string[] args, out MenuStyle menu)
+        {
+            menu = MenuStyle.Classic;
+            int i = Array.IndexOf(args, MenuSwitch);
+            if (i < 0)
+            {
+                return null;
+            }
+
+            string value = i + 1 < args.Length ? args[i + 1] : null;
+            if (string.Equals(value, "experiments", StringComparison.OrdinalIgnoreCase))
+            {
+                menu = MenuStyle.Experiments;
+                return null;
+            }
+
+            return string.Equals(value, "classic", StringComparison.OrdinalIgnoreCase)
+                ? null
+                : MenuSwitch + " expects \"classic\" or \"experiments\".";
         }
     }
 }

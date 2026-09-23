@@ -19,6 +19,15 @@ if (args.Length == 1 && args[0] == RendererProbe.Argument)
 
 CommandLineResult cli = CommandLine.Parse(args);
 
+if (!cli.IsCustomLevel && cli.ErrorMessage != null)
+{
+    Console.Error.WriteLine(cli.ErrorMessage);
+    return 1;
+}
+
+// Read by the menu, loading and pause scenes as they are built, so it is set before any of them is.
+MenuTheme.Current = cli.Menu;
+
 // Held rather than logged where it happens: the factory is built further down, after the headless
 // branch has had its chance to return without one.
 string handshake = null;

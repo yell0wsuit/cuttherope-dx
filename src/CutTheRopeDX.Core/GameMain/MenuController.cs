@@ -242,6 +242,11 @@ namespace CutTheRopeDX.GameMain
             int backgroundQuad;
             switch (true)
             {
+                case var _ when MenuTheme.IsExperiments:
+                    // A background image: one whole texture, so no quad to pick.
+                    backgroundResource = ExperimentsBackdropFor(l, viewId);
+                    backgroundQuad = -1;
+                    break;
                 case var _ when SpecialEvents.IsXmas:
                     backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
@@ -277,13 +282,17 @@ namespace CutTheRopeDX.GameMain
                         break;
                 }
 
-                Image secondaryBackground = Image.FromResource(backgroundSecondaryResource, backgroundSecondaryQuad);
-                secondaryBackground.anchor = secondaryBackground.parentAnchor = 34;
-                secondaryBackground.scaleX = secondaryBackground.scaleY = 1.25f;
-                secondaryBackground.passTransformationsToChilds = false;
-                secondaryBackground.rotationCenterY = secondaryBackground.height / 2;
-                _ = image.AddChild(secondaryBackground);
-                frontLayer = secondaryBackground;
+                // The Experiments backdrops are painted whole, with no separate front half.
+                if (!MenuTheme.IsExperiments)
+                {
+                    Image secondaryBackground = Image.FromResource(backgroundSecondaryResource, backgroundSecondaryQuad);
+                    secondaryBackground.anchor = secondaryBackground.parentAnchor = 34;
+                    secondaryBackground.scaleX = secondaryBackground.scaleY = 1.25f;
+                    secondaryBackground.passTransformationsToChilds = false;
+                    secondaryBackground.rotationCenterY = secondaryBackground.height / 2;
+                    _ = image.AddChild(secondaryBackground);
+                    frontLayer = secondaryBackground;
+                }
 
                 // Add event-specific decorations to logo -- layer bottom
                 switch (true)
@@ -435,6 +444,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured audio option image.</returns>
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
         {
+            if (MenuTheme.IsExperiments)
+            {
+                return CreateExperimentsAudioElement(ExperimentsAudioIcon(q), b, p);
+            }
+
             int pressedStateQuad = p ? 1 : 0;
             Image background = Image.FromResource(Resources.Img.MenuOptions, pressedStateQuad);
             Image icon = Image.FromResource(Resources.Img.MenuOptions, q);
@@ -1141,6 +1155,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CreatePackSelect()
         {
+            if (MenuTheme.IsExperiments)
+            {
+                CreateExperimentsPackSelect();
+                return;
+            }
+
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
             string totalStarsLabel = Application.GetString("TOTAL_STARS").ToString();
@@ -2222,6 +2242,10 @@ namespace CutTheRopeDX.GameMain
             if (activeViewID == 5 && ddPackSelect != null)
             {
                 ddPackSelect.Update(delta);
+                if (MenuTheme.IsExperiments)
+                {
+                    UpdateExperimentsPackSelect();
+                }
                 if (PlatformServices.Host?.IsKeyPressed(KeyCode.Left) == true)
                 {
                     OnButtonPressed(MenuButtonId.PreviousPack);

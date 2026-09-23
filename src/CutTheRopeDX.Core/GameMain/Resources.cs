@@ -240,7 +240,9 @@ namespace CutTheRopeDX.GameMain
                 BackgroundImg.Bgr09P1, BackgroundImg.Bgr09P2, BackgroundImg.Bgr10P1, BackgroundImg.Bgr10P2,
                 BackgroundImg.Bgr11P1, BackgroundImg.Bgr11P2, BackgroundImg.Bgr12P1, BackgroundImg.Bgr13P1,
                 BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
-                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground
+                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground,
+                BackgroundImg.MenuExpMainBgr, BackgroundImg.MenuExpDefaultBgr,
+                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr
             ];
         }
 
@@ -279,6 +281,12 @@ namespace CutTheRopeDX.GameMain
             public const string Bgr17P1 = "bgr_17_p1";
             public const string ZeptolabNoLink = "zeptolab_no_link";
             public const string SkinBackground = "skin_bg";
+
+            // Cut the Rope: Experiments backdrops, painted for a 1920 by 1080 screen.
+            public const string MenuExpMainBgr = "menu_main_bgr_horiz";
+            public const string MenuExpDefaultBgr = "menu_bgr_default_horiz";
+            public const string MenuExpCampaignBgr = "menu_campaign_bgr_horiz";
+            public const string MenuExpLoadingBgr = "menu_loading_bgr_exp";
         }
 
         /// <summary>
@@ -316,6 +324,15 @@ namespace CutTheRopeDX.GameMain
             public const string ConfettiParticles = "confetti_particles";
             public const string MenuPause = "menu_pause";
             public const string MenuResults = "menu_results";
+
+            // Cut the Rope: Experiments menus. The atlases keep the iOS HD quad numbering, with
+            // blank frames standing in for quads that were not carried over.
+            public const string MenuExpPackSelection = "menu_pack_selection_exp";
+            public const string MenuExpLock = "menu_lock_exp";
+            public const string MenuExpAudio = "menu_audio_exp";
+            public const string MenuExpLoading = "menu_loading_exp_candy";
+            public const string MenuExpLoadingScroll = "menu_loading_exp_scroll";
+            public const string MenuExpPauseTop = "menu_pause_top_horiz";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";

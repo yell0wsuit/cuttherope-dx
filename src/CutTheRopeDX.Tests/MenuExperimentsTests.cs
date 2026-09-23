@@ -1,0 +1,195 @@
+using System;
+using System.Collections.Generic;
+
+using CutTheRopeDX.Commons;
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Platform;
+using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
+
+using Xunit;
+
+namespace CutTheRopeDX.Tests
+{
+    /// <summary>
+    /// Covers the Experiments menus selected with <c>--menu experiments</c>. The style is
+    /// process-wide, which the serial suite makes safe to switch for one test at a time.
+    /// </summary>
+    public sealed class MenuExperimentsTests
+    {
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void PackSelectHasOneBoxPerPackWithTheRestingBoxLit(string name, int width, int height)
+        {
+            _ = name;
+            WithExperiments(width, height, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_PACK_SELECT);
+                List<BaseElement> containers = Named(view, "boxContainer");
+                int expected = Preferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
+                Assert.Equal(expected, containers.Count);
+
+                int resting = Math.Min(Preferences.GetLastBox(), expected - 1);
+                for (int i = 0; i < containers.Count; i++)
+                {
+                    float selected = containers[i].GetChildWithName("boxSelected").color.AlphaChannel;
+                    float idle = containers[i].GetChildWithName("box").color.AlphaChannel;
+                    Assert.Equal(i == resting ? 1f : 0f, selected, 3);
+                    Assert.Equal(1f - selected, idle, 3);
+                }
+                Assert.NotNull(view.GetChildWithName("backb"));
+            });
+        }
+
+        [Fact]
+        public void PackSelectRebuildsForANewShape()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                controller.ShowView(MenuController.VIEW_PACK_SELECT);
+                GameLifecycle.OnSurfaceChanged(720, 1280);
+                controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+
+                Assert.NotEmpty(Named(controller.GetView(MenuController.VIEW_PACK_SELECT), "boxContainer"));
+            });
+        }
+
+        [Fact]
+        public void OptionsUseTheExperimentsAudioToggles()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                // Sound and music; the click-to-cut switch is a toggle too, drawn with its own art.
+                Texture2D audio = Application.GetTexture(Resources.Img.MenuExpAudio);
+                int audioToggles = 0;
+                foreach (ToggleButton toggle in All<ToggleButton>(controller.GetView(MenuController.VIEW_OPTIONS)))
+                {
+                    if (Find<Image>(toggle)?.texture == audio)
+                    {
+                        audioToggles++;
+                    }
+                }
+                Assert.Equal(2, audioToggles);
+            });
+        }
+
+        [Fact]
+        public void BackdropsUseTheExperimentsArt()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                Assert.Same(Application.GetTexture(Resources.BackgroundImg.MenuExpMainBgr), Backdrop(controller, MenuController.VIEW_MAIN_MENU).texture);
+                Assert.Same(Application.GetTexture(Resources.BackgroundImg.MenuExpDefaultBgr), Backdrop(controller, MenuController.VIEW_OPTIONS).texture);
+                Assert.Same(Application.GetTexture(Resources.BackgroundImg.MenuExpCampaignBgr), Backdrop(controller, MenuController.VIEW_PACK_SELECT).texture);
+            });
+        }
+
+        /// <summary>
+        /// Builds a menu controller with the Experiments style at a surface size, then restores
+        /// the classic style whatever happens.
+        /// </summary>
+        /// <param name="width">Surface width.</param>
+        /// <param name="height">Surface height.</param>
+        /// <param name="body">Checks to run against the controller.</param>
+        private static void WithExperiments(int width, int height, Action<MenuController> body)
+        {
+            _ = HeadlessGame.Boot();
+            MenuStyle previous = MenuTheme.Current;
+            MenuTheme.Current = MenuStyle.Experiments;
+            try
+            {
+                LayoutSurfaces.WithSurface(width, height, () =>
+                {
+                    MenuController controller = new(Application.SharedRootController());
+                    try
+                    {
+                        body(controller);
+                    }
+                    finally
+                    {
+                        controller.Dispose();
+                    }
+                });
+            }
+            finally
+            {
+                MenuTheme.Current = previous;
+            }
+        }
+
+        /// <summary>Reads the painted layer of a view's backdrop.</summary>
+        /// <param name="controller">Controller owning the view.</param>
+        /// <param name="viewId">View whose backdrop to read.</param>
+        /// <returns>The backdrop image.</returns>
+        private static Image Backdrop(MenuController controller, int viewId)
+        {
+            return (Image)controller.GetView(viewId).GetChild(0).GetChild(0);
+        }
+
+        /// <summary>Collects every element under <paramref name="root"/> with the given name.</summary>
+        /// <param name="root">Element to search.</param>
+        /// <param name="name">Name to match.</param>
+        /// <returns>The matches, in tree order.</returns>
+        private static List<BaseElement> Named(BaseElement root, string name)
+        {
+            List<BaseElement> found = [];
+            foreach (BaseElement child in root.GetChilds().Values)
+            {
+                if (child == null)
+                {
+                    continue;
+                }
+                if (child.Name == name)
+                {
+                    found.Add(child);
+                }
+                found.AddRange(Named(child, name));
+            }
+            return found;
+        }
+
+        /// <summary>Collects every element of a type under <paramref name="root"/>, depth first.</summary>
+        /// <typeparam name="T">Element type.</typeparam>
+        /// <param name="root">Element to search.</param>
+        /// <returns>The matches, in tree order.</returns>
+        private static List<T> All<T>(BaseElement root)
+            where T : BaseElement
+        {
+            List<T> found = [];
+            foreach (BaseElement child in root.GetChilds().Values)
+            {
+                if (child is T match)
+                {
+                    found.Add(match);
+                }
+                if (child != null)
+                {
+                    found.AddRange(All<T>(child));
+                }
+            }
+            return found;
+        }
+
+        /// <summary>Finds the first element of a type under <paramref name="root"/>, depth first.</summary>
+        /// <typeparam name="T">Element type.</typeparam>
+        /// <param name="root">Element to search.</param>
+        /// <returns>The first match, or <see langword="null"/>.</returns>
+        private static T Find<T>(BaseElement root)
+            where T : BaseElement
+        {
+            foreach (BaseElement child in root.GetChilds().Values)
+            {
+                if (child is T match)
+                {
+                    return match;
+                }
+                T nested = child == null ? null : Find<T>(child);
+                if (nested != null)
+                {
+                    return nested;
+                }
+            }
+            return null;
+        }
+    }
+}

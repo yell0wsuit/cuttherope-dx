@@ -1,0 +1,36 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000",
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 1920,
+                "h": 370
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 1920,
+                "h": 370
+            },
+            "sourceSize": {
+                "w": 1920,
+                "h": 370
+            }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_pause_top_horiz.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 1920,
+            "h": 370
+        },
+        "scale": "1"
+    }
+}

@@ -779,7 +779,10 @@ namespace CutTheRopeDX.Framework.Core
         /// slower texture paths like the browser's. It also never gets freed, so it stays in
         /// memory through gameplay.
         /// </remarks>
-        internal static readonly string[] PackMenu =
+        internal static string[] PackMenu => MenuTheme.IsExperiments ? PackMenuExperiments : PackMenuClassic;
+
+        /// <summary>The classic menu's image resources, terminated by <see langword="null"/>.</summary>
+        private static readonly string[] PackMenuClassic =
         [
             Resources.Img.MenuBgr,
             Resources.Img.MenuPopup,
@@ -799,6 +802,22 @@ namespace CutTheRopeDX.Framework.Core
             null
         ];
 
+        /// <summary>
+        /// The Experiments menu's image resources, terminated by <see langword="null"/>. It draws its
+        /// own backdrops, pack boxes and audio toggles over the classic menu's buttons, logo and
+        /// popups, so it loads both.
+        /// </summary>
+        private static readonly string[] PackMenuExperiments =
+        [
+            .. PackMenuClassic[..^1],
+            Resources.BackgroundImg.MenuExpMainBgr,
+            Resources.BackgroundImg.MenuExpDefaultBgr,
+            Resources.BackgroundImg.MenuExpCampaignBgr,
+            Resources.Img.MenuExpPackSelection,
+            Resources.Img.MenuExpLock,
+            null
+        ];
+
         /// <summary>Resource pack loaded for gameplay (HUD, candy, spider, etc.).</summary>
         private static readonly string[] PackGame = [
             Resources.Img.MenuButtons,
@@ -807,7 +826,7 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.ObjCandyFx,
             Resources.Img.ObjSpider,
             Resources.Img.ConfettiParticles,
-            Resources.Img.MenuPause,
+            MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop),
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
             null
