@@ -41,6 +41,17 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // The professor's hand is bringing the candy in. Only animations advance until it has
+            // risen off the screen again, so nothing falls, swings or scores while it is in view.
+            if (ProfessorHandPausesPlay)
+            {
+                base.Update(delta);
+                dd.Update(delta);
+                UpdateCameraTracking(delta);
+                _ = AdvanceRestartFlow(delta);
+                return;
+            }
+
             base.Update(delta);
             foreach (PauseSwitcher switcher in pauseSwitchers)
             {
