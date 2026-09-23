@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
-using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -42,24 +40,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Design-space height the selected box's art is centered on.</summary>
         private const float ExpBoxCenterY = 560f;
 
-        /// <summary>
-        /// Projector beam's top left relative to the selected box's center. iOS places it at the
-        /// background's quad 3 offset, (473, 1220), with the box centered at (772.5, 810).
-        /// </summary>
-        private static readonly Vector ExpBeamOffset = new((473f - 772.5f) * IosToAsset, (1220f - 810f) * IosToAsset);
-
-        /// <summary>
-        /// Projector's top left relative to the beam's, putting its lens under the arc painted at
-        /// the beam's base. Measured from the art; the iOS background had the projector painted in.
-        /// </summary>
-        private static readonly Vector ExpProjectorOffset = new(335f, 305f);
-
-        /// <summary>Bottom of the bullet row below the selected box's center (iOS <c>y = -440</c> from the bottom).</summary>
-        private const float ExpBulletsBelowBox = 623f;
-
-        /// <summary>Space between two bullets.</summary>
-        private const float ExpBulletGap = 12f;
-
         /// <summary>Pack title's top center in the element (iOS 740, 260; the coming-soon box uses 440).</summary>
         private static readonly Vector ExpTitlePosition = new(740f * IosToAsset, 260f * IosToAsset);
 
@@ -85,16 +65,12 @@ namespace CutTheRopeDX.GameMain
         private static readonly RGBAColor ExpMonsterIdle = new(54f / 255f, 100f / 255f, 169f / 255f, 1f);
 
         /// <summary>Pack atlas quads, in iOS numbering.</summary>
-        private const int ExpQuadBeam = 0;
         private const int ExpQuadBox = 1;
         private const int ExpQuadBoxSelected = 2;
-        private const int ExpQuadBulletIdle = 3;
-        private const int ExpQuadBulletActive = 4;
         private const int ExpQuadFirstMonster = 5;
         private const int ExpMonsterCount = 8;
         private const int ExpQuadStar = 13;
         private const int ExpQuadBambooLock = 18;
-        private const int ExpQuadProjector = 25;
 
         /// <summary>The pack iOS closes with bamboo instead of the padlock.</summary>
         private const int ExpBambooPack = 7;
@@ -103,12 +79,6 @@ namespace CutTheRopeDX.GameMain
         private const int ExpAudioQuadSound = 3;
         private const int ExpAudioQuadMusic = 4;
         private const int ExpAudioQuadCross = 5;
-
-        /// <summary>The projector beam, faded by how close the strip is to resting on a box.</summary>
-        private Image expBeam;
-
-        /// <summary>One bullet per pack, lit for the box the strip is nearest.</summary>
-        private readonly List<Image> expBullets = [];
 
         /// <summary>
         /// Picks the Experiments backdrop for a menu scene.
@@ -197,35 +167,7 @@ namespace CutTheRopeDX.GameMain
             float scale = FittedScale;
             float boxCenterY = fitted.y - visible.y + (ExpBoxCenterY * scale);
 
-            // Beam, projector and bullets sit under the strip, as they do in iOS where they are
-            // added to the background before the container.
-            FittedGroup underlay = new() { anchor = 9, parentAnchor = 9 };
-            Vector boxCenter = new(ViewportLayout.DesignWidth / 2f, ExpBoxCenterY);
-            Image projector = Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadProjector);
-            projector.x = boxCenter.X + ExpBeamOffset.X + ExpProjectorOffset.X;
-            projector.y = boxCenter.Y + ExpBeamOffset.Y + ExpProjectorOffset.Y;
-            _ = underlay.AddChild(projector);
-            expBeam = Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadBeam);
-            expBeam.x = boxCenter.X + ExpBeamOffset.X;
-            expBeam.y = boxCenter.Y + ExpBeamOffset.Y;
-            _ = underlay.AddChild(expBeam);
-
             int displayCount = Preferences.GetPacksCount() + (PackConfig.GetComingSoonPackIndex() >= 0 ? 1 : 0);
-            expBullets.Clear();
-            HBox bullets = new HBox().InitWithOffsetAlignHeight(ExpBulletGap, 16, 0);
-            for (int i = 0; i < displayCount; i++)
-            {
-                Image bullet = Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadBulletIdle);
-                bullets.height = Math.Max(bullets.height, bullet.height);
-                _ = bullets.AddChild(bullet);
-                expBullets.Add(bullet);
-            }
-            bullets.x = boxCenter.X - (bullets.width / 2f);
-            bullets.y = boxCenter.Y + ExpBulletsBelowBox - bullets.height;
-            _ = underlay.AddChild(bullets);
-            _ = baseElement.AddChild(underlay);
-            PlaceFittedGroup(underlay);
-
             float elementSize = ExpPackElementSize * scale;
             float step = (ExpPackElementSize + ExpPackGap) * scale;
             Vector artCenter = ExperimentsBoxArtCenter();
@@ -452,8 +394,8 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Blends every box by how far the strip is from resting on it: the selected plate and
-        /// the monster's tint fade in, the idle plate fades out, and the projector beam is lit
-        /// only while the strip is near a box. The WP7 <c>MenuController.update</c> pack branch.
+        /// the monster's tint fade in, and the idle plate fades out. The WP7
+        /// <c>MenuController.update</c> pack branch.
         /// </summary>
         /// <remarks>
         /// WP7 tints each monster by the nearest box seen so far in the loop rather than by its
@@ -471,8 +413,6 @@ namespace CutTheRopeDX.GameMain
             float step = packContainer.TotalScrollPoints > 1
                 ? packContainer.GetScrollPoint(1).X - packContainer.GetScrollPoint(0).X
                 : 1f;
-            float nearest = 0f;
-            int nearestIndex = 0;
             for (int i = 0; i < packContainer.TotalScrollPoints; i++)
             {
                 BaseElement element = boxes[i];
@@ -483,11 +423,6 @@ namespace CutTheRopeDX.GameMain
 
                 float distance = MathF.Min(1f, MathF.Abs((scroll + packContainer.GetScrollPoint(i).X) / step));
                 float closeness = 1f - distance;
-                if (closeness > nearest)
-                {
-                    nearest = closeness;
-                    nearestIndex = i;
-                }
 
                 SetFade(element.GetChildWithName("box"), distance);
                 SetFade(element.GetChildWithName("boxSelected"), closeness);
@@ -497,13 +432,6 @@ namespace CutTheRopeDX.GameMain
                     ExpMonsterIdle.GreenColor + ((ExpMonsterSelected.GreenColor - ExpMonsterIdle.GreenColor) * closeness),
                     ExpMonsterIdle.BlueColor + ((ExpMonsterSelected.BlueColor - ExpMonsterIdle.BlueColor) * closeness),
                     1f);
-            }
-
-            // Dark until the strip is at least halfway onto a box, full on it.
-            SetFade(expBeam, MathF.Max(0f, (2f * nearest) - 1f));
-            for (int i = 0; i < expBullets.Count; i++)
-            {
-                expBullets[i].SetDrawQuad(i == nearestIndex ? ExpQuadBulletActive : ExpQuadBulletIdle);
             }
         }
 
