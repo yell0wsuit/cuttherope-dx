@@ -509,15 +509,6 @@ namespace CutTheRopeDX.GameMain
             _ = Mover.MoveVariableToTarget(ref rocket.additionalAngle, target, 90f, delta);
         }
 
-        /// <summary>Exhausts every candy's bound rocket (win/loss cleanup).</summary>
-        private void ExhaustAllActiveRockets()
-        {
-            for (int i = 0; i < candies.Count; i++)
-            {
-                ExhaustRocketForCandy(candies[i]);
-            }
-        }
-
         /// <summary>
         /// Calculates time, star, and total score bonuses for the completed level.
         /// </summary>
@@ -585,10 +576,6 @@ namespace CutTheRopeDX.GameMain
             _ = aniPool.AddChild(Candy);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
             ReleaseRopesForBody(candies[0].WholeBody);
-            ExhaustAllActiveRockets();
-            DetachActiveSnails();
-            DetachActiveHands();
-
             ShutDownMice();
         }
 
@@ -642,11 +629,6 @@ namespace CutTheRopeDX.GameMain
             }
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_animateLevelRestart), null, 1);
             gameSceneDelegate.GameLost();
-            // Rockets are exhausted per-candy at each loss site (breakCandy in the C reference only
-            // stops the lost candy's own rocket; gameLoseIm stops none). A surviving candy's rocket
-            // keeps burning through the restart animation, matching the original.
-            DetachActiveHands();
-
             ShutDownMice();
         }
 
@@ -980,26 +962,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Detaches all active snails from the candy.
-        /// </summary>
-        public void DetachActiveSnails()
-        {
-            if (snailobjects == null || snailobjects.Count <= 0)
-            {
-                return;
-            }
-
-            for (int i = snailobjects.Count - 1; i >= 0; i--)
-            {
-                Snail snail = snailobjects[i];
-                if (snail != null && snail.state == Snail.SNAIL_STATE_ACTIVE)
-                {
-                    snail.Detach();
-                }
-            }
-        }
-
-        /// <summary>
         /// Forces the active mouse to drop its candy only when that candy is <paramref name="point"/>.
         /// Capture devices (hand grab, sock, bamboo, lantern) strip the mouse per-candy; a mouse
         /// carrying a different candy keeps it.
@@ -1068,32 +1030,6 @@ namespace CutTheRopeDX.GameMain
                         snail.state == Snail.SNAIL_STATE_ACTIVE, snail.AttachedPoint(), point))
                 {
                     snail.Detach();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Releases all mechanical hands currently holding a candy. Once a candy's
-        /// <see cref="CandyAttachments.Hand"/> is cleared the ant conveyor is free to pick it up
-        /// again, so no global conveyor unblock is needed.
-        /// </summary>
-        public void DetachActiveHands()
-        {
-            if (hands == null || hands.Count <= 0)
-            {
-                return;
-            }
-
-            foreach (MechanicalHand hand in hands)
-            {
-                if (hand != null && hand.State == MechanicalHandState.HoldingCandy)
-                {
-                    CandyContext held = HandHeldCandy(hand);
-                    ConstrainedPoint heldPoint = held?.WholeBody.Point ?? CandyPoint;
-                    hand.cPoint.RemoveConstraint(heldPoint);
-                    hand.ReleaseCandy();
-                    hand.AnimateReleaseWithAnimationsPool(aniPool);
-                    _ = held?.Lifecycle.Attachments.TryReleaseHand(hand);
                 }
             }
         }

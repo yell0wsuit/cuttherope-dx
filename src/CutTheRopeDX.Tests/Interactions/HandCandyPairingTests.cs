@@ -52,17 +52,6 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void DetachActiveHandsClearsEveryPairing()
-        {
-            (GameScene scene, CandyContext candy) = DuoRig();
-            _ = Act.GrabWithHand(scene, candy);
-
-            scene.DetachActiveHands();
-
-            AssertPairingConsistent(scene, "after detaching all hands");
-        }
-
-        [Fact]
         public void DetachHandsForPointClearsOnlyThatCandysPairing()
         {
             (GameScene scene, CandyContext first) = DuoRig(s => s.Candy(60, 200, number: "2"));

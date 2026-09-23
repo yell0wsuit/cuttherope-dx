@@ -52,19 +52,6 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         [Fact]
-        public void DetachActiveHandsReleasesAndStillOwesTheDropSound()
-        {
-            (GameScene scene, CandyContext candy) = SoloRig();
-            MechanicalHand hand = Act.GrabWithHand(scene, candy);
-
-            scene.DetachActiveHands();
-
-            Assert.Equal(MechanicalHandState.Releasing, hand.State);
-            Assert.False(hand.DoRotateCandy);
-            Assert.True(Act.SettleOwedDropSound(hand));
-        }
-
-        [Fact]
         public void DetachHandsForPointReleasesAndOwesNoDropSound()
         {
             (GameScene scene, CandyContext candy) = SoloRig();

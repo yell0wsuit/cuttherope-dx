@@ -134,6 +134,77 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(rocket.visible);
         }
 
+        [Fact]
+        public void WinningLeavesTheOtherCandyInItsHand()
+        {
+            (GameScene scene, _, CandyContext kept) = TwoCandies(s => s.Hand(260, 120, segmentLength: 20, segmentAngle: 90f));
+            MechanicalHand hand = Act.GrabWithHand(scene, kept);
+
+            scene.GameWon();
+            HeadlessGame.StepFrames(scene, 10);
+
+            Assert.Same(hand, kept.Lifecycle.Attachments.Hand);
+            Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
+        }
+
+        [Fact]
+        public void WinningLeavesTheOtherCandysRocketBurning()
+        {
+            (GameScene scene, _, CandyContext kept) = TwoCandies(s => s.Rocket(260, 200, impulse: 0f));
+            Rocket rocket = Act.BindRocket(scene, kept);
+
+            scene.GameWon();
+
+            Assert.Same(rocket, kept.Lifecycle.Attachments.Rocket);
+            Assert.NotEqual(Rocket.STATE_ROCKET_EXAUST, rocket.state);
+        }
+
+        [Fact]
+        public void WinningLeavesTheOtherCandysSnailRiding()
+        {
+            (GameScene scene, _, CandyContext kept) = TwoCandies(s => s.Snail(260, 200));
+            _ = Act.RideSnail(scene, kept);
+
+            scene.GameWon();
+
+            Assert.Equal(1, scene.SnailCount(kept));
+        }
+
+        [Fact]
+        public void LosingOneCandyLeavesTheOtherCandyInItsHand()
+        {
+            (GameScene scene, CandyContext lost, CandyContext kept) = TwoCandies(s => s.Hand(260, 120, segmentLength: 20, segmentAngle: 90f));
+            MechanicalHand hand = Act.GrabWithHand(scene, kept);
+
+            Act.LoseOffScreen(scene, lost);
+
+            Assert.Same(hand, kept.Lifecycle.Attachments.Hand);
+            Assert.Equal(MechanicalHandState.HoldingCandy, hand.State);
+        }
+
+        [Fact]
+        public void LosingOneCandyLeavesTheOtherCandysRocketBurning()
+        {
+            (GameScene scene, CandyContext lost, CandyContext kept) = TwoCandies(s => s.Rocket(260, 200, impulse: 0f));
+            Rocket rocket = Act.BindRocket(scene, kept);
+
+            Act.LoseOffScreen(scene, lost);
+
+            Assert.Same(rocket, kept.Lifecycle.Attachments.Rocket);
+            Assert.NotEqual(Rocket.STATE_ROCKET_EXAUST, rocket.state);
+        }
+
+        [Fact]
+        public void LosingOneCandyLeavesTheOtherCandysSnailRiding()
+        {
+            (GameScene scene, CandyContext lost, CandyContext kept) = TwoCandies(s => s.Snail(260, 200));
+            _ = Act.RideSnail(scene, kept);
+
+            Act.LoseOffScreen(scene, lost);
+
+            Assert.Equal(1, scene.SnailCount(kept));
+        }
+
         private static (GameScene Scene, CandyContext First, CandyContext Second) TwoCandies(
             Func<Scenario, Scenario> extras)
         {

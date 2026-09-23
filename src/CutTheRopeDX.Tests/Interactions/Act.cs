@@ -215,7 +215,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 "the spikes never broke the candy");
 
             // Losing is a two-stage event: the break tears the candy down, and the scheduled
-            // GameLost that follows finishes the job (hands, mice). The matrix row describes the
+            // GameLost that follows finishes the job (mice). The matrix row describes the
             // finished state, so wait for the loss itself.
             Assert.True(
                 Interaction.StepUntil(scene, () => scene.Outcomes().LostCount > 0),
