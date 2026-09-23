@@ -342,7 +342,10 @@ namespace CutTheRopeDX.GameMain
         /// </remarks>
         public void AnimateLevelRestart()
         {
-            _ = gameplayFlow.TryBeginRestartDim();
+            if (gameplayFlow.TryBeginRestartDim())
+            {
+                ExperimentsVoice.LevelRestarting();
+            }
         }
 
         /// <summary>

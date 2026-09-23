@@ -741,6 +741,15 @@ namespace CutTheRopeDX.GameMain
             HBox audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
             _ = audioRow.AddChild(soundToggle);
             _ = audioRow.AddChild(musicToggle);
+            if (MenuTheme.IsExperiments)
+            {
+                ToggleButton voiceToggle = CreateExperimentsVoiceToggle(this);
+                _ = audioRow.AddChild(voiceToggle);
+                if (!Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON"))
+                {
+                    voiceToggle.Toggle();
+                }
+            }
             _ = vBox.AddChild(audioRow);
             Button langBtn = CreateButtonWithTextIDDelegate(Application.GetString("LANGUAGE"), MenuButtonId.ShowLanguage, this);
             _ = vBox.AddChild(langBtn);
@@ -1988,6 +1997,20 @@ namespace CutTheRopeDX.GameMain
                         else
                         {
                             SoundMgr.RestoreSoundEffects();
+                        }
+                        return;
+                    }
+                case var id when id == MenuButtonId.ToggleVoice:
+                    {
+                        bool voiceWasOn = Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON");
+                        Preferences.SetBooleanForKey(!voiceWasOn, "PREFS_EXP_VOICE_ON", true);
+                        if (voiceWasOn)
+                        {
+                            SoundMgr.StopVoice();
+                        }
+                        else
+                        {
+                            SoundMgr.PlayVoice(ExperimentsVoice.ToggleOnLine);
                         }
                         return;
                     }
