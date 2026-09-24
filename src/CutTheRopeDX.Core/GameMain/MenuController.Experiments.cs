@@ -198,7 +198,7 @@ namespace CutTheRopeDX.GameMain
         private void CreateExperimentsPackSelect()
         {
             MenuView menuView = new();
-            BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
+            BaseElement baseElement = CreateBackgroundWithLogowithShadow(false, false, VIEW_PACK_SELECT);
             Rectangle visible = VisibleBounds;
             Rectangle fitted = FittedBox;
             float scale = FittedScale;
