@@ -1,34 +1,53 @@
 name: Cache Cleanup
 
-# Deletes a pull request's caches once it closes. They are scoped to the PR's merge ref, so
-# nothing else can ever restore them, and left alone they sit in the repository's 10GB quota
-# pushing main's caches out until they age out a week later.
+# Deletes closed pull requests' caches. They are scoped to the PR's merge ref, so nothing else can
+# ever restore them, and left alone they sit in the repository's 10GB quota pushing main's caches
+# out until they age out a week later.
 #
-# pull_request_target so a PR from a fork still gets a token that can delete caches. It is safe
-# here because nothing from the PR is checked out or run.
+# A PR from this repository is cleaned up as soon as it closes. A PR from a fork only gets a
+# read-only token on pull_request, so its caches are swept up by the daily schedule instead. This
+# avoids pull_request_target, which GitHub restricts on public repositories by default.
 on:
-    pull_request_target:
+    pull_request:
         types: [closed]
+    schedule:
+        - cron: "17 4 * * *"
+    workflow_dispatch:
 
 permissions:
     actions: write
+    pull-requests: read
 
 jobs:
     cleanup:
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         runs-on: ubuntu-latest
         steps:
-            - name: Delete the PR's caches
+            - name: Delete closed PRs' caches
               env:
                   GH_TOKEN: ${{ github.token }}
                   GH_REPO: ${{ github.repository }}
-                  REF: refs/pull/${{ github.event.pull_request.number }}/merge
+                  PR: ${{ github.event.pull_request.number }}
               run: |
-                  ids=$(gh cache list --ref "$REF" --limit 100 --json id --jq '.[].id')
-                  if [ -z "$ids" ]; then
-                      echo "No caches for $REF."
-                      exit 0
+                  if [ -n "$PR" ]; then
+                      prs=$PR
+                  else
+                      # Every PR that still has caches; only the closed ones are cleaned up.
+                      prs=$(gh cache list --limit 1000 --json ref \
+                          --jq '.[].ref | capture("^refs/pull/(?<n>[0-9]+)/merge$").n' | sort -un)
                   fi
-                  for id in $ids; do
-                      # A cache can be evicted between the listing and the delete; that is fine.
-                      gh cache delete "$id" || echo "Could not delete cache $id"
+                  for pr in $prs; do
+                      if [ -z "$PR" ] && [ "$(gh pr view "$pr" --json state --jq .state)" = "OPEN" ]; then
+                          continue
+                      fi
+                      ref="refs/pull/$pr/merge"
+                      ids=$(gh cache list --ref "$ref" --limit 100 --json id --jq '.[].id')
+                      if [ -z "$ids" ]; then
+                          echo "No caches for $ref."
+                          continue
+                      fi
+                      for id in $ids; do
+                          # A cache can be evicted between the listing and the delete; that is fine.
+                          gh cache delete "$id" || echo "Could not delete cache $id"
+                      done
                   done
