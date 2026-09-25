@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 
@@ -33,6 +35,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The copy of the candy the hand carries until it lets go.</summary>
         private BaseElement professorHandCandy;
 
+        /// <summary>The arm above the hand, stretched every frame to the top of the view.</summary>
+        private TiledImage professorHandSleeve;
+
+        /// <summary>Height of one sleeve tile, so the arm grows by whole tiles.</summary>
+        private float professorHandSleeveTile;
+
         /// <summary>
         /// Gets whether the hand is still carrying the candy, in which case the real candy is
         /// hidden and the hand draws its copy.
@@ -54,6 +62,7 @@ namespace CutTheRopeDX.GameMain
         {
             professorHand = null;
             professorHandCandy = null;
+            professorHandSleeve = null;
             ProfessorHandHolds = false;
             ProfessorHandPausesPlay = false;
 
@@ -94,27 +103,26 @@ namespace CutTheRopeDX.GameMain
             _ = container.AddChild(hand);
 
             // Placed so the marker lands on the candy's resting point, starting a hand's height
-            // above the top of the level.
+            // above whichever is higher: the top of the level, or the top of a viewport taller
+            // than the level that shows world above it.
             Vector candyPoint = candies[0].WholeBody.Point.pos;
             float handX = candyPoint.X - (markerOffset.X - handOffset.X);
             float restY = candyPoint.Y - (markerOffset.Y - handOffset.Y);
-            float aboveY = -container.height;
+            float aboveY = MathF.Min(0f, camera.RenderPos.Y) - container.height;
 
-            // The sleeve fills from the top of the level down to the hand, so the arm never ends
-            // in mid-air however low the candy starts.
-            if (restY > 0f)
-            {
-                TiledImage sleeve = Image.InitializeFromResource(new TiledImage(), atlas, HandQuadSleeve);
-                sleeve.SetTile(HandQuadSleeve);
-                sleeve.anchor = sleeve.parentAnchor = 9;
-                sleeve.height = (int)restY;
-                sleeve.x = sleeveOffset.X - handOffset.X;
-                sleeve.y = -sleeve.height;
-                _ = hand.AddChild(sleeve);
-            }
+            // The sleeve fills from the top of the view down to the hand, so the arm never ends
+            // in mid-air however low the candy starts or however tall the viewport is.
+            TiledImage sleeve = Image.InitializeFromResource(new TiledImage(), atlas, HandQuadSleeve);
+            sleeve.SetTile(HandQuadSleeve);
+            sleeve.anchor = sleeve.parentAnchor = 9;
+            sleeve.x = sleeveOffset.X - handOffset.X;
+            _ = hand.AddChild(sleeve);
+            professorHandSleeve = sleeve;
+            professorHandSleeveTile = MathF.Max(1f, Image.GetQuadSize(atlas, HandQuadSleeve).Y);
 
             container.x = handX;
             container.y = aboveY;
+            StretchProfessorHandSleeve();
             Timeline lower = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             lower.AddKeyFrame(KeyFrame.MakePos(handX, aboveY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             lower.AddKeyFrame(KeyFrame.MakePos(handX, aboveY, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, HandWaitSeconds));
@@ -135,6 +143,27 @@ namespace CutTheRopeDX.GameMain
             professorHandCandy = candy;
             ProfessorHandHolds = true;
             ProfessorHandPausesPlay = true;
+        }
+
+        /// <summary>
+        /// Stretches the sleeve up from the hand to the top of the visible world, which on a
+        /// viewport taller than the level lies above the level's own top. Grows by whole tiles
+        /// measured from the hand, so the tiling where the arm meets the hand never crawls as
+        /// the hand moves or the viewport resizes.
+        /// </summary>
+        private void StretchProfessorHandSleeve()
+        {
+            if (professorHand == null || professorHandSleeve == null)
+            {
+                return;
+            }
+
+            float visibleTop = camera.RenderPos.Y;
+            float reach = professorHand.y - visibleTop;
+            int tiles = reach > 0f ? (int)MathF.Ceiling(reach / professorHandSleeveTile) : 0;
+            professorHandSleeve.height = (int)(tiles * professorHandSleeveTile);
+            professorHandSleeve.y = -professorHandSleeve.height;
+            professorHandSleeve.SetEnabled(tiles > 0);
         }
 
         /// <summary>
@@ -185,6 +214,7 @@ namespace CutTheRopeDX.GameMain
             aniPool.TimelineFinished(t);
             professorHand = null;
             professorHandCandy = null;
+            professorHandSleeve = null;
             return true;
         }
     }
