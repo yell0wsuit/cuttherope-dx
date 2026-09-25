@@ -1,5 +1,9 @@
-using CutTheRopeDX.Tests.Interactions;
+using System.Reflection;
+
+using CutTheRopeDX.Framework.Helpers;
+using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -46,6 +50,40 @@ namespace CutTheRopeDX.Tests
         public void ClassicMenusHaveNoHand()
         {
             WithStyle(MenuStyle.Classic, () => Assert.False(LoadScene(level: 0).ProfessorHandPausesPlay));
+        }
+
+        [Fact]
+        public void ArmReachesTheTopOfAViewportTallerThanTheLevel()
+        {
+            // Booting resets the surface, so the portrait size goes on between boot and load.
+            _ = HeadlessGame.Boot();
+            LayoutSurfaces.WithSurface(400, 1280, () => WithStyle(MenuStyle.Experiments, () =>
+            {
+                GameController controller = HeadlessGame.LoadLevelWithController(0, 0);
+                GameScene scene = (GameScene)controller.GetView(0).GetChild(0);
+                Camera2D camera = Read<Camera2D>(scene, "camera");
+                BaseElement hand = Read<BaseElement>(scene, "professorHand");
+                TiledImage sleeve = Read<TiledImage>(scene, "professorHandSleeve");
+                float visibleTop = camera.RenderPos.Y;
+                Assert.True(visibleTop < 0f, "a tall portrait viewport shows world above the level");
+
+                // Waiting: the whole hand is above the view, not hovering inside it.
+                Assert.True(hand.y + hand.height <= visibleTop);
+
+                // Resting on the candy: the arm runs all the way up out of the view.
+                Tick(scene, 1.3f);
+                Assert.True(scene.ProfessorHandPausesPlay);
+                Assert.True(hand.y > visibleTop);
+                Assert.True(hand.y + sleeve.y <= camera.RenderPos.Y);
+            }));
+        }
+
+        private static T Read<T>(object target, string field)
+        {
+            object value = target.GetType()
+                .GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.GetValue(target);
+            return Assert.IsAssignableFrom<T>(value);
         }
 
         private static GameScene LoadScene(int level)
