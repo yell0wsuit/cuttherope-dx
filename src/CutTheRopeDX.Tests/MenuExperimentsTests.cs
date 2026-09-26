@@ -92,7 +92,7 @@ namespace CutTheRopeDX.Tests
                     {
                         continue;
                     }
-                    Image cage = All<Image>(containers[i]).Find(image => image.texture == packAtlas && image.quadToDraw == 18);
+                    Image cage = All<Image>(containers[i]).Find(image => image.texture == packAtlas && image.quadToDraw == 17);
                     Assert.Equal(i == caged, cage != null);
                     if (cage != null)
                     {

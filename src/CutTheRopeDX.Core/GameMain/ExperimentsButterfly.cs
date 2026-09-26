@@ -47,9 +47,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Pack atlas quads: the body and the two wings.</summary>
-        private const int QuadBody = 19;
-        private const int QuadRearWing = 20;
-        private const int QuadFrontWing = 21;
+        internal const int QuadBody = 18;
+        private const int QuadRearWing = 19;
+        private const int QuadFrontWing = 20;
 
         /// <summary>Wing flap speed while flying (iOS 5); a tenth of it while perched.</summary>
         private const float FlyingWingsVelocity = 5f;
