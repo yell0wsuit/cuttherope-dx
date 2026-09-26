@@ -102,6 +102,48 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        [InlineData("ReportedUltrawide", 2940, 960)]
+        [InlineData("ReportedPortrait", 640, 960)]
+        public void ProjectorRigPeeksUpFromTheBottomEdgeAtEveryShape(string name, int width, int height)
+        {
+            _ = name;
+            WithExperiments(width, height, controller =>
+            {
+                FittedGroup underlay = Find<FittedGroup>(controller.GetView(MenuController.VIEW_PACK_SELECT));
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                float scale = underlay.scaleY;
+                Image projector = All<Image>(underlay).Find(image => image.quadToDraw == 21);
+                Image beam = All<Image>(underlay).Find(image => image.quadToDraw == 0);
+                Assert.NotNull(projector);
+                Assert.NotNull(beam);
+                // Resolve positions through the same anchor calculation used by PreDraw.
+                // Local x/y alone miss children that ignore their parent's position.
+                ResolveDrawPositions(controller.GetView(MenuController.VIEW_PACK_SELECT));
+                Vector offset = Image.GetQuadOffset(Resources.Img.MenuExpPackSelection, 21);
+                float centerX = underlay.drawX + (underlay.width >> 1);
+                float centerY = underlay.drawY + (underlay.height >> 1);
+                float left = centerX + ((projector.drawX + offset.X - centerX) * scale);
+                float top = centerY + ((projector.drawY + offset.Y - centerY) * scale);
+                Assert.Equal(117f, (left - (visible.x + (visible.w / 2f))) / scale, 2);
+                Assert.Equal(22f, (visible.y + visible.h - top) / scale, 2);
+                Assert.Equal(projector.drawX, beam.drawX);
+                Assert.Equal(projector.drawY, beam.drawY);
+            });
+        }
+
+        /// <summary>Resolves ancestor anchors before their children, as drawing does.</summary>
+        /// <param name="element">Root of the subtree to resolve.</param>
+        private static void ResolveDrawPositions(BaseElement element)
+        {
+            BaseElement.CalculateTopLeft(element);
+            foreach (BaseElement child in element.GetChilds().Values)
+            {
+                ResolveDrawPositions(child);
+            }
+        }
+
         [Fact]
         public void TheButterflyKeepsTheLockedCagedBoxCompany()
         {

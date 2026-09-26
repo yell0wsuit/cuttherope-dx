@@ -41,17 +41,11 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Design-space height the selected box's art is centered on.</summary>
         private const float ExpBoxCenterY = 560f;
 
-        /// <summary>
-        /// Projector beam's top left relative to the selected box's center. The beam and projector
-        /// share one canvas, so equal offsets line them up.
-        /// </summary>
-        private static readonly Vector ExpBeamOffset = new(-104f, 422f);
+        /// <summary>Projector artwork's left edge relative to the selected box's center.</summary>
+        private const float ExpProjectorRightOffset = 117f;
 
-        /// <summary>Projector's top left relative to the selected box's center.</summary>
-        private static readonly Vector ExpProjectorOffset = new(-104f, 422f);
-
-        /// <summary>Shift applied to the beam and projector together, on top of their own offsets.</summary>
-        private static readonly Vector ExpProjectorRigOffset = new(0f, 0f);
+        /// <summary>How much projector artwork peeks above the visible bottom, in design units.</summary>
+        private const float ExpProjectorVisibleHeight = 22f;
 
         /// <summary>Pack title's top center in the element (iOS 740, 260; the coming-soon box uses 440).</summary>
         private static readonly Vector ExpTitlePosition = new(740f * IosToAsset, 260f * IosToAsset);
@@ -226,18 +220,23 @@ namespace CutTheRopeDX.GameMain
             float boxCenterY = fitted.y - visible.y + (ExpBoxCenterY * scale);
 
             // Beam and projector sit under the strip, as they do in iOS where they are added to
-            // the background before the container.
+            // the background before the container. Pinned to the visible bottom edge rather than
+            // hung from the box, whose distance to that edge changes with the aspect ratio.
             FittedGroup underlay = new() { anchor = 9, parentAnchor = 9 };
-            Vector rigOrigin = new(
-                (ViewportLayout.DesignWidth / 2f) + ExpProjectorRigOffset.X,
-                ExpBoxCenterY + ExpProjectorRigOffset.Y);
+            float visibleBottom = (visible.y + visible.h - fitted.y) / scale;
+            Vector artworkOffset = Image.GetQuadOffset(Resources.Img.MenuExpPackSelection, ExpQuadProjector);
             Image projector = Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadProjector);
-            projector.x = rigOrigin.X + ExpProjectorOffset.X;
-            projector.y = rigOrigin.Y + ExpProjectorOffset.Y;
+            // Children must inherit the group's position as well as its scale.
+            projector.anchor = projector.parentAnchor = 9;
+            // Position the artwork, accounting for the transparent padding in its source canvas.
+            projector.x = (ViewportLayout.DesignWidth / 2f) + ExpProjectorRightOffset - artworkOffset.X;
+            projector.y = visibleBottom - ExpProjectorVisibleHeight - artworkOffset.Y;
             _ = underlay.AddChild(projector);
             expBeam = Image.FromResource(Resources.Img.MenuExpPackSelection, ExpQuadBeam);
-            expBeam.x = rigOrigin.X + ExpBeamOffset.X;
-            expBeam.y = rigOrigin.Y + ExpBeamOffset.Y;
+            expBeam.anchor = expBeam.parentAnchor = 9;
+            // Both quads share the same source canvas, so keep their canvas origins aligned.
+            expBeam.x = projector.x;
+            expBeam.y = projector.y;
             _ = underlay.AddChild(expBeam);
             _ = baseElement.AddChild(underlay);
             PlaceFittedGroup(underlay);
