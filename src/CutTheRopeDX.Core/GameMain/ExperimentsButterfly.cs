@@ -51,6 +51,13 @@ namespace CutTheRopeDX.GameMain
         private const int QuadRearWing = 19;
         private const int QuadFrontWing = 20;
 
+        /// <summary>
+        /// How far the wings sit down into the body, in atlas pixels. iOS butts the quads
+        /// together and its tight cuts leave a 1 px seam; this atlas's trims keep a soft margin
+        /// that opens it to 4 px, so the wings drop by that much to meet the body.
+        /// </summary>
+        private const float WingSeamOverlap = 4f;
+
         /// <summary>Wing flap speed while flying (iOS 5); a tenth of it while perched.</summary>
         private const float FlyingWingsVelocity = 5f;
 
@@ -110,11 +117,13 @@ namespace CutTheRopeDX.GameMain
             rearWing = Image.FromResource(Resources.Img.MenuExpPackSelection, QuadRearWing);
             rearWing.anchor = 34;
             rearWing.parentAnchor = 10;
+            rearWing.y = WingSeamOverlap;
             rearWing.visible = false;
             _ = body.AddChild(rearWing);
             frontWing = Image.FromResource(Resources.Img.MenuExpPackSelection, QuadFrontWing);
             frontWing.anchor = 34;
             frontWing.parentAnchor = 10;
+            frontWing.y = WingSeamOverlap;
             frontWing.visible = false;
             _ = body.AddChild(frontWing);
 
