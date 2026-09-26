@@ -319,6 +319,15 @@ namespace CutTheRopeDX.GameMain
             {
                 if (ActivePhysicsConstants.UseMobilePhysicsModel)
                 {
+                    if (!body.Visual.topLeftCalculated)
+                    {
+                        // A visual that has never been updated has no draw position yet, which
+                        // reads as the map origin and binds any rocket parked there. Lay it out
+                        // on the point first; the loop below repositions it after integration.
+                        body.Visual.x = body.Point.pos.X;
+                        body.Visual.y = body.Point.pos.Y;
+                        CalculateTopLeft(body.Visual);
+                    }
                     body.RocketCollisionDrawPosition = Vect(body.Visual.drawX, body.Visual.drawY);
                 }
                 // A hovering flying candy is held exactly where it is: neither integrated nor relaxed.

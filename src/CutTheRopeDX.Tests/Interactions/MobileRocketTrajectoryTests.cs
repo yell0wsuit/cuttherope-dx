@@ -34,6 +34,26 @@ namespace CutTheRopeDX.Tests.Interactions
             Assert.True(maximumRocketX > authoredRocketX + Scenario.Scale);
         }
 
+        [Fact]
+        public void RocketNearTheOriginIgnoresCandyOnTheFirstFrame()
+        {
+            // Before its first update the candy has no draw position, which reads as the map
+            // origin; a rocket there must not take that for the candy and reel toward it.
+            GameScene scene = Scenario.New()
+                .MapSize(853, 480)
+                .Design("useMobilePhysics", "true")
+                .Candy(425, 160)
+                .Rope(423, 110, length: 25)
+                .Rocket(118, 62, angle: 180f, impulse: 20f)
+                .Build();
+            Rocket rocket = scene.Rockets()[0];
+
+            HeadlessGame.StepFrames(scene, 1);
+
+            Assert.Equal(Rocket.STATE_ROCKET_IDLE, rocket.state);
+            Assert.Null(scene.Candy().Lifecycle.Attachments.Rocket);
+        }
+
         private static GameScene ReferenceScene()
         {
             Scenario scenario = Scenario.New()
