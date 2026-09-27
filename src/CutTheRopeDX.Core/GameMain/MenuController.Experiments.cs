@@ -65,6 +65,21 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Width the unlock hint wraps within (iOS <c>scaleToFitRect:800, 240</c>).</summary>
         private const float ExpHintWidth = 800f * IosToAsset;
 
+        /// <summary>
+        /// Width the unlock hint wraps within when its wrapped lines would reach the floor: wide
+        /// viewports have room across but little below the box.
+        /// </summary>
+        private const float ExpWideHintWidth = 2f * ExpHintWidth;
+
+        /// <summary>
+        /// Share of the pack backdrop's height taken by the patterned floor along its bottom edge
+        /// (130 of its 1080 rows), which text drawn over is hard to read against.
+        /// </summary>
+        private const float ExpFloorFraction = 130f / 1080f;
+
+        /// <summary>Gap kept between the unlock hint and the floor, in design units.</summary>
+        private const float ExpHintFloorClearance = 8f;
+
         /// <summary>Monster tint on the selected box (iOS and WP7 agree on 172, 85, 13).</summary>
         private static readonly RGBAColor ExpMonsterSelected = new(172f / 255f, 85f / 255f, 13f / 255f, 1f);
 
@@ -261,9 +276,14 @@ namespace CutTheRopeDX.GameMain
             packContainer.dontHandleTouchUpsHandledByChilds = true;
             packContainer.TurnScrollPointsOnWithCapacity(displayCount);
             packContainer.delegateScrollableContainerProtocol = this;
+            // How far below its anchor the unlock hint may reach before touching the floor.
+            Image backdrop = backdrops[VIEW_PACK_SELECT].Backdrop;
+            float floorTop = visible.h - (ExpFloorFraction * backdrop.height * backdrop.scaleY);
+            float hintCenterY = elementCenterY + (ExpHintOffset.Y * scale);
+            float hintRoom = ((floorTop - hintCenterY) / scale) - ExpHintFloorClearance;
             for (int i = 0; i < displayCount; i++)
             {
-                TouchBaseElement element = CreateExperimentsPackElement(i, elementSize, scale);
+                TouchBaseElement element = CreateExperimentsPackElement(i, elementSize, scale, hintRoom);
                 boxes[i] = element;
                 element.anchor = element.parentAnchor = 17;
                 element.x = firstLeft + (i * step);
@@ -327,8 +347,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="n">Displayed pack index; one past the last pack is the coming-soon box.</param>
         /// <param name="elementSize">Side of the element in logical units.</param>
         /// <param name="scale">Scale from design units to logical units.</param>
+        /// <param name="hintRoom">
+        /// How far below its authored center the unlock hint may reach before touching the floor,
+        /// in design units.
+        /// </param>
         /// <returns>The touchable pack element.</returns>
-        private TouchBaseElement CreateExperimentsPackElement(int n, float elementSize, float scale)
+        private TouchBaseElement CreateExperimentsPackElement(int n, float elementSize, float scale, float hintRoom)
         {
             int packsCount = Preferences.GetPacksCount();
             bool isComingSoon = n >= packsCount;
@@ -411,12 +435,19 @@ namespace CutTheRopeDX.GameMain
                 Text hint = new Text().InitWithFont(Application.GetFont(Resources.Fnt.SmallFont));
                 hint.SetName("hintText");
                 hint.SetAlignment(2);
-                hint.SetStringandWidth(
-                    Application.GetString("UNLOCK_HINT").ToString().Replace("%d", requiredStars.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal),
-                    ExpHintWidth);
+                string hintString = Application.GetString("UNLOCK_HINT").ToString()
+                    .Replace("%d", requiredStars.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+                hint.SetStringandWidth(hintString, ExpHintWidth);
+
+                // Wrapped lines that would reach the floor go on one wider line instead, lifted
+                // clear of it if even that one line would still touch.
+                if (hint.height / 2f > hintRoom)
+                {
+                    hint.SetStringandWidth(hintString, ExpWideHintWidth);
+                }
                 hint.anchor = hint.parentAnchor = 18;
                 hint.x = ExpHintOffset.X;
-                hint.y = ExpHintOffset.Y;
+                hint.y = ExpHintOffset.Y - MathF.Max(0f, (hint.height / 2f) - hintRoom);
                 hint.color = RGBAColor.transparentRGBA;
                 _ = scaler.AddChild(hint);
             }
