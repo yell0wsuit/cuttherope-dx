@@ -488,7 +488,7 @@ namespace CutTheRopeDX.GameMain
         private static int ExperimentsPackPicture(int n)
         {
             int picture = PackConfig.GetExpPackPicture(n);
-            return picture >= 0 && picture < ExpMonsterCount ? picture : n % ExpMonsterCount;
+            return picture is >= 0 and < ExpMonsterCount ? picture : n % ExpMonsterCount;
         }
 
         /// <summary>
@@ -507,14 +507,32 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Gets whether a pack is caged in bamboo rather than padlocked. iOS cages its last pack;
-        /// here that is the last of the packs.
+        /// Gets whether a pack is caged in bamboo rather than padlocked: the packs whose entries
+        /// ask for a bamboo gate, or iOS's choice of the last pack when none does.
         /// </summary>
         /// <param name="n">Displayed pack index.</param>
-        /// <returns><see langword="true"/> for the last pack.</returns>
+        /// <returns><see langword="true"/> for a caged pack.</returns>
         private static bool IsExperimentsCagedPack(int n)
         {
-            return n == Preferences.GetPacksCount() - 1;
+            return PackConfig.HasBambooGates
+                ? n < Preferences.GetPacksCount() && PackConfig.GetUseBambooGate(n)
+                : n == Preferences.GetPacksCount() - 1;
+        }
+
+        /// <summary>
+        /// Gets the caged pack the butterfly keeps company: the last one, as there is one butterfly.
+        /// </summary>
+        /// <returns>The pack index, or -1 when no pack is caged.</returns>
+        private static int ExperimentsButterflyPack()
+        {
+            for (int n = Preferences.GetPacksCount() - 1; n >= 0; n--)
+            {
+                if (IsExperimentsCagedPack(n))
+                {
+                    return n;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -595,7 +613,7 @@ namespace CutTheRopeDX.GameMain
         private void AddExperimentsButterfly(BaseElement packRow, Rectangle visible, float scale, float elementSize)
         {
             expButterfly = null;
-            int caged = Preferences.GetPacksCount() - 1;
+            int caged = ExperimentsButterflyPack();
             if (caged < 0 || boxes[caged] == null || Preferences.GetUnlockedForPackLevel(caged, 0) != UNLOCKEDSTATE.LOCKED)
             {
                 return;
@@ -655,7 +673,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             expButterfly.SetViewRect(ExperimentsViewLeftAt(i));
-            expButterfly.SetFlyingMode(IsExperimentsCagedPack(i)
+            expButterfly.SetFlyingMode(i == ExperimentsButterflyPack()
                 ? ExperimentsButterfly.FlightMode.Landing
                 : ExperimentsButterfly.FlightMode.Transition);
         }
@@ -677,7 +695,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="i">Box whose lock just came off.</param>
         private void ReleaseExperimentsButterfly(int i)
         {
-            if (expButterfly != null && IsExperimentsCagedPack(i))
+            if (expButterfly != null && i == ExperimentsButterflyPack())
             {
                 expButterfly.FlyAway();
             }
