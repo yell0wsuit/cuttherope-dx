@@ -22,7 +22,8 @@ on:
 jobs:
     # A pull request only analyzes the languages it touches. Pushes to main and the weekly run
     # still analyze everything, so every language keeps a current baseline for PRs to compare
-    # against. Actions is always analyzed; it is cheap and needs no source filter.
+    # against. A pull request that touches none of them uploads nothing, so it gets no CodeQL
+    # check at all rather than one warning that every baseline configuration is missing.
     changes:
         runs-on: ubuntu-latest
         permissions:
@@ -30,6 +31,7 @@ jobs:
             pull-requests: read
         outputs:
             matrix: ${{ steps.filter.outputs.matrix }}
+            any: ${{ steps.filter.outputs.any }}
         steps:
             - id: filter
               env:
@@ -38,13 +40,16 @@ jobs:
                   EVENT: ${{ github.event_name }}
                   PR: ${{ github.event.pull_request.number }}
               run: |
-                  all='csharp javascript-typescript python'
+                  all='actions csharp javascript-typescript python'
                   if [ "$EVENT" = pull_request ]; then
                     files=$(gh api "repos/$GH_REPO/pulls/$PR/files" --paginate --jq '.[].filename')
                     if printf '%s\n' "$files" | grep -Eqx '\.github/workflows/codeql\.yml'; then
                       languages=$all
                     else
                       languages=
+                      if printf '%s\n' "$files" | grep -Eq '^\.github/'; then
+                        languages="$languages actions"
+                      fi
                       if printf '%s\n' "$files" | grep -Eq '(\.(cs|csproj|props|targets|slnx)|^global\.json|^nuget\.config)$'; then
                         languages="$languages csharp"
                       fi
@@ -58,13 +63,21 @@ jobs:
                   else
                     languages=$all
                   fi
-                  echo "Analyzing: actions $languages" | tr -s ' '
-                  matrix=$(printf '%s\n' actions $languages | jq -Rnc '{include: [inputs | select(length > 0) | {language: ., "build-mode": "none"}]}')
+                  if [ -z "$languages" ]; then
+                    echo "No analyzed language changed; skipping CodeQL."
+                    echo "any=false" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+                  echo "Analyzing: ${languages# }"
+                  matrix=$(printf '%s\n' $languages | jq -Rnc '{include: [inputs | select(length > 0) | {language: ., "build-mode": "none"}]}')
                   echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+                  echo "any=true" >> "$GITHUB_OUTPUT"
 
     analyze:
         name: Analyze (${{ matrix.language }})
         needs: changes
+        # An empty matrix is an error rather than a skip.
+        if: needs.changes.outputs.any == 'true'
         # Runner size impacts CodeQL analysis time. To learn more, please see:
         #   - https://gh.io/recommended-hardware-resources-for-running-codeql
         #   - https://gh.io/supported-runners-and-hardware-resources
