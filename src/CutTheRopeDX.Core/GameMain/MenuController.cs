@@ -1004,17 +1004,7 @@ namespace CutTheRopeDX.GameMain
                 resourceName = PackConfig.Packs[0].PackSpritesheet;
                 q = PackConfig.Packs[0].PackQuadIndex;
             }
-            string boxPackStrings;
-            if (isComingSoon)
-            {
-                boxPackStrings = Application.GetString("BOX_SOON_LABEL");
-            }
-            else
-            {
-                string boxPackNameString = Application.GetString(PackConfig.GetPackName(n));
-                boxPackStrings = $"{n + 1}. {boxPackNameString}";
-            }
-            string packTitle = boxPackStrings;
+            string packTitle = isComingSoon ? Application.GetString("BOX_SOON_LABEL") : PackConfig.GetPackTitle(n);
             UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(n, 0);
             bool isLockedPack = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);

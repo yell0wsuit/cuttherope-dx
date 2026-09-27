@@ -406,7 +406,7 @@ namespace CutTheRopeDX.GameMain
             title.SetAlignment(2);
             title.SetString(isComingSoon
                 ? Application.GetString("BOX_SOON_LABEL")
-                : $"{n + 1}. {Application.GetString(PackConfig.GetPackName(n))}");
+                : PackConfig.GetPackTitle(n));
             float titleScale = MathF.Min(0.75f, MathF.Min(ExpTitleFit.X / title.width, ExpTitleFit.Y / title.height));
             title.scaleX = title.scaleY = titleScale;
             title.rotationCenterY = -title.height / 2f;

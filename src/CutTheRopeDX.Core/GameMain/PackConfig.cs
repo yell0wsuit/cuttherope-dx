@@ -20,6 +20,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="unlockStars">Number of stars required to unlock this pack.</param>
     /// <param name="levelCount">Total number of levels in the pack.</param>
     /// <param name="saveSlot">Save slot index used to route this pack's progress file.</param>
+    /// <param name="showBoxNumber">Whether the pack's title in the pack picker starts with its number, set for its whole pack file.</param>
     /// <param name="packSpritesheet">Resource name for the spritesheet containing this pack's box sprite.</param>
     /// <param name="packQuadIndex">Quad index within <paramref name="packSpritesheet"/> for this pack's box sprite.</param>
     /// <param name="expPackPicture">Monster drawn on this pack's Experiments box, or -1 to follow the pack's position.</param>
@@ -40,6 +41,7 @@ namespace CutTheRopeDX.GameMain
         int unlockStars,
         int levelCount,
         int saveSlot,
+        bool showBoxNumber,
         string packSpritesheet,
         int packQuadIndex,
         int expPackPicture,
@@ -103,6 +105,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Save slot index used to route this pack's progress file.</summary>
         public int SaveSlot { get; } = saveSlot;
 
+        /// <summary>Whether the pack's title in the pack picker starts with its number.</summary>
+        public bool ShowBoxNumber { get; } = showBoxNumber;
+
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
 
@@ -126,7 +131,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="ConfigFileName">Pack configuration file name.</param>
         /// <param name="SaveSlot">Save slot index used by packs loaded from the configuration file.</param>
-        private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot);
+        /// <param name="ShowBoxNumber">Whether the pack picker numbers the titles of this file's packs.</param>
+        private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot, bool ShowBoxNumber = true);
 
         /// <summary>
         /// The configuration file for original <em>Cut the Rope</em> game.
@@ -413,6 +419,23 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gets a pack's title for the pack picker: its localized name, numbered unless its entry
+        /// turns the number off.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The title, or <see langword="null"/> when <paramref name="pack"/> is out of range.</returns>
+        public static string GetPackTitle(int pack)
+        {
+            if (pack < 0 || pack >= packs.Count)
+            {
+                return null;
+            }
+
+            string name = Application.GetString(packs[pack].PackName);
+            return packs[pack].ShowBoxNumber ? $"{pack + 1}. {name}" : name;
+        }
+
+        /// <summary>
         /// Returns the index of the first non-playable pack entry (coming soon placeholder), or -1 if none.
         /// </summary>
         /// <returns>The coming-soon pack index, or -1 when no placeholder pack exists.</returns>
@@ -502,7 +525,8 @@ namespace CutTheRopeDX.GameMain
                 );
             }
 
-            entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
+            bool showBoxNumber = ParseBoolProperty(entryElement, "showBoxNumber", true, PackListConfigFile);
+            entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot, showBoxNumber));
 
             IntroVideo ??= ParseStringProperty(entryElement, "introVideo");
             OutroVideo ??= ParseStringProperty(entryElement, "outroVideo");
@@ -583,6 +607,7 @@ namespace CutTheRopeDX.GameMain
                             unlockStars,
                             levelCount,
                             packListEntry.SaveSlot,
+                            packListEntry.ShowBoxNumber,
                             packSpritesheet,
                             packQuadIndex,
                             expPackPicture,
