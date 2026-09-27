@@ -22,6 +22,7 @@ namespace CutTheRopeDX.GameMain
     /// <param name="saveSlot">Save slot index used to route this pack's progress file.</param>
     /// <param name="packSpritesheet">Resource name for the spritesheet containing this pack's box sprite.</param>
     /// <param name="packQuadIndex">Quad index within <paramref name="packSpritesheet"/> for this pack's box sprite.</param>
+    /// <param name="expPackPicture">Monster drawn on this pack's Experiments box, or -1 to follow the pack's position.</param>
     /// <param name="boxBackgrounds">Resource names for the pack background assets.</param>
     /// <param name="boxBackgroundP2Y">Y position for the secondary background in long levels, or 0 when unused.</param>
     /// <param name="sittingPlatform">Quad index used for the support platform.</param>
@@ -40,6 +41,7 @@ namespace CutTheRopeDX.GameMain
         int saveSlot,
         string packSpritesheet,
         int packQuadIndex,
+        int expPackPicture,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
         int sittingPlatform,
@@ -62,6 +64,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Quad index within <see cref="PackSpritesheet"/> for this pack's box sprite.</summary>
         public int PackQuadIndex { get; } = packQuadIndex;
+
+        /// <summary>Monster drawn on this pack's Experiments box, or -1 to follow the pack's position.</summary>
+        public int ExpPackPicture { get; } = expPackPicture;
 
         /// <summary>The localized box pack name.</summary>
         public string PackName { get; } = packName;
@@ -376,6 +381,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gets the monster drawn on a pack's Experiments box.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The monster index, or -1 when unset or <paramref name="pack"/> is out of range.</returns>
+        public static int GetExpPackPicture(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].ExpPackPicture : -1;
+        }
+
+        /// <summary>
         /// Returns the index of the first non-playable pack entry (coming soon placeholder), or -1 if none.
         /// </summary>
         /// <returns>The coming-soon pack index, or -1 when no placeholder pack exists.</returns>
@@ -503,6 +518,7 @@ namespace CutTheRopeDX.GameMain
                     string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
                     string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
                     int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, packListEntry.ConfigFileName);
+                    int expPackPicture = ParseIntProperty(packElement, "expPackPicture", -1, packListEntry.ConfigFileName);
 
                     string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
                     if (isPlayable)
@@ -546,6 +562,7 @@ namespace CutTheRopeDX.GameMain
                             packListEntry.SaveSlot,
                             packSpritesheet,
                             packQuadIndex,
+                            expPackPicture,
                             boxBackgrounds,
                             boxBackgroundP2Y,
                             sittingPlatform,

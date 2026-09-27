@@ -396,7 +396,7 @@ namespace CutTheRopeDX.GameMain
             _ = boxContainer.AddChild(CreateExperimentsBoxLayer(ExpQuadBoxSelected, "boxSelected"));
             if (!isComingSoon)
             {
-                Image monster = CreateExperimentsBoxLayer(ExpQuadFirstMonster + (n % ExpMonsterCount), "boxPic");
+                Image monster = CreateExperimentsBoxLayer(ExpQuadFirstMonster + ExperimentsPackPicture(n), "boxPic");
                 monster.color = ExpMonsterIdle;
                 monster.hasColor = true;
                 _ = boxContainer.AddChild(monster);
@@ -477,6 +477,18 @@ namespace CutTheRopeDX.GameMain
             pressBounce.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.25f));
             _ = boxContainer.AddTimeline(pressBounce);
             return element;
+        }
+
+        /// <summary>
+        /// Monster drawn on a pack's box: the one its pack entry names, or the next in turn by the
+        /// pack's position when it names none that exists.
+        /// </summary>
+        /// <param name="n">Pack index.</param>
+        /// <returns>The monster index, from 0 to <see cref="ExpMonsterCount"/> - 1.</returns>
+        private static int ExperimentsPackPicture(int n)
+        {
+            int picture = PackConfig.GetExpPackPicture(n);
+            return picture >= 0 && picture < ExpMonsterCount ? picture : n % ExpMonsterCount;
         }
 
         /// <summary>
