@@ -8,7 +8,7 @@
 # The shared libraries (.so files) and LICENSE are copied into <output_dir>/ffmpeg/.
 # The resolver checks the ffmpeg/ subfolder relative to the app base directory.
 #
-# Source: https://github.com/BtbN/FFmpeg-Builds
+# Source: https://github.com/BtbN/FFmpeg-Builds, mirrored at https://github.com/yell0wsuit/ffmpeg-pin
 
 set -e
 
@@ -18,17 +18,10 @@ if [ -z "$OUTPUT_DIR" ]; then
     exit 1
 fi
 
-# A dated tag rather than "latest", whose assets are deleted and re-uploaded under the same names
-# on every build with the checksum file regenerated alongside them. Verified against that, a
-# download proves only that it arrived intact: two runs for the same game version would ship
-# different binaries. A dated tag keeps its assets, so the checksum describes one build.
-#
-# The archive name carries the exact build, so moving this pin forward means moving both lines.
-# Kept in step with FFMPEG_BUILD_TAG in release_windows.py: one FFmpeg across the platforms.
-FFMPEG_BUILD_TAG="autobuild-2026-09-11-13-20"
-FFMPEG_BUILD_VERSION="n9.0.1-29-gad500d59cb"
+FFMPEG_BUILD_TAG="autobuild-2026-08-31-13-27"
+FFMPEG_BUILD_VERSION="n9.0.1-11-ge47273f4d9"
 
-RELEASE_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/$FFMPEG_BUILD_TAG"
+RELEASE_URL="https://github.com/yell0wsuit/ffmpeg-pin/releases/download/$FFMPEG_BUILD_TAG"
 ARCHIVE_NAME="ffmpeg-$FFMPEG_BUILD_VERSION-linux64-lgpl-shared-9.0.tar.xz"
 FFMPEG_URL="$RELEASE_URL/$ARCHIVE_NAME"
 CHECKSUMS_URL="$RELEASE_URL/checksums.sha256"

@@ -31,7 +31,12 @@ RELEASE_DIR = PROJECT_ROOT / "src" / "CutTheRopeDX.Desktop" / "bin" / "release_g
 
 ARCHITECTURES = {
     "x64": {"rid": "win-x64", "btbn": "win64", "electron": "x64", "label": "x64"},
-    "arm64": {"rid": "win-arm64", "btbn": "winarm64", "electron": "arm64", "label": "ARM64"},
+    "arm64": {
+        "rid": "win-arm64",
+        "btbn": "winarm64",
+        "electron": "arm64",
+        "label": "ARM64",
+    },
 }
 
 # The name the game publishes under, from the project's AssemblyName.
@@ -41,18 +46,12 @@ CONTENT_DIRECTORY = "content"
 UNSHIPPED_SUFFIXES = ".pdb"
 FFMPEG_DIRECTORY = "ffmpeg"
 FFMPEG_DOWNLOAD_ATTEMPTS = 5
-# BtbN also publishes a "latest" tag, whose assets are deleted and re-uploaded under the same
-# names on every build, with the checksum file regenerated alongside them. Verifying against that
-# proves the download arrived intact and nothing more: two runs of this script for the same game
-# version would ship different FFmpeg binaries. A dated tag is written once and keeps its
-# assets, so the checksum becomes a statement about a particular build rather than about
-# whichever one is current.
-#
-# The archive name carries the exact build, so moving this pin forward means moving both lines.
-FFMPEG_BUILD_TAG = "autobuild-2026-09-11-13-20"
-FFMPEG_BUILD_VERSION = "n9.0.1-29-gad500d59cb"
+
+FFMPEG_BUILD_TAG = "autobuild-2026-08-31-13-27"
+FFMPEG_BUILD_VERSION = "n9.0.1-11-ge47273f4d9"
 ANGLE_DIRECTORY = "angle"
 ANGLE_DOWNLOAD_ATTEMPTS = 5
+
 # ANGLE ships no standalone desktop build, so this takes the libraries from an Electron
 # release: both architectures are published, versions stay archived, and every artifact is
 # covered by a checksum file that can be verified in the same step.
@@ -121,7 +120,7 @@ def download_ffmpeg(output_dir: Path, btbn_arch: str) -> None:
     nothing and leaves the game with no video decoder.
     """
     release_url = (
-        f"https://github.com/BtbN/FFmpeg-Builds/releases/download/{FFMPEG_BUILD_TAG}"
+        f"https://github.com/yell0wsuit/ffmpeg-pin/releases/download/{FFMPEG_BUILD_TAG}"
     )
     archive_name = f"ffmpeg-{FFMPEG_BUILD_VERSION}-{btbn_arch}-lgpl-shared-9.0.zip"
     ffmpeg_url = f"{release_url}/{archive_name}"
@@ -220,7 +219,9 @@ def download_angle(output_dir: Path, electron_arch: str) -> None:
     checksums_url = f"{release_url}/SHASUMS256.txt"
     destination = output_dir / ANGLE_DIRECTORY
     installed = (*ANGLE_DLL_NAMES, ANGLE_NOTICE_NAME)
-    if destination.is_dir() and all((destination / name).is_file() for name in installed):
+    if destination.is_dir() and all(
+        (destination / name).is_file() for name in installed
+    ):
         print(f"ANGLE libraries already present in {destination}")
         return
 
@@ -276,7 +277,10 @@ def download_angle(output_dir: Path, electron_arch: str) -> None:
             # ANGLE is BSD-3-Clause, so the notice is a condition of shipping the libraries at
             # all, not a nicety. An archive without it is not one we can redistribute from.
             if ANGLE_NOTICE_SOURCE not in members:
-                print(f"{ANGLE_NOTICE_SOURCE} not found in {archive_name}", file=sys.stderr)
+                print(
+                    f"{ANGLE_NOTICE_SOURCE} not found in {archive_name}",
+                    file=sys.stderr,
+                )
                 sys.exit(1)
             with archive.open(members[ANGLE_NOTICE_SOURCE]) as source:
                 (destination / ANGLE_NOTICE_NAME).write_bytes(source.read())
@@ -304,7 +308,9 @@ def find_7z() -> str:
         found = shutil.which(name)
         if found:
             return found
-    for root in filter(None, (os.environ.get("ProgramFiles"), os.environ.get("ProgramW6432"))):
+    for root in filter(
+        None, (os.environ.get("ProgramFiles"), os.environ.get("ProgramW6432"))
+    ):
         candidate = Path(root) / "7-Zip" / "7z.exe"
         if candidate.is_file():
             return str(candidate)
@@ -346,8 +352,16 @@ def package(output_dir: Path, version: str, arch_label: str):
         # release's layout rather than this machine's.
         subprocess.run(
             [
-                seven_zip, "a", "-t7z", "-m0=LZMA2", "-mx=9", "-mmt=on",
-                "-scsUTF-8", "-bsp1", str(archive_path), f"@{list_file}",
+                seven_zip,
+                "a",
+                "-t7z",
+                "-m0=LZMA2",
+                "-mx=9",
+                "-mmt=on",
+                "-scsUTF-8",
+                "-bsp1",
+                str(archive_path),
+                f"@{list_file}",
             ],
             cwd=output_dir,
             check=True,

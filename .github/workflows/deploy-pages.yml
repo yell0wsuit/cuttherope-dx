@@ -59,7 +59,7 @@ jobs:
                   TAG=$(sed -n 's/^FFMPEG_BUILD_TAG="\(.*\)"$/\1/p' "$SCRIPT")
                   VERSION=$(sed -n 's/^FFMPEG_BUILD_VERSION="\(.*\)"$/\1/p' "$SCRIPT")
                   test -n "$TAG" && test -n "$VERSION"
-                  RELEASE="https://github.com/BtbN/FFmpeg-Builds/releases/download/$TAG"
+                  RELEASE="https://github.com/yell0wsuit/ffmpeg-pin/releases/download/$TAG"
                   SERIES=$(echo "$VERSION" | sed 's/^n\([0-9]*\.[0-9]*\).*/\1/')
                   ARCHIVE="ffmpeg-$VERSION-linux64-lgpl-$SERIES.tar.xz"
                   cd "$RUNNER_TEMP"
