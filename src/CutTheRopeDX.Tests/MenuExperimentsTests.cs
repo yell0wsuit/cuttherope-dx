@@ -255,7 +255,9 @@ namespace CutTheRopeDX.Tests
 
         /// <summary>
         /// Builds a menu controller with the Experiments style at a surface size, then restores
-        /// the classic style whatever happens.
+        /// the classic style and the save state the menu writes whatever happens. Building the
+        /// pack select unlocks packs whose star price is met and scrolling it moves the resting
+        /// box; both persist and would reshape the classic menus of later tests.
         /// </summary>
         /// <param name="width">Surface width.</param>
         /// <param name="height">Surface height.</param>
@@ -264,6 +266,13 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
             MenuStyle previous = MenuTheme.Current;
+            UNLOCKEDSTATE[] unlocks = new UNLOCKEDSTATE[Preferences.GetPacksCount()];
+            for (int pack = 0; pack < unlocks.Length; pack++)
+            {
+                unlocks[pack] = Preferences.GetUnlockedForPackLevel(pack, 0);
+            }
+            int lastBox = Preferences.GetLastBox();
+            int lastGamePack = Preferences.GetLastGamePack();
             MenuTheme.Current = MenuStyle.Experiments;
             try
             {
@@ -283,6 +292,12 @@ namespace CutTheRopeDX.Tests
             finally
             {
                 MenuTheme.Current = previous;
+                for (int pack = 0; pack < unlocks.Length; pack++)
+                {
+                    Preferences.SetUnlockedForPackLevel(unlocks[pack], pack, 0);
+                }
+                Preferences.SetLastBox(lastBox);
+                Preferences.SetLastGamePack(lastGamePack);
             }
         }
 
