@@ -60,7 +60,9 @@ jobs:
                   VERSION=$(sed -n 's/^FFMPEG_BUILD_VERSION="\(.*\)"$/\1/p' "$SCRIPT")
                   test -n "$TAG" && test -n "$VERSION"
                   RELEASE="https://github.com/yell0wsuit/ffmpeg-pin/releases/download/$TAG"
-                  SERIES=$(echo "$VERSION" | sed 's/^n\([0-9]*\.[0-9]*\).*/\1/')
+                  [[ $VERSION =~ ^n([0-9]+\.[0-9]+) ]]
+                  SERIES=${BASH_REMATCH[1]}
+                  test -n "$SERIES"
                   ARCHIVE="ffmpeg-$VERSION-linux64-lgpl-$SERIES.tar.xz"
                   cd "$RUNNER_TEMP"
                   curl -fsSL --retry 3 -O "$RELEASE/$ARCHIVE" -O "$RELEASE/checksums.sha256"
