@@ -83,6 +83,12 @@ namespace CutTheRopeDX.GameMain
         private int expKeyQuad = ExpQuadFirstKey;
 
         /// <summary>
+        /// Key frame the last load stopped on, so the level transition's blind carries the key up
+        /// still, on the same frame.
+        /// </summary>
+        internal static int ExperimentsHeldKeyQuad { get; private set; } = ExpQuadFirstKey;
+
+        /// <summary>
         /// Restarts the Experiments animation for a new load.
         /// </summary>
         private void ResetExperiments()
@@ -118,6 +124,7 @@ namespace CutTheRopeDX.GameMain
             else if (Application.SharedResourceMgr().GetPercentLoaded() >= 100)
             {
                 expLitElapsed = 0f;
+                ExperimentsHeldKeyQuad = expKeyQuad;
             }
             else
             {

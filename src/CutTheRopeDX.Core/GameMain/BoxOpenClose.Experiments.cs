@@ -91,10 +91,7 @@ namespace CutTheRopeDX.GameMain
             _ = machine.AddChild(line);
 
             _ = machine.AddChild(CreateMachinePart(Image.FromResource(atlas, 6)));
-            Animation key = CreateMachinePart(Image.InitializeFromResource(new Animation(), atlas, 8));
-            int keyAnimation = key.AddAnimationDelayLoopFirstLast(0.05f, Timeline.LoopType.TIMELINE_REPLAY, 8, 16);
-            key.PlayTimeline(keyAnimation);
-            _ = machine.AddChild(key);
+            _ = machine.AddChild(CreateMachinePart(Image.FromResource(atlas, LoadingView.ExperimentsHeldKeyQuad)));
             return machine;
         }
 
