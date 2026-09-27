@@ -69,7 +69,7 @@ jobs:
                     exit 0
                   fi
                   echo "Analyzing: ${languages# }"
-                  matrix=$(printf '%s\n' $languages | jq -Rnc '{include: [inputs | select(length > 0) | {language: ., "build-mode": "none"}]}')
+                  matrix=$(printf '%s' "$languages" | tr ' ' '\n' | jq -Rnc '{include: [inputs | select(length > 0) | {language: ., "build-mode": "none"}]}')
                   echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
                   echo "any=true" >> "$GITHUB_OUTPUT"
 
