@@ -201,6 +201,21 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void BoxTitlesAreTheBarePackNames()
+        {
+            WithExperiments(2560, 1440, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_PACK_SELECT);
+                List<BaseElement> containers = Named(view, "boxContainer");
+                for (int pack = 0; pack < Preferences.GetPacksCount(); pack++)
+                {
+                    Text title = Find<Text>(containers[pack]);
+                    Assert.Equal(Application.GetString(PackConfig.GetPackName(pack)), title.GetString());
+                }
+            });
+        }
+
+        [Fact]
         public void TheVoiceToggleFlipsTheVoicePreference()
         {
             bool original = Preferences.GetBooleanForKey("PREFS_EXP_VOICE_ON");

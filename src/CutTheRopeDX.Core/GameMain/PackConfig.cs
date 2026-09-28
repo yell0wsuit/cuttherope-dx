@@ -434,12 +434,13 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Gets a pack's title for the pack picker: its localized name, numbered unless its entry
-        /// turns the number off.
+        /// Gets a pack's title for the pack picker: its localized name, numbered unless the caller
+        /// or the pack's entry turns the number off.
         /// </summary>
         /// <param name="pack">Target pack index.</param>
+        /// <param name="withNumber">Whether the caller's picker numbers its titles.</param>
         /// <returns>The title, or <see langword="null"/> when <paramref name="pack"/> is out of range.</returns>
-        public static string GetPackTitle(int pack)
+        public static string GetPackTitle(int pack, bool withNumber = true)
         {
             if (pack < 0 || pack >= packs.Count)
             {
@@ -447,7 +448,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             string name = Application.GetString(packs[pack].PackName);
-            return packs[pack].ShowBoxNumber ? $"{pack + 1}. {name}" : name;
+            return withNumber && packs[pack].ShowBoxNumber ? $"{pack + 1}. {name}" : name;
         }
 
         /// <summary>
