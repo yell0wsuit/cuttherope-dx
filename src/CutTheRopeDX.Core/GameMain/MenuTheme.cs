@@ -1,3 +1,5 @@
+using System;
+
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
@@ -34,6 +36,23 @@ namespace CutTheRopeDX.GameMain
         public static T Select<T>(T classic, T experiments)
         {
             return IsExperiments ? experiments : classic;
+        }
+
+        /// <summary>
+        /// Reads a menu style name as given on the command line or in the page URL.
+        /// </summary>
+        /// <param name="value">"classic" or "experiments", in any case.</param>
+        /// <param name="style">The named style, or <see cref="MenuStyle.Classic"/> when <paramref name="value"/> names none.</param>
+        /// <returns>Whether <paramref name="value"/> names a style.</returns>
+        public static bool TryParse(string value, out MenuStyle style)
+        {
+            style = MenuStyle.Classic;
+            if (string.Equals(value, "experiments", StringComparison.OrdinalIgnoreCase))
+            {
+                style = MenuStyle.Experiments;
+                return true;
+            }
+            return string.Equals(value, "classic", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

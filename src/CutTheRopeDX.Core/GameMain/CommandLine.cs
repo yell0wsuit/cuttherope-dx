@@ -108,13 +108,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             string value = i + 1 < args.Length ? args[i + 1] : null;
-            if (string.Equals(value, "experiments", StringComparison.OrdinalIgnoreCase))
-            {
-                menu = MenuStyle.Experiments;
-                return null;
-            }
-
-            return string.Equals(value, "classic", StringComparison.OrdinalIgnoreCase)
+            return MenuTheme.TryParse(value, out menu)
                 ? null
                 : MenuSwitch + " expects \"classic\" or \"experiments\".";
         }
