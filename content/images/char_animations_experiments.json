@@ -1,0 +1,453 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0101_char_animations.png",
+            "frame": { "x": 1077, "y": 396, "w": 210, "h": 203 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 231, "w": 210, "h": 203 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0102_char_animations.png",
+            "frame": { "x": 1119, "y": 1013, "w": 215, "h": 197 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 212, "y": 236, "w": 215, "h": 197 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0103_char_animations.png",
+            "frame": { "x": 915, "y": 1, "w": 228, "h": 178 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 206, "y": 255, "w": 228, "h": 178 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0104_char_animations.png",
+            "frame": { "x": 661, "y": 1038, "w": 233, "h": 171 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 203, "y": 262, "w": 233, "h": 171 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0105_char_animations.png",
+            "frame": { "x": 1374, "y": 1, "w": 222, "h": 178 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 208, "y": 256, "w": 222, "h": 178 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0106_char_animations.png",
+            "frame": { "x": 1288, "y": 806, "w": 215, "h": 192 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 210, "y": 242, "w": 215, "h": 192 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0107_char_animations.png",
+            "frame": { "x": 860, "y": 403, "w": 215, "h": 201 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 210, "y": 233, "w": 215, "h": 201 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0108_char_animations.png",
+            "frame": { "x": 445, "y": 196, "w": 215, "h": 208 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 210, "y": 226, "w": 215, "h": 208 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0109_char_animations.png",
+            "frame": { "x": 218, "y": 407, "w": 216, "h": 214 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 209, "y": 220, "w": 216, "h": 214 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0110_char_animations.png",
+            "frame": { "x": 1, "y": 881, "w": 215, "h": 218 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 210, "y": 216, "w": 215, "h": 218 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0111_char_animations.png",
+            "frame": { "x": 1, "y": 431, "w": 215, "h": 222 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 210, "y": 212, "w": 215, "h": 222 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0112_char_animations.png",
+            "frame": { "x": 436, "y": 407, "w": 214, "h": 214 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 211, "y": 219, "w": 214, "h": 214 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0113_char_animations.png",
+            "frame": { "x": 474, "y": 1, "w": 215, "h": 193 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 212, "y": 240, "w": 215, "h": 193 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0114_char_animations.png",
+            "frame": { "x": 896, "y": 1037, "w": 221, "h": 171 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 209, "y": 262, "w": 221, "h": 171 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0115_char_animations.png",
+            "frame": { "x": 1739, "y": 1, "w": 216, "h": 181 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 212, "y": 253, "w": 216, "h": 181 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0116_char_animations.png",
+            "frame": { "x": 1508, "y": 370, "w": 210, "h": 194 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 240, "w": 210, "h": 194 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0117_char_animations.png",
+            "frame": { "x": 862, "y": 825, "w": 210, "h": 210 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 224, "w": 210, "h": 210 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0118_char_animations.png",
+            "frame": { "x": 431, "y": 830, "w": 210, "h": 216 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 218, "w": 210, "h": 216 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0119_char_animations.png",
+            "frame": { "x": 213, "y": 655, "w": 210, "h": 222 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 212, "w": 210, "h": 222 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0120_char_animations.png",
+            "frame": { "x": 1, "y": 655, "w": 210, "h": 224 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 210, "w": 210, "h": 224 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0121_char_animations.png",
+            "frame": { "x": 1, "y": 200, "w": 209, "h": 229 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 205, "w": 209, "h": 229 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0122_char_animations.png",
+            "frame": { "x": 218, "y": 879, "w": 211, "h": 219 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 213, "y": 215, "w": 211, "h": 219 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0123_char_animations.png",
+            "frame": { "x": 651, "y": 623, "w": 223, "h": 200 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 208, "y": 233, "w": 223, "h": 200 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0124_char_animations.png",
+            "frame": { "x": 1145, "y": 1, "w": 227, "h": 178 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 206, "y": 255, "w": 227, "h": 178 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0181_char_animations.png",
+            "frame": { "x": 1089, "y": 181, "w": 205, "h": 207 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 218, "y": 228, "w": 205, "h": 207 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0182_char_animations.png",
+            "frame": { "x": 1094, "y": 601, "w": 209, "h": 203 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 232, "w": 209, "h": 203 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0183_char_animations.png",
+            "frame": { "x": 662, "y": 196, "w": 214, "h": 205 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 211, "y": 230, "w": 214, "h": 205 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0184_char_animations.png",
+            "frame": { "x": 643, "y": 830, "w": 217, "h": 206 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 208, "y": 229, "w": 217, "h": 206 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0185_char_animations.png",
+            "frame": { "x": 1074, "y": 808, "w": 212, "h": 203 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 212, "y": 232, "w": 212, "h": 203 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0186_char_animations.png",
+            "frame": { "x": 1, "y": 1, "w": 245, "h": 197 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 203, "y": 238, "w": 245, "h": 197 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0187_char_animations.png",
+            "frame": { "x": 248, "y": 1, "w": 224, "h": 193 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 201, "y": 232, "w": 224, "h": 193 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0188_char_animations.png",
+            "frame": { "x": 1296, "y": 181, "w": 219, "h": 187 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 228, "y": 238, "w": 219, "h": 187 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0189_char_animations.png",
+            "frame": { "x": 1517, "y": 181, "w": 220, "h": 184 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 244, "w": 220, "h": 184 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0190_char_animations.png",
+            "frame": { "x": 1305, "y": 581, "w": 218, "h": 187 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 208, "y": 240, "w": 218, "h": 187 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0191_char_animations.png",
+            "frame": { "x": 1289, "y": 390, "w": 217, "h": 189 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 207, "y": 238, "w": 217, "h": 189 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0192_char_animations.png",
+            "frame": { "x": 1505, "y": 770, "w": 216, "h": 184 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 212, "y": 243, "w": 216, "h": 184 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0193_char_animations.png",
+            "frame": { "x": 1739, "y": 184, "w": 215, "h": 181 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 215, "y": 246, "w": 215, "h": 181 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0194_char_animations.png",
+            "frame": { "x": 1541, "y": 956, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0195_char_animations.png",
+            "frame": { "x": 1541, "y": 956, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0196_char_animations.png",
+            "frame": { "x": 1723, "y": 764, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0197_char_animations.png",
+            "frame": { "x": 1729, "y": 550, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0198_char_animations.png",
+            "frame": { "x": 1541, "y": 956, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0199_char_animations.png",
+            "frame": { "x": 1541, "y": 956, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0200_char_animations.png",
+            "frame": { "x": 1541, "y": 956, "w": 215, "h": 180 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 247, "w": 215, "h": 180 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0201_char_animations.png",
+            "frame": { "x": 1720, "y": 367, "w": 217, "h": 181 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 220, "y": 245, "w": 217, "h": 181 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0202_char_animations.png",
+            "frame": { "x": 691, "y": 1, "w": 222, "h": 186 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 233, "y": 240, "w": 222, "h": 186 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0203_char_animations.png",
+            "frame": { "x": 212, "y": 200, "w": 231, "h": 205 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 220, "w": 231, "h": 205 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0204_char_animations.png",
+            "frame": { "x": 876, "y": 606, "w": 216, "h": 200 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 242, "y": 225, "w": 216, "h": 200 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0205_char_animations.png",
+            "frame": { "x": 1525, "y": 566, "w": 202, "h": 196 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 235, "y": 238, "w": 202, "h": 196 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0206_char_animations.png",
+            "frame": { "x": 425, "y": 623, "w": 224, "h": 205 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 203, "y": 223, "w": 224, "h": 205 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0207_char_animations.png",
+            "frame": { "x": 431, "y": 1048, "w": 228, "h": 164 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 207, "y": 271, "w": 228, "h": 164 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0208_char_animations.png",
+            "frame": { "x": 1758, "y": 946, "w": 206, "h": 179 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 255, "w": 206, "h": 179 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0209_char_animations.png",
+            "frame": { "x": 1336, "y": 1000, "w": 203, "h": 210 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 219, "y": 224, "w": 203, "h": 210 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0210_char_animations.png",
+            "frame": { "x": 652, "y": 406, "w": 206, "h": 215 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 218, "y": 219, "w": 206, "h": 215 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0211_char_animations.png",
+            "frame": { "x": 878, "y": 189, "w": 209, "h": 205 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 216, "y": 230, "w": 209, "h": 205 },
+            "sourceSize": { "w": 640, "h": 640 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "char_animations_experiments.png",
+        "format": "RGBA8888",
+        "size": { "w": 1965, "h": 1213 },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:767b0fe331fb661960a40387b782b976:dd1ef43cdfb5febae1e3fc221dd46713:e6000142f5a4c1c4994de3b97df7684d$"
+    }
+}
