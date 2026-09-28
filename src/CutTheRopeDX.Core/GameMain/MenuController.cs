@@ -1704,14 +1704,7 @@ namespace CutTheRopeDX.GameMain
             }
             ShowView(viewToShow);
             SoundMgr.StopMusic();
-            if (SpecialEvents.IsXmas)
-            {
-                SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-            }
-            else
-            {
-                SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-            }
+            MusicTracks.PlayMenuMusic();
         }
 
         /// <summary>
@@ -1765,14 +1758,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (url != null)
             {
-                if (SpecialEvents.IsXmas)
-                {
-                    SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-                }
-                else
-                {
-                    SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-                }
+                MusicTracks.PlayMenuMusic();
             }
             if (IsSinglePack)
             {
@@ -2002,14 +1988,7 @@ namespace CutTheRopeDX.GameMain
                             SoundMgr.StopMusic();
                             return;
                         }
-                        if (SpecialEvents.IsXmas)
-                        {
-                            SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-                        }
-                        else
-                        {
-                            SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-                        }
+                        MusicTracks.PlayMenuMusic();
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:

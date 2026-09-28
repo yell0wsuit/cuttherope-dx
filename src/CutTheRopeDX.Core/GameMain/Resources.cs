@@ -811,6 +811,8 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusic5 = "game_music_remake";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
+            public const string MenuMusicExp = "menu_music_exp";
+            public const string GameMusicExp = "game_music_exp";
         }
 
         /// <summary>

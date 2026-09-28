@@ -99,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             SoundMgr.StopMusic();
-            PlayMusic();
+            MusicTracks.PlayGameMusic(Application.SharedRootController().Pack);
             LevelFirstStart();
             ShowView(0);
 
@@ -606,7 +606,7 @@ namespace CutTheRopeDX.GameMain
                             return;
                         }
                         RootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        PlayMusic();
+                        MusicTracks.PlayGameMusic(Application.SharedRootController().Pack);
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -1215,43 +1215,6 @@ namespace CutTheRopeDX.GameMain
             mapNameLabel.x = visible.w - insetFromRight - plateEdge + halfTheBoost;
         }
 
-        /// <summary>
-        /// Plays the appropriate gameplay music for the active pack and seasonal event.
-        /// </summary>
-        private static void PlayMusic()
-        {
-            RootController root = Application.SharedRootController();
-            if (SpecialEvents.IsXmas)
-            {
-                SoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-            }
-            else
-            {
-                string musicPack = PackConfig.GetMusicPackOrDefault(root.Pack);
-                switch (musicPack)
-                {
-                    case null:
-                        string[] musicList = PackConfig.GetMusicListOrDefault(root.Pack);
-                        if (musicList.Length > 0)
-                        {
-                            SoundMgr.PlayRandomMusic(musicList);
-                        }
-                        else
-                        {
-                            GameControllerLog.MissingMusicList(
-                                Log.For(LogCategories.GameMusic), root.Pack);
-                        }
-                        break;
-                    case var p when p == MusicPackNames.Original:
-                        SoundMgr.PlayRandomMusic(MusicPacks.Original);
-                        break;
-                    default:
-                        GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);
-                        break;
-                }
-            }
-        }
-
         /// <summary>Button ID for exiting from the win result panel.</summary>
         public const int BUTTON_WIN_EXIT = 5;
 
@@ -1354,17 +1317,5 @@ namespace CutTheRopeDX.GameMain
                     "com.zeptolab.ctr.spookyboxcompleted",
                     "com.zeptolab.ctr.steamboxcompleted"
                 ];
-    }
-
-    /// <summary>Log messages for music pack resolution.</summary>
-    internal static partial class GameControllerLog
-    {
-        [LoggerMessage(
-            Level = LogLevel.Warning,
-            Message = "Missing either musicPack or musicList for pack {Pack}.")]
-        public static partial void MissingMusicList(ILogger logger, int pack);
-
-        [LoggerMessage(Level = LogLevel.Warning, Message = "Unknown musicPack '{MusicPack}'")]
-        public static partial void UnknownMusicPack(ILogger logger, string musicPack);
     }
 }
