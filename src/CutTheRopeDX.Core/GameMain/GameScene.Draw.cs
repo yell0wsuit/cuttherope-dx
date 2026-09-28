@@ -298,6 +298,12 @@ namespace CutTheRopeDX.GameMain
                 {
                     continue;
                 }
+
+                // The professor's hand is still carrying this candy; it draws its own copy.
+                if (ProfessorHandHolds && ctx == candies[0])
+                {
+                    continue;
+                }
                 body.Visual.x = body.Point.pos.X;
                 body.Visual.y = body.Point.pos.Y;
                 body.Visual.Draw();

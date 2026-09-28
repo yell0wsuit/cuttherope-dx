@@ -18,12 +18,17 @@ await HostEventInterop.ImportAsync();
 await LogInterop.ImportAsync();
 await BrowserCursorService.ImportAsync();
 await BrowserVideoPlayer.ImportAsync();
+await LaunchOptions.ImportAsync();
 
 // Installed before anything else can fail, so a boot that never reaches the game still leaves a
 // record the player can export. The banner goes first for the same reason it does on desktop:
 // whoever reads the report needs to know which build produced it.
 Log.Factory = new BrowserLogStore();
 _ = LogInterop.Begin(BrowserBuild.ComposeHeader());
+
+// After the log exists, so an unknown value is recorded; before any scene is built, since they
+// read the style as they are.
+LaunchOptions.ApplyMenu();
 
 // Announced before the content bundle starts downloading, so the level transfer overlaps a ~56 MB
 // load rather than following it. A normal launch returns immediately.

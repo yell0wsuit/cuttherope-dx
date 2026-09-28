@@ -46,6 +46,7 @@ namespace CutTheRopeDX.GameMain
         ShowLanguage,
         BackFromLanguage,
         LevelEditor,
+        ToggleVoice,
     }
 
     /// <summary>
@@ -250,6 +251,11 @@ namespace CutTheRopeDX.GameMain
         /// Navigates back from language selection.
         /// </summary>
         public static readonly MenuButtonId BackFromLanguage = MenuButton.BackFromLanguage;
+
+        /// <summary>
+        /// Toggles the professor's voice in the Experiments menus.
+        /// </summary>
+        public static readonly MenuButtonId ToggleVoice = MenuButton.ToggleVoice;
 
         /// <summary>
         /// Tag used for dynamically generated level buttons.

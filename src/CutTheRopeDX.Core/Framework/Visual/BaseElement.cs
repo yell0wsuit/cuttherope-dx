@@ -222,7 +222,7 @@ namespace CutTheRopeDX.Framework.Visual
             }
             if (!RGBAColor.RGBAEqual(color, RGBAColor.solidOpaqueRGBA))
             {
-                Renderer.SetColor(color.ToWhiteAlphaColor());
+                Renderer.SetColor(hasColor ? color.ToColor() : color.ToWhiteAlphaColor());
             }
             if (blendingMode != -1)
             {
@@ -1043,6 +1043,12 @@ namespace CutTheRopeDX.Framework.Visual
         /// Whether color tint is passed down to children during drawing.
         /// </summary>
         public bool passColorToChilds;
+
+        /// <summary>
+        /// Whether <see cref="color"/> tints the element. By default only its alpha is applied and
+        /// the element draws white; set this to draw with the full color.
+        /// </summary>
+        public bool hasColor;
 
         /// <summary>
         /// Whether touch events are dispatched to all children instead of stopping at the first handler.

@@ -56,7 +56,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             RootController root = Application.SharedRootController();
-            string[] required = LevelResourceScanner.GetRequiredResources(map);
+            string[] required = LevelResourceScanner.GetRequiredResources(map, root.Pack);
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.SessionResources);
             ILogger logger = Log.For(LogCategories.Playtest);
             PlaytestLog.LevelChanged(logger, kind, required.Length);
@@ -99,7 +99,7 @@ namespace CutTheRopeDX.GameMain
             Application.SharedRootController().SetViewTransition(-1);
             base.Activate();
             SoundMgr.StopMusic();
-            PlayMusic();
+            MusicTracks.PlayGameMusic(Application.SharedRootController().Pack);
             LevelFirstStart();
             ShowView(0);
 
@@ -162,7 +162,7 @@ namespace CutTheRopeDX.GameMain
             restartButton.x = -button.width - 16f;
             restartButton.y = 8f;
             _ = gameView.AddChildwithID(restartButton, 2);
-            Image image = Image.FromResource(Resources.Img.MenuPause, 0);
+            Image image = Image.FromResource(PausePlateResource, 0);
             image.anchor = image.parentAnchor = 10;
             image.scaleX = image.scaleY = PausePlateScale;
             image.rotationCenterY = -image.height / 2;
@@ -198,6 +198,15 @@ namespace CutTheRopeDX.GameMain
             HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
             _ = hBox.AddChild(soundToggle);
             _ = hBox.AddChild(musicToggle);
+            if (MenuTheme.IsExperiments)
+            {
+                ToggleButton voiceToggle = MenuController.CreateExperimentsVoiceToggle(this, GameControllerButtonId.ToggleVoice);
+                _ = hBox.AddChild(voiceToggle);
+                if (!Preferences.GetBooleanForKey(ExperimentsVoice.PreferenceKey))
+                {
+                    voiceToggle.Toggle();
+                }
+            }
             _ = vBox.AddChild(hBox);
             vBox.y = (DesignBox.h - vBox.height) / 2f;
             bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
@@ -242,6 +251,7 @@ namespace CutTheRopeDX.GameMain
             navigationExitActive = false;
             ((BoxOpenClose)view.GetChild(4)).LevelFirstStart();
             EnterOverlayMode(GameControllerOverlayMode.Gameplay);
+            ExperimentsVoice.LevelStarted();
         }
 
         /// <summary>
@@ -353,6 +363,7 @@ namespace CutTheRopeDX.GameMain
             //RootController.SetHacked();
             //}
             SoundMgr.PlaySound(Resources.Snd.Win);
+            ExperimentsVoice.LevelWon(result.StarsCollected);
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
             BoxOpenClose boxOpenClose = (BoxOpenClose)view.GetChild(4);
@@ -581,6 +592,9 @@ namespace CutTheRopeDX.GameMain
                     ((GameScene)view.GetChild(0)).LoadNextMap();
                     LevelStart();
                     return;
+                case var id when id == GameControllerButtonId.ToggleVoice:
+                    ExperimentsVoice.Toggle();
+                    return;
                 case var id when id == GameControllerButtonId.ToggleMusic:
                     {
                         bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
@@ -592,7 +606,7 @@ namespace CutTheRopeDX.GameMain
                             return;
                         }
                         RootController.LogEvent("IM_MUSIC_ON_PRESSED");
-                        PlayMusic();
+                        MusicTracks.PlayGameMusic(Application.SharedRootController().Pack);
                         return;
                     }
                 case var id when id == GameControllerButtonId.ToggleSound:
@@ -1116,9 +1130,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Scale the pause plate is drawn at on the design shape, where the sheet's own width
-        /// reaches the sides exactly.
+        /// reaches the sides exactly: 1.25 for the classic sheet, which is 2048 wide.
         /// </summary>
-        private const float PausePlateScale = 1.25f;
+        private static float PausePlateScale => ViewportLayout.DesignWidth / Image.GetQuadSize(PausePlateResource, 0).X;
+
+        /// <summary>The torn sheet the pause menu hangs from the top of the screen.</summary>
+        private static string PausePlateResource => MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop);
 
         /// <summary>
         /// Shows or hides a HUD button independently of whether it accepts input, which
@@ -1196,43 +1213,6 @@ namespace CutTheRopeDX.GameMain
             float plateEdge = (visible.w + pauseMenuPlate.width) / 2f;
             float halfTheBoost = mapNameLabel.width * (1f - scale) / 2f;
             mapNameLabel.x = visible.w - insetFromRight - plateEdge + halfTheBoost;
-        }
-
-        /// <summary>
-        /// Plays the appropriate gameplay music for the active pack and seasonal event.
-        /// </summary>
-        private static void PlayMusic()
-        {
-            RootController root = Application.SharedRootController();
-            if (SpecialEvents.IsXmas)
-            {
-                SoundMgr.PlayMusic(Resources.Music.GameMusicXmas);
-            }
-            else
-            {
-                string musicPack = PackConfig.GetMusicPackOrDefault(root.Pack);
-                switch (musicPack)
-                {
-                    case null:
-                        string[] musicList = PackConfig.GetMusicListOrDefault(root.Pack);
-                        if (musicList.Length > 0)
-                        {
-                            SoundMgr.PlayRandomMusic(musicList);
-                        }
-                        else
-                        {
-                            GameControllerLog.MissingMusicList(
-                                Log.For(LogCategories.GameMusic), root.Pack);
-                        }
-                        break;
-                    case var p when p == MusicPackNames.Original:
-                        SoundMgr.PlayRandomMusic(MusicPacks.Original);
-                        break;
-                    default:
-                        GameControllerLog.UnknownMusicPack(Log.For(LogCategories.GameMusic), musicPack);
-                        break;
-                }
-            }
         }
 
         /// <summary>Button ID for exiting from the win result panel.</summary>
@@ -1337,17 +1317,5 @@ namespace CutTheRopeDX.GameMain
                     "com.zeptolab.ctr.spookyboxcompleted",
                     "com.zeptolab.ctr.steamboxcompleted"
                 ];
-    }
-
-    /// <summary>Log messages for music pack resolution.</summary>
-    internal static partial class GameControllerLog
-    {
-        [LoggerMessage(
-            Level = LogLevel.Warning,
-            Message = "Missing either musicPack or musicList for pack {Pack}.")]
-        public static partial void MissingMusicList(ILogger logger, int pack);
-
-        [LoggerMessage(Level = LogLevel.Warning, Message = "Unknown musicPack '{MusicPack}'")]
-        public static partial void UnknownMusicPack(ILogger logger, string musicPack);
     }
 }

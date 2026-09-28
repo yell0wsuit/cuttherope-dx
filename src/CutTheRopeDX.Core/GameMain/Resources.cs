@@ -240,7 +240,9 @@ namespace CutTheRopeDX.GameMain
                 BackgroundImg.Bgr09P1, BackgroundImg.Bgr09P2, BackgroundImg.Bgr10P1, BackgroundImg.Bgr10P2,
                 BackgroundImg.Bgr11P1, BackgroundImg.Bgr11P2, BackgroundImg.Bgr12P1, BackgroundImg.Bgr13P1,
                 BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
-                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground
+                BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground,
+                BackgroundImg.MenuExpMainBgr, BackgroundImg.MenuExpDefaultBgr,
+                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr
             ];
         }
 
@@ -279,6 +281,12 @@ namespace CutTheRopeDX.GameMain
             public const string Bgr17P1 = "bgr_17_p1";
             public const string ZeptolabNoLink = "zeptolab_no_link";
             public const string SkinBackground = "skin_bg";
+
+            // Cut the Rope: Experiments backdrops, painted for a 1920 by 1080 screen.
+            public const string MenuExpMainBgr = "menu_main_bgr_horiz";
+            public const string MenuExpDefaultBgr = "menu_bgr_default_horiz";
+            public const string MenuExpCampaignBgr = "menu_campaign_bgr_horiz";
+            public const string MenuExpLoadingBgr = "menu_loading_bgr_exp";
         }
 
         /// <summary>
@@ -316,6 +324,17 @@ namespace CutTheRopeDX.GameMain
             public const string ConfettiParticles = "confetti_particles";
             public const string MenuPause = "menu_pause";
             public const string MenuResults = "menu_results";
+
+            // Cut the Rope: Experiments menus. The atlases keep the iOS HD quad numbering, with
+            // blank frames standing in for quads that were not carried over.
+            public const string MenuExpPackSelection = "menu_pack_selection_exp";
+            public const string MenuExpLock = "menu_lock_exp";
+            public const string MenuExpAudio = "menu_audio_exp";
+            public const string MenuExpLoading = "menu_loading_exp_candy";
+            public const string MenuExpLoadingScroll = "menu_loading_exp_scroll";
+            public const string MenuExpPauseTop = "menu_pause_top_horiz";
+            public const string ConfettiParticlesExp = "confetti_particles_exp";
+            public const string ProfessorHand = "professor_hand";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
@@ -326,6 +345,7 @@ namespace CutTheRopeDX.GameMain
             public const string CharAnimationsSmooth = "char_animations_smooth";
             public const string CharAnimationsSleeping = "char_animations_sleeping";
             public const string CharAnimationsPaddington = "char_animations_paddington";
+            public const string CharAnimationsExperiments = "char_animations_experiments";
             public const string FxSleep = "fx_sleep";
             public const string FxBubbles = "fx_bubbles";
             public const string FxCutChain = "fx_cut_chain";
@@ -346,6 +366,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjBee = "obj_bee";
             public const string CharSupports = "char_supports";
             public const string CharSupportsXmas = "char_supports_xmas";
+            public const string CharSupportExperiments = "char_support_experiments";
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";
             public const string ObjVinil = "obj_vinil";
@@ -755,6 +776,26 @@ namespace CutTheRopeDX.GameMain
             public const string TTCyborgSleep03 = "Cyborg_sleep03";
             public const string TTSynchroIdle = "synchro_idle";
             public const string TTWingsBomb = "wings_bomb";
+
+            // The professor voice.
+            public const string VoiceFail01 = "voice_fail_01";
+            public const string VoiceFail02 = "voice_fail_02";
+            public const string VoiceStar00A = "voice_star_00a";
+            public const string VoiceStar00B = "voice_star_00b";
+            public const string VoiceStar01A = "voice_star_01a";
+            public const string VoiceStar01B = "voice_star_01b";
+            public const string VoiceStar02A = "voice_star_02a";
+            public const string VoiceStar02B = "voice_star_02b";
+            public const string VoiceStar02C = "voice_star_02c";
+            public const string VoiceStar03A = "voice_star_03a";
+            public const string VoiceStar03B = "voice_star_03b";
+            public const string VoiceStar03C = "voice_star_03c";
+            public const string VoiceStar03D = "voice_star_03d";
+            public const string VoiceStar03E = "voice_star_03e";
+            public const string VoiceStar03F = "voice_star_03f";
+            public const string VoiceStart01 = "voice_start_01";
+            public const string VoiceStart02 = "voice_start_02";
+            public const string VoiceStart03 = "voice_start_03";
         }
 
         /// <summary>
@@ -770,6 +811,8 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusic5 = "game_music_remake";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
+            public const string MenuMusicExp = "menu_music_exp";
+            public const string GameMusicExp = "game_music_exp";
         }
 
         /// <summary>

@@ -14,13 +14,15 @@ namespace CutTheRopeDX.GameMain
         /// <param name="isXmas">Whether the current level uses Christmas animation variants.</param>
         /// <param name="isPaddington">Whether the current level uses the Paddington greeting and hat prop.</param>
         /// <param name="paddingtonGreetingPending">Whether a Paddington greeting is scheduled for this level.</param>
+        /// <param name="isExperiments">Whether the classic Om Nom should carry the Experiments idles.</param>
         /// <returns>The original backend for the classic skin, or a Flash XML backend for XML-backed skins.</returns>
         public static ITargetAnimationBackend CreateForTarget(
             int targetType,
             bool isNightLevel,
             bool isXmas,
             bool isPaddington = false,
-            bool paddingtonGreetingPending = false)
+            bool paddingtonGreetingPending = false,
+            bool isExperiments = false)
         {
             int skinIndex = OmNomSkinRegistry.ResolveTargetSkinIndex(
                 targetType,
@@ -28,7 +30,7 @@ namespace CutTheRopeDX.GameMain
                 OmNomSkinRegistry.TotalSkinCount);
 
             return OmNomSkinRegistry.IsClassicSkin(skinIndex)
-                ? new OriginalTargetAnimationBackend(isNightLevel, isXmas, isPaddington, paddingtonGreetingPending)
+                ? new OriginalTargetAnimationBackend(isNightLevel, isXmas, isPaddington, paddingtonGreetingPending, isExperiments)
                 : new FlashXmlTargetAnimationBackend(OmNomSkinRegistry.GetXmlSkinDefinition(skinIndex));
         }
     }

@@ -200,7 +200,8 @@ namespace CutTheRopeDX.Framework.Platform
         }
 
         /// <summary>
-        /// Applies a rotation transformation around the Z axis (2D rotation).
+        /// Applies a rotation of <paramref name="angle"/> degrees about the given axis, as
+        /// <c>glRotatef</c> does. Flat sprites rotate about Z.
         /// </summary>
         public static void Rotate(float angle, float x, float y, float z)
         {

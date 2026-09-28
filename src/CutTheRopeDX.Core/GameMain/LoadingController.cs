@@ -42,6 +42,9 @@ namespace CutTheRopeDX.GameMain
             // Center-anchored, so it already stays centered as it scales - no position
             // correction needed the way an edge-anchored element requires.
             loadingText.scaleX = loadingText.scaleY = FittedScale;
+
+            // The Experiments screen puts the label under its porthole rather than on the middle.
+            loadingText.y = MenuTheme.IsExperiments ? LoadingView.ExpLabelY * FittedScale : 0f;
         }
 
         /// <inheritdoc />

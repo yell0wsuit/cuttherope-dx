@@ -1050,6 +1050,30 @@ namespace CutTheRopeDX.GameMain
             return true;
         }
 
+        /// <summary>
+        /// Gets or sets the chance that a tap on Om Nom plays the Experiments tap idle. The
+        /// Experiments menus answer the tap this way in place of the vector easter egg.
+        /// </summary>
+        internal float ExperimentsTapChance { get; set; } = 0.5f;
+
+        /// <summary>
+        /// Answers a tap on Om Nom under the Experiments menus: rolls <see cref="ExperimentsTapChance"/>
+        /// and, when it comes up, plays the tap idle. Only an idling Om Nom answers, so a tap never
+        /// cuts into feeding, a reaction or another idle.
+        /// </summary>
+        /// <returns><see langword="true"/> when the tap idle started.</returns>
+        private bool TryPlayExperimentsTapIdle()
+        {
+            if (TargetAnimation is not OriginalTargetAnimationBackend { HasExperimentsIdles: true } original
+                || !original.IsPlaying(TargetAnimationState.IdleLoop)
+                || Random.Shared.NextSingle() >= ExperimentsTapChance)
+            {
+                return false;
+            }
+            original.PlayExperimentsTapIdle();
+            return true;
+        }
+
         /// <summary>Removes the easter egg at once, with no closing fade.</summary>
         internal void ClearEasterEgg()
         {

@@ -69,6 +69,11 @@ namespace CutTheRopeDX.GameMain
         public static GameControllerButtonId ToggleSound => new(11);
 
         /// <summary>
+        /// Toggles the professor's voice in the Experiments menus.
+        /// </summary>
+        public static GameControllerButtonId ToggleVoice => new(12);
+
+        /// <summary>
         /// Converts a raw integer button value to a game-controller button identifier.
         /// </summary>
         /// <param name="value">Raw button value.</param>
