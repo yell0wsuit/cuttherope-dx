@@ -56,7 +56,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             RootController root = Application.SharedRootController();
-            string[] required = LevelResourceScanner.GetRequiredResources(map);
+            string[] required = LevelResourceScanner.GetRequiredResources(map, root.Pack);
             CustomLevelReloadKind kind = CustomLevelReloadDecision.Decide(required, root.SessionResources);
             ILogger logger = Log.For(LogCategories.Playtest);
             PlaytestLog.LevelChanged(logger, kind, required.Length);

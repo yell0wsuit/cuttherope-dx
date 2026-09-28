@@ -55,7 +55,7 @@ namespace CutTheRopeDX.Framework.Core
             StopGameplayPrefetch();
 
             long startedTicks = Stopwatch.GetTimestamp();
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(map, Pack);
             TrackSessionResources(levelResources);
 
             ResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -165,7 +165,7 @@ namespace CutTheRopeDX.Framework.Core
         {
             DeleteChild(3);
 
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
             resourceMgr.FreePack([.. sessionResources]);
             sessionResources.Clear();
             TrackSessionResources(levelResources);
@@ -190,7 +190,7 @@ namespace CutTheRopeDX.Framework.Core
             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
             ResetGameplayResourceSession();
             EnsureCurrentMapLoaded();
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
             TrackSessionResources(levelResources);
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(PackGame);
@@ -274,7 +274,7 @@ namespace CutTheRopeDX.Framework.Core
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                         ResetGameplayResourceSession();
                         EnsureCurrentMapLoaded();
-                        string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+                        string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
                         TrackSessionResources(levelResources);
                         StartBoxResourceScanIfNeeded();
                         resourceMgr.InitLoading();

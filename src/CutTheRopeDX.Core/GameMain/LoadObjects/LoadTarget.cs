@@ -120,9 +120,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Picks the platform Om Nom sits on. Paddington seats him on the bear's suitcase; the
-        /// Experiments menus use that game's platforms, each pack taking the one its entry names or,
-        /// when it names none that exists, the next in turn by the pack's position.
+        /// Picks the platform Om Nom sits on. Paddington seats him on the bear's suitcase. Otherwise
+        /// the pack's platform set decides: the Experiments set takes the platform the pack's entry
+        /// names or, when it names none that exists, the next in turn by the pack's position.
         /// </summary>
         /// <param name="pack">Pack being played.</param>
         /// <param name="isPaddington">Whether the Paddington greeting is in play.</param>
@@ -134,13 +134,24 @@ namespace CutTheRopeDX.GameMain
             {
                 return (Resources.Img.CharSupportsXmas, PaddingtonSupportQuad);
             }
-            if (isExperiments)
+            if (ResolveSupportTheme(PackConfig.GetSittingPlatformTheme(pack), isExperiments) == SittingPlatformTheme.Experiments)
             {
                 int quad = PackConfig.GetExpSittingPlatform(pack);
                 return (Resources.Img.CharSupportExperiments,
                     quad is >= 0 and < ExperimentsSupportCount ? quad : pack % ExperimentsSupportCount);
             }
             return (Resources.Img.CharSupports, PackConfig.GetSittingPlatform(pack));
+        }
+
+        /// <summary>
+        /// Picks the platform set: the one the pack asks for, else the one matching the menus.
+        /// </summary>
+        /// <param name="configured">Platform set from the pack's entry, or <see langword="null"/> when unset.</param>
+        /// <param name="isExperiments">Whether the Experiments menus are active.</param>
+        /// <returns>The platform set to draw from.</returns>
+        internal static SittingPlatformTheme ResolveSupportTheme(SittingPlatformTheme? configured, bool isExperiments)
+        {
+            return configured ?? (isExperiments ? SittingPlatformTheme.Experiments : SittingPlatformTheme.Original);
         }
     }
 }

@@ -28,8 +28,9 @@ namespace CutTheRopeDX.GameMain
         /// Computes the gameplay resources required to instantiate a single parsed map.
         /// </summary>
         /// <param name="map">The parsed level XML.</param>
+        /// <param name="pack">Pack the map belongs to, which picks Om Nom's platform set.</param>
         /// <returns>A de-duplicated array of resource identifiers needed for the map.</returns>
-        public static string[] GetRequiredResources(XElement map)
+        public static string[] GetRequiredResources(XElement map, int pack)
         {
             if (map == null)
             {
@@ -210,7 +211,7 @@ namespace CutTheRopeDX.GameMain
                         break;
                     case "target":
                         sawTarget = true;
-                        targetSkins.Add(AddTargetResources(resources, node));
+                        targetSkins.Add(AddTargetResources(resources, node, pack));
                         break;
                     case "steamTube":
                         _ = resources.Add(Resources.Img.ObjPipe);
@@ -314,7 +315,7 @@ namespace CutTheRopeDX.GameMain
                 }
 
                 XElement map = ContentPaths.LoadXml(Path.Combine(ContentPaths.MapsDirectory, mapName));
-                foreach (string resourceName in GetRequiredResources(map))
+                foreach (string resourceName in GetRequiredResources(map, pack))
                 {
                     _ = resources.Add(resourceName);
                 }
@@ -439,8 +440,9 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="resources">The destination set being accumulated.</param>
         /// <param name="node">The target XML node, whose <c>targetType</c> selects the skin.</param>
+        /// <param name="pack">Pack being played, which picks the platform set.</param>
         /// <returns>The target's themed skin definition, or <see langword="null"/> for the classic skin.</returns>
-        private static OmNomSkinDefinition AddTargetResources(HashSet<string> resources, XElement node)
+        private static OmNomSkinDefinition AddTargetResources(HashSet<string> resources, XElement node, int pack)
         {
             int targetType = ParseIntOrZero(node.Attribute("targetType")?.Value ?? string.Empty);
             int skinIndex = OmNomSkinRegistry.ResolveTargetSkinIndex(
@@ -469,8 +471,8 @@ namespace CutTheRopeDX.GameMain
             }
 
             _ = resources.Add(Resources.Img.FxBubbles);
-            // Every skin sits on the platform of the menus in use.
-            _ = resources.Add(MenuTheme.IsExperiments ? Resources.Img.CharSupportExperiments : Resources.Img.CharSupports);
+            // Every skin sits on the pack's platform; Paddington's suitcase is preloaded with the January art.
+            _ = resources.Add(GameScene.ResolveSupport(pack, isPaddington: false, MenuTheme.IsExperiments).Resource);
 
             AddOmNomSound(resources, skin, Resources.Snd.MonsterChewing);
             AddOmNomSound(resources, skin, Resources.Snd.MonsterClose);
