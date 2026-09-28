@@ -455,6 +455,10 @@ namespace CutTheRopeDX.GameMain
                 _ = resources.Add(Resources.Img.CharAnimations);
                 _ = resources.Add(Resources.Img.CharAnimations2);
                 _ = resources.Add(Resources.Img.CharAnimations3);
+                if (MenuTheme.IsExperiments)
+                {
+                    _ = resources.Add(Resources.Img.CharAnimationsExperiments);
+                }
             }
             else
             {
@@ -465,7 +469,8 @@ namespace CutTheRopeDX.GameMain
             }
 
             _ = resources.Add(Resources.Img.FxBubbles);
-            _ = resources.Add(Resources.Img.CharSupports);
+            // Every skin sits on the platform of the menus in use.
+            _ = resources.Add(MenuTheme.IsExperiments ? Resources.Img.CharSupportExperiments : Resources.Img.CharSupports);
 
             AddOmNomSound(resources, skin, Resources.Snd.MonsterChewing);
             AddOmNomSound(resources, skin, Resources.Snd.MonsterClose);

@@ -60,6 +60,27 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Timeline ID for the night-level sleeping animation.</summary>
         public const int SleepingTimeline = 15;
 
+        /// <summary>Timeline ID for the Experiments idle where Om Nom looks around.</summary>
+        public const int ExperimentsIdleLookTimeline = 16;
+
+        /// <summary>Timeline ID for the Experiments idle that also answers a tap on Om Nom.</summary>
+        public const int ExperimentsIdleTapTimeline = 17;
+
+        /// <summary>First frame of the Experiments look-around idle (iOS Experiments frames 101-124).</summary>
+        private const int ExperimentsIdleLookStartFrame = 0;
+
+        /// <summary>Last frame of the Experiments look-around idle.</summary>
+        private const int ExperimentsIdleLookEndFrame = 23;
+
+        /// <summary>
+        /// First frame of the Experiments tap idle (iOS Experiments frames 181-210). The sheet's
+        /// last quad, iOS frame 211, belongs to no animation there and is left unused.
+        /// </summary>
+        private const int ExperimentsIdleTapStartFrame = 24;
+
+        /// <summary>Last frame of the Experiments tap idle.</summary>
+        private const int ExperimentsIdleTapEndFrame = 53;
+
         /// <summary>First frame of the Paddington greeting animation.</summary>
         private const int PaddingtonGreetingStartFrame = 0;
 
@@ -175,11 +196,13 @@ namespace CutTheRopeDX.GameMain
         /// <param name="paddingtonGreetingPending">Whether a Paddington greeting is scheduled for this level.
         /// When it is, Om Nom waits wearing the hat until the greeting fires; when it is not, the hat is
         /// already set down beside him and he starts on the normal idle loop.</param>
+        /// <param name="isExperiments">Whether the Experiments idles join the idle roll and answer a tap.</param>
         public OriginalTargetAnimationBackend(
             bool isNightLevel,
             bool isXmas,
             bool isPaddington = false,
-            bool paddingtonGreetingPending = false)
+            bool paddingtonGreetingPending = false,
+            bool isExperiments = false)
         {
             target = Image.InitializeFromResource(new CharAnimations(), Resources.Img.CharAnimations);
             target.DoRestoreCutTransparency();
@@ -188,6 +211,7 @@ namespace CutTheRopeDX.GameMain
             this.isNightLevel = isNightLevel;
             this.isXmas = isXmas;
             IsPaddington = isPaddington;
+            HasExperimentsIdles = isExperiments;
             this.paddingtonGreetingPending = isPaddington && paddingtonGreetingPending;
 
             ConfigureTargetResources();
@@ -322,24 +346,39 @@ namespace CutTheRopeDX.GameMain
         {
             // The Christmas idle sheet adds two more variations to the two the base sheet already
             // has, and Om Nom picks between all four. Paddington drops back to the base pair: the
-            // Christmas idles show him in the Santa hat he has just swapped for the bear's.
+            // Christmas idles show him in the Santa hat he has just swapped for the bear's. The
+            // Experiments menus add that game's two idles on top of whichever set is in play.
             bool hasXmasIdleVariations = isXmas && !IsPaddington;
 
-            switch (rng(0, hasXmasIdleVariations ? 3 : 1))
+            List<Action> idles =
+            [
+                () => Play(TargetAnimationState.IdleVariationOne),
+                () => Play(TargetAnimationState.IdleVariationTwo),
+            ];
+            if (hasXmasIdleVariations)
             {
-                case 0:
-                    Play(TargetAnimationState.IdleVariationOne);
-                    break;
-                case 1:
-                    Play(TargetAnimationState.IdleVariationTwo);
-                    break;
-                case 2:
-                    target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline);
-                    break;
-                default:
-                    target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline);
-                    break;
+                idles.Add(() => target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline));
+                idles.Add(() => target.PlayAnimationtimeline(Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline));
             }
+            if (HasExperimentsIdles)
+            {
+                idles.Add(() => target.PlayAnimationtimeline(Resources.Img.CharAnimationsExperiments, ExperimentsIdleLookTimeline));
+                idles.Add(PlayExperimentsTapIdle);
+            }
+
+            idles[Math.Clamp(rng(0, idles.Count - 1), 0, idles.Count - 1)]();
+        }
+
+        /// <summary>Gets whether this Om Nom carries the Experiments idles, one of which answers a tap on him.</summary>
+        public bool HasExperimentsIdles { get; }
+
+        /// <summary>
+        /// Plays the Experiments idle that answers a tap on Om Nom. The caller decides whether the
+        /// tap earns it; this only runs the animation, which hands back to the idle loop at its end.
+        /// </summary>
+        public void PlayExperimentsTapIdle()
+        {
+            target.PlayAnimationtimeline(Resources.Img.CharAnimationsExperiments, ExperimentsIdleTapTimeline);
         }
 
         /// <inheritdoc />
@@ -551,6 +590,10 @@ namespace CutTheRopeDX.GameMain
             {
                 target.AddImage(Resources.Img.CharAnimationsPaddington);
             }
+            if (HasExperimentsIdles)
+            {
+                target.AddImage(Resources.Img.CharAnimationsExperiments);
+            }
         }
 
         /// <summary>
@@ -595,6 +638,12 @@ namespace CutTheRopeDX.GameMain
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations2, CheerfulTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 20, 46);
             target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimations3, SadTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, 0, 12);
 
+            if (HasExperimentsIdles)
+            {
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimationsExperiments, ExperimentsIdleLookTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, ExperimentsIdleLookStartFrame, ExperimentsIdleLookEndFrame);
+                target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimationsExperiments, ExperimentsIdleTapTimeline, DefaultFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, ExperimentsIdleTapStartFrame, ExperimentsIdleTapEndFrame);
+            }
+
             if (isNightLevel)
             {
                 target.AddAnimationWithIDDelayLoopFirstLast(Resources.Img.CharAnimationsSleeping, SleepingTimeline, SleepAnimFrameDelay, Timeline.LoopType.TIMELINE_NO_LOOP, SleepAnimStartFrame, SleepAnimEndFrame);
@@ -619,6 +668,12 @@ namespace CutTheRopeDX.GameMain
                 target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharGreetingXmas, XmasGreetingTimeline, DefaultFrameDelay);
                 target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharIdleXmas, XmasIdleVariationOneTimeline, DefaultFrameDelay);
                 target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharIdleXmas, XmasIdleVariationTwoTimeline, DefaultFrameDelay);
+            }
+
+            if (HasExperimentsIdles)
+            {
+                target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimationsExperiments, ExperimentsIdleLookTimeline, DefaultFrameDelay);
+                target.SwitchToAnimationatEndOfAnimationDelay(Resources.Img.CharAnimations, IdleLoopTimeline, Resources.Img.CharAnimationsExperiments, ExperimentsIdleTapTimeline, DefaultFrameDelay);
             }
         }
 
