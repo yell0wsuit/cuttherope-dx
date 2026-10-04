@@ -4,7 +4,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <SkiaSharpVersion>4.152.0</SkiaSharpVersion>
     <!-- SDL3-CS ships bindings-only patch releases (x.y.z.N) without matching native packages -->
-    <SDL3CSVersion>3.4.16</SDL3CSVersion>
+    <SDL3CSVersion>3.4.18</SDL3CSVersion>
     <SDL3NativeVersion>3.4.16</SDL3NativeVersion>
     <SDL3MixerVersion>3.2.4.11</SDL3MixerVersion>
     <MELVersion>10.0.12</MELVersion>
