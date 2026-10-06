@@ -779,7 +779,12 @@ namespace CutTheRopeDX.Framework.Core
         /// slower texture paths like the browser's. It also never gets freed, so it stays in
         /// memory through gameplay.
         /// </remarks>
-        internal static string[] PackMenu => MenuTheme.IsExperiments ? PackMenuExperiments : PackMenuClassic;
+        internal static string[] PackMenu => MenuTheme.Current switch
+        {
+            MenuStyle.Experiments => PackMenuExperiments,
+            MenuStyle.TimeTravel => PackMenuTimeTravel,
+            _ => PackMenuClassic,
+        };
 
         /// <summary>The classic menu's image resources, terminated by <see langword="null"/>.</summary>
         private static readonly string[] PackMenuClassic =
@@ -818,6 +823,26 @@ namespace CutTheRopeDX.Framework.Core
             Resources.BackgroundImg.MenuExpCampaignBgr,
             Resources.Img.MenuExpPackSelection,
             Resources.Img.MenuExpLock,
+            null
+        ];
+
+        /// <summary>
+        /// The Time Travel menu's image resources, terminated by <see langword="null"/>. Its
+        /// sub-views keep the classic structure and its title is the classic logo, so the classic
+        /// pack loads underneath.
+        /// </summary>
+        private static readonly string[] PackMenuTimeTravel =
+        [
+            .. PackMenuClassic[..^1],
+            Resources.BackgroundImg.MenuTimeTravelMainBgr,
+            Resources.BackgroundImg.MenuTimeTravelBgr,
+            Resources.Img.MenuMainTimeTravel,
+            Resources.Img.MenuMainAniTimeTravel,
+            Resources.Img.MenuButtonsTimeTravel,
+            Resources.Img.MenuButtonBigTimeTravel,
+            Resources.Img.MenuButtonSmallTimeTravel,
+            Resources.Img.MenuSettingsTimeTravel,
+            Resources.Img.LogoClockTimeTravel,
             null
         ];
 
