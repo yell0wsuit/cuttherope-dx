@@ -366,7 +366,7 @@ namespace CutTheRopeDX.GameMain
                 Image logo = Image.FromResource(Resources.Img.MenuLogoNew, 52);
                 logo.anchor = 10;
                 logo.parentAnchor = 10;
-                logo.y = 55f;
+                logo.y = LogoTop;
 
                 _ = logo.AddChild(CreateLogoCandyButton(this));
 
@@ -959,6 +959,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Quad the language buttons are drawn from, which is what sets their width.</summary>
         private const int LanguageButtonQuad = 3;
+
+        /// <summary>Where the main menu's logo starts, in design pixels from its design box's top.</summary>
+        private const float LogoTop = 55f;
 
         /// <summary>
         /// Builds the movie playback view.

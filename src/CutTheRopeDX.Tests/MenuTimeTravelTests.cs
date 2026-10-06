@@ -68,7 +68,7 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
-        public void PlayLandsWhereTheIosSceneDrawsIt(string name, int width, int height)
+        public void PlayLandsWhereTheIosSceneDrawsItLoweredWithTheStack(string name, int width, int height)
         {
             _ = name;
             WithTimeTravel(width, height, controller =>
@@ -79,7 +79,8 @@ namespace CutTheRopeDX.Tests
                 ResolveDrawPositions(view);
 
                 // iOS q19 spans (264, 922) to (907, 1513) canvas pixels: centered on (292.75, 608.75) logical.
-                Vector expected = new TimeTravelScreen(ScreenPresentation.Instance.Snapshot.VisibleBounds).ToDesign(292.75f, 608.75f);
+                Vector expected = new TimeTravelScreen(ScreenPresentation.Instance.Snapshot.VisibleBounds)
+                    .ToDesign(292.75f, 608.75f + MenuController.TimeTravelStackDrop);
                 Rectangle box = DrawnBox(view.GetChildWithName("ttPlay"));
                 // The packs round offsets to whole asset pixels, so within one design unit; a doubled
                 // or missing atlas offset would be off by hundreds.
@@ -120,6 +121,36 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(1280, 720)]
+        public void AtTheDesignShapeTheLogoTopMatchesTheDxMenus(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowMainMenu(controller);
+
+                // The DX main menu draws its logo 55 design pixels into its design box, which
+                // fills the screen at this shape.
+                Assert.InRange(DrawnBox(view.GetChildWithName("ttLogo")).y, 55f - 0.5f, 55f + 0.5f);
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheLoweredStackStaysOnScreen(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowMainMenu(controller);
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                Rectangle options = DrawnBox(view.GetChildWithName("ttOptions"));
+
+                Assert.True(options.y + options.h <= visible.y + visible.h, "the capsule row runs off the bottom");
+            });
+        }
+
+        [Theory]
         [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
         public void TheLogoSitsInTheTimeTravelTitleBox(string name, int width, int height)
         {
@@ -137,7 +168,8 @@ namespace CutTheRopeDX.Tests
                 float top = (logo.y - origin.Y) / screen.Scale;
                 float center = (logo.x + (logo.w / 2f) - origin.X) / screen.Scale;
                 float logicalWidth = logo.w / screen.Scale;
-                Assert.InRange(top, MenuController.TimeTravelLogoTop - 0.5f, MenuController.TimeTravelLogoTop + 0.5f);
+                float expectedTop = MenuController.TimeTravelLogoTop + MenuController.TimeTravelStackDrop;
+                Assert.InRange(top, expectedTop - 0.5f, expectedTop + 0.5f);
                 Assert.InRange(center, (TimeTravelScreen.SceneWidth / 2f) - 0.5f, (TimeTravelScreen.SceneWidth / 2f) + 0.5f);
                 float artWidth = view.GetChildWithName("ttLogo").width * scale / FlashXmlScale.AtlasToFlashPointScale;
                 Assert.InRange(logicalWidth, artWidth - 0.5f, artWidth + 0.5f);
