@@ -167,9 +167,7 @@ namespace CutTheRopeDX.GameMain
 
             // Fan work credit section
 
-            BaseElement topLogo = MenuTheme.IsTimeTravel
-                ? CreateTimeTravelLogo()
-                : Image.FromResource(Resources.Img.CutTheRopeDXLogo);
+            Image topLogo = Image.FromResource(Resources.Img.CutTheRopeDXLogo);
             _ = vBox.AddChild(topLogo);
 
             Text fanworkMain = CreateCenteredTextBlock(BuildFanworkMainText(), containerWidth, scale);
@@ -205,13 +203,7 @@ namespace CutTheRopeDX.GameMain
 
             // Original Zeptolab credit section
 
-            Image ZeptolabLogo = MenuTheme.IsTimeTravel
-                ? Image.FromResource(Resources.Img.MenuSettingsTimeTravel, TimeTravelArt.ZeptoLabLogo)
-                : Image.FromResource(Resources.Img.MenuLogo, 1);
-            if (MenuTheme.IsTimeTravel)
-            {
-                ZeptolabLogo.SetName("ttZeptoLab");
-            }
+            Image ZeptolabLogo = Image.FromResource(Resources.Img.MenuLogo, 1);
             _ = vBox.AddChild(ZeptolabLogo);
 
             string aboutText = ResolveVersionPlaceholder(
@@ -387,15 +379,6 @@ namespace CutTheRopeDX.GameMain
             float width,
             float scale)
         {
-            if (MenuTheme.IsTimeTravel)
-            {
-                // The iOS credits buttons are the long plate at 0.8 (0x3F4CCCCD). The viewport's
-                // growth is applied to the whole button by GrowFromTop, so not here as well.
-                return TimeTravelPlates.CreateTextButton(
-                    Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, TimeTravelArt.LongPlateDown,
-                    text, buttonId, buttonDelegate, TimeTravelCreditsButtonScale);
-            }
-
             Text upText = CreateCenteredTextBlock(text, width, scale);
             Text downText = CreateCenteredTextBlock(text, width, scale);
             downText.color = RGBAColor.MakeRGBA(1f, 1f, 1f, 0.6f);
@@ -468,9 +451,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Scroll speed of the Time Travel credits, in scene units a second.</summary>
         private const float TimeTravelCreditsSpeed = 30f;
 
-        /// <summary>Scale of the Time Travel credits buttons' plate (iOS <c>0x3F4CCCCD</c>).</summary>
-        private const float TimeTravelCreditsButtonScale = 0.8f;
-
         // The iOS credits window borders, in canvas pixels: each strip's height, and where its top
         // sits from the window's bottom edge, from the strips' offsets against the position-only
         // window-bottom quad (q8, y 1568).
@@ -481,15 +461,6 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>The Time Travel strips framing the credits window; empty in the other styles.</summary>
         private readonly List<Image> windowBorders = [];
-
-        /// <summary>The Time Travel title for the credits: the menu's logo, without the candy.</summary>
-        /// <returns>The logo.</returns>
-        private static BaseElement CreateTimeTravelLogo()
-        {
-            TimeTravelLogo logo = TimeTravelLogo.Create(new Random());
-            logo.SetName("ttLogo");
-            return logo;
-        }
 
         /// <summary>Adds the iOS strips that frame the credits window, the top ones mirrored.</summary>
         /// <param name="background">Element the window hangs from.</param>

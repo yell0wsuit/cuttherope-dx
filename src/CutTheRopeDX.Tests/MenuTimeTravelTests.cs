@@ -356,35 +356,29 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void CreditsCarryTheTimeTravelPiecesAndBorders()
+        public void CreditsKeepTheDxContentInsideTheTimeTravelFrame()
         {
             WithTimeTravel(2560, 1440, controller =>
             {
                 View about = controller.GetView(MenuController.VIEW_ABOUT);
-                foreach (string piece in new[] { "ttLogo", "ttZeptoLab", "ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin" })
+                foreach (string piece in new[] { "ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin" })
                 {
                     Assert.NotNull(about.GetChildWithName(piece));
                 }
-
                 Assert.Equal(-1f, about.GetChildWithName("ttWindowTopWide").scaleY);
                 Assert.Equal(1f, about.GetChildWithName("ttWindowBottomWide").scaleY);
-                Assert.Null(All<Button>(about.GetChildWithName("ttLogo")).Find(b => b.buttonID == MenuButtonId.CandySelect));
-            });
-        }
 
-        [Theory]
-        [InlineData(2560, 1440)]
-        [InlineData(400, 1280)]
-        public void CreditsLinkPlatesAreScaledOnce(int width, int height)
-        {
-            WithTimeTravel(width, height, controller =>
-            {
-                Button link = All<Button>(controller.GetView(MenuController.VIEW_ABOUT)).Find(b => b.buttonID == MenuButtonId.FanworkProjectWebsite);
-                Assert.NotNull(link);
-
-                // The viewport's growth is the button's own scale; the plate inside it carries only
-                // the iOS credits size.
-                Assert.Equal(0.8f, link.GetChild(0).GetChild(0).scaleX, 3);
+                // The scrolling content is DX's own: its logos, and its links drawn as text.
+                Assert.Null(Find<TimeTravelLogo>(about));
+                Assert.Null(about.GetChildWithName("ttZeptoLab"));
+                Texture2D dxLogo = Application.GetTexture(Resources.Img.CutTheRopeDXLogo);
+                Texture2D menuLogo = Application.GetTexture(Resources.Img.MenuLogo);
+                Assert.NotNull(All<Image>(about).Find(i => i.texture == dxLogo));
+                Assert.NotNull(All<Image>(about).Find(i => i.texture == menuLogo && i.quadToDraw == 1));
+                Button link = All<Button>(about).Find(b => b.buttonID == MenuButtonId.FanworkProjectWebsite);
+                Assert.IsType<Text>(link.GetChild(0));
+                Texture2D big = Application.GetTexture(Resources.Img.MenuButtonBigTimeTravel);
+                Assert.Null(All<Image>(about).Find(i => i.texture == big));
             });
         }
 

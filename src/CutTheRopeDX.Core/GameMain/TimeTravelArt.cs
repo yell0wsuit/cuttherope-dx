@@ -78,9 +78,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The cross drawn over a switched-off audio icon (iOS q12).</summary>
         public const int AudioCross = 12;
 
-        /// <summary>Settings: the ZeptoLab logo (iOS q4).</summary>
-        public const int ZeptoLabLogo = 4;
-
         /// <summary>Settings: the wide credits window border (iOS q6).</summary>
         public const int WindowBorderWide = 6;
 
