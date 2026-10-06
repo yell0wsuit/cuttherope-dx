@@ -53,6 +53,14 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         internal const float TimeTravelLogoScale = 0.95f;
 
+        /// <summary>
+        /// How far the main menu's stack (logo, Play and its glow, the capsule row) sits below the
+        /// iOS scene's, in logical units: enough that at the design shape, where the DX menu's
+        /// design box fills the screen, the logo's top lands on the DX logo's.
+        /// </summary>
+        internal const float TimeTravelStackDrop =
+            (LogoTop / (ViewportLayout.DesignHeight / TimeTravelScreen.SceneHeight)) - TimeTravelLogoTop;
+
         /// <summary>The main menu's Time Travel scene.</summary>
         private TimeTravelSceneGroup timeTravelMain;
 
@@ -82,7 +90,18 @@ namespace CutTheRopeDX.GameMain
             _ = scene.AddChild(band);
             scene.Attach(band, TimeTravelAttach.Top | TimeTravelAttach.ScaleToFullX);
 
-            _ = scene.AddChild(CreateTimeTravelGlow());
+            // Everything under the band moves down together, so their iOS spacing holds.
+            BaseElement stack = new()
+            {
+                width = TimeTravelSceneGroup.Width,
+                height = TimeTravelSceneGroup.Height,
+                y = TimeTravelStackDrop * FlashXmlScale.AtlasToFlashPointScale,
+            };
+            stack.anchor = stack.parentAnchor = 9;
+            stack.SetName("ttStack");
+            _ = scene.AddChild(stack);
+
+            _ = stack.AddChild(CreateTimeTravelGlow());
 
             Button play = new Button().InitWithUpElementDownElementandID(
                 Image.FromResource(Resources.Img.MenuMainTimeTravel, TimeTravelArt.MainPlayUp),
@@ -91,9 +110,9 @@ namespace CutTheRopeDX.GameMain
             play.delegateButtonDelegate = this;
             play.SetName("ttPlay");
             PlaceInScene(play, Resources.Img.MenuMainTimeTravel, TimeTravelArt.MainPlayUp, TimeTravelArt.MenuMainOriginY);
-            _ = scene.AddChild(play);
+            _ = stack.AddChild(play);
 
-            AddTimeTravelCapsules(scene);
+            AddTimeTravelCapsules(stack);
 
             // The title is the DX logo, top-centered where the iOS title rests, carrying the candy
             // that opens candy selection as it does in the classic menu.
@@ -104,7 +123,7 @@ namespace CutTheRopeDX.GameMain
             // Scaled about its center like every element, so its top is solved for the scale.
             logo.x = (TimeTravelSceneGroup.Width - logo.width) / 2f;
             logo.y = (TimeTravelLogoTop * FlashXmlScale.AtlasToFlashPointScale) - ((logo.height >> 1) * (1f - TimeTravelLogoScale));
-            _ = scene.AddChild(logo);
+            _ = stack.AddChild(logo);
 
             _ = background.AddChild(scene);
             _ = menuView.AddChild(background);
@@ -153,8 +172,8 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Options and, where the host allows it, Quit or the level editor, as capsules under Play.</summary>
-        /// <param name="scene">Scene the capsules go in.</param>
-        private void AddTimeTravelCapsules(TimeTravelSceneGroup scene)
+        /// <param name="scene">Scene layer the capsules go in.</param>
+        private void AddTimeTravelCapsules(BaseElement scene)
         {
             (string Label, ButtonId Id) options = (Application.GetString("OPTIONS"), MenuButtonId.Options);
             List<(string Label, ButtonId Id)> specs = [options];
