@@ -136,6 +136,7 @@ namespace CutTheRopeDX.GameMain
 
             LayOutLanguageSelect();
             LayOutCenteredScenes(visible);
+            LayOutTimeTravelScenes(visible);
             LayOutLevelSelect(snapshot);
             LayOutPackSelect(visible);
             LayOutAbout(snapshot);

@@ -247,6 +247,13 @@ namespace CutTheRopeDX.GameMain
                     backgroundResource = ExperimentsBackdropFor(l, viewId);
                     backgroundQuad = -1;
                     break;
+                case var _ when MenuTheme.IsTimeTravel:
+                    // The mirrored iOS backdrops are one whole texture each, so no quad to pick.
+                    backgroundResource = viewId == VIEW_MAIN_MENU
+                        ? Resources.BackgroundImg.MenuTimeTravelMainBgr
+                        : Resources.BackgroundImg.MenuTimeTravelBgr;
+                    backgroundQuad = -1;
+                    break;
                 case var _ when SpecialEvents.IsXmas:
                     backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
@@ -273,7 +280,9 @@ namespace CutTheRopeDX.GameMain
             }
             Image frontLayer = null;
             Image shadowLayer = null;
-            if (l)
+
+            // The Time Travel scenes draw their own title and have no light shaft.
+            if (l && !MenuTheme.IsTimeTravel)
             {
                 // Select main background based on special events
                 string backgroundSecondaryResource;
@@ -355,7 +364,7 @@ namespace CutTheRopeDX.GameMain
                 _ = logoParent.AddChild(logo);
 
             }
-            if (s)
+            if (s && !MenuTheme.IsTimeTravel)
             {
                 Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
                 shadowImage.anchor = shadowImage.parentAnchor = 18;
@@ -664,6 +673,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CreateMainMenu()
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelMainMenu();
+                return;
+            }
+
             MenuView menuView = new();
 
             // Everything the scene authors in design coordinates hangs from here; the layout pass
