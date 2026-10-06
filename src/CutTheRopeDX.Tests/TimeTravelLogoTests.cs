@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
@@ -81,6 +82,24 @@ namespace CutTheRopeDX.Tests
 
                 Assert.Null(MenuTimeTravelTests.All<Button>(plain).Find(b => b.buttonID == MenuButtonId.CandySelect));
                 Assert.NotNull(MenuTimeTravelTests.All<Button>(withCandy).Find(b => b.buttonID == MenuButtonId.CandySelect));
+            });
+        }
+
+        [Fact]
+        public void TheCandyOnAScaledLogoTakesTapsWhereItIsDrawn()
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), new NoDelegate());
+                logo.scaleX = logo.scaleY = 0.5f;
+                MenuTimeTravelTests.ResolveDrawPositions(logo);
+                Button candy = MenuTimeTravelTests.All<Button>(logo).Find(b => b.buttonID == MenuButtonId.CandySelect);
+                Rectangle box = MenuTimeTravelTests.DrawnBox(candy);
+
+                // Near the drawn top left: the candy sits below and right of the logo's center, so
+                // the unscaled hit box an unmapped tap would test lies well away from this corner.
+                Assert.True(logo.OnTouchDownXY(box.x + (box.w * 0.1f), box.y + (box.h * 0.1f)));
+                Assert.Equal(Button.BUTTON_STATE.BUTTON_DOWN, candy.state);
             });
         }
 
