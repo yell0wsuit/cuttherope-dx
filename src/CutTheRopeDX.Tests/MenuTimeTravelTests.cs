@@ -18,6 +18,10 @@ namespace CutTheRopeDX.Tests
     /// </summary>
     public sealed class MenuTimeTravelTests
     {
+        private static readonly string[] MainMenuPieces = ["ttPlay", "ttOptions", "ttLogo"];
+
+        private static readonly string[] CreditsBorderPieces = ["ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin"];
+
         [Fact]
         public void TimeTravelSheetsLoadWithTheirFrames()
         {
@@ -43,7 +47,7 @@ namespace CutTheRopeDX.Tests
                 ResolveDrawPositions(view);
                 Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
 
-                foreach (string child in new[] { "ttPlay", "ttOptions", "ttLogo" })
+                foreach (string child in MainMenuPieces)
                 {
                     BaseElement element = view.GetChildWithName(child);
                     Assert.NotNull(element);
@@ -387,7 +391,7 @@ namespace CutTheRopeDX.Tests
                     Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, new string('W', 400), 1f);
                 Text label = Find<Text>(plate);
 
-                Assert.True(label.width * label.scaleX <= plate.width * TimeTravelPlates.LabelWidthShare + 0.5f);
+                Assert.True(label.width * label.scaleX <= (plate.width * TimeTravelPlates.LabelWidthShare) + 0.5f);
                 Assert.True(label.scaleX < 1f);
                 Assert.Equal(label.scaleX, label.scaleY);
             });
@@ -425,7 +429,7 @@ namespace CutTheRopeDX.Tests
             WithTimeTravel(2560, 1440, controller =>
             {
                 View about = controller.GetView(MenuController.VIEW_ABOUT);
-                foreach (string piece in new[] { "ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin" })
+                foreach (string piece in CreditsBorderPieces)
                 {
                     Assert.NotNull(about.GetChildWithName(piece));
                 }
@@ -440,7 +444,7 @@ namespace CutTheRopeDX.Tests
                 Assert.NotNull(All<Image>(about).Find(i => i.texture == dxLogo));
                 Assert.NotNull(All<Image>(about).Find(i => i.texture == menuLogo && i.quadToDraw == 1));
                 Button link = All<Button>(about).Find(b => b.buttonID == MenuButtonId.FanworkProjectWebsite);
-                Assert.IsType<Text>(link.GetChild(0));
+                _ = Assert.IsType<Text>(link.GetChild(0));
                 Texture2D big = Application.GetTexture(Resources.Img.MenuButtonBigTimeTravel);
                 Assert.Null(All<Image>(about).Find(i => i.texture == big));
             });
