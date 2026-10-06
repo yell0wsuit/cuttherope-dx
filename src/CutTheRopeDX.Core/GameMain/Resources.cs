@@ -242,7 +242,8 @@ namespace CutTheRopeDX.GameMain
                 BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
                 BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground,
                 BackgroundImg.MenuExpMainBgr, BackgroundImg.MenuExpDefaultBgr,
-                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr
+                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr,
+                BackgroundImg.MenuTimeTravelMainBgr, BackgroundImg.MenuTimeTravelBgr
             ];
         }
 
@@ -287,6 +288,10 @@ namespace CutTheRopeDX.GameMain
             public const string MenuExpDefaultBgr = "menu_bgr_default_horiz";
             public const string MenuExpCampaignBgr = "menu_campaign_bgr_horiz";
             public const string MenuExpLoadingBgr = "menu_loading_bgr_exp";
+
+            // Cut the Rope: Time Travel backdrops: the iOS portrait art mirrored out to 2560 by 1440.
+            public const string MenuTimeTravelMainBgr = "menu_main_bgr_timetravel";
+            public const string MenuTimeTravelBgr = "menu_main_bgr_2_timetravel";
         }
 
         /// <summary>
@@ -341,6 +346,16 @@ namespace CutTheRopeDX.GameMain
             public const string MenuExpPauseTop = "menu_pause_top_horiz";
             public const string ConfettiParticlesExp = "confetti_particles_exp";
             public const string ProfessorHand = "professor_hand";
+
+            // Cut the Rope: Time Travel menus. Packed from the iOS HD 1.5.0 atlases at 0.78, with
+            // frames the menus do not use dropped, so their indices are not the iOS quad numbers.
+            public const string MenuMainTimeTravel = "menu_main_timetravel";
+            public const string MenuMainAniTimeTravel = "menu_main_ani_timetravel";
+            public const string MenuButtonsTimeTravel = "menu_buttons_timetravel";
+            public const string MenuButtonBigTimeTravel = "menu_button_big_timetravel";
+            public const string MenuButtonSmallTimeTravel = "menu_button_small_timetravel";
+            public const string MenuSettingsTimeTravel = "menu_settings_timetravel";
+            public const string LogoClockTimeTravel = "logo_clock_timetravel";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
