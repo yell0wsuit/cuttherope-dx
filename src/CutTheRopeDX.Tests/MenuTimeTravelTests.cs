@@ -459,21 +459,22 @@ namespace CutTheRopeDX.Tests
         [Theory]
         [InlineData(false)]
         [InlineData(true)]
-        public void TheRoundMusicIconKeepsItsCanvasPlace(bool pressed)
+        public void TheRoundMusicIconCentersItsWeightOnTheDisc(bool pressed)
         {
             WithTimeTravel(2560, 1440, _ =>
             {
-                // The iOS pause menu has a round sound button only, so its marker rule was never
-                // drawn for the note; the canvas centers the note on the round plate instead.
+                // The iOS pause menu has a round sound button only; its marker rule lands the
+                // speaker's weight on the disc's center, so the note is given the same result.
                 string sheet = Resources.Img.MenuButtonSmallTimeTravel;
                 BaseElement element = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(3, false, pressed, round: true);
                 Image plate = Find<Image>(element);
                 Image icon = All<Image>(plate).Find(i => i.quadToDraw == TimeTravelArt.MusicIcon);
                 Vector plateOffset = Image.GetQuadOffset(sheet, plate.quadToDraw);
-                Vector iconOffset = Image.GetQuadOffset(sheet, TimeTravelArt.MusicIcon);
+                Vector face = TimeTravelArt.RoundAudioFaceCenter;
+                Vector weight = TimeTravelArt.MusicIconWeightCenter;
 
-                Assert.Equal(iconOffset.X - plateOffset.X, icon.x, 2);
-                Assert.Equal(iconOffset.Y - plateOffset.Y, icon.y, 2);
+                Assert.Equal(face.X - plateOffset.X, icon.x + weight.X, 2);
+                Assert.Equal(face.Y - plateOffset.Y, icon.y + weight.Y, 2);
             });
         }
 

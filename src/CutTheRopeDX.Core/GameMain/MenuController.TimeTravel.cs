@@ -340,8 +340,10 @@ namespace CutTheRopeDX.GameMain
         /// One state of a Time Travel pause-menu audio toggle, on the round plate. The iOS pause
         /// menu has a round sound button only, and does not leave its icon where the canvas draws
         /// it: it centers the icon across on <see cref="TimeTravelArt.RoundAudioIconMarker"/> and
-        /// sets its top 0.6 of its height above that point. That rule was never drawn for the
-        /// music note, which keeps its canvas place, where the art centers it on this plate.
+        /// sets its top 0.6 of its height above that point, which lands the speaker's weight on the
+        /// middle of the disc. That rule was never drawn for the music note, so the note is given
+        /// the same result: its weight center on <see cref="TimeTravelArt.RoundAudioFaceCenter"/>.
+        /// Neither icon follows the pressed plate's face down, as the speaker does not in iOS.
         /// </summary>
         /// <param name="icon">Icon quad.</param>
         /// <param name="crossed">Whether the sound is switched off.</param>
@@ -353,12 +355,15 @@ namespace CutTheRopeDX.GameMain
             int plateQuad = pressed ? TimeTravelArt.AudioPlateDown : TimeTravelArt.AudioPlateUp;
             Image plate = Image.FromResource(sheet, plateQuad);
             Image glyph = AddTimeTravelAudioGlyphs(plate, plateQuad, icon, crossed);
+            Vector plateOffset = Image.GetQuadOffset(sheet, plateQuad);
             if (icon != TimeTravelArt.SoundIcon)
             {
-                Image.SetElementPositionWithRelativeQuadOffset(glyph, sheet, plateQuad, icon);
+                Vector face = TimeTravelArt.RoundAudioFaceCenter;
+                Vector weight = TimeTravelArt.MusicIconWeightCenter;
+                glyph.x = face.X - plateOffset.X - weight.X;
+                glyph.y = face.Y - plateOffset.Y - weight.Y;
                 return plate;
             }
-            Vector plateOffset = Image.GetQuadOffset(sheet, plateQuad);
             Vector marker = TimeTravelArt.RoundAudioIconMarker;
             glyph.x = marker.X - plateOffset.X - (glyph.width * 0.5f);
             glyph.y = marker.Y - plateOffset.Y - (glyph.height * 0.6f);
