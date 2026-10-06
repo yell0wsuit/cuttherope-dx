@@ -12,6 +12,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>The Cut the Rope: Experiments menus, laid out from the iOS HD build.</summary>
         Experiments,
+
+        /// <summary>The Cut the Rope: Time Travel menus, laid out from the iOS HD build.</summary>
+        TimeTravel,
     }
 
     /// <summary>
@@ -25,6 +28,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets whether the Experiments menus are active.</summary>
         public static bool IsExperiments => Current == MenuStyle.Experiments;
+
+        /// <summary>Gets whether the Time Travel menus are active.</summary>
+        public static bool IsTimeTravel => Current == MenuStyle.TimeTravel;
 
         /// <summary>
         /// Picks between a classic value and its Experiments counterpart.
@@ -41,7 +47,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Reads a menu style name as given on the command line or in the page URL.
         /// </summary>
-        /// <param name="value">"classic" or "experiments", in any case.</param>
+        /// <param name="value">"classic", "experiments" or "timetravel", in any case.</param>
         /// <param name="style">The named style, or <see cref="MenuStyle.Classic"/> when <paramref name="value"/> names none.</param>
         /// <returns>Whether <paramref name="value"/> names a style.</returns>
         public static bool TryParse(string value, out MenuStyle style)
@@ -50,6 +56,11 @@ namespace CutTheRopeDX.GameMain
             if (string.Equals(value, "experiments", StringComparison.OrdinalIgnoreCase))
             {
                 style = MenuStyle.Experiments;
+                return true;
+            }
+            if (string.Equals(value, "timetravel", StringComparison.OrdinalIgnoreCase))
+            {
+                style = MenuStyle.TimeTravel;
                 return true;
             }
             return string.Equals(value, "classic", StringComparison.OrdinalIgnoreCase);

@@ -167,5 +167,22 @@ namespace CutTheRopeDX.Tests
             Assert.NotNull(result.ErrorMessage);
             Assert.Equal(MenuStyle.Classic, result.Menu);
         }
+
+        [Fact]
+        public void TheMenuSwitchPicksTheTimeTravelMenus()
+        {
+            CommandLineResult result = CommandLine.Parse(["--menu", "timetravel"]);
+
+            Assert.Null(result.ErrorMessage);
+            Assert.Equal(MenuStyle.TimeTravel, result.Menu);
+        }
+
+        [Fact]
+        public void TheMenuSwitchRejectionNamesEveryStyle()
+        {
+            CommandLineResult result = CommandLine.Parse(["--menu", "nope"]);
+
+            Assert.Contains("timetravel", result.ErrorMessage, System.StringComparison.Ordinal);
+        }
     }
 }
