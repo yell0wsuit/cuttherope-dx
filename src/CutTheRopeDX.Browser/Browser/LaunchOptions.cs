@@ -45,7 +45,7 @@ namespace CutTheRopeDX.Browser
     {
         [LoggerMessage(
             Level = LogLevel.Warning,
-            Message = "Unknown ?menu= value '{Value}'; expected 'classic' or 'experiments'. Using the classic menus.")]
+            Message = "Unknown ?menu= value '{Value}'; expected 'classic', 'experiments' or 'timetravel'. Using the classic menus.")]
         public static partial void UnknownMenu(ILogger logger, string value);
     }
 }
