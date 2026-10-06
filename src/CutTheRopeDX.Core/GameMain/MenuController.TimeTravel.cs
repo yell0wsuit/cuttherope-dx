@@ -171,6 +171,56 @@ namespace CutTheRopeDX.GameMain
                 Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, text, id, this, plateScale: 1f);
         }
 
+        /// <summary>
+        /// One state of a Time Travel audio toggle. The icon and the cross keep the places the iOS
+        /// button canvas gives them on the plate.
+        /// </summary>
+        /// <param name="icon">Icon quad.</param>
+        /// <param name="crossed">Whether the sound is switched off.</param>
+        /// <param name="pressed">Whether to draw the pressed plate.</param>
+        /// <returns>The plate with its icon.</returns>
+        private static Image CreateTimeTravelAudioElement(int icon, bool crossed, bool pressed)
+        {
+            string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+            int plateQuad = pressed ? TimeTravelArt.AudioPlateDown : TimeTravelArt.AudioPlateUp;
+            Image plate = Image.FromResource(sheet, plateQuad);
+            Image glyph = Image.FromResource(sheet, icon);
+            glyph.anchor = glyph.parentAnchor = 9;
+            Image.SetElementPositionWithRelativeQuadOffset(glyph, sheet, plateQuad, icon);
+            _ = plate.AddChild(glyph);
+            if (crossed)
+            {
+                glyph.color = RGBAColor.MakeRGBA(0.5f, 0.5f, 0.5f, 0.5f);
+                Image cross = Image.FromResource(sheet, TimeTravelArt.AudioCross);
+                cross.anchor = cross.parentAnchor = 9;
+                Image.SetElementPositionWithRelativeQuadOffset(cross, sheet, plateQuad, TimeTravelArt.AudioCross);
+                _ = plate.AddChild(cross);
+            }
+            return plate;
+        }
+
+        /// <summary>The round Time Travel back button: the plate with its arrow where the iOS canvas puts it.</summary>
+        /// <param name="d">Delegate that receives the press.</param>
+        /// <param name="bid">Button identifier.</param>
+        /// <returns>The button, anchored to the bottom left like the classic one.</returns>
+        private static Button CreateTimeTravelBackButton(IButtonDelegation d, ButtonId bid)
+        {
+            string sheet = Resources.Img.MenuButtonsTimeTravel;
+            Image up = Image.FromResource(sheet, TimeTravelArt.BackPlateUp);
+            Image down = Image.FromResource(sheet, TimeTravelArt.BackPlateDown);
+            foreach ((Image plate, int quad) in new[] { (up, TimeTravelArt.BackPlateUp), (down, TimeTravelArt.BackPlateDown) })
+            {
+                Image arrow = Image.FromResource(sheet, TimeTravelArt.BackArrow);
+                arrow.anchor = arrow.parentAnchor = 9;
+                Image.SetElementPositionWithRelativeQuadOffset(arrow, sheet, quad, TimeTravelArt.BackArrow);
+                _ = plate.AddChild(arrow);
+            }
+            Button button = new Button().InitWithUpElementDownElementandID(up, down, bid);
+            button.delegateButtonDelegate = d;
+            button.anchor = button.parentAnchor = 33;
+            return button;
+        }
+
         /// <summary>Re-places every Time Travel scene for the current viewport.</summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
         private void LayOutTimeTravelScenes(Rectangle visible)

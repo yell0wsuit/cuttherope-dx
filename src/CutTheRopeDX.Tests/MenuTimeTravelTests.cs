@@ -107,6 +107,87 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Fact]
+        public void OptionsUseTimeTravelPlatesAndAudioToggles()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View options = controller.GetView(MenuController.VIEW_OPTIONS);
+                Texture2D big = Application.GetTexture(Resources.Img.MenuButtonBigTimeTravel);
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+
+                Assert.Equal(3, All<Image>(options).FindAll(i => i.texture == big && i.quadToDraw == TimeTravelArt.LongPlateUp).Count);
+                Assert.True(All<Image>(options).FindAll(i => i.texture == small && i.quadToDraw == TimeTravelArt.AudioPlateUp).Count >= 2);
+                Texture2D shaft = Application.GetTexture(Resources.Img.MenuBgrShadow);
+                Assert.Null(All<Image>(options).Find(i => i.texture == shaft));
+            });
+        }
+
+        [Fact]
+        public void EveryTimeTravelSubViewHasTheTimeTravelBackButton()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                Texture2D buttons = Application.GetTexture(Resources.Img.MenuButtonsTimeTravel);
+                foreach (int id in new[] { MenuController.VIEW_OPTIONS, MenuController.VIEW_LANGUAGE_SELECT, MenuController.VIEW_RESET, MenuController.VIEW_ABOUT })
+                {
+                    BaseElement back = controller.GetView(id).GetChildWithName("backb");
+                    Assert.NotNull(back);
+                    Assert.NotNull(All<Image>(back).Find(i => i.texture == buttons && i.quadToDraw == TimeTravelArt.BackArrow));
+                }
+            });
+        }
+
+        [Fact]
+        public void LanguageButtonsUseShortCapsules()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+                List<Image> plates = All<Image>(controller.GetView(MenuController.VIEW_LANGUAGE_SELECT))
+                    .FindAll(i => i.texture == small && (i.quadToDraw == TimeTravelArt.ShortCapsuleUp || i.quadToDraw == TimeTravelArt.ShortCapsuleDown));
+
+                Assert.Equal(LanguageHelper.UiLanguageCodes.Count * 2, plates.Count);
+            });
+        }
+
+        [Fact]
+        public void OptionsKeepTimeTravelArtAfterALanguageSwitch()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                IReadOnlyList<string> codes = LanguageHelper.UiLanguageCodes;
+                int original = Math.Max(0, IndexOf(codes, Preferences.GetStringForKey("PREFS_LOCALE")));
+                int other = original == 0 ? 1 : 0;
+                try
+                {
+                    controller.ShowView(MenuController.VIEW_OPTIONS);
+                    controller.OnButtonPressed(MenuButtonId.ForLanguage(other));
+                    controller.Update(0.016f);
+
+                    Texture2D big = Application.GetTexture(Resources.Img.MenuButtonBigTimeTravel);
+                    Assert.NotEmpty(All<Image>(controller.GetView(MenuController.VIEW_OPTIONS)).FindAll(i => i.texture == big));
+                    Assert.NotNull(controller.GetView(MenuController.VIEW_MAIN_MENU).GetChildWithName("ttPlay"));
+                }
+                finally
+                {
+                    controller.OnButtonPressed(MenuButtonId.ForLanguage(original));
+                }
+            });
+        }
+
+        private static int IndexOf(IReadOnlyList<string> list, string value)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i] == value)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         internal static void ResolveDrawPositions(BaseElement element)
         {
             BaseElement.CalculateTopLeft(element);

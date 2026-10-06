@@ -27,6 +27,13 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured menu button.</returns>
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return TimeTravelPlates.CreateTextButton(
+                    Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, TimeTravelArt.LongPlateDown, str, bid, d,
+                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, Resources.Img.MenuButtons, 0));
+            }
+
             Image upImage = Image.FromResource(Resources.Img.MenuButtons, 0);
             Image downImage = Image.FromResource(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
@@ -56,6 +63,15 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured short menu button.</returns>
         public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d, bool selected = false)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                int ttUp = selected ? TimeTravelArt.ShortCapsuleDown : TimeTravelArt.ShortCapsuleUp;
+                int ttDown = selected ? TimeTravelArt.ShortCapsuleUp : TimeTravelArt.ShortCapsuleDown;
+                return TimeTravelPlates.CreateTextButton(
+                    Resources.Img.MenuButtonSmallTimeTravel, ttUp, ttDown, str, bid, d,
+                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, Resources.Img.MenuButtons, 3));
+            }
+
             // When selected, swap quads so the "down" look is the default state
             int upQuad = selected ? 2 : 3;
             int downQuad = selected ? 3 : 2;
@@ -127,6 +143,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured back button.</returns>
         public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, ButtonId bid)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return CreateTimeTravelBackButton(d, bid);
+            }
+
             Button button = CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 0, 1, bid, d);
             button.anchor = button.parentAnchor = 33;
             return button;
@@ -484,6 +505,11 @@ namespace CutTheRopeDX.GameMain
                 return CreateExperimentsAudioElement(ExperimentsAudioIcon(q), b, p);
             }
 
+            if (MenuTheme.IsTimeTravel)
+            {
+                return CreateTimeTravelAudioElement(q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon, b, p);
+            }
+
             int pressedStateQuad = p ? 1 : 0;
             Image background = Image.FromResource(Resources.Img.MenuOptions, pressedStateQuad);
             Image icon = Image.FromResource(Resources.Img.MenuOptions, q);
@@ -764,17 +790,21 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(dragToCutOption);
             _ = hBox.AddChild(clickToCutOption);
             _ = designGroup.AddChild(hBox);
-            Image image = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
-            image.anchor = image.parentAnchor = 18;
-            image.scaleX = image.scaleY = 2f;
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
-            timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            _ = image.AddTimeline(timeline);
-            image.PlayTimeline(0);
-            _ = menuView.AddChild(image);
-            optionsShadow = image;
+            // The Time Travel settings have a plain backdrop, with no light shaft.
+            if (!MenuTheme.IsTimeTravel)
+            {
+                Image image = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
+                image.anchor = image.parentAnchor = 18;
+                image.scaleX = image.scaleY = 2f;
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
+                timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = image.AddTimeline(timeline);
+                image.PlayTimeline(0);
+                _ = menuView.AddChild(image);
+                optionsShadow = image;
+            }
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
             ToggleButton musicToggle = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
