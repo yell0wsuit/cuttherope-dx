@@ -35,8 +35,8 @@ namespace CutTheRopeDX.GameMain
         internal const float TimeTravelCapsuleGap = 20f;
 
         /// <summary>
-        /// Room the main menu's capsule row keeps from each side of the iOS scene when its capsules
-        /// widen for long labels, in iOS logical units.
+        /// Room the main menu's capsule row keeps from each side of the screen when its capsules
+        /// would otherwise run past it, in iOS logical units.
         /// </summary>
         internal const float TimeTravelCapsuleRowMargin = 24f;
 
@@ -54,6 +54,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>The corner fan of each settings view, by view, so a layout pass can re-pin it.</summary>
         private readonly Dictionary<int, TimeTravelSceneGroup> timeTravelFans = [];
+
+        /// <summary>The main menu's capsules, left to right, restretched on every layout pass.</summary>
+        private readonly List<Button> timeTravelCapsules = [];
 
         /// <summary>Builds the Time Travel main menu.</summary>
         private void CreateTimeTravelMainMenu()
@@ -140,55 +143,69 @@ namespace CutTheRopeDX.GameMain
         /// <param name="scene">Scene the capsules go in.</param>
         private void AddTimeTravelCapsules(TimeTravelSceneGroup scene)
         {
-            string optionsLabel = Application.GetString("OPTIONS");
-            (string Label, ButtonId Id)? secondSpec = null;
+            (string Label, ButtonId Id) options = (Application.GetString("OPTIONS"), MenuButtonId.Options);
+            List<(string Label, ButtonId Id)> specs = [options];
             if (PlatformServices.Host?.CanExit == true)
             {
-                secondSpec = (Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup);
+                specs.Add((Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup));
             }
             else if (!string.IsNullOrEmpty(PlatformServices.Host?.LevelEditorUrl))
             {
-                secondSpec = (Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor);
+                specs.Add((Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor));
             }
 
-            // Both capsules take the width the longer label needs, so the row stays symmetric.
-            float width = TimeTravelCapsuleWidth(secondSpec is { } spec ? [optionsLabel, spec.Label] : [optionsLabel]);
-            Button options = CreateTimeTravelCapsule(optionsLabel, MenuButtonId.Options, width);
-            options.SetName("ttOptions");
-            Button second = secondSpec is { } s ? CreateTimeTravelCapsule(s.Label, s.Id, width) : null;
-
-            float a = FlashXmlScale.AtlasToFlashPointScale;
-            float rowY = TimeTravelCapsuleRowY * a;
-            float center = TimeTravelScreen.SceneWidth / 2f * a;
-            float half = second == null ? 0f : ((options.width / 2f) + (TimeTravelCapsuleGap * a / 2f));
-            CenterAt(options, center - half, rowY);
-            _ = scene.AddChild(options);
-            if (second != null)
+            timeTravelCapsules.Clear();
+            float width = TimeTravelCapsuleWidth(specs.Count, VisibleBounds, FittedScale);
+            for (int i = 0; i < specs.Count; i++)
             {
-                second.SetName("ttQuit");
-                CenterAt(second, center + half, rowY);
-                _ = scene.AddChild(second);
+                Button capsule = CreateTimeTravelCapsule(specs[i].Label, specs[i].Id, width);
+                capsule.SetName(i == 0 ? "ttOptions" : "ttQuit");
+                timeTravelCapsules.Add(capsule);
+                _ = scene.AddChild(capsule);
+            }
+            LayOutTimeTravelCapsules(VisibleBounds);
+        }
+
+        /// <summary>
+        /// Stretches the main menu's capsules to the current length and centers their row under
+        /// Play. Rerun on every layout pass, since the length follows the window's shape.
+        /// </summary>
+        /// <param name="visible">The visible bounds being laid out for.</param>
+        private void LayOutTimeTravelCapsules(Rectangle visible)
+        {
+            int count = timeTravelCapsules.Count;
+            if (count == 0)
+            {
+                return;
+            }
+            float width = TimeTravelCapsuleWidth(count, visible, FittedScale);
+            float a = FlashXmlScale.AtlasToFlashPointScale;
+            float pitch = width + (TimeTravelCapsuleGap * a);
+            float first = (TimeTravelScreen.SceneWidth / 2f * a) - (pitch * (count - 1) / 2f);
+            for (int i = 0; i < count; i++)
+            {
+                Button capsule = timeTravelCapsules[i];
+                TimeTravelPlates.ResizePillButton(
+                    capsule, Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, plateScale: 1f, width);
+                CenterAt(capsule, first + (i * pitch), TimeTravelCapsuleRowY * a);
             }
         }
 
         /// <summary>
-        /// The width the main menu's capsules share: what the longest label needs, capped where the
-        /// row would leave the scene's margins.
+        /// The main menu capsules' width in the scene: drawn as long as a language button, narrowed
+        /// only where a row of them would run past the screen's side margins.
         /// </summary>
-        /// <param name="labels">Every capsule's label, in row order.</param>
+        /// <param name="count">Capsules in the row.</param>
+        /// <param name="visible">The visible bounds being laid out for.</param>
+        /// <param name="contentScale">Scale the classic menus' content is drawn at.</param>
         /// <returns>The width, in scene asset pixels.</returns>
-        internal static float TimeTravelCapsuleWidth(IReadOnlyList<string> labels)
+        internal static float TimeTravelCapsuleWidth(int count, Rectangle visible, float contentScale)
         {
-            float width = 0f;
-            foreach (string label in labels)
-            {
-                width = MathF.Max(width, TimeTravelPlates.FitWidth(
-                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, label, plateScale: 1f));
-            }
+            float drawnPerScene = new TimeTravelScreen(visible).AssetScale;
+            float language = Image.GetQuadSize(Resources.Img.MenuButtons, LanguageButtonQuad).X * contentScale / drawnPerScene;
             float a = FlashXmlScale.AtlasToFlashPointScale;
-            float row = (TimeTravelScreen.SceneWidth - (2f * TimeTravelCapsuleRowMargin)) * a;
-            float widest = (row - ((labels.Count - 1) * TimeTravelCapsuleGap * a)) / labels.Count;
-            return MathF.Min(width, widest);
+            float room = (visible.w / drawnPerScene) - (2f * TimeTravelCapsuleRowMargin * a) - ((count - 1) * TimeTravelCapsuleGap * a);
+            return MathF.Min(language, room / count);
         }
 
         /// <summary>Places an element by its center.</summary>
@@ -349,6 +366,7 @@ namespace CutTheRopeDX.GameMain
         {
             TimeTravelScreen screen = new(visible);
             timeTravelMain?.Layout(screen);
+            LayOutTimeTravelCapsules(visible);
             foreach (TimeTravelSceneGroup corner in timeTravelFans.Values)
             {
                 corner.Layout(screen);

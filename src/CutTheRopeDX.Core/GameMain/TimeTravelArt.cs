@@ -160,21 +160,6 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// The width a pill needs for a label at its full size: the label and its side padding,
-        /// never narrower than the art.
-        /// </summary>
-        /// <param name="resource">Sheet holding the pill.</param>
-        /// <param name="quad">Pill quad.</param>
-        /// <param name="text">Label.</param>
-        /// <param name="plateScale">Scale the pill is drawn at.</param>
-        /// <returns>The width, in drawn units.</returns>
-        public static float FitWidth(string resource, int quad, string text, float plateScale)
-        {
-            float art = Image.GetQuadSize(resource, quad).X * plateScale;
-            return MathF.Max(art, CreateLabel(text).width + SidePadding(resource, quad, plateScale));
-        }
-
-        /// <summary>
         /// A pill drawn at a scale and stretched to a width through its center, inside a container
         /// sized to what it draws.
         /// </summary>
@@ -186,15 +171,11 @@ namespace CutTheRopeDX.GameMain
         public static BaseElement SlicedPlate(string resource, int quad, float plateScale, float width)
         {
             SlicedImage plate = SlicedImage.Create(resource, quad);
-            plate.width = Math.Max(plate.width, (int)MathF.Ceiling((width / plateScale) - 0.01f));
             plate.anchor = plate.parentAnchor = 18;
             plate.scaleX = plate.scaleY = plateScale;
-            BaseElement container = new()
-            {
-                width = (int)MathF.Round(plate.width * plateScale),
-                height = (int)MathF.Round(plate.height * plateScale),
-            };
+            BaseElement container = new();
             _ = container.AddChild(plate);
+            SizePlate(container, plate, plateScale, width);
             return container;
         }
 
@@ -208,10 +189,28 @@ namespace CutTheRopeDX.GameMain
         public static BaseElement LabeledSlicedPlate(string resource, int quad, string text, float plateScale, float width)
         {
             BaseElement plate = SlicedPlate(resource, quad, plateScale, width);
-
-            // Measured from the width asked for, which the drawn width only rounds.
-            AddLabel(plate, text, MathF.Max(plate.width, width) - SidePadding(resource, quad, plateScale));
+            Text label = CreateLabel(text);
+            _ = plate.AddChild(label);
+            FitLabel(label, PillLabelRoom(plate, resource, quad, plateScale, width));
             return plate;
+        }
+
+        /// <summary>
+        /// Stretches both pills of a button made by <see cref="CreatePillButton"/> to a new width,
+        /// refitting their labels.
+        /// </summary>
+        /// <param name="button">The button.</param>
+        /// <param name="resource">Sheet holding the pills.</param>
+        /// <param name="upQuad">Pill shown at rest.</param>
+        /// <param name="downQuad">Pill shown while pressed.</param>
+        /// <param name="plateScale">Scale both pills are drawn at.</param>
+        /// <param name="width">Drawn width of both pills.</param>
+        public static void ResizePillButton(Button button, string resource, int upQuad, int downQuad, float plateScale, float width)
+        {
+            ResizePill(button.GetChild(0), resource, upQuad, plateScale, width);
+            ResizePill(button.GetChild(1), resource, downQuad, plateScale, width);
+            button.width = button.GetChild(0).width;
+            button.height = button.GetChild(0).height;
         }
 
         /// <summary>A text button on a stretched Time Travel pill, labeled in the big DX font.</summary>
@@ -254,13 +253,44 @@ namespace CutTheRopeDX.GameMain
         private static void AddLabel(BaseElement plate, string text, float room)
         {
             Text label = CreateLabel(text);
-
-            // DX labels were sized for the classic plates; one that would spill is shrunk.
-            if (label.width > room)
-            {
-                label.scaleX = label.scaleY = room / label.width;
-            }
+            FitLabel(label, room);
             _ = plate.AddChild(label);
+        }
+
+        /// <summary>Shrinks a label that would spill out of its room, or restores one that fits.</summary>
+        /// <param name="label">The label.</param>
+        /// <param name="room">Width the label may take.</param>
+        private static void FitLabel(Text label, float room)
+        {
+            // DX labels were sized for the classic plates; one that would spill is shrunk.
+            label.scaleX = label.scaleY = label.width > room ? room / label.width : 1f;
+        }
+
+        /// <summary>Sizes a stretched pill and its container to a drawn width.</summary>
+        private static void SizePlate(BaseElement container, SlicedImage plate, float plateScale, float width)
+        {
+            plate.width = Math.Max(plate.ArtWidth, (int)MathF.Ceiling((width / plateScale) - 0.01f));
+            container.width = (int)MathF.Round(plate.width * plateScale);
+            container.height = (int)MathF.Round(plate.height * plateScale);
+        }
+
+        /// <summary>Restretches one labeled pill and refits its label.</summary>
+        private static void ResizePill(BaseElement container, string resource, int quad, float plateScale, float width)
+        {
+            SizePlate(container, (SlicedImage)container.GetChild(0), plateScale, width);
+            if (container.GetChild(1) is Text label)
+            {
+                FitLabel(label, PillLabelRoom(container, resource, quad, plateScale, width));
+            }
+        }
+
+        /// <summary>
+        /// The room a stretched pill leaves its label: measured from the width asked for, which the
+        /// drawn width only rounds.
+        /// </summary>
+        private static float PillLabelRoom(BaseElement container, string resource, int quad, float plateScale, float width)
+        {
+            return MathF.Max(container.width, width) - SidePadding(resource, quad, plateScale);
         }
 
         /// <summary>A text button on a Time Travel plate, labeled in the big DX font.</summary>

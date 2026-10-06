@@ -429,68 +429,116 @@ namespace CutTheRopeDX.Tests
             });
         }
 
-        [Fact]
-        public void MainMenuCapsulesKeepTheirArtWidthForShortLabels()
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void MainMenuCapsulesAreAsLongAsTheLanguageButtons(string name, int width, int height)
         {
-            WithTimeTravel(2560, 1440, _ =>
+            _ = name;
+            WithTimeTravel(width, height, controller =>
             {
-                float art = Image.GetQuadSize(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp).X;
+                View view = ShowMainMenu(controller);
+                float expected = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X * ContentFit.Scale;
 
-                Assert.Equal(art, MenuController.TimeTravelCapsuleWidth(["Options", "Quit"]), 1);
+                Assert.InRange(DrawnBox(view.GetChildWithName("ttOptions")).w, expected - 1.5f, expected + 1.5f);
+                if (view.GetChildWithName("ttQuit") is { } second)
+                {
+                    Assert.InRange(DrawnBox(second).w, expected - 1.5f, expected + 1.5f);
+                }
+            });
+        }
+
+        [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(720, 1280)]
+        public void ACapsuleDrawsAsLongAsALanguageButtonBesideIt(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View language = controller.GetView(MenuController.VIEW_LANGUAGE_SELECT);
+                controller.ShowView(MenuController.VIEW_LANGUAGE_SELECT);
+                controller.Update(0.016f);
+                ResolveDrawPositions(language);
+                float languageWidth = DrawnBox(All<Button>(language).Find(b => b.buttonID == MenuButtonId.ForLanguage(0))).w;
+
+                View view = ShowMainMenu(controller);
+
+                Assert.InRange(DrawnBox(view.GetChildWithName("ttOptions")).w, languageWidth - 1.5f, languageWidth + 1.5f);
             });
         }
 
         [Fact]
-        public void MainMenuCapsulesWidenTogetherForTheLongerLabel()
+        public void APairOfCapsulesNarrowsOnlyWhereTheRowWouldLeaveTheScreen()
         {
             WithTimeTravel(2560, 1440, _ =>
             {
-                string longLabel = new('W', 60);
-                float needed = TimeTravelPlates.FitWidth(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, longLabel, 1f);
-                float art = Image.GetQuadSize(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp).X;
+                float a = FlashXmlScale.AtlasToFlashPointScale;
+                float dx = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X;
 
-                Assert.True(needed > art);
-                Assert.Equal(needed, MenuController.TimeTravelCapsuleWidth(["Options", longLabel]), 1);
-                Assert.Equal(needed, MenuController.TimeTravelCapsuleWidth([longLabel, "Quit"]), 1);
+                Rectangle native = new(0f, 0f, 2560f, 1440f);
+                float nativeWidth = MenuController.TimeTravelCapsuleWidth(2, native, 1f);
+                Assert.Equal(dx / new TimeTravelScreen(native).AssetScale, nativeWidth, 1);
+
+                // The tallest supported portrait: two language-length capsules would overrun it.
+                Rectangle tall = new(0f, 0f, 1440f, 1440f / ViewportLayout.MinAspect);
+                float contentScale = ContentFit.ScaleForAspect(ViewportLayout.MinAspect);
+                float assetScale = new TimeTravelScreen(tall).AssetScale;
+                float tallWidth = MenuController.TimeTravelCapsuleWidth(2, tall, contentScale);
+                float row = (2f * tallWidth) + (MenuController.TimeTravelCapsuleGap * a);
+                float room = (tall.w / assetScale) - (2f * MenuController.TimeTravelCapsuleRowMargin * a);
+                Assert.True(tallWidth < dx * contentScale / assetScale);
+                Assert.Equal(room, row, 1);
             });
         }
 
         [Fact]
-        public void MainMenuCapsulesStopWideningWhereTheRowWouldLeaveTheScene()
-        {
-            WithTimeTravel(2560, 1440, _ =>
-            {
-                float pair = MenuController.TimeTravelCapsuleWidth(["Options", new string('W', 400)]);
-                float single = MenuController.TimeTravelCapsuleWidth([new string('W', 400)]);
-                float scene = TimeTravelScreen.SceneWidth * FlashXmlScale.AtlasToFlashPointScale;
-                float margin = MenuController.TimeTravelCapsuleRowMargin * FlashXmlScale.AtlasToFlashPointScale;
-                float gap = MenuController.TimeTravelCapsuleGap * FlashXmlScale.AtlasToFlashPointScale;
-
-                Assert.Equal(scene - (2f * margin), (2f * pair) + gap, 1);
-                Assert.Equal(scene - (2f * margin), single, 1);
-            });
-        }
-
-        [Fact]
-        public void TheMainMenuCapsulesShareOneWidthAndAWideOneKeepsItsLabelSize()
+        public void TheCapsulesFollowTheWindowIntoAnotherShape()
         {
             WithTimeTravel(2560, 1440, controller =>
             {
-                View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
-                BaseElement options = view.GetChildWithName("ttOptions");
-                BaseElement second = view.GetChildWithName("ttQuit");
-                if (second != null)
+                GameLifecycle.OnSurfaceChanged(720, 1280);
+                View view = ShowMainMenu(controller);
+                float expected = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X * ContentFit.Scale;
+
+                Assert.True(ContentFit.Scale > 1f);
+                Assert.InRange(DrawnBox(view.GetChildWithName("ttOptions")).w, expected - 1.5f, expected + 1.5f);
+            });
+        }
+
+        [Fact]
+        public void ResizingAPillRefitsItsLabel()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                string small = Resources.Img.MenuButtonSmallTimeTravel;
+                Button button = TimeTravelPlates.CreatePillButton(
+                    small, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, new string('W', 60), MenuButtonId.Options, new NoDelegate(), 1f, 1000f);
+                Assert.Equal(1f, Find<Text>(button.GetChild(0)).scaleX);
+
+                // Wider than the art, but too narrow for the label at full size.
+                TimeTravelPlates.ResizePillButton(button, small, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, 1f, 400f);
+
+                Assert.Equal(400f, button.width, 1);
+                for (int i = 0; i < 2; i++)
                 {
-                    Assert.Equal(options.width, second.width);
+                    Assert.Equal(400f, button.GetChild(i).width, 1);
+                    Text label = Find<Text>(button.GetChild(i));
+                    Assert.True(label.scaleX < 1f);
+                    Assert.True(label.width * label.scaleX <= 400f - TimeTravelPlates.SidePadding(small, TimeTravelArt.CapsuleUp, 1f) + 0.5f);
                 }
 
-                Button wide = TimeTravelPlates.CreatePillButton(
-                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown,
-                    new string('W', 60), MenuButtonId.Options, new NoDelegate(), 1f,
-                    TimeTravelPlates.FitWidth(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, new string('W', 60), 1f));
-                Assert.Equal(1f, Find<Text>(wide.GetChild(0)).scaleX);
-                Assert.Equal(wide.GetChild(0).width, wide.GetChild(1).width);
+                TimeTravelPlates.ResizePillButton(button, small, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, 1f, 1000f);
+
+                Assert.Equal(1f, Find<Text>(button.GetChild(0)).scaleX);
             });
+        }
+
+        private static View ShowMainMenu(MenuController controller)
+        {
+            View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
+            controller.ShowView(MenuController.VIEW_MAIN_MENU);
+            controller.Update(0.016f);
+            ResolveDrawPositions(view);
+            return view;
         }
 
         [Fact]
