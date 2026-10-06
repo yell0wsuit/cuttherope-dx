@@ -75,6 +75,9 @@ namespace CutTheRopeDX.GameMain
         private FlashXmlStageRoot clock;
         private Image hourHand;
         private Image minuteHand;
+        private Vector hourHandRest;
+        private Vector minuteHandRest;
+        private Vector hubCenter;
 
         /// <summary>Gets the timeline playing now, or -1 while waiting for the next idle.</summary>
         public int PlayingTimeline { get; private set; } = -1;
@@ -172,8 +175,11 @@ namespace CutTheRopeDX.GameMain
             FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, clock, -1, -1);
             hourHand = clockParts.Find(part => part.quadToDraw == HourHandQuad);
             minuteHand = clockParts.Find(part => part.quadToDraw == MinuteHandQuad);
-            TuckUnderHub(hourHand, HourHandArtAngle);
-            TuckUnderHub(minuteHand, MinuteHandArtAngle);
+            Image hub = clockParts.Find(part => part.quadToDraw == CenterPointQuad);
+            hourHandRest = RestPosition(definition, hourHand);
+            minuteHandRest = RestPosition(definition, minuteHand);
+            Vector hubRest = RestPosition(definition, hub);
+            hubCenter = hub == null ? hubRest : new Vector(hubRest.X + (hub.width / 2f), hubRest.Y + (hub.height / 2f));
             foreach (int id in new[] { IntroTimeline, IdleTimeline })
             {
                 if (clock.GetTimeline(id) is { } timeline)
@@ -184,21 +190,22 @@ namespace CutTheRopeDX.GameMain
             _ = AddChild(clock);
         }
 
-        /// <summary>
-        /// Pulls a hand in along its length so its base sits under the center point. The offset is
-        /// a translation, which the element applies before its rotation, so it turns with the hand.
-        /// </summary>
-        /// <param name="hand">The hand, or <see langword="null"/> when the animation lacks it.</param>
-        /// <param name="artAngle">Clock angle the hand's art is drawn at.</param>
-        private static void TuckUnderHub(Image hand, float artAngle)
+        /// <summary>Where a clock part rests between timelines: the idle timeline's position.</summary>
+        /// <param name="definition">The parsed clock animation.</param>
+        /// <param name="part">One of the clock's parts, or <see langword="null"/>.</param>
+        /// <returns>The part's resting top left, in animation stage units.</returns>
+        private Vector RestPosition(FlashXmlAnimationDefinition definition, Image part)
         {
-            if (hand == null)
+            if (part == null)
             {
-                return;
+                return default;
             }
-            float radians = artAngle * MathF.PI / 180f;
-            hand.translateX = -MathF.Sin(radians) * HubOverlap;
-            hand.translateY = MathF.Cos(radians) * HubOverlap;
+            int index = clockParts.IndexOf(part);
+            return index >= 0
+                && definition.Parts[index].Timelines.TryGetValue(IdleTimeline, out FlashXmlTimelineDefinition idle)
+                && idle.PositionKeyFrames.Count > 0
+                ? new Vector(idle.PositionKeyFrames[0].X, idle.PositionKeyFrames[0].Y)
+                : new Vector(part.x, part.y);
         }
 
         /// <summary>
@@ -210,14 +217,37 @@ namespace CutTheRopeDX.GameMain
             TimeSpan time = now().TimeOfDay;
             float minutes = (float)(time.TotalMinutes % 60.0);
             float hours = (float)(time.TotalHours % 12.0);
-            if (hourHand != null)
+            Turn(hourHand, hourHandRest, hours * 30f, HourHandArtAngle);
+            Turn(minuteHand, minuteHandRest, minutes * 6f, MinuteHandArtAngle);
+        }
+
+        /// <summary>
+        /// Points a hand at a clock angle, turning it about the hub's center. Each hand's art
+        /// pivots on its sprite corner, a little off the hub, so a translation, which the element
+        /// applies before its rotation, moves that pivot onto the hub's center for the current turn
+        /// and slides the hand in along its length by <see cref="HubOverlap"/>.
+        /// </summary>
+        /// <param name="hand">The hand, or <see langword="null"/> when the animation lacks it.</param>
+        /// <param name="rest">The hand's resting top left.</param>
+        /// <param name="clockAngle">Angle to point at, in degrees clockwise from twelve.</param>
+        /// <param name="artAngle">Clock angle the hand's art is drawn at.</param>
+        private void Turn(Image hand, Vector rest, float clockAngle, float artAngle)
+        {
+            if (hand == null)
             {
-                hourHand.rotation = (hours * 30f) - HourHandArtAngle;
+                return;
             }
-            if (minuteHand != null)
-            {
-                minuteHand.rotation = (minutes * 6f) - MinuteHandArtAngle;
-            }
+            float turn = clockAngle - artAngle;
+            hand.rotation = turn;
+
+            float toHubX = hubCenter.X - (rest.X + (hand.width >> 1) + hand.rotationCenterX);
+            float toHubY = hubCenter.Y - (rest.Y + (hand.height >> 1) + hand.rotationCenterY);
+            float turnRadians = turn * MathF.PI / 180f;
+            float cos = MathF.Cos(turnRadians);
+            float sin = MathF.Sin(turnRadians);
+            float artRadians = artAngle * MathF.PI / 180f;
+            hand.translateX = (toHubX * cos) + (toHubY * sin) - toHubX - (MathF.Sin(artRadians) * HubOverlap);
+            hand.translateY = (toHubY * cos) - (toHubX * sin) - toHubY + (MathF.Cos(artRadians) * HubOverlap);
         }
 
         /// <summary>Starts one of the clock's timelines.</summary>

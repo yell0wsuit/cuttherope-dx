@@ -133,31 +133,48 @@ namespace CutTheRopeDX.Tests
             });
         }
 
-        [Fact]
-        public void EachHandIsTuckedUnderTheHubAlongItsLength()
+        [Theory]
+        [InlineData(3, 45)]
+        [InlineData(6, 0)]
+        [InlineData(9, 15)]
+        [InlineData(12, 30)]
+        public void EachHandTurnsAboutTheHubWithItsBaseTuckedUnder(int hour, int minute)
         {
             MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
             {
-                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, 10, 10, 0));
-                logo.Update(1f / 60f);
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, hour, minute, 0));
+                for (int i = 0; i < 120 && logo.PlayingTimeline == TimeTravelLogo.IntroTimeline; i++)
+                {
+                    logo.Update(1f / 60f);
+                }
+                Image hub = ClockPart(logo, 0);
+                Vector center = new(hub.x + (hub.width / 2f), hub.y + (hub.height / 2f));
 
-                AssertTucked(HourHand(logo), TimeTravelLogo.HourHandArtAngle);
-                AssertTucked(MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+                AssertBaseOnHub(HourHand(logo), TimeTravelLogo.HourHandArtAngle, center);
+                AssertBaseOnHub(MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle, center);
             });
         }
 
-        /// <summary>Asserts a hand is shifted toward the hub along its art's axis by the hub overlap.</summary>
-        private static void AssertTucked(Image hand, float artAngle)
+        /// <summary>
+        /// Asserts the point of a hand's art <see cref="TimeTravelLogo.HubOverlap"/> out from the hub
+        /// along the hand is drawn on the hub's center, the way the element transforms it.
+        /// </summary>
+        private static void AssertBaseOnHub(Image hand, float artAngle, Vector center)
         {
-            float radians = artAngle * MathF.PI / 180f;
-            float alongX = MathF.Sin(radians);
-            float alongY = -MathF.Cos(radians);
-            float along = (hand.translateX * alongX) + (hand.translateY * alongY);
-            float across = (hand.translateX * -alongY) + (hand.translateY * alongX);
+            float art = artAngle * MathF.PI / 180f;
+            float pointX = center.X + (MathF.Sin(art) * TimeTravelLogo.HubOverlap);
+            float pointY = center.Y - (MathF.Cos(art) * TimeTravelLogo.HubOverlap);
+            float pivotX = hand.x + (hand.width >> 1) + hand.rotationCenterX;
+            float pivotY = hand.y + (hand.height >> 1) + hand.rotationCenterY;
+            float localX = pointX + hand.translateX - pivotX;
+            float localY = pointY + hand.translateY - pivotY;
+            float turn = hand.rotation * MathF.PI / 180f;
+            float drawnX = pivotX + (localX * MathF.Cos(turn)) - (localY * MathF.Sin(turn));
+            float drawnY = pivotY + (localX * MathF.Sin(turn)) + (localY * MathF.Cos(turn));
 
-            Assert.InRange(along, -TimeTravelLogo.HubOverlap - 0.001f, -TimeTravelLogo.HubOverlap + 0.001f);
-            Assert.InRange(across, -0.001f, 0.001f);
-            Assert.True(TimeTravelLogo.HubOverlap > 0f);
+            Assert.Equal(1f, hand.scaleX, 3);
+            Assert.InRange(drawnX - center.X, -0.01f, 0.01f);
+            Assert.InRange(drawnY - center.Y, -0.01f, 0.01f);
         }
 
         private static Image HourHand(TimeTravelLogo logo)
@@ -173,13 +190,13 @@ namespace CutTheRopeDX.Tests
         private static Image ClockPart(TimeTravelLogo logo, int quad)
         {
             Texture2D sheet = Application.GetTexture(Resources.Img.LogoClockTimeTravel);
-            return MenuTimeTravelTests.All<Image>(logo).Find(i => i.texture == sheet && i.quadToDraw == quad);
+            return MenuTimeTravelTests.All<Image>(logo).Find(i => i is FlashXmlImage && i.texture == sheet && i.quadToDraw == quad);
         }
 
         /// <summary>Asserts a hand drawn at <paramref name="artAngle"/> now points at a clock angle.</summary>
         private static void AssertPointsAt(float expected, Image hand, float artAngle)
         {
-            float off = ((artAngle + hand.rotation - expected) % 360f + 540f) % 360f - 180f;
+            float off = ((((artAngle + hand.rotation - expected) % 360f) + 540f) % 360f) - 180f;
             Assert.InRange(off, -0.01f, 0.01f);
         }
     }
