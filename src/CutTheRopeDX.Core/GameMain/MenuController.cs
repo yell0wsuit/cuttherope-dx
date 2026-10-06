@@ -331,58 +331,7 @@ namespace CutTheRopeDX.GameMain
                 logo.parentAnchor = 10;
                 logo.y = 55f;
 
-                // Candy on rope (positioned under the logo)
-                // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
-                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                Image candyUp = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
-                Image candyDown = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
-                candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
-                Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
-                candyButton.SetName("logoCandyButton");
-                candyButton.delegateButtonDelegate = this;
-                candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
-                candyButton.x = 143f;  // Offset right from center
-                candyButton.y = 490f;  // Offset down from top of logo
-                candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
-                _ = logo.AddChild(candyButton);
-
-                // Check if tutorial has been completed
-                bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_WAS_CHANGED");
-
-                if (showCandyTutorial)
-                {
-                    // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
-                    /*
-                    Image glowImage = Image.FromResource(Resources.Img.CandySelectionFx, 0);
-                    glowImage.x = -25f;
-                    glowImage.y = -25f;
-                    Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
-                    // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));  // Pause
-                    glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    _ = glowImage.AddTimeline(glowTimeline);
-                    glowImage.PlayTimeline(0);
-                    _ = candyButton.AddChild(glowImage);
-                    */
-
-                    // Pointing hand indicator
-                    Image handImage = Image.FromResource(Resources.Img.CandySelectionFx, 1);
-                    // Hand pointing animation - horizontal jabbing/pointing motion
-                    // Keep y constant for horizontal movement only
-                    Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
-                    handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    _ = handImage.AddTimeline(handTimeline);
-                    handImage.PlayTimeline(0);
-                    _ = candyButton.AddChild(handImage);
-                }
+                _ = logo.AddChild(CreateLogoCandyButton(this));
 
                 // Add event-specific decorations to logo -- layer top
                 switch (true)
@@ -436,6 +385,68 @@ namespace CutTheRopeDX.GameMain
             // alone - on a phone it left the top half of the screen black.
             LayOutBackdrop(backdrop, VisibleBounds);
             return baseElement;
+        }
+
+        /// <summary>
+        /// Creates the candy that hangs from the title logo, showing the selected skin, which opens
+        /// candy selection. Until the player first changes candy it carries a pointing hand.
+        /// </summary>
+        /// <param name="d">Delegate that receives the press.</param>
+        /// <returns>The button, anchored to its parent's top center.</returns>
+        internal static Button CreateLogoCandyButton(IButtonDelegation d)
+        {
+            // Candy on rope (positioned under the logo)
+            // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
+            int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            Image candyUp = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
+            Image candyDown = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
+            candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
+            Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
+            candyButton.SetName("logoCandyButton");
+            candyButton.delegateButtonDelegate = d;
+            candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
+            candyButton.x = 143f;  // Offset right from center
+            candyButton.y = 490f;  // Offset down from top of logo
+            candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
+
+            // Check if tutorial has been completed
+            bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_WAS_CHANGED");
+
+            if (showCandyTutorial)
+            {
+                // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
+                /*
+                Image glowImage = Image.FromResource(Resources.Img.CandySelectionFx, 0);
+                glowImage.x = -25f;
+                glowImage.y = -25f;
+                Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
+                // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));  // Pause
+                glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = glowImage.AddTimeline(glowTimeline);
+                glowImage.PlayTimeline(0);
+                _ = candyButton.AddChild(glowImage);
+                */
+
+                // Pointing hand indicator
+                Image handImage = Image.FromResource(Resources.Img.CandySelectionFx, 1);
+                // Hand pointing animation - horizontal jabbing/pointing motion
+                // Keep y constant for horizontal movement only
+                Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
+                handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = handImage.AddTimeline(handTimeline);
+                handImage.PlayTimeline(0);
+                _ = candyButton.AddChild(handImage);
+            }
+            return candyButton;
         }
 
         /// <summary>
