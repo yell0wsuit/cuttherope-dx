@@ -94,6 +94,18 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public static readonly Vector RoundAudioIconMarker = new(270f * CanvasToAsset, 151f * CanvasToAsset);
 
+        /// <summary>
+        /// The middle of the round audio plate's disc face, in the small-button canvas, measured
+        /// from the art. The iOS marker rule lands the speaker's weight within a pixel of it.
+        /// </summary>
+        public static readonly Vector RoundAudioFaceCenter = new(207f, 112.5f);
+
+        /// <summary>
+        /// The music note's weight center inside its quad: its alpha-weighted middle, measured from
+        /// the art, which sits low and right of the quad's middle for the note heads and flag.
+        /// </summary>
+        public static readonly Vector MusicIconWeightCenter = new(62.1f, 62.3f);
+
         /// <summary>Settings: the wide credits window border (iOS q6).</summary>
         public const int WindowBorderWide = 6;
 
