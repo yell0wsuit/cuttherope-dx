@@ -215,6 +215,70 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        private static readonly int[] SettingsViews =
+        [
+            MenuController.VIEW_OPTIONS, MenuController.VIEW_LANGUAGE_SELECT, MenuController.VIEW_RESET, MenuController.VIEW_ABOUT,
+        ];
+
+        [Fact]
+        public void EverySettingsViewHasTheFanCorner()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                foreach (int id in SettingsViews)
+                {
+                    View view = controller.GetView(id);
+                    Assert.NotNull(view.GetChildWithName("ttFanPlate"));
+                    Assert.NotNull(view.GetChildWithName("ttFan"));
+                    Assert.NotNull(view.GetChildWithName("ttFanHub"));
+                }
+                Assert.Null(controller.GetView(MenuController.VIEW_MAIN_MENU).GetChildWithName("ttFan"));
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheFanCornerHugsTheVisibleTopLeft(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                float assetScale = new TimeTravelScreen(visible).AssetScale;
+                foreach (int id in SettingsViews)
+                {
+                    View view = controller.GetView(id);
+                    controller.ShowView(id);
+                    controller.Update(0.016f);
+                    ResolveDrawPositions(view);
+                    Rectangle plate = DrawnBox(view.GetChildWithName("ttFanPlate"));
+
+                    // The plate keeps its atlas offset (trimmed by the packer) from a scene origin
+                    // pinned to the visible corner.
+                    Vector offset = Image.GetQuadOffset(Resources.Img.MenuMainTimeTravel, TimeTravelArt.FanPlate);
+                    Assert.InRange(plate.x - (visible.x + (offset.X * assetScale)), -0.5f, 0.5f);
+                    Assert.InRange(plate.y - (visible.y + ((offset.Y - TimeTravelArt.MenuMainOriginY) * assetScale)), -0.5f, 0.5f);
+                }
+            });
+        }
+
+        [Fact]
+        public void TheFanSpinsUnderAStillHub()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_OPTIONS);
+                controller.ShowView(MenuController.VIEW_OPTIONS);
+                BaseElement fan = view.GetChildWithName("ttFan");
+                BaseElement hub = view.GetChildWithName("ttFanHub");
+                fan.Update(0.25f);
+
+                Assert.InRange(fan.rotation, 89f, 91f);
+                Assert.Equal(0f, hub.rotation);
+                Assert.False(fan.passTransformationsToChilds);
+            });
+        }
+
         [Fact]
         public void MainMenuPlacementSurvivesAResize()
         {

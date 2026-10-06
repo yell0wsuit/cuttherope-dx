@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -38,6 +39,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>The main menu's Time Travel scene.</summary>
         private TimeTravelSceneGroup timeTravelMain;
+
+        /// <summary>Seconds per turn of the settings views' corner fan.</summary>
+        private const float TimeTravelFanPeriod = 1f;
+
+        /// <summary>Smallest scale of the fan hub's pulse (iOS <c>0x3F733333</c>).</summary>
+        private const float TimeTravelFanHubPulse = 0.95f;
+
+        /// <summary>The corner fan of each settings view, by view, so a layout pass can re-pin it.</summary>
+        private readonly Dictionary<int, TimeTravelSceneGroup> timeTravelFans = [];
 
         /// <summary>Builds the Time Travel main menu.</summary>
         private void CreateTimeTravelMainMenu()
@@ -243,11 +253,74 @@ namespace CutTheRopeDX.GameMain
             return button;
         }
 
+        /// <summary>Whether a view is one of the settings views, which carry the corner fan.</summary>
+        /// <param name="viewId">View to check.</param>
+        /// <returns><see langword="true"/> for options, language, credits and reset.</returns>
+        private static bool IsTimeTravelSettingsView(int viewId)
+        {
+            return viewId is VIEW_OPTIONS or VIEW_LANGUAGE_SELECT or VIEW_ABOUT or VIEW_RESET;
+        }
+
+        /// <summary>
+        /// Adds the spinning fan the iOS settings views show in their top-left corner
+        /// (<c>Factory::createFanForView</c>): a plate and a fan pinned to the corner, the fan
+        /// turning under a hub highlight that pulses but does not turn with it.
+        /// </summary>
+        /// <param name="background">Backdrop element the corner is drawn over.</param>
+        /// <param name="viewId">View the corner belongs to.</param>
+        private void AttachTimeTravelFanCorner(BaseElement background, int viewId)
+        {
+            string sheet = Resources.Img.MenuMainTimeTravel;
+            TimeTravelSceneGroup corner = new();
+
+            Image plate = Image.FromResource(sheet, TimeTravelArt.FanPlate);
+            plate.SetName("ttFanPlate");
+            PlaceInScene(plate, sheet, TimeTravelArt.FanPlate, TimeTravelArt.MenuMainOriginY);
+            _ = corner.AddChild(plate);
+            corner.Attach(plate, TimeTravelAttach.Left | TimeTravelAttach.Top);
+
+            Image fan = Image.FromResource(sheet, TimeTravelArt.Fan);
+            fan.SetName("ttFan");
+            PlaceInScene(fan, sheet, TimeTravelArt.Fan, TimeTravelArt.MenuMainOriginY);
+            fan.passTransformationsToChilds = false;
+            Timeline spin = new Timeline().InitWithMaxKeyFramesOnTrack(2);
+            spin.AddKeyFrame(KeyFrame.MakeRotation(0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            spin.AddKeyFrame(KeyFrame.MakeRotation(360, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, TimeTravelFanPeriod));
+            spin.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            _ = fan.AddTimeline(spin);
+            fan.PlayTimeline(0);
+            _ = corner.AddChild(fan);
+            corner.Attach(fan, TimeTravelAttach.Left | TimeTravelAttach.Top);
+
+            Image hub = Image.FromResource(sheet, TimeTravelArt.FanHub);
+            hub.SetName("ttFanHub");
+            hub.anchor = hub.parentAnchor = 9;
+            Image.SetElementPositionWithRelativeQuadOffset(hub, sheet, TimeTravelArt.Fan, TimeTravelArt.FanHub);
+            hub.rotationCenterY = hub.height / 2f;
+            Timeline pulse = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+            pulse.AddKeyFrame(KeyFrame.MakeScale(TimeTravelFanHubPulse, TimeTravelFanHubPulse, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+            pulse.AddKeyFrame(KeyFrame.MakeScale(1f, 1f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, TimeTravelFanPeriod / 2f));
+            pulse.AddKeyFrame(KeyFrame.MakeScale(TimeTravelFanHubPulse, TimeTravelFanHubPulse, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, TimeTravelFanPeriod / 2f));
+            pulse.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            _ = hub.AddTimeline(pulse);
+            hub.PlayTimeline(0);
+            _ = fan.AddChild(hub);
+
+            _ = background.AddChild(corner);
+            timeTravelFans[viewId] = corner;
+            corner.Layout(new TimeTravelScreen(VisibleBounds));
+        }
+
         /// <summary>Re-places every Time Travel scene for the current viewport.</summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
         private void LayOutTimeTravelScenes(Rectangle visible)
         {
-            timeTravelMain?.Layout(new TimeTravelScreen(visible));
+            TimeTravelScreen screen = new(visible);
+            timeTravelMain?.Layout(screen);
+            foreach (TimeTravelSceneGroup corner in timeTravelFans.Values)
+            {
+                corner.Layout(screen);
+            }
         }
     }
 }

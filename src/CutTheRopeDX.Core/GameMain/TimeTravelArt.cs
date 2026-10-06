@@ -33,6 +33,15 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Main menu: the top band (iOS q25).</summary>
         public const int MainTopBand = 18;
 
+        /// <summary>Main menu sheet: the round plate behind the settings views' corner fan (iOS q0).</summary>
+        public const int FanPlate = 0;
+
+        /// <summary>Main menu sheet: the corner fan (iOS q1).</summary>
+        public const int Fan = 1;
+
+        /// <summary>Main menu sheet: the highlight over the fan's hub (iOS q2).</summary>
+        public const int FanHub = 2;
+
         /// <summary>Glow sheet: the rotating light behind Play (iOS q0).</summary>
         public const int Glow = 0;
 
