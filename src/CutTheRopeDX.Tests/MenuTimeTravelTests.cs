@@ -421,6 +421,31 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [InlineData(2, false)]
+        [InlineData(2, true)]
+        [InlineData(3, false)]
+        [InlineData(3, true)]
+        public void TheSettingsAudioIconsCenterTheirWeightOnThePill(int q, bool pressed)
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                // Centered as the mobile builds draw them, not where the iOS 1.5 canvas leaves the
+                // speaker; like the iOS pressed capsule, the icon holds still as the plate drops.
+                string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+                BaseElement element = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(q, false, pressed);
+                Image plate = Find<Image>(element);
+                int iconQuad = q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon;
+                Image icon = All<Image>(plate).Find(i => i.quadToDraw == iconQuad);
+                Vector plateOffset = Image.GetQuadOffset(sheet, plate.quadToDraw);
+                Vector face = TimeTravelArt.PillFaceCenter;
+                Vector weight = q == 3 ? TimeTravelArt.MusicIconWeightCenter : TimeTravelArt.SoundIconWeightCenter;
+
+                Assert.Equal(face.X - plateOffset.X, icon.x + weight.X, 2);
+                Assert.Equal(face.Y - plateOffset.Y, icon.y + weight.Y, 2);
+            });
+        }
+
         [Fact]
         public void TheAudioIconsAndCrossRideOnThePill()
         {

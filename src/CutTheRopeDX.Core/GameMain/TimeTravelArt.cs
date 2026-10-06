@@ -101,6 +101,18 @@ namespace CutTheRopeDX.GameMain
         public static readonly Vector RoundAudioFaceCenter = new(207f, 112.5f);
 
         /// <summary>
+        /// The middle of the capsule's face at rest, in the small-button canvas, measured from the
+        /// art: where the settings audio toggles center their icons' weight.
+        /// </summary>
+        public static readonly Vector PillFaceCenter = new(209f, 114f);
+
+        /// <summary>
+        /// The speaker's weight center inside its quad: its alpha-weighted middle, measured from
+        /// the art, left of the quad's middle where the waves leave room.
+        /// </summary>
+        public static readonly Vector SoundIconWeightCenter = new(67.3f, 57.3f);
+
+        /// <summary>
         /// The music note's weight center inside its quad: its alpha-weighted middle, measured from
         /// the art, which sits low and right of the quad's middle for the note heads and flag.
         /// </summary>
