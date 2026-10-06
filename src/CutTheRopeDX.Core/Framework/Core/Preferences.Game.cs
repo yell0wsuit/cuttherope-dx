@@ -61,6 +61,7 @@ namespace CutTheRopeDX.Framework.Core
             }
             SetIntForKey(2, "PREFS_VERSION", true);
             EnsureSlotEntryPacksUnlocked();
+            EnsureVoicePreference();
             SetRpcPreferenceInJson(); // temporary hack, remove after setting UI is implemented
             SetUpdateCheckPreferenceInJson(); // temporary hack, remove after setting UI is implemented
             return isFirstLaunch;
@@ -73,6 +74,18 @@ namespace CutTheRopeDX.Framework.Core
         {
             SetBooleanForKey(true, "SOUND_ON", true);
             SetBooleanForKey(true, "MUSIC_ON", true);
+            SetBooleanForKey(true, "PREFS_EXP_VOICE_ON", true);
+        }
+
+        /// <summary>
+        /// Turns the voice on for saves made before it existed; a missing key would read as off.
+        /// </summary>
+        private static void EnsureVoicePreference()
+        {
+            if (!ContainsKey("PREFS_EXP_VOICE_ON"))
+            {
+                SetBooleanForKey(true, "PREFS_EXP_VOICE_ON", true);
+            }
         }
 
         /// <summary>

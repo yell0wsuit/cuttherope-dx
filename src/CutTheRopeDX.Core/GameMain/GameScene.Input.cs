@@ -680,7 +680,8 @@ namespace CutTheRopeDX.GameMain
                 if (EasterEggMatchesTarget
                     && TargetObject.PointInDrawQuad(camera.ScreenToWorldX(tx), camera.ScreenToWorldY(ty)))
                 {
-                    _ = easterEgg.TryTrigger();
+                    // The vector artwork is the classic menus' egg; Experiments answers with an idle.
+                    _ = MenuTheme.IsExperiments ? TryPlayExperimentsTapIdle() : easterEgg.TryTrigger();
                 }
             }
             return true;

@@ -128,5 +128,44 @@ namespace CutTheRopeDX.Tests
             Assert.True(result.IsCustomLevel);
             Assert.EndsWith("a.xml", result.LevelPath);
         }
+
+        [Theory]
+        [InlineData("experiments", true)]
+        [InlineData("Experiments", true)]
+        [InlineData("classic", false)]
+        [InlineData("CLASSIC", false)]
+        public void AMenuStyleNameParsesInAnyCase(string value, bool experiments)
+        {
+            Assert.True(MenuTheme.TryParse(value, out MenuStyle style));
+            Assert.Equal(experiments, style == MenuStyle.Experiments);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("experimental")]
+        public void AnUnknownMenuStyleNameFallsBackToClassic(string value)
+        {
+            Assert.False(MenuTheme.TryParse(value, out MenuStyle style));
+            Assert.Equal(MenuStyle.Classic, style);
+        }
+
+        [Fact]
+        public void TheMenuSwitchPicksTheExperimentsMenus()
+        {
+            CommandLineResult result = CommandLine.Parse(["--menu", "experiments"]);
+
+            Assert.Null(result.ErrorMessage);
+            Assert.Equal(MenuStyle.Experiments, result.Menu);
+        }
+
+        [Fact]
+        public void TheMenuSwitchRejectsAnUnknownStyle()
+        {
+            CommandLineResult result = CommandLine.Parse(["--menu", "experimental"]);
+
+            Assert.NotNull(result.ErrorMessage);
+            Assert.Equal(MenuStyle.Classic, result.Menu);
+        }
     }
 }

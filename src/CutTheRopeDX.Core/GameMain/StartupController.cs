@@ -134,6 +134,10 @@ namespace CutTheRopeDX.GameMain
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(PackCommon);
             resourceMgr.LoadPack(PackCommonImages);
+            if (MenuTheme.IsExperiments)
+            {
+                resourceMgr.LoadPack(PackExperimentsCommon);
+            }
             resourceMgr.LoadPack(RootController.PackMenu);
             resourceMgr.LoadPack(PackLocalizationMenu);
             resourceMgr.StartLoading();
@@ -345,6 +349,20 @@ namespace CutTheRopeDX.GameMain
             Resources.Img.MenuButtons,
             Resources.Img.MenuLevelUi,
             Resources.Img.MenuOptions,
+            null
+        ];
+
+        /// <summary>
+        /// The Experiments images kept for the whole session, terminated by <see langword="null"/>:
+        /// the loading screen draws while every other pack is being swapped out, and the audio
+        /// toggles appear in the pause menu as well as the options.
+        /// </summary>
+        private static readonly string[] PackExperimentsCommon =
+        [
+            Resources.Img.MenuExpAudio,
+            Resources.Img.MenuExpLoading,
+            Resources.Img.MenuExpLoadingScroll,
+            Resources.BackgroundImg.MenuExpLoadingBgr,
             null
         ];
 

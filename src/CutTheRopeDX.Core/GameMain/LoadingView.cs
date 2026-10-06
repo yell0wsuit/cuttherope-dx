@@ -8,7 +8,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Loading screen view that draws the pack cover background and progress animation.
     /// </summary>
-    internal sealed class LoadingView : View
+    internal sealed partial class LoadingView : View
     {
         /// <inheritdoc />
         public override void Show()
@@ -17,6 +17,7 @@ namespace CutTheRopeDX.GameMain
             initialized = false;
             currentPercent = 0f;
             animationComplete = false;
+            ResetExperiments();
             base.Show();
         }
 
@@ -31,12 +32,18 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the progress animation is complete; otherwise, <see langword="false"/>.</returns>
         public bool IsAnimationComplete()
         {
-            return animationComplete || !Renderer.IsAvailable;
+            return (MenuTheme.IsExperiments ? IsExperimentsComplete() : animationComplete) || !Renderer.IsAvailable;
         }
 
         /// <inheritdoc />
         public override void Draw()
         {
+            if (MenuTheme.IsExperiments)
+            {
+                DrawExperiments();
+                return;
+            }
+
             PlatformServices.Cursor?.Enable(true);
             Renderer.Enable(Renderer.GL_TEXTURE_2D);
             Renderer.Enable(Renderer.GL_BLEND);

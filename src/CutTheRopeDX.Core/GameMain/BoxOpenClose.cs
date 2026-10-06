@@ -13,7 +13,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Manages the level transition, result panel, score countdown, and confetti effects.
     /// </summary>
-    internal sealed class BoxOpenClose : BaseElement, ITimelineDelegate
+    internal sealed partial class BoxOpenClose : BaseElement, ITimelineDelegate
     {
         /// <inheritdoc />
         public override void Update(float delta)
@@ -392,7 +392,9 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured confetti particle element.</returns>
         public static BaseElement CreateConfettiParticleNear()
         {
-            Confetti confetti = Image.InitializeFromResource(new Confetti(), Resources.Img.ConfettiParticles);
+            Confetti confetti = Image.InitializeFromResource(
+                new Confetti(),
+                MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp));
 
             // Spawned across the design box and animated in design coordinates, so it travels with
             // the panel it bursts over instead of falling where the design size alone would put it.
@@ -539,6 +541,12 @@ namespace CutTheRopeDX.GameMain
         public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();
+            if (MenuTheme.IsExperiments)
+            {
+                ShowExperimentsBlind(open);
+                return;
+            }
+
             RootController root = Application.SharedRootController();
             string boxCover = PackConfig.GetBoxCoverOrDefault(root.Pack);
             Image image = Image.FromResource(Resources.Img.MenuResults, 16);

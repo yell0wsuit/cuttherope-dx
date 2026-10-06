@@ -1,0 +1,79 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": {
+                "x": 0,
+                "y": 1,
+                "w": 672,
+                "h": 731
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 130,
+                "y": 164,
+                "w": 672,
+                "h": 731
+            },
+            "sourceSize": {
+                "w": 995,
+                "h": 1090
+            }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": {
+                "x": 281,
+                "y": 732,
+                "w": 1,
+                "h": 1
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 456,
+                "y": 802,
+                "w": 1,
+                "h": 1
+            },
+            "sourceSize": {
+                "w": 995,
+                "h": 1090
+            }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": {
+                "x": 0,
+                "y": 734,
+                "w": 281,
+                "h": 31
+            },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": {
+                "x": 455,
+                "y": 132,
+                "w": 281,
+                "h": 31
+            },
+            "sourceSize": {
+                "w": 995,
+                "h": 1090
+            }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "professor_hand.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 672,
+            "h": 766
+        },
+        "scale": "1",
+        "smartupdate": "$TexturePacker:SmartUpdate:b453e72816d6451c5cce3937342de374:c52e78fa748c846c7f3cb42d41307dbe:c06a71082b6b681b676fac073163fb86$"
+    }
+}

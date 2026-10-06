@@ -39,6 +39,7 @@ namespace CutTheRopeDX.Framework.Core
             "PREFS_CLICK_TO_CUT",
             "SOUND_ON",
             "MUSIC_ON",
+            "PREFS_EXP_VOICE_ON",
             "IAP_SHAREWARE",
             "IAP_UNLOCK",
             "IAP_BANNERS"

@@ -55,7 +55,7 @@ namespace CutTheRopeDX.Framework.Core
             StopGameplayPrefetch();
 
             long startedTicks = Stopwatch.GetTimestamp();
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(map, Pack);
             TrackSessionResources(levelResources);
 
             ResourceMgr resourceMgr = Application.SharedResourceMgr();
@@ -165,7 +165,7 @@ namespace CutTheRopeDX.Framework.Core
         {
             DeleteChild(3);
 
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
             resourceMgr.FreePack([.. sessionResources]);
             sessionResources.Clear();
             TrackSessionResources(levelResources);
@@ -190,7 +190,7 @@ namespace CutTheRopeDX.Framework.Core
             resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
             ResetGameplayResourceSession();
             EnsureCurrentMapLoaded();
-            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+            string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
             TrackSessionResources(levelResources);
             resourceMgr.InitLoading();
             resourceMgr.LoadPack(PackGame);
@@ -274,7 +274,7 @@ namespace CutTheRopeDX.Framework.Core
                         resourceMgr.resourcesDelegate = (LoadingController)GetChild(2);
                         ResetGameplayResourceSession();
                         EnsureCurrentMapLoaded();
-                        string[] levelResources = LevelResourceScanner.GetRequiredResources(Map);
+                        string[] levelResources = LevelResourceScanner.GetRequiredResources(Map, Pack);
                         TrackSessionResources(levelResources);
                         StartBoxResourceScanIfNeeded();
                         resourceMgr.InitLoading();
@@ -779,7 +779,10 @@ namespace CutTheRopeDX.Framework.Core
         /// slower texture paths like the browser's. It also never gets freed, so it stays in
         /// memory through gameplay.
         /// </remarks>
-        internal static readonly string[] PackMenu =
+        internal static string[] PackMenu => MenuTheme.IsExperiments ? PackMenuExperiments : PackMenuClassic;
+
+        /// <summary>The classic menu's image resources, terminated by <see langword="null"/>.</summary>
+        private static readonly string[] PackMenuClassic =
         [
             Resources.Img.MenuBgr,
             Resources.Img.MenuPopup,
@@ -799,6 +802,22 @@ namespace CutTheRopeDX.Framework.Core
             null
         ];
 
+        /// <summary>
+        /// The Experiments menu's image resources, terminated by <see langword="null"/>. It draws its
+        /// own backdrops, pack boxes and audio toggles over the classic menu's buttons, logo and
+        /// popups, so it loads both.
+        /// </summary>
+        private static readonly string[] PackMenuExperiments =
+        [
+            .. PackMenuClassic[..^1],
+            Resources.BackgroundImg.MenuExpMainBgr,
+            Resources.BackgroundImg.MenuExpDefaultBgr,
+            Resources.BackgroundImg.MenuExpCampaignBgr,
+            Resources.Img.MenuExpPackSelection,
+            Resources.Img.MenuExpLock,
+            null
+        ];
+
         /// <summary>Resource pack loaded for gameplay (HUD, candy, spider, etc.).</summary>
         private static readonly string[] PackGame = [
             Resources.Img.MenuButtons,
@@ -806,10 +825,11 @@ namespace CutTheRopeDX.Framework.Core
             CandySkinHelper.GetCandyResource(Preferences.GetIntForKey("PREFS_SELECTED_CANDY")),
             Resources.Img.ObjCandyFx,
             Resources.Img.ObjSpider,
-            Resources.Img.ConfettiParticles,
-            Resources.Img.MenuPause,
+            MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp),
+            MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop),
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
+            .. MenuTheme.IsExperiments ? (string[])[Resources.Img.ProfessorHand] : [],
             null
         ];
 

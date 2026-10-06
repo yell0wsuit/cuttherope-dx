@@ -644,8 +644,10 @@ namespace CutTheRopeDX.Tests.Interactions
         }
 
         /// <summary>Boots the scenario and returns the live scene.</summary>
+        /// <param name="level">Zero-based level index to load it as. A pack's first level is the
+        /// one the Experiments professor's hand opens, holding play until it has gone.</param>
         /// <returns>The loaded scene, ready to be stepped.</returns>
-        public GameScene Build()
+        public GameScene Build(int level = 0)
         {
             _ = HeadlessGame.Boot();
 
@@ -668,7 +670,7 @@ namespace CutTheRopeDX.Tests.Interactions
                 settings,
                 new XElement("layer", new XAttribute("name", "Objects"), objects));
 
-            GameScene scene = HeadlessGame.LoadScenarioMap(map);
+            GameScene scene = HeadlessGame.LoadScenarioMap(map, level: level);
 
             // Win/loss both call straight into the delegate; a scenario that ends must not die on a
             // null one. Tests read the counts back through SceneProbe.Outcomes.

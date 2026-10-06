@@ -15,16 +15,33 @@ using Microsoft.Extensions.Logging;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
+    /// Which game's support platforms Om Nom sits on.
+    /// </summary>
+    internal enum SittingPlatformTheme
+    {
+        /// <summary>The Cut the Rope platforms, picked by <c>sittingPlatform</c>.</summary>
+        Original,
+
+        /// <summary>The Cut the Rope: Experiments platforms, picked by <c>expSittingPlatform</c>.</summary>
+        Experiments,
+    }
+
+    /// <summary>
     /// Immutable pack description using string resource names.
     /// </summary>
     /// <param name="unlockStars">Number of stars required to unlock this pack.</param>
     /// <param name="levelCount">Total number of levels in the pack.</param>
     /// <param name="saveSlot">Save slot index used to route this pack's progress file.</param>
+    /// <param name="showBoxNumber">Whether the pack's title in the pack picker starts with its number, set for its whole pack file.</param>
     /// <param name="packSpritesheet">Resource name for the spritesheet containing this pack's box sprite.</param>
     /// <param name="packQuadIndex">Quad index within <paramref name="packSpritesheet"/> for this pack's box sprite.</param>
+    /// <param name="expPackPicture">Monster drawn on this pack's Experiments box, or -1 to follow the pack's position.</param>
+    /// <param name="useBambooGate">Whether this pack's Experiments box is caged in bamboo rather than padlocked.</param>
     /// <param name="boxBackgrounds">Resource names for the pack background assets.</param>
     /// <param name="boxBackgroundP2Y">Y position for the secondary background in long levels, or 0 when unused.</param>
     /// <param name="sittingPlatform">Quad index used for the support platform.</param>
+    /// <param name="expSittingPlatform">Quad index of this pack's Experiments support platform, or -1 to follow the pack's position.</param>
+    /// <param name="sittingPlatformTheme">Platform set this pack sits on, or <see langword="null"/> to follow the menu style.</param>
     /// <param name="boxCovers">Resource names for the pack cover assets.</param>
     /// <param name="boxHoleBgColor">Background color used behind the box hole in the pack selection menu.</param>
     /// <param name="musicPack">Resource names for pack-specific music.</param>
@@ -38,11 +55,16 @@ namespace CutTheRopeDX.GameMain
         int unlockStars,
         int levelCount,
         int saveSlot,
+        bool showBoxNumber,
         string packSpritesheet,
         int packQuadIndex,
+        int expPackPicture,
+        bool useBambooGate,
         string[] boxBackgrounds,
         int boxBackgroundP2Y,
         int sittingPlatform,
+        int expSittingPlatform,
+        SittingPlatformTheme? sittingPlatformTheme,
         string[] boxCovers,
         RGBAColor boxHoleBgColor,
         string[] musicPack,
@@ -63,6 +85,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Quad index within <see cref="PackSpritesheet"/> for this pack's box sprite.</summary>
         public int PackQuadIndex { get; } = packQuadIndex;
 
+        /// <summary>Monster drawn on this pack's Experiments box, or -1 to follow the pack's position.</summary>
+        public int ExpPackPicture { get; } = expPackPicture;
+
+        /// <summary>Whether this pack's Experiments box is caged in bamboo rather than padlocked.</summary>
+        public bool UseBambooGate { get; } = useBambooGate;
+
         /// <summary>The localized box pack name.</summary>
         public string PackName { get; } = packName;
 
@@ -74,6 +102,12 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Quad index in <see cref="Resources.Img.CharSupports"/> used for the support platform.</summary>
         public int SittingPlatform { get; } = sittingPlatform;
+
+        /// <summary>Quad index in <see cref="Resources.Img.CharSupportExperiments"/> for this pack's support platform, or -1 to follow the pack's position.</summary>
+        public int ExpSittingPlatform { get; } = expSittingPlatform;
+
+        /// <summary>Platform set this pack sits on, or <see langword="null"/> to follow the menu style.</summary>
+        public SittingPlatformTheme? SittingPlatformTheme { get; } = sittingPlatformTheme;
 
         /// <summary>String resource names for cover assets.</summary>
         public string[] BoxCovers { get; } = boxCovers;
@@ -92,6 +126,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Save slot index used to route this pack's progress file.</summary>
         public int SaveSlot { get; } = saveSlot;
+
+        /// <summary>Whether the pack's title in the pack picker starts with its number.</summary>
+        public bool ShowBoxNumber { get; } = showBoxNumber;
 
         /// <summary>Whether this pack uses earth background animations.</summary>
         public bool EarthBg { get; } = earthBg;
@@ -116,7 +153,8 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="ConfigFileName">Pack configuration file name.</param>
         /// <param name="SaveSlot">Save slot index used by packs loaded from the configuration file.</param>
-        private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot);
+        /// <param name="ShowBoxNumber">Whether the pack picker numbers the titles of this file's packs.</param>
+        private readonly record struct PackListEntry(string ConfigFileName, int SaveSlot, bool ShowBoxNumber = true);
 
         /// <summary>
         /// The configuration file for original <em>Cut the Rope</em> game.
@@ -152,6 +190,7 @@ namespace CutTheRopeDX.GameMain
             packs = LoadPacksFromEntries(packListEntries);
             PackCount = packs.Count(p => p.LevelCount > 0);
             MaxLevelsPerPack = packs.Count > 0 ? packs.Max(p => p.LevelCount) : 0;
+            HasBambooGates = packs.Any(p => p.UseBambooGate);
         }
 
         /// <summary>
@@ -168,6 +207,12 @@ namespace CutTheRopeDX.GameMain
         /// Gets the number of packs that contain playable levels.
         /// </summary>
         public static int PackCount { get; }
+
+        /// <summary>
+        /// Gets whether any loaded pack asks for a bamboo gate. When none does, the Experiments
+        /// menu cages its last pack, as iOS does.
+        /// </summary>
+        public static bool HasBambooGates { get; }
 
         /// <summary>
         /// Gets the level count for a pack.
@@ -241,6 +286,26 @@ namespace CutTheRopeDX.GameMain
         public static int GetSittingPlatform(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].SittingPlatform : 0;
+        }
+
+        /// <summary>
+        /// Gets the Experiments support platform quad index for a pack.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The quad index, or -1 when unset or <paramref name="pack"/> is out of range.</returns>
+        public static int GetExpSittingPlatform(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].ExpSittingPlatform : -1;
+        }
+
+        /// <summary>
+        /// Gets the platform set a pack asks to sit on.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The platform set, or <see langword="null"/> when unset or <paramref name="pack"/> is out of range.</returns>
+        public static SittingPlatformTheme? GetSittingPlatformTheme(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].SittingPlatformTheme : null;
         }
 
         /// <summary>
@@ -376,6 +441,44 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Gets the monster drawn on a pack's Experiments box.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The monster index, or -1 when unset or <paramref name="pack"/> is out of range.</returns>
+        public static int GetExpPackPicture(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].ExpPackPicture : -1;
+        }
+
+        /// <summary>
+        /// Gets whether a pack's Experiments box is caged in bamboo rather than padlocked.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <returns>The pack's flag, or <see langword="false"/> when <paramref name="pack"/> is out of range.</returns>
+        public static bool GetUseBambooGate(int pack)
+        {
+            return pack >= 0 && pack < packs.Count && packs[pack].UseBambooGate;
+        }
+
+        /// <summary>
+        /// Gets a pack's title for the pack picker: its localized name, numbered unless the caller
+        /// or the pack's entry turns the number off.
+        /// </summary>
+        /// <param name="pack">Target pack index.</param>
+        /// <param name="withNumber">Whether the caller's picker numbers its titles.</param>
+        /// <returns>The title, or <see langword="null"/> when <paramref name="pack"/> is out of range.</returns>
+        public static string GetPackTitle(int pack, bool withNumber = true)
+        {
+            if (pack < 0 || pack >= packs.Count)
+            {
+                return null;
+            }
+
+            string name = Application.GetString(packs[pack].PackName);
+            return withNumber && packs[pack].ShowBoxNumber ? $"{pack + 1}. {name}" : name;
+        }
+
+        /// <summary>
         /// Returns the index of the first non-playable pack entry (coming soon placeholder), or -1 if none.
         /// </summary>
         /// <returns>The coming-soon pack index, or -1 when no placeholder pack exists.</returns>
@@ -465,7 +568,8 @@ namespace CutTheRopeDX.GameMain
                 );
             }
 
-            entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot));
+            bool showBoxNumber = ParseBoolProperty(entryElement, "showBoxNumber", true, PackListConfigFile);
+            entries.Add(new PackListEntry(NormalizePacksConfigFileName(configName), saveSlot, showBoxNumber));
 
             IntroVideo ??= ParseStringProperty(entryElement, "introVideo");
             OutroVideo ??= ParseStringProperty(entryElement, "outroVideo");
@@ -503,6 +607,8 @@ namespace CutTheRopeDX.GameMain
                     string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
                     string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
                     int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, packListEntry.ConfigFileName);
+                    int expPackPicture = ParseIntProperty(packElement, "expPackPicture", -1, packListEntry.ConfigFileName);
+                    bool useBambooGate = ParseBoolProperty(packElement, "useBambooGate", false, packListEntry.ConfigFileName);
 
                     string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
                     if (isPlayable)
@@ -514,6 +620,9 @@ namespace CutTheRopeDX.GameMain
                     int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
 
                     int sittingPlatform = ParseIntProperty(packElement, "sittingPlatform", 0, packListEntry.ConfigFileName);
+                    int expSittingPlatform = ParseIntProperty(packElement, "expSittingPlatform", -1, packListEntry.ConfigFileName);
+                    SittingPlatformTheme? sittingPlatformTheme = ParseSittingPlatformTheme(
+                        ParseStringProperty(packElement, "sittingPlatformTheme"), packListEntry.ConfigFileName);
 
                     string[] boxCovers = ParseResourceNames(packElement, "boxCover");
                     if (isPlayable)
@@ -544,11 +653,16 @@ namespace CutTheRopeDX.GameMain
                             unlockStars,
                             levelCount,
                             packListEntry.SaveSlot,
+                            packListEntry.ShowBoxNumber,
                             packSpritesheet,
                             packQuadIndex,
+                            expPackPicture,
+                            useBambooGate,
                             boxBackgrounds,
                             boxBackgroundP2Y,
                             sittingPlatform,
+                            expSittingPlatform,
+                            sittingPlatformTheme,
                             boxCovers,
                             boxHoleBgColor,
                             musicPack,
@@ -767,6 +881,31 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Parses a pack's <c>sittingPlatformTheme</c> value.
+        /// </summary>
+        /// <param name="value">Raw value, or <see langword="null"/> when the pack sets none.</param>
+        /// <param name="fileName">Configuration file name used in error messages.</param>
+        /// <returns>
+        /// The platform set, or <see langword="null"/> when <paramref name="value"/> is empty or names
+        /// no platform set; the latter is logged, and the pack follows the menu style.
+        /// </returns>
+        internal static SittingPlatformTheme? ParseSittingPlatformTheme(string value, string fileName)
+        {
+            switch (value?.ToLowerInvariant())
+            {
+                case null or "":
+                    return null;
+                case "original":
+                    return SittingPlatformTheme.Original;
+                case "experiments":
+                    return SittingPlatformTheme.Experiments;
+                default:
+                    PackConfigLog.UnknownSittingPlatformTheme(Log.For(LogCategories.ContentPacks), fileName, value);
+                    return null;
+            }
+        }
+
+        /// <summary>
         /// Parses comma-separated or array-based resource names from a JSON element.
         /// </summary>
         /// <param name="element">JSON object that owns the property.</param>
@@ -979,5 +1118,10 @@ namespace CutTheRopeDX.GameMain
     {
         [LoggerMessage(Level = LogLevel.Error, Message = "Failed to load '{FileName}'")]
         public static partial void LoadFailed(ILogger logger, string fileName, Exception exception);
+
+        [LoggerMessage(
+            Level = LogLevel.Warning,
+            Message = "{FileName} has unknown sittingPlatformTheme '{Value}'; expected 'original' or 'experiments'. Following the menu style.")]
+        public static partial void UnknownSittingPlatformTheme(ILogger logger, string fileName, string value);
     }
 }

@@ -242,6 +242,11 @@ namespace CutTheRopeDX.GameMain
             int backgroundQuad;
             switch (true)
             {
+                case var _ when MenuTheme.IsExperiments:
+                    // A background image: one whole texture, so no quad to pick.
+                    backgroundResource = ExperimentsBackdropFor(l, viewId);
+                    backgroundQuad = -1;
+                    break;
                 case var _ when SpecialEvents.IsXmas:
                     backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
@@ -277,13 +282,17 @@ namespace CutTheRopeDX.GameMain
                         break;
                 }
 
-                Image secondaryBackground = Image.FromResource(backgroundSecondaryResource, backgroundSecondaryQuad);
-                secondaryBackground.anchor = secondaryBackground.parentAnchor = 34;
-                secondaryBackground.scaleX = secondaryBackground.scaleY = 1.25f;
-                secondaryBackground.passTransformationsToChilds = false;
-                secondaryBackground.rotationCenterY = secondaryBackground.height / 2;
-                _ = image.AddChild(secondaryBackground);
-                frontLayer = secondaryBackground;
+                // The Experiments backdrops are painted whole, with no separate front half.
+                if (!MenuTheme.IsExperiments)
+                {
+                    Image secondaryBackground = Image.FromResource(backgroundSecondaryResource, backgroundSecondaryQuad);
+                    secondaryBackground.anchor = secondaryBackground.parentAnchor = 34;
+                    secondaryBackground.scaleX = secondaryBackground.scaleY = 1.25f;
+                    secondaryBackground.passTransformationsToChilds = false;
+                    secondaryBackground.rotationCenterY = secondaryBackground.height / 2;
+                    _ = image.AddChild(secondaryBackground);
+                    frontLayer = secondaryBackground;
+                }
 
                 // Add event-specific decorations to logo -- layer bottom
                 switch (true)
@@ -435,6 +444,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured audio option image.</returns>
         public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
         {
+            if (MenuTheme.IsExperiments)
+            {
+                return CreateExperimentsAudioElement(ExperimentsAudioIcon(q), b, p);
+            }
+
             int pressedStateQuad = p ? 1 : 0;
             Image background = Image.FromResource(Resources.Img.MenuOptions, pressedStateQuad);
             Image icon = Image.FromResource(Resources.Img.MenuOptions, q);
@@ -727,6 +741,15 @@ namespace CutTheRopeDX.GameMain
             HBox audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
             _ = audioRow.AddChild(soundToggle);
             _ = audioRow.AddChild(musicToggle);
+            if (MenuTheme.IsExperiments)
+            {
+                ToggleButton voiceToggle = CreateExperimentsVoiceToggle(this, MenuButtonId.ToggleVoice);
+                _ = audioRow.AddChild(voiceToggle);
+                if (!Preferences.GetBooleanForKey(ExperimentsVoice.PreferenceKey))
+                {
+                    voiceToggle.Toggle();
+                }
+            }
             _ = vBox.AddChild(audioRow);
             Button langBtn = CreateButtonWithTextIDDelegate(Application.GetString("LANGUAGE"), MenuButtonId.ShowLanguage, this);
             _ = vBox.AddChild(langBtn);
@@ -981,17 +1004,7 @@ namespace CutTheRopeDX.GameMain
                 resourceName = PackConfig.Packs[0].PackSpritesheet;
                 q = PackConfig.Packs[0].PackQuadIndex;
             }
-            string boxPackStrings;
-            if (isComingSoon)
-            {
-                boxPackStrings = Application.GetString("BOX_SOON_LABEL");
-            }
-            else
-            {
-                string boxPackNameString = Application.GetString(PackConfig.GetPackName(n));
-                boxPackStrings = $"{n + 1}. {boxPackNameString}";
-            }
-            string packTitle = boxPackStrings;
+            string packTitle = isComingSoon ? Application.GetString("BOX_SOON_LABEL") : PackConfig.GetPackTitle(n);
             UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(n, 0);
             bool isLockedPack = unlockedForPackLevel == UNLOCKEDSTATE.LOCKED && !isComingSoon;
             touchBaseElement.bid = !isComingSoon ? MenuButtonId.ForPack(n) : new MenuButtonId(-1);
@@ -1141,6 +1154,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CreatePackSelect()
         {
+            if (MenuTheme.IsExperiments)
+            {
+                CreateExperimentsPackSelect();
+                return;
+            }
+
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
             string totalStarsLabel = Application.GetString("TOTAL_STARS").ToString();
@@ -1338,6 +1357,10 @@ namespace CutTheRopeDX.GameMain
             {
                 Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.UNLOCKED, i, 0);
                 childWithName.PlayTimeline(0);
+                if (MenuTheme.IsExperiments)
+                {
+                    ReleaseExperimentsButterfly(i);
+                }
             }
             RootController root = Application.SharedRootController();
             if (showNextPackStatus && i == root.Pack + 1)
@@ -1361,6 +1384,10 @@ namespace CutTheRopeDX.GameMain
             pack = i;
             Preferences.SetLastBox(i);
             Preferences.SetLastGamePack(PackConfig.GetSaveSlot(i));
+            if (MenuTheme.IsExperiments)
+            {
+                SteerExperimentsButterfly(i);
+            }
         }
 
         /// <summary>
@@ -1439,33 +1466,48 @@ namespace CutTheRopeDX.GameMain
         {
             float transitionDuration = 0.3f;
             MenuView menuView = new();
-            string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
-            Image coverLeft = Image.FromResource(boxCover, 0);
-            Image coverRight = Image.FromResource(boxCover, 0);
-            float x = (VisibleBounds.w / 2f) - coverLeft.width;
-            coverLeft.x = x;
-            coverLeft.passTransformationsToChilds = false;
-            coverRight.x = VisibleBounds.w / 2f;
-            coverRight.rotation = 180f;
-            coverRight.y -= 0.5f;
-            levelsCoverLeft = coverLeft;
-            levelsCoverRight = coverRight;
             Timeline coverDimTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
-            _ = coverLeft.AddTimeline(coverDimTimeline);
-            coverLeft.SetName("levelsBack");
-            _ = coverLeft.AddChild(coverRight);
-            _ = menuView.AddChild(coverLeft);
-            Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
-            Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
-            spineLeft.y = 80f;
-            spineRight.y = 80f;
-            levelsSpineLeft = spineLeft;
-            levelsSpineRight = spineRight;
-            PlaceLevelSpines(VisibleBounds);
-            _ = menuView.AddChild(spineLeft);
-            _ = menuView.AddChild(spineRight);
+            if (MenuTheme.IsExperiments)
+            {
+                // Experiments draws the loading screen's sheet here instead of the box's cover.
+                BaseElement sheet = LoadingView.CreateExperimentsSheet();
+                sheet.SetName("levelsBack");
+                _ = sheet.AddTimeline(coverDimTimeline);
+                levelsSheet = sheet;
+                levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
+                PlaceLevelsSheet(VisibleBounds);
+                _ = menuView.AddChild(sheet);
+            }
+            else
+            {
+                levelsSheet = null;
+                string boxCover = PackConfig.GetBoxCoverOrDefault(pack);
+                Image coverLeft = Image.FromResource(boxCover, 0);
+                Image coverRight = Image.FromResource(boxCover, 0);
+                float x = (VisibleBounds.w / 2f) - coverLeft.width;
+                coverLeft.x = x;
+                coverLeft.passTransformationsToChilds = false;
+                coverRight.x = VisibleBounds.w / 2f;
+                coverRight.rotation = 180f;
+                coverRight.y -= 0.5f;
+                levelsCoverLeft = coverLeft;
+                levelsCoverRight = coverRight;
+                _ = coverLeft.AddTimeline(coverDimTimeline);
+                coverLeft.SetName("levelsBack");
+                _ = coverLeft.AddChild(coverRight);
+                _ = menuView.AddChild(coverLeft);
+                Image spineLeft = Image.FromResource(Resources.Img.MenuLevelUi, 6);
+                Image spineRight = Image.FromResource(Resources.Img.MenuLevelUi, 7);
+                spineLeft.y = 80f;
+                spineRight.y = 80f;
+                levelsSpineLeft = spineLeft;
+                levelsSpineRight = spineRight;
+                PlaceLevelSpines(VisibleBounds);
+                _ = menuView.AddChild(spineLeft);
+                _ = menuView.AddChild(spineRight);
+            }
             Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
             shadowImage.SetName("shadow");
             shadowImage.anchor = shadowImage.parentAnchor = 18;
@@ -1483,7 +1525,8 @@ namespace CutTheRopeDX.GameMain
             shadowImage.PlayTimeline(1);
             _ = menuView.AddChild(shadowImage);
             levelsShadow = shadowImage;
-            HBox hBox = CreateTextWithStar(Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture));
+            string packStars = Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture);
+            HBox hBox = MenuTheme.IsExperiments ? CreateExperimentsTextWithStar(packStars) : CreateTextWithStar(packStars);
 
             hBox.x = -30f;
             hBox.y = 40f;
@@ -1661,14 +1704,7 @@ namespace CutTheRopeDX.GameMain
             }
             ShowView(viewToShow);
             SoundMgr.StopMusic();
-            if (SpecialEvents.IsXmas)
-            {
-                SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-            }
-            else
-            {
-                SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-            }
+            MusicTracks.PlayMenuMusic();
         }
 
         /// <summary>
@@ -1722,14 +1758,7 @@ namespace CutTheRopeDX.GameMain
             }
             if (url != null)
             {
-                if (SpecialEvents.IsXmas)
-                {
-                    SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-                }
-                else
-                {
-                    SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-                }
+                MusicTracks.PlayMenuMusic();
             }
             if (IsSinglePack)
             {
@@ -1947,6 +1976,9 @@ namespace CutTheRopeDX.GameMain
                         }
                         return;
                     }
+                case var id when id == MenuButtonId.ToggleVoice:
+                    ExperimentsVoice.Toggle();
+                    return;
                 case var id when id == MenuButtonId.ToggleMusic:
                     {
                         bool musicOn = Preferences.GetBooleanForKey("MUSIC_ON");
@@ -1956,14 +1988,7 @@ namespace CutTheRopeDX.GameMain
                             SoundMgr.StopMusic();
                             return;
                         }
-                        if (SpecialEvents.IsXmas)
-                        {
-                            SoundMgr.PlayMusic(Resources.Music.MenuMusicXmas);
-                        }
-                        else
-                        {
-                            SoundMgr.PlayMusic(Resources.Music.MenuMusic);
-                        }
+                        MusicTracks.PlayMenuMusic();
                         return;
                     }
                 case var id when id == MenuButtonId.ShowCredits:
@@ -2038,6 +2063,12 @@ namespace CutTheRopeDX.GameMain
                         int scrollPoint = FixScrollPoint(currentPackIndex + leftScrollCount - scrollPacksRight);
                         packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
+
+                        // An arrow moves the strip without the container announcing a new target.
+                        if (MenuTheme.IsExperiments)
+                        {
+                            SteerExperimentsButterfly(scrollPoint);
+                        }
                         return;
                     }
                 case var id when id == MenuButtonId.PreviousPack:
@@ -2048,6 +2079,10 @@ namespace CutTheRopeDX.GameMain
                         int scrollPoint = FixScrollPoint(currentPackIndex - rightScrollCount + scrollPacksLeft);
                         packContainer.MoveToScrollPointmoveMultiplier(scrollPoint, 0.8f);
                         bScrolling = true;
+                        if (MenuTheme.IsExperiments)
+                        {
+                            SteerExperimentsButterfly(scrollPoint);
+                        }
                         break;
                     }
                 case var id when id == MenuButtonId.ShowLanguage:
@@ -2222,6 +2257,10 @@ namespace CutTheRopeDX.GameMain
             if (activeViewID == 5 && ddPackSelect != null)
             {
                 ddPackSelect.Update(delta);
+                if (MenuTheme.IsExperiments)
+                {
+                    UpdateExperimentsPackSelect();
+                }
                 if (PlatformServices.Host?.IsKeyPressed(KeyCode.Left) == true)
                 {
                     OnButtonPressed(MenuButtonId.PreviousPack);

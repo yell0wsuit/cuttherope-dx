@@ -73,11 +73,22 @@ namespace CutTheRopeDX.Framework.Platform
             Apply(Matrix4x4.CreateScale(x, y, 1f));
         }
 
-        /// <summary>Rotates the model-view matrix about Z.</summary>
+        /// <summary>Rotates the model-view matrix about an axis, as <c>glRotatef</c> does.</summary>
+        /// <remarks>
+        /// The projection is orthographic, so a rotation about an axis in the screen's plane
+        /// foreshortens what it turns rather than giving it perspective. The Z axis, which every
+        /// flat rotation uses, keeps its own exact path.
+        /// </remarks>
         /// <param name="degrees">Rotation in degrees.</param>
-        public void RotateDegrees(float degrees)
+        /// <param name="x">Axis X.</param>
+        /// <param name="y">Axis Y.</param>
+        /// <param name="z">Axis Z.</param>
+        public void RotateDegrees(float degrees, float x = 0f, float y = 0f, float z = 1f)
         {
-            Apply(Matrix4x4.CreateRotationZ(degrees * (float)Math.PI / 180f));
+            float radians = degrees * (float)Math.PI / 180f;
+            Apply(x == 0f && y == 0f
+                ? Matrix4x4.CreateRotationZ(z < 0f ? -radians : radians)
+                : Matrix4x4.CreateFromAxisAngle(Vector3.Normalize(new Vector3(x, y, z)), radians));
         }
 
         /// <summary>Applies the skew the original renderer used for skewed sprites.</summary>

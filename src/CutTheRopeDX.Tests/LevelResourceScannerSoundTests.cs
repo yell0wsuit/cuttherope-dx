@@ -15,7 +15,7 @@ namespace CutTheRopeDX.Tests
     {
         private static string[] Scan(string mapXml)
         {
-            return LevelResourceScanner.GetRequiredResources(XElement.Parse(mapXml));
+            return LevelResourceScanner.GetRequiredResources(XElement.Parse(mapXml), 0);
         }
 
         private static string[] ScanWithObject(string objectXml)
