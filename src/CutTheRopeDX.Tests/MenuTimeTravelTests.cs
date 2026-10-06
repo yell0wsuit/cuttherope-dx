@@ -18,6 +18,13 @@ namespace CutTheRopeDX.Tests
     /// </summary>
     public sealed class MenuTimeTravelTests
     {
+        private sealed class NoDelegate : IButtonDelegation
+        {
+            public void OnButtonPressed(ButtonId buttonId)
+            {
+            }
+        }
+
         private static readonly string[] MainMenuPieces = ["ttPlay", "ttOptions", "ttLogo"];
 
         private static readonly string[] CreditsBorderPieces = ["ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin"];
@@ -379,6 +386,110 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.OnButtonPressed(MenuButtonId.ForLanguage(original));
                 }
+            });
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ShortPillsStretchToTheDxButtonLength(bool selected)
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                Button button = MenuController.CreateShortButtonWithTextIDDelegate("Replay", MenuButtonId.Options, new NoDelegate(), selected);
+                float dxWidth = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X;
+
+                Assert.InRange(button.width, dxWidth - 1f, dxWidth + 1f);
+                for (int i = 0; i < 2; i++)
+                {
+                    BaseElement plate = button.GetChild(i);
+                    Assert.InRange(plate.width, dxWidth - 1f, dxWidth + 1f);
+                    SlicedImage art = Find<SlicedImage>(plate);
+                    Assert.NotNull(art);
+                    Assert.InRange(art.width * art.scaleX, dxWidth - 1f, dxWidth + 1f);
+                }
+            });
+        }
+
+        [Fact]
+        public void ALabelTooLongForAShortPillShrinksInsideIt()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                Button button = MenuController.CreateShortButtonWithTextIDDelegate(new string('W', 400), MenuButtonId.Options, new NoDelegate());
+                float dxWidth = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X;
+                Text label = Find<Text>(button.GetChild(0));
+
+                Assert.InRange(button.width, dxWidth - 1f, dxWidth + 1f);
+                Assert.True(label.scaleX < 1f);
+                float scale = TimeTravelPlates.HeightMatching(
+                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, Resources.Img.MenuButtons, 3);
+                float padding = TimeTravelPlates.SidePadding(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, scale);
+                Assert.True(label.width * label.scaleX <= button.width - padding + 0.5f);
+            });
+        }
+
+        [Fact]
+        public void MainMenuCapsulesKeepTheirArtWidthForShortLabels()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                float art = Image.GetQuadSize(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp).X;
+
+                Assert.Equal(art, MenuController.TimeTravelCapsuleWidth(["Options", "Quit"]), 1);
+            });
+        }
+
+        [Fact]
+        public void MainMenuCapsulesWidenTogetherForTheLongerLabel()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                string longLabel = new('W', 60);
+                float needed = TimeTravelPlates.FitWidth(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, longLabel, 1f);
+                float art = Image.GetQuadSize(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp).X;
+
+                Assert.True(needed > art);
+                Assert.Equal(needed, MenuController.TimeTravelCapsuleWidth(["Options", longLabel]), 1);
+                Assert.Equal(needed, MenuController.TimeTravelCapsuleWidth([longLabel, "Quit"]), 1);
+            });
+        }
+
+        [Fact]
+        public void MainMenuCapsulesStopWideningWhereTheRowWouldLeaveTheScene()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                float pair = MenuController.TimeTravelCapsuleWidth(["Options", new string('W', 400)]);
+                float single = MenuController.TimeTravelCapsuleWidth([new string('W', 400)]);
+                float scene = TimeTravelScreen.SceneWidth * FlashXmlScale.AtlasToFlashPointScale;
+                float margin = MenuController.TimeTravelCapsuleRowMargin * FlashXmlScale.AtlasToFlashPointScale;
+                float gap = MenuController.TimeTravelCapsuleGap * FlashXmlScale.AtlasToFlashPointScale;
+
+                Assert.Equal(scene - (2f * margin), (2f * pair) + gap, 1);
+                Assert.Equal(scene - (2f * margin), single, 1);
+            });
+        }
+
+        [Fact]
+        public void TheMainMenuCapsulesShareOneWidthAndAWideOneKeepsItsLabelSize()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
+                BaseElement options = view.GetChildWithName("ttOptions");
+                BaseElement second = view.GetChildWithName("ttQuit");
+                if (second != null)
+                {
+                    Assert.Equal(options.width, second.width);
+                }
+
+                Button wide = TimeTravelPlates.CreatePillButton(
+                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown,
+                    new string('W', 60), MenuButtonId.Options, new NoDelegate(), 1f,
+                    TimeTravelPlates.FitWidth(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, new string('W', 60), 1f));
+                Assert.Equal(1f, Find<Text>(wide.GetChild(0)).scaleX);
+                Assert.Equal(wide.GetChild(0).width, wide.GetChild(1).width);
             });
         }
 

@@ -32,7 +32,13 @@ namespace CutTheRopeDX.GameMain
         private const float TimeTravelCapsuleRowY = 803f;
 
         /// <summary>Gap between the two capsules, in logical units.</summary>
-        private const float TimeTravelCapsuleGap = 20f;
+        internal const float TimeTravelCapsuleGap = 20f;
+
+        /// <summary>
+        /// Room the main menu's capsule row keeps from each side of the iOS scene when its capsules
+        /// widen for long labels, in iOS logical units.
+        /// </summary>
+        internal const float TimeTravelCapsuleRowMargin = 24f;
 
         /// <summary>Height of the iOS title, in logical units: where the logo part rests after its intro.</summary>
         private const float TimeTravelLogoTop = 2.15f;
@@ -134,17 +140,22 @@ namespace CutTheRopeDX.GameMain
         /// <param name="scene">Scene the capsules go in.</param>
         private void AddTimeTravelCapsules(TimeTravelSceneGroup scene)
         {
-            Button options = CreateTimeTravelCapsule(Application.GetString("OPTIONS"), MenuButtonId.Options);
-            options.SetName("ttOptions");
-            Button second = null;
+            string optionsLabel = Application.GetString("OPTIONS");
+            (string Label, ButtonId Id)? secondSpec = null;
             if (PlatformServices.Host?.CanExit == true)
             {
-                second = CreateTimeTravelCapsule(Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup);
+                secondSpec = (Application.GetString("QUIT_BUTTON"), MenuButtonId.ShowQuitPopup);
             }
             else if (!string.IsNullOrEmpty(PlatformServices.Host?.LevelEditorUrl))
             {
-                second = CreateTimeTravelCapsule(Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor);
+                secondSpec = (Application.GetString("LEVEL_EDITOR_BUTTON"), MenuButtonId.LevelEditor);
             }
+
+            // Both capsules take the width the longer label needs, so the row stays symmetric.
+            float width = TimeTravelCapsuleWidth(secondSpec is { } spec ? [optionsLabel, spec.Label] : [optionsLabel]);
+            Button options = CreateTimeTravelCapsule(optionsLabel, MenuButtonId.Options, width);
+            options.SetName("ttOptions");
+            Button second = secondSpec is { } s ? CreateTimeTravelCapsule(s.Label, s.Id, width) : null;
 
             float a = FlashXmlScale.AtlasToFlashPointScale;
             float rowY = TimeTravelCapsuleRowY * a;
@@ -158,6 +169,26 @@ namespace CutTheRopeDX.GameMain
                 CenterAt(second, center + half, rowY);
                 _ = scene.AddChild(second);
             }
+        }
+
+        /// <summary>
+        /// The width the main menu's capsules share: what the longest label needs, capped where the
+        /// row would leave the scene's margins.
+        /// </summary>
+        /// <param name="labels">Every capsule's label, in row order.</param>
+        /// <returns>The width, in scene asset pixels.</returns>
+        internal static float TimeTravelCapsuleWidth(IReadOnlyList<string> labels)
+        {
+            float width = 0f;
+            foreach (string label in labels)
+            {
+                width = MathF.Max(width, TimeTravelPlates.FitWidth(
+                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, label, plateScale: 1f));
+            }
+            float a = FlashXmlScale.AtlasToFlashPointScale;
+            float row = (TimeTravelScreen.SceneWidth - (2f * TimeTravelCapsuleRowMargin)) * a;
+            float widest = (row - ((labels.Count - 1) * TimeTravelCapsuleGap * a)) / labels.Count;
+            return MathF.Min(width, widest);
         }
 
         /// <summary>Places an element by its center.</summary>
@@ -174,11 +205,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>A Time Travel capsule button with a DX label.</summary>
         /// <param name="text">Label.</param>
         /// <param name="id">Button identifier.</param>
+        /// <param name="width">Width the capsule is stretched to.</param>
         /// <returns>The button.</returns>
-        private Button CreateTimeTravelCapsule(string text, ButtonId id)
+        private Button CreateTimeTravelCapsule(string text, ButtonId id, float width)
         {
-            return TimeTravelPlates.CreateTextButton(
-                Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, text, id, this, plateScale: 1f);
+            return TimeTravelPlates.CreatePillButton(
+                Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, TimeTravelArt.CapsuleDown, text, id, this, plateScale: 1f, width);
         }
 
         /// <summary>
