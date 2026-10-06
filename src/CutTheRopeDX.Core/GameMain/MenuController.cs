@@ -871,7 +871,9 @@ namespace CutTheRopeDX.GameMain
             text.y = -200f;
             resetText = text;
             WrapResetText();
-            Button yesButton = CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
+            Button yesButton = MenuTheme.IsTimeTravel
+                ? CreateTimeTravelHoldButton(Application.GetString("YES"), MenuButtonId.ConfirmResetYes)
+                : CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
             yesButton.anchor = yesButton.parentAnchor = 34;
             yesButton.y = -540f;
             Button noButton = CreateButtonWithTextIDDelegate(Application.GetString("NO"), MenuButtonId.ConfirmResetNo, this);
@@ -2316,7 +2318,7 @@ namespace CutTheRopeDX.GameMain
             TryShowOutdatedWindowsPopup();
             TryShowPrereleasePopup();
             TryShowUpdatePopup();
-            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll(delta))
             {
                 return;
             }
