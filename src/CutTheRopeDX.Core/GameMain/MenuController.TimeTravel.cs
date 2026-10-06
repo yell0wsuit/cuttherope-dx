@@ -263,21 +263,82 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// One state of a Time Travel audio toggle. The icon and the cross keep the places the iOS
-        /// button canvas gives them on the plate.
+        /// One state of a Time Travel settings audio toggle: the icon on the capsule plate, drawn
+        /// at the long buttons' scale so the settings keep the iOS proportions. The icon and the
+        /// cross keep the places the iOS button canvas gives them, and the pressed capsule sits
+        /// where that canvas puts it, a little below the one at rest.
+        /// </summary>
+        /// <param name="icon">Icon quad.</param>
+        /// <param name="crossed">Whether the sound is switched off.</param>
+        /// <param name="pressed">Whether to draw the pressed plate.</param>
+        /// <returns>The plate in a container sized to the capsule at rest.</returns>
+        private static BaseElement CreateTimeTravelAudioPill(int icon, bool crossed, bool pressed)
+        {
+            string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+            int plateQuad = pressed ? TimeTravelArt.CapsuleDown : TimeTravelArt.CapsuleUp;
+            float scale = TimeTravelPlates.HeightMatching(
+                Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, Resources.Img.MenuButtons, 0);
+            Image plate = Image.FromResource(sheet, plateQuad);
+            plate.anchor = plate.parentAnchor = 9;
+            plate.scaleX = plate.scaleY = scale;
+
+            // Scaled about its center like every element, so the drift that puts on its top left
+            // comes back out of the canvas offset it is placed by.
+            Vector shift = Vect(
+                Image.GetQuadOffset(sheet, plateQuad).X - Image.GetQuadOffset(sheet, TimeTravelArt.CapsuleUp).X,
+                Image.GetQuadOffset(sheet, plateQuad).Y - Image.GetQuadOffset(sheet, TimeTravelArt.CapsuleUp).Y);
+            plate.x = (shift.X * scale) - ((plate.width >> 1) * (1f - scale));
+            plate.y = (shift.Y * scale) - ((plate.height >> 1) * (1f - scale));
+            Image glyph = AddTimeTravelAudioGlyphs(plate, plateQuad, icon, crossed);
+            Image.SetElementPositionWithRelativeQuadOffset(glyph, sheet, plateQuad, icon);
+
+            Vector rest = Image.GetQuadSize(sheet, TimeTravelArt.CapsuleUp);
+            BaseElement container = new()
+            {
+                width = (int)MathF.Round(rest.X * scale),
+                height = (int)MathF.Round(rest.Y * scale),
+            };
+            _ = container.AddChild(plate);
+            return container;
+        }
+
+        /// <summary>
+        /// One state of a Time Travel pause-menu audio toggle, on the round plate. Unlike the
+        /// capsule's, the icon is not left where the canvas draws it: the iOS menu centers it
+        /// across on <see cref="TimeTravelArt.RoundAudioIconMarker"/> and sets its top 0.6 of its
+        /// height above that point.
         /// </summary>
         /// <param name="icon">Icon quad.</param>
         /// <param name="crossed">Whether the sound is switched off.</param>
         /// <param name="pressed">Whether to draw the pressed plate.</param>
         /// <returns>The plate with its icon.</returns>
-        private static Image CreateTimeTravelAudioElement(int icon, bool crossed, bool pressed)
+        private static Image CreateTimeTravelRoundAudioElement(int icon, bool crossed, bool pressed)
         {
             string sheet = Resources.Img.MenuButtonSmallTimeTravel;
             int plateQuad = pressed ? TimeTravelArt.AudioPlateDown : TimeTravelArt.AudioPlateUp;
             Image plate = Image.FromResource(sheet, plateQuad);
+            Image glyph = AddTimeTravelAudioGlyphs(plate, plateQuad, icon, crossed);
+            Vector plateOffset = Image.GetQuadOffset(sheet, plateQuad);
+            Vector marker = TimeTravelArt.RoundAudioIconMarker;
+            glyph.x = marker.X - plateOffset.X - (glyph.width * 0.5f);
+            glyph.y = marker.Y - plateOffset.Y - (glyph.height * 0.6f);
+            return plate;
+        }
+
+        /// <summary>
+        /// Puts an audio icon on a plate, dimmed and crossed where the cross places it on the iOS
+        /// canvas when the sound is switched off.
+        /// </summary>
+        /// <param name="plate">The plate.</param>
+        /// <param name="plateQuad">The plate's quad.</param>
+        /// <param name="icon">Icon quad.</param>
+        /// <param name="crossed">Whether the sound is switched off.</param>
+        /// <returns>The icon, for its caller to place.</returns>
+        private static Image AddTimeTravelAudioGlyphs(Image plate, int plateQuad, int icon, bool crossed)
+        {
+            string sheet = Resources.Img.MenuButtonSmallTimeTravel;
             Image glyph = Image.FromResource(sheet, icon);
             glyph.anchor = glyph.parentAnchor = 9;
-            Image.SetElementPositionWithRelativeQuadOffset(glyph, sheet, plateQuad, icon);
             _ = plate.AddChild(glyph);
             if (crossed)
             {
@@ -287,7 +348,7 @@ namespace CutTheRopeDX.GameMain
                 Image.SetElementPositionWithRelativeQuadOffset(cross, sheet, plateQuad, TimeTravelArt.AudioCross);
                 _ = plate.AddChild(cross);
             }
-            return plate;
+            return glyph;
         }
 
         /// <summary>The round Time Travel back button: the plate with its arrow where the iOS canvas puts it.</summary>

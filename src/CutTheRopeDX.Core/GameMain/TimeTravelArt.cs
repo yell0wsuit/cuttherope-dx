@@ -87,6 +87,13 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The cross drawn over a switched-off audio icon (iOS q12).</summary>
         public const int AudioCross = 12;
 
+        /// <summary>
+        /// Where the pause menu's round audio buttons center their icon, in the small-button
+        /// canvas: the middle of the iOS marker quad q17, a 16 pixel square at (262, 143) on the
+        /// HD canvas. The packed sheet keeps that quad but not its place, so the point is held here.
+        /// </summary>
+        public static readonly Vector RoundAudioIconMarker = new(270f * CanvasToAsset, 151f * CanvasToAsset);
+
         /// <summary>Settings: the wide credits window border (iOS q6).</summary>
         public const int WindowBorderWide = 6;
 

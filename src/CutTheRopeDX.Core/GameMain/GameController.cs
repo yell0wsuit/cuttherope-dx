@@ -193,8 +193,9 @@ namespace CutTheRopeDX.GameMain
             Button exitButton = MenuController.CreateButtonWithTextIDDelegate(Application.GetString(exitLabel), GameControllerButtonId.MainMenu, this);
             _ = vBox.AddChild(exitButton);
             vBox.anchor = vBox.parentAnchor = 10;
-            ToggleButton musicToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic);
-            ToggleButton soundToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound);
+            // Time Travel's pause menu draws these on its round plates, unlike its settings.
+            ToggleButton musicToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, GameControllerButtonId.ToggleMusic, round: true);
+            ToggleButton soundToggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, GameControllerButtonId.ToggleSound, round: true);
             HBox hBox = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
             _ = hBox.AddChild(soundToggle);
             _ = hBox.AddChild(musicToggle);
