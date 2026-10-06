@@ -83,5 +83,77 @@ namespace CutTheRopeDX.Tests
                 Assert.NotNull(MenuTimeTravelTests.All<Button>(withCandy).Find(b => b.buttonID == MenuButtonId.CandySelect));
             });
         }
+
+        [Theory]
+        [InlineData(3, 0, 90f, 0f)]
+        [InlineData(6, 30, 195f, 180f)]
+        [InlineData(15, 45, 112.5f, 270f)]
+        [InlineData(0, 0, 0f, 0f)]
+        [InlineData(12, 0, 0f, 0f)]
+        public void TheHandsShowTheTime(int hour, int minute, float hourAngle, float minuteAngle)
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, hour, minute, 0));
+                logo.Update(1f / 60f);
+
+                AssertPointsAt(hourAngle, HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertPointsAt(minuteAngle, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+            });
+        }
+
+        [Fact]
+        public void TheHandsPointAtTheTimeBeforeTheFirstUpdate()
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, 9, 0, 0));
+
+                AssertPointsAt(270f, HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertPointsAt(0f, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+            });
+        }
+
+        [Fact]
+        public void TheHandsSweepAsTheClockRuns()
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                DateTime time = new(2026, 10, 6, 1, 10, 0);
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => time);
+                logo.Update(1f / 60f);
+                AssertPointsAt(35f, HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertPointsAt(60f, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+
+                time = time.AddMinutes(12).AddSeconds(30);
+                logo.Update(1f / 60f);
+
+                AssertPointsAt(41.25f, HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertPointsAt(135f, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+            });
+        }
+
+        private static Image HourHand(TimeTravelLogo logo)
+        {
+            return ClockPart(logo, 1);
+        }
+
+        private static Image MinuteHand(TimeTravelLogo logo)
+        {
+            return ClockPart(logo, 2);
+        }
+
+        private static Image ClockPart(TimeTravelLogo logo, int quad)
+        {
+            Texture2D sheet = Application.GetTexture(Resources.Img.LogoClockTimeTravel);
+            return MenuTimeTravelTests.All<Image>(logo).Find(i => i.texture == sheet && i.quadToDraw == quad);
+        }
+
+        /// <summary>Asserts a hand drawn at <paramref name="artAngle"/> now points at a clock angle.</summary>
+        private static void AssertPointsAt(float expected, Image hand, float artAngle)
+        {
+            float off = ((artAngle + hand.rotation - expected) % 360f + 540f) % 360f - 180f;
+            Assert.InRange(off, -0.01f, 0.01f);
+        }
     }
 }
