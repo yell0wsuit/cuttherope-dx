@@ -33,6 +33,9 @@ namespace CutTheRopeDX.Framework.Visual
             return InitializeFromResource(new SlicedImage(), resourceName, quad);
         }
 
+        /// <summary>Gets the width of the art this image draws.</summary>
+        public int ArtWidth => (int)texture.quadRects[quadToDraw].w;
+
         /// <summary>Cuts art into its left cap, center strip and right cap for a drawn width.</summary>
         /// <param name="artWidth">Width of the art.</param>
         /// <param name="width">Width to draw at; never less than the art's.</param>
