@@ -35,7 +35,7 @@ jobs:
                       echo "No feat or fix commits in this push; skipping prerelease."
                   fi
 
-    release:
+    prerelease:
         needs: gate
         if: needs.gate.outputs.publish == 'true'
         permissions:
