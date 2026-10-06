@@ -40,6 +40,13 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public const float MinuteHandArtAngle = 120f;
 
+        /// <summary>
+        /// How far each hand is pulled in toward the hub along its length, in animation stage
+        /// units: 8 clock-sheet pixels, enough for the center point to cover the base at every
+        /// angle without the base's flat end showing past it.
+        /// </summary>
+        public const float HubOverlap = 8f / FlashXmlScale.AtlasToFlashPointScale;
+
         /// <summary>The DX title quad in the logo sheet.</summary>
         public const int ArtQuad = 52;
 
@@ -165,6 +172,8 @@ namespace CutTheRopeDX.GameMain
             FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, clock, -1, -1);
             hourHand = clockParts.Find(part => part.quadToDraw == HourHandQuad);
             minuteHand = clockParts.Find(part => part.quadToDraw == MinuteHandQuad);
+            TuckUnderHub(hourHand, HourHandArtAngle);
+            TuckUnderHub(minuteHand, MinuteHandArtAngle);
             foreach (int id in new[] { IntroTimeline, IdleTimeline })
             {
                 if (clock.GetTimeline(id) is { } timeline)
@@ -173,6 +182,23 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             _ = AddChild(clock);
+        }
+
+        /// <summary>
+        /// Pulls a hand in along its length so its base sits under the center point. The offset is
+        /// a translation, which the element applies before its rotation, so it turns with the hand.
+        /// </summary>
+        /// <param name="hand">The hand, or <see langword="null"/> when the animation lacks it.</param>
+        /// <param name="artAngle">Clock angle the hand's art is drawn at.</param>
+        private static void TuckUnderHub(Image hand, float artAngle)
+        {
+            if (hand == null)
+            {
+                return;
+            }
+            float radians = artAngle * MathF.PI / 180f;
+            hand.translateX = -MathF.Sin(radians) * HubOverlap;
+            hand.translateY = MathF.Cos(radians) * HubOverlap;
         }
 
         /// <summary>

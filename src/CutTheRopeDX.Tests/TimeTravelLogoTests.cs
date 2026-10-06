@@ -133,6 +133,33 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Fact]
+        public void EachHandIsTuckedUnderTheHubAlongItsLength()
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, 10, 10, 0));
+                logo.Update(1f / 60f);
+
+                AssertTucked(HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertTucked(MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+            });
+        }
+
+        /// <summary>Asserts a hand is shifted toward the hub along its art's axis by the hub overlap.</summary>
+        private static void AssertTucked(Image hand, float artAngle)
+        {
+            float radians = artAngle * MathF.PI / 180f;
+            float alongX = MathF.Sin(radians);
+            float alongY = -MathF.Cos(radians);
+            float along = (hand.translateX * alongX) + (hand.translateY * alongY);
+            float across = (hand.translateX * -alongY) + (hand.translateY * alongX);
+
+            Assert.InRange(along, -TimeTravelLogo.HubOverlap - 0.001f, -TimeTravelLogo.HubOverlap + 0.001f);
+            Assert.InRange(across, -0.001f, 0.001f);
+            Assert.True(TimeTravelLogo.HubOverlap > 0f);
+        }
+
         private static Image HourHand(TimeTravelLogo logo)
         {
             return ClockPart(logo, 1);
