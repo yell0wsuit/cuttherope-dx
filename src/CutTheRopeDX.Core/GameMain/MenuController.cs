@@ -295,9 +295,13 @@ namespace CutTheRopeDX.GameMain
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
             _ = baseElement.AddChild(image);
-            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments)
+            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments && !MenuTheme.IsTimeTravel)
             {
                 AddHalloweenDecorations(baseElement, mainMenu: l);
+            }
+            if (MenuTheme.IsTimeTravel && IsTimeTravelSettingsView(viewId))
+            {
+                AttachTimeTravelFanCorner(baseElement, viewId);
             }
             Image frontLayer = null;
             Image shadowLayer = null;

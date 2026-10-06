@@ -1,6 +1,10 @@
 MenuView 0 0 1440 1440 1 1 0
   BaseElement 0 0 1440 1440 1 1 0
     Image -560 0 2560 1440 1 1 0
+    TimeTravelSceneGroup 220.81 -28.81 998 1498 0.962 0.962 0
+      ttFanPlate -6.79 -94.33 245 250 1 1 0
+      ttFan 11.21 -70.33 209 209 1 1 5.76
+        ttFanHub 70.21 -15.33 89 55 0.952 0.952 0
     ScrollableContainer 70 170 1300 1100 1 1 0
       VBox 70 170 1300 1709 1 1 0
         BaseElement 70 174.95 1300 100 1.099 1.099 0
