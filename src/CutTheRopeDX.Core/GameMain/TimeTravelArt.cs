@@ -142,19 +142,125 @@ namespace CutTheRopeDX.GameMain
         public static BaseElement LabeledPlate(string resource, int quad, string text, float plateScale)
         {
             BaseElement plate = Plate(resource, quad, plateScale);
+            AddLabel(plate, text, plate.width * LabelWidthShare);
+            return plate;
+        }
+
+        /// <summary>
+        /// The room a plate keeps clear on either side of its label, together: the share of its art
+        /// width that <see cref="LabelWidthShare"/> leaves for the rounded ends.
+        /// </summary>
+        /// <param name="resource">Sheet holding the plate.</param>
+        /// <param name="quad">Plate quad.</param>
+        /// <param name="plateScale">Scale the plate is drawn at.</param>
+        /// <returns>The padding, in drawn units.</returns>
+        public static float SidePadding(string resource, int quad, float plateScale)
+        {
+            return Image.GetQuadSize(resource, quad).X * plateScale * (1f - LabelWidthShare);
+        }
+
+        /// <summary>
+        /// The width a pill needs for a label at its full size: the label and its side padding,
+        /// never narrower than the art.
+        /// </summary>
+        /// <param name="resource">Sheet holding the pill.</param>
+        /// <param name="quad">Pill quad.</param>
+        /// <param name="text">Label.</param>
+        /// <param name="plateScale">Scale the pill is drawn at.</param>
+        /// <returns>The width, in drawn units.</returns>
+        public static float FitWidth(string resource, int quad, string text, float plateScale)
+        {
+            float art = Image.GetQuadSize(resource, quad).X * plateScale;
+            return MathF.Max(art, CreateLabel(text).width + SidePadding(resource, quad, plateScale));
+        }
+
+        /// <summary>
+        /// A pill drawn at a scale and stretched to a width through its center, inside a container
+        /// sized to what it draws.
+        /// </summary>
+        /// <param name="resource">Sheet holding the pill.</param>
+        /// <param name="quad">Pill quad.</param>
+        /// <param name="plateScale">Scale the pill is drawn at.</param>
+        /// <param name="width">Drawn width; the art's own when narrower.</param>
+        /// <returns>The container.</returns>
+        public static BaseElement SlicedPlate(string resource, int quad, float plateScale, float width)
+        {
+            SlicedImage plate = SlicedImage.Create(resource, quad);
+            plate.width = Math.Max(plate.width, (int)MathF.Ceiling((width / plateScale) - 0.01f));
+            plate.anchor = plate.parentAnchor = 18;
+            plate.scaleX = plate.scaleY = plateScale;
+            BaseElement container = new()
+            {
+                width = (int)MathF.Round(plate.width * plateScale),
+                height = (int)MathF.Round(plate.height * plateScale),
+            };
+            _ = container.AddChild(plate);
+            return container;
+        }
+
+        /// <summary>A stretched pill with a label centered on it in the big DX font.</summary>
+        /// <param name="resource">Sheet holding the pill.</param>
+        /// <param name="quad">Pill quad.</param>
+        /// <param name="text">Label.</param>
+        /// <param name="plateScale">Scale the pill is drawn at.</param>
+        /// <param name="width">Drawn width; the art's own when narrower.</param>
+        /// <returns>The labeled pill.</returns>
+        public static BaseElement LabeledSlicedPlate(string resource, int quad, string text, float plateScale, float width)
+        {
+            BaseElement plate = SlicedPlate(resource, quad, plateScale, width);
+
+            // Measured from the width asked for, which the drawn width only rounds.
+            AddLabel(plate, text, MathF.Max(plate.width, width) - SidePadding(resource, quad, plateScale));
+            return plate;
+        }
+
+        /// <summary>A text button on a stretched Time Travel pill, labeled in the big DX font.</summary>
+        /// <param name="resource">Sheet holding the pills.</param>
+        /// <param name="upQuad">Pill shown at rest.</param>
+        /// <param name="downQuad">Pill shown while pressed.</param>
+        /// <param name="text">Label.</param>
+        /// <param name="id">Button identifier.</param>
+        /// <param name="d">Delegate that receives the press.</param>
+        /// <param name="plateScale">Scale both pills are drawn at.</param>
+        /// <param name="width">Drawn width of both pills.</param>
+        /// <returns>The button.</returns>
+        public static Button CreatePillButton(string resource, int upQuad, int downQuad, string text, ButtonId id, IButtonDelegation d, float plateScale, float width)
+        {
+            Button button = new Button().InitWithUpElementDownElementandID(
+                LabeledSlicedPlate(resource, upQuad, text, plateScale, width),
+                LabeledSlicedPlate(resource, downQuad, text, plateScale, width),
+                id);
+            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
+            button.delegateButtonDelegate = d;
+            return button;
+        }
+
+        /// <summary>A label in the big DX font, centered and gently pulsing like the classic buttons'.</summary>
+        /// <param name="text">Label.</param>
+        /// <returns>The label.</returns>
+        private static Text CreateLabel(string text)
+        {
             Text label = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             label.SetString(text);
             label.anchor = label.parentAnchor = 18;
             label.pingPongEnabled = true;
+            return label;
+        }
 
-            // DX labels were sized for the wider classic plates; one that would spill is shrunk.
-            float room = plate.width * LabelWidthShare;
+        /// <summary>Centers a label on a plate, shrinking it to fit the room it may take.</summary>
+        /// <param name="plate">The plate.</param>
+        /// <param name="text">Label.</param>
+        /// <param name="room">Width the label may take.</param>
+        private static void AddLabel(BaseElement plate, string text, float room)
+        {
+            Text label = CreateLabel(text);
+
+            // DX labels were sized for the classic plates; one that would spill is shrunk.
             if (label.width > room)
             {
                 label.scaleX = label.scaleY = room / label.width;
             }
             _ = plate.AddChild(label);
-            return plate;
         }
 
         /// <summary>A text button on a Time Travel plate, labeled in the big DX font.</summary>

@@ -67,9 +67,12 @@ namespace CutTheRopeDX.GameMain
             {
                 int ttUp = selected ? TimeTravelArt.ShortCapsuleDown : TimeTravelArt.ShortCapsuleUp;
                 int ttDown = selected ? TimeTravelArt.ShortCapsuleUp : TimeTravelArt.ShortCapsuleDown;
-                return TimeTravelPlates.CreateTextButton(
+                // Stretched to the classic short button's length, which every screen that uses
+                // these buttons is laid out around.
+                return TimeTravelPlates.CreatePillButton(
                     Resources.Img.MenuButtonSmallTimeTravel, ttUp, ttDown, str, bid, d,
-                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, Resources.Img.MenuButtons, 3));
+                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, Resources.Img.MenuButtons, 3),
+                    Image.GetQuadSize(Resources.Img.MenuButtons, 3).X);
             }
 
             // When selected, swap quads so the "down" look is the default state
