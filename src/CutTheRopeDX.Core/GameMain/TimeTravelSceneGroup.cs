@@ -8,9 +8,10 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// One Time Travel scene, authored in asset pixels from the iOS canvas origin. Each layout pass
     /// contains it in the viewport and moves its attached children with the visible edges, the way
-    /// <c>ScreenSizeMgr</c> did on iOS.
+    /// <c>ScreenSizeMgr</c> did on iOS. Touches are mapped back through its scale as a
+    /// <see cref="FittedGroup"/> maps them, so they land on what is drawn.
     /// </summary>
-    internal sealed class TimeTravelSceneGroup : BaseElement
+    internal sealed class TimeTravelSceneGroup : FittedGroup
     {
         /// <summary>Scene width in asset pixels.</summary>
         public const int Width = 998;

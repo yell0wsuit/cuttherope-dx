@@ -91,6 +91,12 @@ namespace CutTheRopeDX.GameMain
     /// <summary>Builds Time Travel buttons with DX labels on iOS plates.</summary>
     internal static class TimeTravelPlates
     {
+        /// <summary>
+        /// Share of a plate's width a label may take; the rest stays clear for the plate's rounded
+        /// ends.
+        /// </summary>
+        public const float LabelWidthShare = 0.85f;
+
         /// <summary>A plate drawn at a scale, inside a container sized to what it draws.</summary>
         /// <param name="resource">Sheet holding the plate.</param>
         /// <param name="quad">Plate quad.</param>
@@ -134,6 +140,13 @@ namespace CutTheRopeDX.GameMain
             label.SetString(text);
             label.anchor = label.parentAnchor = 18;
             label.pingPongEnabled = true;
+
+            // DX labels were sized for the wider classic plates; one that would spill is shrunk.
+            float room = plate.width * LabelWidthShare;
+            if (label.width > room)
+            {
+                label.scaleX = label.scaleY = room / label.width;
+            }
             _ = plate.AddChild(label);
             return plate;
         }

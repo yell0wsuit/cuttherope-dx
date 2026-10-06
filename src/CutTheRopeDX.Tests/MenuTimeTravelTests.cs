@@ -77,6 +77,144 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [InlineData("Portrait", 720, 1280)]
+        [InlineData("TallPortrait", 400, 1280)]
+        [InlineData("Native", 2560, 1440)]
+        public void TouchesLandOnTheButtonsAsDrawn(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
+                controller.ShowView(MenuController.VIEW_MAIN_MENU);
+                controller.Update(0.016f);
+                ResolveDrawPositions(view);
+                Button play = (Button)view.GetChildWithName("ttPlay");
+                Button options = (Button)view.GetChildWithName("ttOptions");
+
+                Rectangle optionsBox = DrawnBox(options);
+                Assert.True(view.OnTouchDownXY(optionsBox.x + (optionsBox.w / 2f), optionsBox.y + (optionsBox.h / 2f)));
+                Assert.Equal(Button.BUTTON_STATE.BUTTON_DOWN, options.state);
+                Assert.Equal(Button.BUTTON_STATE.BUTTON_UP, play.state);
+                _ = view.OnTouchUpXY(-1000f, -1000f);
+
+                // Just above Play's drawn bottom edge, which an unmapped hit test hands to Options.
+                Rectangle playBox = DrawnBox(play);
+                Assert.True(view.OnTouchDownXY(playBox.x + (playBox.w / 2f), playBox.y + (playBox.h * 0.9f)));
+                Assert.Equal(Button.BUTTON_STATE.BUTTON_DOWN, play.state);
+                Assert.Equal(Button.BUTTON_STATE.BUTTON_UP, options.state);
+                _ = view.OnTouchUpXY(-1000f, -1000f);
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TwoCapsulesSitSideBySideInsideTheScreen(string name, int width, int height)
+        {
+            _ = name;
+            IHostApp previousHost = PlatformServices.Host;
+            PlatformServices.Host = new QuitHost();
+            try
+            {
+                WithTimeTravel(width, height, controller =>
+                {
+                    View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
+                    controller.ShowView(MenuController.VIEW_MAIN_MENU);
+                    controller.Update(0.016f);
+                    ResolveDrawPositions(view);
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    Rectangle options = DrawnBox(view.GetChildWithName("ttOptions"));
+                    Rectangle quit = DrawnBox(view.GetChildWithName("ttQuit"));
+
+                    foreach (Rectangle box in new[] { options, quit })
+                    {
+                        Assert.True(box.x >= visible.x - 0.5f && box.x + box.w <= visible.x + visible.w + 0.5f);
+                        Assert.True(box.y >= visible.y - 0.5f && box.y + box.h <= visible.y + visible.h + 0.5f);
+                    }
+                    Assert.True(options.x + options.w <= quit.x, "the capsules overlap");
+                    Assert.Equal(options.y, quit.y, 1);
+                    float sceneCenter = new TimeTravelScreen(visible).ToDesign(TimeTravelScreen.SceneWidth / 2f, 0f).X;
+                    Assert.InRange(((options.x + quit.x + quit.w) / 2f) - sceneCenter, -1f, 1f);
+                });
+            }
+            finally
+            {
+                PlatformServices.Host = previousHost;
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void SubViewBackButtonsSitInTheBottomLeftCorner(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                foreach (int id in new[] { MenuController.VIEW_OPTIONS, MenuController.VIEW_LANGUAGE_SELECT, MenuController.VIEW_RESET, MenuController.VIEW_ABOUT })
+                {
+                    View view = controller.GetView(id);
+                    controller.ShowView(id);
+                    controller.Update(0.016f);
+                    ResolveDrawPositions(view);
+                    Rectangle back = DrawnBox(view.GetChildWithName("backb"));
+
+                    Assert.True(back.x >= visible.x - 0.5f && back.y + back.h <= visible.y + visible.h + 0.5f, "inside the screen");
+                    Assert.True(back.x + (back.w / 2f) < visible.x + (visible.w / 2f), "left half");
+                    Assert.True(back.y + (back.h / 2f) > visible.y + (visible.h / 2f), "bottom half");
+                }
+            });
+        }
+
+        [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(400, 1280)]
+        public void CreditsBordersStraddleTheWindowEdges(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View about = controller.GetView(MenuController.VIEW_ABOUT);
+                ScrollableContainer window = Find<ScrollableContainer>(about);
+                float half = window.height / 2f;
+                foreach ((string piece, float edge) in new[]
+                {
+                    ("ttWindowTopWide", -half), ("ttWindowTopThin", -half),
+                    ("ttWindowBottomWide", half), ("ttWindowBottomThin", half),
+                })
+                {
+                    BaseElement strip = about.GetChildWithName(piece);
+                    Assert.InRange(strip.y - edge, -strip.height / 2f, strip.height / 2f);
+                }
+            });
+        }
+
+        private sealed class QuitHost : IHostApp
+        {
+            public bool CanExit => true;
+
+            public string LevelEditorUrl => null;
+
+            public string CustomLevelExitLabelKey => null;
+
+            public void Exit()
+            {
+            }
+
+            public bool IsKeyPressed(KeyCode key)
+            {
+                return false;
+            }
+
+            public void DrawMovie()
+            {
+            }
+
+            public void OpenUrl(string url)
+            {
+            }
+        }
+
         [Fact]
         public void MainMenuPlacementSurvivesAResize()
         {
@@ -177,6 +315,33 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void LongLabelsShrinkToFitTheirPlate()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                BaseElement plate = TimeTravelPlates.LabeledPlate(
+                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, new string('W', 400), 1f);
+                Text label = Find<Text>(plate);
+
+                Assert.True(label.width * label.scaleX <= plate.width * TimeTravelPlates.LabelWidthShare + 0.5f);
+                Assert.True(label.scaleX < 1f);
+                Assert.Equal(label.scaleX, label.scaleY);
+            });
+        }
+
+        [Fact]
+        public void ShortLabelsKeepTheirSize()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                Text label = Find<Text>(TimeTravelPlates.LabeledPlate(
+                    Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp, "OK", 1f));
+
+                Assert.Equal(1f, label.scaleX);
+            });
+        }
+
+        [Fact]
         public void ResetYesIsAThreeSecondHoldButton()
         {
             WithTimeTravel(2560, 1440, controller =>
@@ -204,6 +369,22 @@ namespace CutTheRopeDX.Tests
                 Assert.Equal(-1f, about.GetChildWithName("ttWindowTopWide").scaleY);
                 Assert.Equal(1f, about.GetChildWithName("ttWindowBottomWide").scaleY);
                 Assert.Null(All<Button>(about.GetChildWithName("ttLogo")).Find(b => b.buttonID == MenuButtonId.CandySelect));
+            });
+        }
+
+        [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(400, 1280)]
+        public void CreditsLinkPlatesAreScaledOnce(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                Button link = All<Button>(controller.GetView(MenuController.VIEW_ABOUT)).Find(b => b.buttonID == MenuButtonId.FanworkProjectWebsite);
+                Assert.NotNull(link);
+
+                // The viewport's growth is the button's own scale; the plate inside it carries only
+                // the iOS credits size.
+                Assert.Equal(0.8f, link.GetChild(0).GetChild(0).scaleX, 3);
             });
         }
 

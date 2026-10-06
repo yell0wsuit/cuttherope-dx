@@ -107,6 +107,26 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void LeavingTheViewMidHoldCancelsIt()
+        {
+            (TimedButton button, Recorder recorder) = Make();
+            _ = button.OnTouchDownXY(10f, 10f);
+            Hold(button, 2f);
+
+            // The finger's release went to whatever view replaced this one.
+            button.Hide();
+            button.Show();
+            Hold(button, 2f);
+            Assert.False(button.IsArmed);
+            Assert.Equal(Button.BUTTON_STATE.BUTTON_UP, button.state);
+
+            _ = button.OnTouchDownXY(10f, 10f);
+            _ = button.OnTouchUpXY(10f, 10f);
+
+            Assert.Equal(0, recorder.Presses);
+        }
+
+        [Fact]
         public void TheArmedFlashTogglesThePlatesAndEndsPressed()
         {
             (TimedButton button, _) = Make();

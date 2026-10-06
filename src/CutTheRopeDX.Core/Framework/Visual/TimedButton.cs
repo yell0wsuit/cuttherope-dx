@@ -97,6 +97,21 @@ namespace CutTheRopeDX.Framework.Visual
             }
         }
 
+        /// <inheritdoc />
+        /// <remarks>
+        /// A view switch mid-hold hands the release to the view that replaced this one, so the
+        /// hold is dropped here; otherwise it would arm unattended and confirm on the next tap.
+        /// </remarks>
+        public override void Hide()
+        {
+            base.Hide();
+            if (holding || state == BUTTON_STATE.BUTTON_DOWN)
+            {
+                Cancel();
+                SetState(BUTTON_STATE.BUTTON_UP);
+            }
+        }
+
         /// <summary>Ends the hold without confirming.</summary>
         private void Cancel()
         {
