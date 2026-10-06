@@ -273,9 +273,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// One state of a Time Travel settings audio toggle: the icon on the capsule plate, drawn
-        /// at the long buttons' scale so the settings keep the iOS proportions. The icon and the
-        /// cross keep the places the iOS button canvas gives them, and the pressed capsule sits
-        /// where that canvas puts it, a little below the one at rest.
+        /// at the long buttons' scale so the settings keep the iOS proportions. The iOS 1.5 canvas
+        /// leaves the speaker well right of the middle; the mobile builds center it, so each icon
+        /// centers its weight on <see cref="TimeTravelArt.PillFaceCenter"/>. The cross keeps its
+        /// canvas place, and the pressed capsule sits where the canvas puts it, a little below
+        /// the one at rest, with the icon held still above it as iOS holds it.
         /// </summary>
         /// <param name="icon">Icon quad.</param>
         /// <param name="crossed">Whether the sound is switched off.</param>
@@ -298,7 +300,11 @@ namespace CutTheRopeDX.GameMain
             plate.x = (shift.X * scale) - ((plate.width >> 1) * (1f - scale));
             plate.y = (shift.Y * scale) - ((plate.height >> 1) * (1f - scale));
             Image glyph = AddTimeTravelAudioGlyphs(plate, plateQuad, icon, crossed);
-            Image.SetElementPositionWithRelativeQuadOffset(glyph, sheet, plateQuad, icon);
+            Vector plateOffset = Image.GetQuadOffset(sheet, plateQuad);
+            Vector face = TimeTravelArt.PillFaceCenter;
+            Vector weight = icon == TimeTravelArt.MusicIcon ? TimeTravelArt.MusicIconWeightCenter : TimeTravelArt.SoundIconWeightCenter;
+            glyph.x = face.X - plateOffset.X - weight.X;
+            glyph.y = face.Y - plateOffset.Y - weight.Y;
 
             Vector rest = Image.GetQuadSize(sheet, TimeTravelArt.CapsuleUp);
             BaseElement container = new()
