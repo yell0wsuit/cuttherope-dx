@@ -11,7 +11,8 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// The title for the Time Travel menus: the DX logo with Time Travel's clock hands animated on
     /// it. The intro plays once; after every timeline it ends, the idle flourish waits a random 5 to
-    /// 25 seconds and plays again, as the iOS menu schedules it.
+    /// 25 seconds and plays again, as the iOS menu schedules it. Unlike iOS, where the hands hold
+    /// one pose, they show the local time.
     /// </summary>
     internal sealed class TimeTravelLogo : BaseElement, ITimelineDelegate
     {
@@ -27,11 +28,29 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Number of whole seconds the wait can add to <see cref="MinIdleDelay"/>.</summary>
         public const int IdleDelaySpread = 21;
 
+        /// <summary>
+        /// Clock angle the hour hand is drawn at, in degrees clockwise from twelve, measured from
+        /// its art.
+        /// </summary>
+        public const float HourHandArtAngle = 24f;
+
+        /// <summary>
+        /// Clock angle the minute hand is drawn at, in degrees clockwise from twelve, measured from
+        /// its art.
+        /// </summary>
+        public const float MinuteHandArtAngle = 120f;
+
         /// <summary>The DX title quad in the logo sheet.</summary>
         public const int ArtQuad = 52;
 
         /// <summary>The clock's center quad in the clock sheet.</summary>
         private const int CenterPointQuad = 0;
+
+        /// <summary>The short hand's quad in the clock sheet.</summary>
+        private const int HourHandQuad = 1;
+
+        /// <summary>The long hand's quad in the clock sheet.</summary>
+        private const int MinuteHandQuad = 2;
 
         /// <summary>
         /// Where the clock center goes on the logo: the hole in the O of ROPE, in logo pixels.
@@ -45,7 +64,10 @@ namespace CutTheRopeDX.GameMain
 
         private readonly List<Image> clockParts = [];
         private Random random;
+        private Func<DateTime> now;
         private FlashXmlStageRoot clock;
+        private Image hourHand;
+        private Image minuteHand;
 
         /// <summary>Gets the timeline playing now, or -1 while waiting for the next idle.</summary>
         public int PlayingTimeline { get; private set; } = -1;
@@ -58,10 +80,11 @@ namespace CutTheRopeDX.GameMain
         /// <param name="candyDelegate">
         /// Receives the candy-select press; when <see langword="null"/> the logo carries no candy.
         /// </param>
+        /// <param name="now">Source of the local time the hands show; the system clock when omitted.</param>
         /// <returns>The logo, sized to its art.</returns>
-        public static TimeTravelLogo Create(Random random, IButtonDelegation candyDelegate = null)
+        public static TimeTravelLogo Create(Random random, IButtonDelegation candyDelegate = null, Func<DateTime> now = null)
         {
-            TimeTravelLogo logo = new() { random = random, anchor = 9, parentAnchor = 9 };
+            TimeTravelLogo logo = new() { random = random, now = now ?? (() => DateTime.Now), anchor = 9, parentAnchor = 9 };
             Image art = Image.FromResource(Resources.Img.MenuLogoNew, ArtQuad);
             art.anchor = art.parentAnchor = 9;
             logo.width = art.width;
@@ -72,14 +95,24 @@ namespace CutTheRopeDX.GameMain
             {
                 _ = art.AddChild(MenuController.CreateLogoCandyButton(candyDelegate));
             }
+            logo.ShowTime();
             logo.Play(IntroTimeline);
             return logo;
+        }
+
+        /// <summary>Switches the source of the time the hands show, and turns them to it at once.</summary>
+        /// <param name="clock">Source of the local time.</param>
+        internal void UseClock(Func<DateTime> clock)
+        {
+            now = clock;
+            ShowTime();
         }
 
         /// <inheritdoc />
         public override void Update(float delta)
         {
             base.Update(delta);
+            ShowTime();
             if (PlayingTimeline >= 0)
             {
                 return;
@@ -130,6 +163,8 @@ namespace CutTheRopeDX.GameMain
 
             FlashXmlTargetAnimationBackend.BuildParts(definition, clock, clockParts, -1, -1);
             FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, clock, -1, -1);
+            hourHand = clockParts.Find(part => part.quadToDraw == HourHandQuad);
+            minuteHand = clockParts.Find(part => part.quadToDraw == MinuteHandQuad);
             foreach (int id in new[] { IntroTimeline, IdleTimeline })
             {
                 if (clock.GetTimeline(id) is { } timeline)
@@ -138,6 +173,25 @@ namespace CutTheRopeDX.GameMain
                 }
             }
             _ = AddChild(clock);
+        }
+
+        /// <summary>
+        /// Turns the hands to the local time. The animation never rotates them, so each is turned
+        /// from the angle its art is drawn at; both sweep continuously.
+        /// </summary>
+        private void ShowTime()
+        {
+            TimeSpan time = now().TimeOfDay;
+            float minutes = (float)(time.TotalMinutes % 60.0);
+            float hours = (float)(time.TotalHours % 12.0);
+            if (hourHand != null)
+            {
+                hourHand.rotation = (hours * 30f) - HourHandArtAngle;
+            }
+            if (minuteHand != null)
+            {
+                minuteHand.rotation = (minutes * 6f) - MinuteHandArtAngle;
+            }
         }
 
         /// <summary>Starts one of the clock's timelines.</summary>

@@ -1,3 +1,5 @@
+using System;
+
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
@@ -23,6 +25,12 @@ namespace CutTheRopeDX.Tests
                 View view = controller.GetView(viewId);
                 Assert.NotNull(view);
                 controller.ShowView(viewId);
+
+                // The logo's hands show the local time; a fixed one keeps the geometry stable.
+                if (view.GetChildWithName("ttLogo") is TimeTravelLogo logo)
+                {
+                    logo.UseClock(() => new DateTime(2026, 10, 6, 10, 10, 0));
+                }
                 controller.Update(0.016f);
 
                 MenuTimeTravelTests.ResolveDrawPositions(view);
