@@ -504,8 +504,12 @@ namespace CutTheRopeDX.GameMain
         /// <param name="q">Audio icon quad index.</param>
         /// <param name="b">Whether to draw the disabled cross overlay.</param>
         /// <param name="p">Whether to use the pressed-state background quad.</param>
-        /// <returns>The configured audio option image.</returns>
-        public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
+        /// <param name="round">
+        /// Whether the Time Travel menus draw it on the round plate, as their pause menu does,
+        /// rather than the capsule their settings use. The other menus have one look.
+        /// </param>
+        /// <returns>The configured audio option element.</returns>
+        public static BaseElement CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, bool round = false)
         {
             if (MenuTheme.IsExperiments)
             {
@@ -514,7 +518,8 @@ namespace CutTheRopeDX.GameMain
 
             if (MenuTheme.IsTimeTravel)
             {
-                return CreateTimeTravelAudioElement(q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon, b, p);
+                int ttIcon = q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon;
+                return round ? CreateTimeTravelRoundAudioElement(ttIcon, b, p) : CreateTimeTravelAudioPill(ttIcon, b, p);
             }
 
             int pressedStateQuad = p ? 1 : 0;
@@ -542,13 +547,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="q">Audio icon quad index.</param>
         /// <param name="delegateValue">Button delegate that receives press events.</param>
         /// <param name="bid">Button identifier assigned to the created toggle.</param>
+        /// <param name="round">Whether the Time Travel menus draw it on the round plate.</param>
         /// <returns>The configured audio toggle button.</returns>
-        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid, bool round = false)
         {
-            Image onUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false);
-            Image onDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true);
-            Image offUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false);
-            Image offDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true);
+            BaseElement onUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, round);
+            BaseElement onDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, round);
+            BaseElement offUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false, round);
+            BaseElement offDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true, round);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(onUp, onDown, offUp, offDown, bid);
             toggleButton.delegateButtonDelegate = delegateValue;
             return toggleButton;

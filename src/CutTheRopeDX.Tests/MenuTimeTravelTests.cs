@@ -380,6 +380,97 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TheAudioPillsAreDrawnAtTheLongButtonsScale()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                ToggleButton toggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, new NoDelegate(), MenuButtonId.ToggleSound);
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+                Image pill = All<Image>(toggle).Find(i => i.texture == small && i.quadToDraw == TimeTravelArt.CapsuleUp);
+                float longScale = TimeTravelPlates.HeightMatching(
+                    Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, Resources.Img.MenuButtons, 0);
+                Vector art = Image.GetQuadSize(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.CapsuleUp);
+
+                Assert.NotNull(pill);
+                Assert.Equal(longScale, pill.scaleX, 4);
+                Assert.Equal(longScale, pill.scaleY, 4);
+                Assert.InRange(toggle.width, (art.X * longScale) - 1f, (art.X * longScale) + 1f);
+                Assert.InRange(toggle.height, (art.Y * longScale) - 1f, (art.Y * longScale) + 1f);
+            });
+        }
+
+        [Fact]
+        public void ThePressedAudioPillSitsWhereTheIosCanvasPutsIt()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+                BaseElement up = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(2, false, false);
+                BaseElement down = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(2, false, true);
+                Texture2D small = Application.GetTexture(sheet);
+                Image upPlate = Find<Image>(up);
+                Image downPlate = Find<Image>(down);
+                float scale = upPlate.scaleY;
+                float drop = Image.GetQuadOffset(sheet, TimeTravelArt.CapsuleDown).Y - Image.GetQuadOffset(sheet, TimeTravelArt.CapsuleUp).Y;
+
+                Assert.Equal(TimeTravelArt.CapsuleDown, downPlate.quadToDraw);
+                Assert.True(drop > 0f);
+                Assert.Equal(up.width, down.width);
+                Assert.Equal(up.height, down.height);
+                Assert.Equal(drop * scale, downPlate.y - upPlate.y, 2);
+            });
+        }
+
+        [Fact]
+        public void TheAudioIconsAndCrossRideOnThePill()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                BaseElement crossed = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(3, true, false);
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+                Image pill = All<Image>(crossed).Find(i => i.texture == small && i.quadToDraw == TimeTravelArt.CapsuleUp);
+
+                Assert.NotNull(All<Image>(pill).Find(i => i.quadToDraw == TimeTravelArt.MusicIcon));
+                Assert.NotNull(All<Image>(pill).Find(i => i.quadToDraw == TimeTravelArt.AudioCross));
+            });
+        }
+
+        [Theory]
+        [InlineData(2, false)]
+        [InlineData(3, false)]
+        [InlineData(3, true)]
+        public void RoundAudioIconsSitOnTheIosMarker(int q, bool pressed)
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+                BaseElement element = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(q, false, pressed, round: true);
+                int iconQuad = q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon;
+                Image plate = Find<Image>(element);
+                Image icon = All<Image>(plate).Find(i => i.quadToDraw == iconQuad);
+                Vector plateOffset = Image.GetQuadOffset(sheet, plate.quadToDraw);
+                Vector marker = TimeTravelArt.RoundAudioIconMarker;
+
+                // iOS createRoundAudioButton: centered across on the marker, 0.6 of its height above it.
+                Assert.Equal(marker.X - plateOffset.X, icon.x + (icon.width * 0.5f), 2);
+                Assert.Equal(marker.Y - plateOffset.Y, icon.y + (icon.height * 0.6f), 2);
+            });
+        }
+
+        [Fact]
+        public void ThePauseMenuKeepsTheRoundAudioPlates()
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                ToggleButton toggle = MenuController.CreateAudioButtonWithQuadDelegateIDiconOffset(2, new NoDelegate(), MenuButtonId.ToggleSound, round: true);
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+
+                Assert.NotNull(All<Image>(toggle).Find(i => i.texture == small && i.quadToDraw == TimeTravelArt.AudioPlateUp));
+                Assert.Null(All<Image>(toggle).Find(i => i.texture == small && i.quadToDraw == TimeTravelArt.CapsuleUp));
+            });
+        }
+
+        [Fact]
         public void OptionsUseTimeTravelPlatesAndAudioToggles()
         {
             WithTimeTravel(2560, 1440, controller =>
@@ -389,7 +480,11 @@ namespace CutTheRopeDX.Tests
                 Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
 
                 Assert.Equal(3, All<Image>(options).FindAll(i => i.texture == big && i.quadToDraw == TimeTravelArt.LongPlateUp).Count);
-                Assert.True(All<Image>(options).FindAll(i => i.texture == small && i.quadToDraw == TimeTravelArt.AudioPlateUp).Count >= 2);
+
+                // The iOS settings build sound and music on the capsule plates; the round ones are
+                // the pause menu's.
+                Assert.True(All<Image>(options).FindAll(i => i.texture == small && i.quadToDraw == TimeTravelArt.CapsuleUp).Count >= 2);
+                Assert.Null(All<Image>(options).Find(i => i.texture == small && i.quadToDraw == TimeTravelArt.AudioPlateUp));
                 Texture2D shaft = Application.GetTexture(Resources.Img.MenuBgrShadow);
                 Assert.Null(All<Image>(options).Find(i => i.texture == shaft));
             });
