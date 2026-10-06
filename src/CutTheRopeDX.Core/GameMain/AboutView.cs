@@ -389,10 +389,11 @@ namespace CutTheRopeDX.GameMain
         {
             if (MenuTheme.IsTimeTravel)
             {
-                // The iOS credits buttons are the long plate at 0.8 (0x3F4CCCCD).
+                // The iOS credits buttons are the long plate at 0.8 (0x3F4CCCCD). The viewport's
+                // growth is applied to the whole button by GrowFromTop, so not here as well.
                 return TimeTravelPlates.CreateTextButton(
                     Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, TimeTravelArt.LongPlateDown,
-                    text, buttonId, buttonDelegate, TimeTravelCreditsButtonScale * scale);
+                    text, buttonId, buttonDelegate, TimeTravelCreditsButtonScale);
             }
 
             Text upText = CreateCenteredTextBlock(text, width, scale);
