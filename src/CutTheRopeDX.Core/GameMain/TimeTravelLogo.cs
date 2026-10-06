@@ -29,16 +29,14 @@ namespace CutTheRopeDX.GameMain
         public const int IdleDelaySpread = 21;
 
         /// <summary>
-        /// Clock angle the hour hand is drawn at, in degrees clockwise from twelve, measured from
-        /// its art.
+        /// Clock angle the hour hand is drawn at, in degrees clockwise from twelve. Every hand
+        /// measurement is of its white body, the hand as it reads without the thick shadow edge
+        /// on one side, so the hand looks straight and centered rather than its outline.
         /// </summary>
-        public const float HourHandArtAngle = 23.7f;
+        public const float HourHandArtAngle = 24.2f;
 
-        /// <summary>
-        /// Clock angle the minute hand is drawn at, in degrees clockwise from twelve, measured from
-        /// its art.
-        /// </summary>
-        public const float MinuteHandArtAngle = 119.6f;
+        /// <summary>Clock angle the minute hand is drawn at, in degrees clockwise from twelve.</summary>
+        public const float MinuteHandArtAngle = 119.1f;
 
         /// <summary>
         /// How far each hand is pulled in toward the hub along its length, in animation stage
@@ -49,15 +47,15 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// How far the hour hand's centerline runs to its art's clockwise side of the hub at rest,
-        /// in animation stage units, measured from its art.
+        /// in animation stage units: 1.7 clock-sheet pixels to the counterclockwise side.
         /// </summary>
-        public const float HourHandCenterlineOffset = 0f;
+        public const float HourHandCenterlineOffset = -1.7f / FlashXmlScale.AtlasToFlashPointScale;
 
         /// <summary>
-        /// How far the minute hand's centerline runs to its art's clockwise side of the hub at rest:
-        /// 4.2 clock-sheet pixels, measured from its art.
+        /// How far the minute hand's centerline runs to its art's clockwise side of the hub at rest,
+        /// in animation stage units: 3.9 clock-sheet pixels.
         /// </summary>
-        public const float MinuteHandCenterlineOffset = 4.2f / FlashXmlScale.AtlasToFlashPointScale;
+        public const float MinuteHandCenterlineOffset = 3.9f / FlashXmlScale.AtlasToFlashPointScale;
 
         /// <summary>
         /// Clock angle shadows fall toward: down and right, from a light at the top left where the
