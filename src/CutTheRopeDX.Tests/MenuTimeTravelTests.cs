@@ -437,9 +437,8 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [InlineData(2, false)]
-        [InlineData(3, false)]
-        [InlineData(3, true)]
-        public void RoundAudioIconsSitOnTheIosMarker(int q, bool pressed)
+        [InlineData(2, true)]
+        public void TheRoundSoundIconSitsOnTheIosMarker(int q, bool pressed)
         {
             WithTimeTravel(2560, 1440, _ =>
             {
@@ -454,6 +453,49 @@ namespace CutTheRopeDX.Tests
                 // iOS createRoundAudioButton: centered across on the marker, 0.6 of its height above it.
                 Assert.Equal(marker.X - plateOffset.X, icon.x + (icon.width * 0.5f), 2);
                 Assert.Equal(marker.Y - plateOffset.Y, icon.y + (icon.height * 0.6f), 2);
+            });
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TheRoundMusicIconKeepsItsCanvasPlace(bool pressed)
+        {
+            WithTimeTravel(2560, 1440, _ =>
+            {
+                // The iOS pause menu has a round sound button only, so its marker rule was never
+                // drawn for the note; the canvas centers the note on the round plate instead.
+                string sheet = Resources.Img.MenuButtonSmallTimeTravel;
+                BaseElement element = MenuController.CreateAudioElementForQuadwithCrosspressediconOffset(3, false, pressed, round: true);
+                Image plate = Find<Image>(element);
+                Image icon = All<Image>(plate).Find(i => i.quadToDraw == TimeTravelArt.MusicIcon);
+                Vector plateOffset = Image.GetQuadOffset(sheet, plate.quadToDraw);
+                Vector iconOffset = Image.GetQuadOffset(sheet, TimeTravelArt.MusicIcon);
+
+                Assert.Equal(iconOffset.X - plateOffset.X, icon.x, 2);
+                Assert.Equal(iconOffset.Y - plateOffset.Y, icon.y, 2);
+            });
+        }
+
+        [Fact]
+        public void TheSettingsAudioRowIsMusicThenSoundWithTheIosGapAndStagger()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View options = controller.GetView(MenuController.VIEW_OPTIONS);
+                controller.ShowView(MenuController.VIEW_OPTIONS);
+                controller.Update(0.016f);
+                ResolveDrawPositions(options);
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+                Rectangle music = DrawnBox(All<ToggleButton>(options).Find(t => All<Image>(t).Exists(i => i.texture == small && i.quadToDraw == TimeTravelArt.MusicIcon)));
+                Rectangle sound = DrawnBox(All<ToggleButton>(options).Find(t => All<Image>(t).Exists(i => i.texture == small && i.quadToDraw == TimeTravelArt.SoundIcon)));
+                Image pill = All<Image>(options).Find(i => i.quadToDraw == TimeTravelArt.CapsuleUp
+                    && i.texture == Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel));
+                float unit = FlashXmlScale.AtlasToFlashPointScale * pill.scaleX * ContentFit.Scale;
+
+                Assert.True(music.x < sound.x, "music comes first, as in the iOS settings");
+                Assert.InRange(sound.x - (music.x + music.w), (MenuController.TimeTravelAudioPillGap * unit) - 0.6f, (MenuController.TimeTravelAudioPillGap * unit) + 0.6f);
+                Assert.InRange(music.y - sound.y, (MenuController.TimeTravelAudioPillStagger * unit) - 0.6f, (MenuController.TimeTravelAudioPillStagger * unit) + 0.6f);
             });
         }
 

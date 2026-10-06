@@ -822,9 +822,17 @@ namespace CutTheRopeDX.GameMain
             vBox.anchor = vBox.parentAnchor = 18;
             ToggleButton musicToggle = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
             ToggleButton soundToggle = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound);
-            HBox audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
-            _ = audioRow.AddChild(soundToggle);
-            _ = audioRow.AddChild(musicToggle);
+            HBox audioRow;
+            if (MenuTheme.IsTimeTravel)
+            {
+                audioRow = CreateTimeTravelAudioRow(musicToggle, soundToggle);
+            }
+            else
+            {
+                audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
+                _ = audioRow.AddChild(soundToggle);
+                _ = audioRow.AddChild(musicToggle);
+            }
             if (MenuTheme.IsExperiments)
             {
                 ToggleButton voiceToggle = CreateExperimentsVoiceToggle(this, MenuButtonId.ToggleVoice);
