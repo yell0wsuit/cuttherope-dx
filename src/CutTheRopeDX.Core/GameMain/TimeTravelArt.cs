@@ -121,6 +121,23 @@ namespace CutTheRopeDX.GameMain
             return Image.GetQuadSize(classicResource, classicQuad).Y / Image.GetQuadSize(resource, quad).Y;
         }
 
+        /// <summary>A plate with a label centered on it in the big DX font.</summary>
+        /// <param name="resource">Sheet holding the plate.</param>
+        /// <param name="quad">Plate quad.</param>
+        /// <param name="text">Label.</param>
+        /// <param name="plateScale">Scale the plate is drawn at.</param>
+        /// <returns>The labeled plate.</returns>
+        public static BaseElement LabeledPlate(string resource, int quad, string text, float plateScale)
+        {
+            BaseElement plate = Plate(resource, quad, plateScale);
+            Text label = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
+            label.SetString(text);
+            label.anchor = label.parentAnchor = 18;
+            label.pingPongEnabled = true;
+            _ = plate.AddChild(label);
+            return plate;
+        }
+
         /// <summary>A text button on a Time Travel plate, labeled in the big DX font.</summary>
         /// <param name="resource">Sheet holding the plates.</param>
         /// <param name="upQuad">Plate shown at rest.</param>
@@ -132,18 +149,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The button.</returns>
         public static Button CreateTextButton(string resource, int upQuad, int downQuad, string text, ButtonId id, IButtonDelegation d, float plateScale)
         {
-            BaseElement up = Plate(resource, upQuad, plateScale);
-            BaseElement down = Plate(resource, downQuad, plateScale);
-            FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
-            foreach (BaseElement state in new[] { up, down })
-            {
-                Text label = new Text().InitWithFont(font);
-                label.SetString(text);
-                label.anchor = label.parentAnchor = 18;
-                label.pingPongEnabled = true;
-                _ = state.AddChild(label);
-            }
-            Button button = new Button().InitWithUpElementDownElementandID(up, down, id);
+            Button button = new Button().InitWithUpElementDownElementandID(
+                LabeledPlate(resource, upQuad, text, plateScale),
+                LabeledPlate(resource, downQuad, text, plateScale),
+                id);
             button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
             button.delegateButtonDelegate = d;
             return button;

@@ -176,6 +176,68 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Fact]
+        public void ResetYesIsAThreeSecondHoldButton()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                TimedButton yes = Find<TimedButton>(controller.GetView(MenuController.VIEW_RESET));
+
+                Assert.NotNull(yes);
+                Assert.Equal(3f, yes.HoldDuration);
+                Assert.Equal((ButtonId)MenuButtonId.ConfirmResetYes, yes.buttonID);
+                Assert.Equal(0.9f, yes.GetChild(1).GetChild(0).scaleX / yes.GetChild(0).GetChild(0).scaleX, 3);
+            });
+        }
+
+        [Fact]
+        public void CreditsCarryTheTimeTravelPiecesAndBorders()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View about = controller.GetView(MenuController.VIEW_ABOUT);
+                foreach (string piece in new[] { "ttLogo", "ttZeptoLab", "ttWindowTopWide", "ttWindowTopThin", "ttWindowBottomWide", "ttWindowBottomThin" })
+                {
+                    Assert.NotNull(about.GetChildWithName(piece));
+                }
+
+                Assert.Equal(-1f, about.GetChildWithName("ttWindowTopWide").scaleY);
+                Assert.Equal(1f, about.GetChildWithName("ttWindowBottomWide").scaleY);
+                Assert.Null(All<Button>(about.GetChildWithName("ttLogo")).Find(b => b.buttonID == MenuButtonId.CandySelect));
+            });
+        }
+
+        [Fact]
+        public void CreditsKeepTheirPiecesWhenRebuiltForANewScale()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                controller.ShowView(MenuController.VIEW_ABOUT);
+                GameLifecycle.OnSurfaceChanged(400, 1280);
+                controller.RelayoutTree(ScreenPresentation.Instance.Snapshot);
+
+                Assert.NotNull(controller.GetView(MenuController.VIEW_ABOUT).GetChildWithName("ttWindowBottomThin"));
+            });
+        }
+
+        [Fact]
+        public void CreditsScrollAtTimeTravelSpeed()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                controller.OnButtonPressed(MenuButtonId.ShowCredits);
+                AboutView about = (AboutView)typeof(MenuController)
+                    .GetField("aboutView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    .GetValue(controller);
+                float before = about.ScrollOffset.Y;
+
+                Assert.True(about.UpdateAutoScroll(0.5f));
+
+                float expected = 0.5f * 30f * new TimeTravelScreen(ScreenPresentation.Instance.Snapshot.VisibleBounds).Scale;
+                Assert.Equal(before + expected, about.ScrollOffset.Y, 2);
+            });
+        }
+
         private static int IndexOf(IReadOnlyList<string> list, string value)
         {
             for (int i = 0; i < list.Count; i++)

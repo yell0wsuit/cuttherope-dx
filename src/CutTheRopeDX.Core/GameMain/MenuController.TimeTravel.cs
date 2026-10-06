@@ -221,6 +221,28 @@ namespace CutTheRopeDX.GameMain
             return button;
         }
 
+        /// <summary>Scale of a held reset plate (iOS <c>0x3F666666</c>).</summary>
+        private const float TimeTravelHeldPlateScale = 0.9f;
+
+        /// <summary>The reset confirmation: confirms only after a three-second hold, as on iOS.</summary>
+        /// <param name="text">Label.</param>
+        /// <param name="id">Button identifier.</param>
+        /// <returns>The hold button.</returns>
+        private TimedButton CreateTimeTravelHoldButton(string text, ButtonId id)
+        {
+            string sheet = Resources.Img.MenuButtonBigTimeTravel;
+            float plateScale = TimeTravelPlates.HeightMatching(sheet, TimeTravelArt.LongPlateUp, Resources.Img.MenuButtons, 0);
+            BaseElement up = TimeTravelPlates.LabeledPlate(sheet, TimeTravelArt.LongPlateUp, text, plateScale);
+            BaseElement down = TimeTravelPlates.LabeledPlate(sheet, TimeTravelArt.LongPlateDown, text, plateScale);
+            BaseElement downPlate = down.GetChild(0);
+            downPlate.scaleX = downPlate.scaleY = plateScale * TimeTravelHeldPlateScale;
+            TimedButton button = new();
+            _ = button.InitWithUpElementDownElementandID(up, down, id);
+            button.SetTouchIncreaseLeftRightTopBottom(15, 15, 15, 15);
+            button.delegateButtonDelegate = this;
+            return button;
+        }
+
         /// <summary>Re-places every Time Travel scene for the current viewport.</summary>
         /// <param name="visible">The logical region the viewport exposes.</param>
         private void LayOutTimeTravelScenes(Rectangle visible)
