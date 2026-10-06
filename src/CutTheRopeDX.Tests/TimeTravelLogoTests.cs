@@ -138,43 +138,114 @@ namespace CutTheRopeDX.Tests
         [InlineData(6, 0)]
         [InlineData(9, 15)]
         [InlineData(12, 30)]
+        [InlineData(7, 40)]
+        [InlineData(4, 20)]
         public void EachHandTurnsAboutTheHubWithItsBaseTuckedUnder(int hour, int minute)
         {
             MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
             {
                 TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, hour, minute, 0));
-                for (int i = 0; i < 120 && logo.PlayingTimeline == TimeTravelLogo.IntroTimeline; i++)
-                {
-                    logo.Update(1f / 60f);
-                }
-                Image hub = ClockPart(logo, 0);
-                Vector center = new(hub.x + (hub.width / 2f), hub.y + (hub.height / 2f));
+                RunIntro(logo);
 
-                AssertBaseOnHub(HourHand(logo), TimeTravelLogo.HourHandArtAngle, center);
-                AssertBaseOnHub(MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle, center);
+                AssertBaseOnHub(logo, HourHand(logo), TimeTravelLogo.HourHandArtAngle, TimeTravelLogo.HourHandCenterlineOffset);
+                AssertBaseOnHub(logo, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle, TimeTravelLogo.MinuteHandCenterlineOffset);
             });
         }
 
-        /// <summary>
-        /// Asserts the point of a hand's art <see cref="TimeTravelLogo.HubOverlap"/> out from the hub
-        /// along the hand is drawn on the hub's center, the way the element transforms it.
-        /// </summary>
-        private static void AssertBaseOnHub(Image hand, float artAngle, Vector center)
+        [Theory]
+        [InlineData(3, 45)]
+        [InlineData(6, 0)]
+        [InlineData(9, 15)]
+        [InlineData(12, 30)]
+        [InlineData(7, 40)]
+        [InlineData(10, 10)]
+        [InlineData(4, 20)]
+        public void EachHandsThickEdgeFacesAwayFromTheLight(int hour, int minute)
         {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, hour, minute, 0));
+                RunIntro(logo);
+
+                AssertThickEdgeShaded(HourHand(logo), TimeTravelLogo.HourHandArtAngle);
+                AssertThickEdgeShaded(MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle);
+            });
+        }
+
+        [Fact]
+        public void AMirroredHandKeepsItsSizeThroughTheTimelines()
+        {
+            MenuTimeTravelTests.WithTimeTravel(2560, 1440, _ =>
+            {
+                // 7:40 points both hands down and left, where both are mirrored.
+                TimeTravelLogo logo = TimeTravelLogo.Create(new Random(0), now: () => new DateTime(2026, 10, 6, 7, 40, 0));
+                bool idlePlayed = false;
+                for (int i = 0; i < 60 * 40 && !(idlePlayed && logo.PlayingTimeline == -1); i++)
+                {
+                    logo.Update(1f / 60f);
+                    idlePlayed |= logo.PlayingTimeline == TimeTravelLogo.IdleTimeline;
+                }
+
+                Assert.True(idlePlayed);
+                foreach (Image hand in new[] { HourHand(logo), MinuteHand(logo) })
+                {
+                    Assert.Equal(-1f, hand.scaleX, 3);
+                    Assert.Equal(1f, hand.scaleY, 3);
+                }
+                AssertBaseOnHub(logo, MinuteHand(logo), TimeTravelLogo.MinuteHandArtAngle, TimeTravelLogo.MinuteHandCenterlineOffset);
+            });
+        }
+
+        private static void RunIntro(TimeTravelLogo logo)
+        {
+            for (int i = 0; i < 120 && logo.PlayingTimeline == TimeTravelLogo.IntroTimeline; i++)
+            {
+                logo.Update(1f / 60f);
+            }
+        }
+
+        /// <summary>
+        /// Asserts the point on a hand's centerline <see cref="TimeTravelLogo.HubOverlap"/> out from
+        /// the hub is drawn on the hub's center, transformed the way the element draws it.
+        /// </summary>
+        private static void AssertBaseOnHub(TimeTravelLogo logo, Image hand, float artAngle, float centerlineOffset)
+        {
+            Image hub = ClockPart(logo, 0);
+            float centerX = hub.x + (hub.width / 2f);
+            float centerY = hub.y + (hub.height / 2f);
             float art = artAngle * MathF.PI / 180f;
-            float pointX = center.X + (MathF.Sin(art) * TimeTravelLogo.HubOverlap);
-            float pointY = center.Y - (MathF.Cos(art) * TimeTravelLogo.HubOverlap);
+
+            // Along the art's axis, and across it toward its clockwise side.
+            float pointX = centerX + (MathF.Sin(art) * TimeTravelLogo.HubOverlap) + (MathF.Cos(art) * centerlineOffset);
+            float pointY = centerY - (MathF.Cos(art) * TimeTravelLogo.HubOverlap) + (MathF.Sin(art) * centerlineOffset);
             float pivotX = hand.x + (hand.width >> 1) + hand.rotationCenterX;
             float pivotY = hand.y + (hand.height >> 1) + hand.rotationCenterY;
-            float localX = pointX + hand.translateX - pivotX;
-            float localY = pointY + hand.translateY - pivotY;
+            float localX = (pointX + hand.translateX - pivotX) * hand.scaleX;
+            float localY = (pointY + hand.translateY - pivotY) * hand.scaleY;
             float turn = hand.rotation * MathF.PI / 180f;
             float drawnX = pivotX + (localX * MathF.Cos(turn)) - (localY * MathF.Sin(turn));
             float drawnY = pivotY + (localX * MathF.Sin(turn)) + (localY * MathF.Cos(turn));
 
-            Assert.Equal(1f, hand.scaleX, 3);
-            Assert.InRange(drawnX - center.X, -0.01f, 0.01f);
-            Assert.InRange(drawnY - center.Y, -0.01f, 0.01f);
+            Assert.Equal(1f, MathF.Abs(hand.scaleX), 3);
+            Assert.InRange(drawnX - centerX, -0.01f, 0.01f);
+            Assert.InRange(drawnY - centerY, -0.01f, 0.01f);
+        }
+
+        /// <summary>
+        /// Asserts a hand's thick edge, drawn on its art's clockwise side, is turned no more than a
+        /// right angle from the way shadows fall.
+        /// </summary>
+        private static void AssertThickEdgeShaded(Image hand, float artAngle)
+        {
+            float edge = DrawnAngle(hand, artAngle) + (float.IsNegative(hand.scaleX) ? -90f : 90f);
+            float toShadow = (edge - TimeTravelLogo.ShadowAngle) * MathF.PI / 180f;
+            Assert.True(MathF.Cos(toShadow) >= -0.001f, $"thick edge at {edge % 360f} faces the light");
+        }
+
+        /// <summary>The clock angle a hand points at as drawn: a mirrored art points the other way.</summary>
+        private static float DrawnAngle(Image hand, float artAngle)
+        {
+            return (float.IsNegative(hand.scaleX) ? -artAngle : artAngle) + hand.rotation;
         }
 
         private static Image HourHand(TimeTravelLogo logo)
@@ -196,7 +267,7 @@ namespace CutTheRopeDX.Tests
         /// <summary>Asserts a hand drawn at <paramref name="artAngle"/> now points at a clock angle.</summary>
         private static void AssertPointsAt(float expected, Image hand, float artAngle)
         {
-            float off = ((((artAngle + hand.rotation - expected) % 360f) + 540f) % 360f) - 180f;
+            float off = ((((DrawnAngle(hand, artAngle) - expected) % 360f) + 540f) % 360f) - 180f;
             Assert.InRange(off, -0.01f, 0.01f);
         }
     }
