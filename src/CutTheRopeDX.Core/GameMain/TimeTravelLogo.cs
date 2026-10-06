@@ -14,7 +14,11 @@ namespace CutTheRopeDX.GameMain
     /// 25 seconds and plays again, as the iOS menu schedules it. Unlike iOS, where the hands hold
     /// one pose, they show the local time.
     /// </summary>
-    internal sealed class TimeTravelLogo : BaseElement, ITimelineDelegate
+    /// <remarks>
+    /// A <see cref="FittedGroup"/>, so a menu that draws it scaled still hands the candy touches
+    /// where the candy is drawn.
+    /// </remarks>
+    internal sealed class TimeTravelLogo : FittedGroup, ITimelineDelegate
     {
         /// <summary>Timeline played once when the logo appears.</summary>
         public const int IntroTimeline = 0;

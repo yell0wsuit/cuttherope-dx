@@ -121,6 +121,33 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheLogoSitsInTheTimeTravelTitleBox(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowMainMenu(controller);
+                TimeTravelScreen screen = new(ScreenPresentation.Instance.Snapshot.VisibleBounds);
+                Vector origin = screen.ToDesign(0f, 0f);
+                Rectangle logo = DrawnBox(view.GetChildWithName("ttLogo"));
+                Rectangle play = DrawnBox(view.GetChildWithName("ttPlay"));
+                float scale = MenuController.TimeTravelLogoScale;
+
+                // In the iOS scene's logical units.
+                float top = (logo.y - origin.Y) / screen.Scale;
+                float center = (logo.x + (logo.w / 2f) - origin.X) / screen.Scale;
+                float logicalWidth = logo.w / screen.Scale;
+                Assert.InRange(top, MenuController.TimeTravelLogoTop - 0.5f, MenuController.TimeTravelLogoTop + 0.5f);
+                Assert.InRange(center, (TimeTravelScreen.SceneWidth / 2f) - 0.5f, (TimeTravelScreen.SceneWidth / 2f) + 0.5f);
+                float artWidth = view.GetChildWithName("ttLogo").width * scale / FlashXmlScale.AtlasToFlashPointScale;
+                Assert.InRange(logicalWidth, artWidth - 0.5f, artWidth + 0.5f);
+                Assert.True(scale < 1f);
+                Assert.True(logo.y + logo.h <= play.y + 0.5f, "the logo reaches into Play");
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
         public void TwoCapsulesSitSideBySideInsideTheScreen(string name, int width, int height)
         {
             _ = name;

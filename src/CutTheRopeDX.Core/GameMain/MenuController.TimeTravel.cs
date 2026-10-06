@@ -40,8 +40,18 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         internal const float TimeTravelCapsuleRowMargin = 24f;
 
-        /// <summary>Height of the iOS title, in logical units: where the logo part rests after its intro.</summary>
-        private const float TimeTravelLogoTop = 2.15f;
+        /// <summary>
+        /// Where the iOS title's art begins, in logical units: its logo part rests at 2.15 and is
+        /// clear for its first 18. The DX logo's art is opaque to its top edge, so it is placed by
+        /// this line rather than by the part's position.
+        /// </summary>
+        internal const float TimeTravelLogoTop = 20.15f;
+
+        /// <summary>
+        /// Scale the DX logo is drawn at: the iOS title's drawn width (483 logical units) over the
+        /// DX logo's (508), so the logo fills the box the iOS title fills.
+        /// </summary>
+        internal const float TimeTravelLogoScale = 0.95f;
 
         /// <summary>The main menu's Time Travel scene.</summary>
         private TimeTravelSceneGroup timeTravelMain;
@@ -89,8 +99,11 @@ namespace CutTheRopeDX.GameMain
             // that opens candy selection as it does in the classic menu.
             TimeTravelLogo logo = TimeTravelLogo.Create(new Random(), this);
             logo.SetName("ttLogo");
+            logo.scaleX = logo.scaleY = TimeTravelLogoScale;
+
+            // Scaled about its center like every element, so its top is solved for the scale.
             logo.x = (TimeTravelSceneGroup.Width - logo.width) / 2f;
-            logo.y = TimeTravelLogoTop * FlashXmlScale.AtlasToFlashPointScale;
+            logo.y = (TimeTravelLogoTop * FlashXmlScale.AtlasToFlashPointScale) - ((logo.height >> 1) * (1f - TimeTravelLogoScale));
             _ = scene.AddChild(logo);
 
             _ = background.AddChild(scene);
