@@ -781,6 +781,7 @@ namespace CutTheRopeDX.Framework.Core
         /// </remarks>
         internal static string[] PackMenu => MenuTheme.Current switch
         {
+            MenuStyle.Classic => PackMenuClassic,
             MenuStyle.Experiments => PackMenuExperiments,
             MenuStyle.TimeTravel => PackMenuTimeTravel,
             _ => PackMenuClassic,
