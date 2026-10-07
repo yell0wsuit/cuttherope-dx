@@ -48,7 +48,11 @@ namespace CutTheRopeDX.Commons
             background.DoRestoreCutTransparency();
             background.scaleX = backgroundScaleX;
             background.scaleY = backgroundScaleY;
-            _ = contentRoot.AddChild(background);
+
+            // The Time Travel window takes the classic background's place and box, so the content
+            // composed against that background lands where it always has.
+            Rectangle box = TimeTravelPopupFrame.ClassicBox(background);
+            _ = contentRoot.AddChild(MenuTheme.IsTimeTravel ? TimeTravelPopupFrame.Create(box) : background);
 
             PopupLayout layout = new(background.width, background.height, backgroundScaleX, backgroundScaleY);
 
@@ -76,6 +80,13 @@ namespace CutTheRopeDX.Commons
             }
 
             AddButtons(contentRoot, template, layout);
+
+            // The iOS close button, standing in for the popup's way out: every popup lists that
+            // button last.
+            if (MenuTheme.IsTimeTravel && template.Buttons.Count > 0)
+            {
+                _ = contentRoot.AddChild(TimeTravelPopupFrame.CreateCloseButton(box, template.Buttons[^1].ButtonId, menuController));
+            }
 
             popup.ShowPopup();
             _ = menuController.ActiveView().AddChild(popup);
