@@ -380,6 +380,90 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void CandySelectionTabsAreLanguageLengthPills()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_CANDY_SELECT);
+                float languageWidth = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X;
+                Texture2D small = Application.GetTexture(Resources.Img.MenuButtonSmallTimeTravel);
+
+                foreach (Button tab in CandyTabs(view))
+                {
+                    Assert.InRange(tab.width, languageWidth - 1f, languageWidth + 1f);
+                    SlicedImage plate = Find<SlicedImage>(tab.GetChild(0));
+                    Assert.NotNull(plate);
+                    Assert.Equal(small, plate.texture);
+                    Assert.InRange(plate.width * plate.scaleX, languageWidth - 1f, languageWidth + 1f);
+                }
+            });
+        }
+
+        [Fact]
+        public void TheActiveCandyTabWearsTheSelectedPillAndKeepsItsLength()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_CANDY_SELECT);
+                float languageWidth = Image.GetQuadSize(Resources.Img.MenuButtons, 3).X;
+                CandySelectionView.SwitchToRopeMode();
+
+                foreach (Button tab in CandyTabs(view))
+                {
+                    bool active = tab.buttonID == MenuButtonId.RopeSelect;
+                    int expected = active ? TimeTravelArt.ShortCapsuleDown : TimeTravelArt.ShortCapsuleUp;
+                    SlicedImage up = Find<SlicedImage>(tab.GetChild(0));
+                    Assert.Equal(expected, up.quadToDraw);
+                    Assert.InRange(up.width * up.scaleX, languageWidth - 1f, languageWidth + 1f);
+                }
+
+                CandySelectionView.SwitchToCandyMode();
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheCandyTabPillsFitOnScreenWithoutOverlapping(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_CANDY_SELECT);
+                controller.ShowView(MenuController.VIEW_CANDY_SELECT);
+                controller.Update(0.016f);
+                ResolveDrawPositions(view);
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                List<Rectangle> boxes = CandyTabs(view).ConvertAll(DrawnBox);
+
+                foreach (Rectangle box in boxes)
+                {
+                    Assert.True(box.x >= visible.x - 0.5f && box.x + box.w <= visible.x + visible.w + 0.5f, "a tab leaves the screen sideways");
+                    Assert.True(box.y >= visible.y - 0.5f && box.y + box.h <= visible.y + visible.h + 0.5f, "a tab leaves the screen vertically");
+                }
+                for (int i = 0; i < boxes.Count; i++)
+                {
+                    for (int j = i + 1; j < boxes.Count; j++)
+                    {
+                        Rectangle a = boxes[i];
+                        Rectangle b = boxes[j];
+                        bool apart = a.x + a.w <= b.x + 0.5f || b.x + b.w <= a.x + 0.5f || a.y + a.h <= b.y + 0.5f || b.y + b.h <= a.y + 0.5f;
+                        Assert.True(apart, $"tabs {i} and {j} overlap");
+                    }
+                }
+            });
+        }
+
+        private static List<Button> CandyTabs(View view)
+        {
+            List<Button> tabs = All<Button>(view).FindAll(b => b.buttonID == MenuButtonId.CandySelect
+                || b.buttonID == MenuButtonId.RopeSelect
+                || b.buttonID == MenuButtonId.OmNomSelect
+                || b.buttonID == MenuButtonId.TraceSelect);
+            Assert.Equal(4, tabs.Count);
+            return tabs;
+        }
+
+        [Fact]
         public void TheAudioPillsAreDrawnAtTheLongButtonsScale()
         {
             WithTimeTravel(2560, 1440, _ =>

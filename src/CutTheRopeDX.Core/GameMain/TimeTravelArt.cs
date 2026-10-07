@@ -244,6 +244,19 @@ namespace CutTheRopeDX.GameMain
             button.height = button.GetChild(0).height;
         }
 
+        /// <summary>
+        /// Redraws both pills of a button made by <see cref="CreatePillButton"/> from other quads
+        /// of the same sheet, keeping the width they are stretched to.
+        /// </summary>
+        /// <param name="button">The button.</param>
+        /// <param name="upQuad">Pill to show at rest.</param>
+        /// <param name="downQuad">Pill to show while pressed.</param>
+        public static void SetPillQuads(Button button, int upQuad, int downQuad)
+        {
+            SetPillQuad(button.GetChild(0), upQuad);
+            SetPillQuad(button.GetChild(1), downQuad);
+        }
+
         /// <summary>A text button on a stretched Time Travel pill, labeled in the big DX font.</summary>
         /// <param name="resource">Sheet holding the pills.</param>
         /// <param name="upQuad">Pill shown at rest.</param>
@@ -295,6 +308,17 @@ namespace CutTheRopeDX.GameMain
         {
             // DX labels were sized for the classic plates; one that would spill is shrunk.
             label.scaleX = label.scaleY = label.width > room ? room / label.width : 1f;
+        }
+
+        /// <summary>Redraws one stretched pill from another quad, keeping its width.</summary>
+        private static void SetPillQuad(BaseElement container, int quad)
+        {
+            SlicedImage plate = (SlicedImage)container.GetChild(0);
+
+            // Choosing a quad resets an image to the quad's own width.
+            int width = plate.width;
+            plate.SetDrawQuad(quad);
+            plate.width = Math.Max(width, plate.ArtWidth);
         }
 
         /// <summary>Sizes a stretched pill and its container to a drawn width.</summary>
