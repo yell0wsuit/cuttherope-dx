@@ -796,6 +796,9 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuExtraButtons,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
+            .. SpecialEvents.IsHalloween
+                ? (string[])[Resources.Img.MenuBgrHalloween, Resources.Img.MenuBgrHalloweenDecorations]
+                : [],
             Resources.BackgroundImg.SkinBackground,
             Resources.Img.SkinSelection,
             Resources.Img.CandySelectionFx,
@@ -825,7 +828,10 @@ namespace CutTheRopeDX.Framework.Core
             CandySkinHelper.GetCandyResource(Preferences.GetIntForKey("PREFS_SELECTED_CANDY")),
             Resources.Img.ObjCandyFx,
             Resources.Img.ObjSpider,
-            MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp),
+            HalloweenBatSwarm.ReplacesConfetti
+                ? Resources.Img.FxHalloween
+                : MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp),
+            .. HalloweenBatSwarm.ReplacesConfetti ? (string[])[Resources.Img.MenuResultScreenHalloween] : [],
             MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop),
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,

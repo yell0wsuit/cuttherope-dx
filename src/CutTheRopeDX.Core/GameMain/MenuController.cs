@@ -251,6 +251,10 @@ namespace CutTheRopeDX.GameMain
                     backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
                     break;
+                case var _ when SpecialEvents.IsHalloween:
+                    backgroundResource = Resources.Img.MenuBgrHalloween;
+                    backgroundQuad = 0;
+                    break;
                 default:
                     backgroundResource = Resources.Img.MenuBgr;
                     backgroundQuad = 0;
@@ -263,6 +267,10 @@ namespace CutTheRopeDX.GameMain
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
             _ = baseElement.AddChild(image);
+            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments)
+            {
+                AddHalloweenDecorations(baseElement, mainMenu: l);
+            }
             Image frontLayer = null;
             Image shadowLayer = null;
             if (l)
@@ -274,6 +282,10 @@ namespace CutTheRopeDX.GameMain
                 {
                     case var _ when SpecialEvents.IsXmas:
                         backgroundSecondaryResource = Resources.Img.MenuBgrXmas;
+                        backgroundSecondaryQuad = 1;
+                        break;
+                    case var _ when SpecialEvents.IsHalloween:
+                        backgroundSecondaryResource = Resources.Img.MenuBgrHalloween;
                         backgroundSecondaryQuad = 1;
                         break;
                     default:
@@ -383,6 +395,9 @@ namespace CutTheRopeDX.GameMain
                         hatForeground.x = 30f;  // Adjust horizontal position (positive = right)
                         hatForeground.y = -80f;  // Adjust vertical position (positive = down)
                         _ = logo.AddChild(hatForeground);
+                        break;
+                    case var _ when SpecialEvents.IsHalloween:
+                        AddHalloweenLogoHat(logoParent, logo);
                         break;
                     default:
                         break;

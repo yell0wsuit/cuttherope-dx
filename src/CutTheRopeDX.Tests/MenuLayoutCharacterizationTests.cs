@@ -24,7 +24,7 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
 
-            LayoutSurfaces.WithSurface(width, height, () =>
+            LayoutSurfaces.WithSurface(width, height, () => SeasonalDate.With(SeasonalDate.NoEvent, () =>
             {
                 MenuController controller = new(
                     Application.SharedRootController());
@@ -49,7 +49,7 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.Dispose();
                 }
-            });
+            }));
         }
 
         public static TheoryData<string, int, int, int, string> Cases()

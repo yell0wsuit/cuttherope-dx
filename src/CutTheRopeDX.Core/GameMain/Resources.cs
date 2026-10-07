@@ -322,6 +322,12 @@ namespace CutTheRopeDX.GameMain
             public const string HudUi = "hud_ui";
             public const string ObjSpider = "obj_spider";
             public const string ConfettiParticles = "confetti_particles";
+
+            // Cut the Rope 3.3.0 Halloween bats, in the iOS quad order: the black bat, then the
+            // three purple bats the swarm flies.
+            public const string FxHalloween = "fx_halloween";
+
+            public const string MenuResultScreenHalloween = "menu_result_screen_halloween";
             public const string MenuPause = "menu_pause";
             public const string MenuResults = "menu_results";
 
@@ -394,6 +400,12 @@ namespace CutTheRopeDX.GameMain
             public const string ObjSock = "obj_sock_xmas";
             public const string MenuBgrXmas = "menu_bgr_xmas";
             public const string MenuLogoXmasHat = "xmas_hat_logo";
+            public const string MenuBgrHalloween = "menu_bgr_halloween";
+
+            // Cut the Rope 3.3.0 Halloween menu decorations, on its portrait 1280x1920 canvas at
+            // 0.78: webs and bats for the inner menus, then for the main menu, then the logo's
+            // witch hat behind and in front of the lettering.
+            public const string MenuBgrHalloweenDecorations = "menu_bgr_halloween_decorations";
             public const string Bgr13Cover = "bgr_13_cover";
             public const string ObjPipe = "obj_pipe";
             public const string Bgr14Cover = "bgr_14_cover";
@@ -811,6 +823,7 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusic5 = "game_music_remake";
             public const string MenuMusicXmas = "menu_music_xmas";
             public const string GameMusicXmas = "game_music_xmas";
+            public const string MenuMusicHalloween = "menu_music_halloween";
             public const string MenuMusicExp = "menu_music_exp";
             public const string GameMusicExp = "game_music_exp";
         }
