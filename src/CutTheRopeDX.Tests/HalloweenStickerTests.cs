@@ -97,7 +97,7 @@ namespace CutTheRopeDX.Tests
         [InlineData(2560, 1440)]
         [InlineData(720, 1280)]
         [InlineData(320, 480)]
-        public void StickerArrivesOnlyOnceTheLastBatHasGone(int width, int height)
+        public void ThreeStarsShowTheStickerStraightAwayUnderTheBats(int width, int height)
         {
             // Booting resets the surface, so the size goes on between boot and load.
             _ = HeadlessGame.Boot();
@@ -112,15 +112,17 @@ namespace CutTheRopeDX.Tests
                     box.confettiAnims.RemoveAllChilds();
                     Rectangle panel = DesignExtent.Measure(box.result);
                     Assert.InRange(panel.w, 500f, 1600f);
-                    box.ShowConfetti();
+                    box.shouldShowConfetti = true;
+                    box.PostBoxClosed();
                     Texture2D stickers = Application.GetTexture(Resources.Img.MenuResultScreenHalloween);
 
-                    Tick(box.confettiAnims, 3.2f);
-                    Assert.Null(FindSticker(box.confettiAnims, stickers));
+                    // Both at once, the sticker first so the bats draw in front of it.
+                    Assert.Equal(2, box.confettiAnims.ChildsCount());
+                    Image sticker = Assert.IsType<Image>(box.confettiAnims.GetChild(0));
+                    Assert.Equal(stickers, sticker.texture);
+                    _ = Assert.IsType<HalloweenBatSwarm>(box.confettiAnims.GetChild(1));
 
-                    Tick(box.confettiAnims, 1f);
-                    Image sticker = FindSticker(box.confettiAnims, stickers);
-                    Assert.NotNull(sticker);
+                    Tick(box.confettiAnims, 0.5f);
                     Assert.InRange(MathF.Abs(sticker.rotation), HalloweenSticker.MinTilt, HalloweenSticker.MaxTilt);
                     Assert.Equal(1f, sticker.color.AlphaChannel, 3);
                     Assert.InRange(sticker.scaleX, HalloweenSticker.MinFitScale, 1f);

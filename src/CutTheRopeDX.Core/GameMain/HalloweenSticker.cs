@@ -8,9 +8,7 @@ using CutTheRopeDX.Framework.Visual;
 namespace CutTheRopeDX.GameMain
 {
     /// <summary>
-    /// A costumed Om Nom stuck next to the Halloween result panel - after the bats on three stars,
-    /// straight away otherwise: one of Cut the Rope 3.3.0's five, never the one shown last time,
-    /// at a random spot, size and tilt, fading and zooming in to that size.
+    /// A costumed Om Nom stuck next to the Halloween result panel as it shows, whatever the stars.
     /// </summary>
     internal static class HalloweenSticker
     {

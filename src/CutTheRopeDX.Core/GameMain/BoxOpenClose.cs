@@ -531,10 +531,7 @@ namespace CutTheRopeDX.GameMain
         {
             if (HalloweenBatSwarm.ReplacesConfetti)
             {
-                // Measured before the swarm joins the panel, so only the panel's own pieces count.
-                Rectangle panel = DesignExtent.Measure(result);
-                HalloweenBatSwarm swarm = new() { Gone = () => ShowHalloweenSticker(panel) };
-                _ = confettiAnims.AddChild(swarm);
+                _ = confettiAnims.AddChild(new HalloweenBatSwarm());
                 return;
             }
             for (int i = 0; i < 70; i++)
@@ -789,20 +786,21 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Invokes the box-closed callback and optionally starts the confetti burst; during
-        /// Halloween, a result without one still gets its sticker.
+        /// Invokes the box-closed callback, sticks on the Halloween sticker whatever the stars,
+        /// and optionally starts the confetti burst.
         /// </summary>
         public void PostBoxClosed()
         {
             delegateboxClosed?.Invoke();
+            if (HalloweenBatSwarm.ReplacesConfetti)
+            {
+                // Before the bats, so they fly in front of it, and measured while the panel holds
+                // only its own pieces.
+                ShowHalloweenSticker(DesignExtent.Measure(result));
+            }
             if (shouldShowConfetti)
             {
                 ShowConfetti();
-            }
-            else if (HalloweenBatSwarm.ReplacesConfetti)
-            {
-                // Under three stars there are no bats to wait for, so the sticker comes straight away.
-                ShowHalloweenSticker(DesignExtent.Measure(result));
             }
         }
 
