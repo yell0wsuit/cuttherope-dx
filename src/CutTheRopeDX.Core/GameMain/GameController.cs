@@ -665,9 +665,7 @@ namespace CutTheRopeDX.GameMain
                     return;
                 case GameControllerInputCommand.OpenPause:
                     SoundMgr.PlaySound(Resources.Snd.Tap);
-                    EnterOverlayMode(GameControllerOverlayMode.Paused);
-                    RootController.LogEvent("IG_MENU_PRESSED");
-                    RootController.LogEvent("IM_SHOWN");
+                    OpenPauseMenu();
                     return;
                 case GameControllerInputCommand.Resume:
                     SoundMgr.PlaySound(Resources.Snd.Tap);
@@ -968,8 +966,18 @@ namespace CutTheRopeDX.GameMain
             // A forced pause cannot wait for the egg's fade, which would sit frozen behind the
             // menu, so the egg is removed outright.
             (GetView(0)?.GetChild(GameView.VIEW_ELEMENT_GAME_SCENE) as GameScene)?.ClearEasterEgg();
-            ExecuteInputCommand(command);
+            // Silent, unlike the pause button: nothing was pressed, so a tap would be the game
+            // clicking at the player as they switch away from it.
+            OpenPauseMenu();
             return true;
+        }
+
+        /// <summary>Shows the pause overlay and records that it opened.</summary>
+        private void OpenPauseMenu()
+        {
+            EnterOverlayMode(GameControllerOverlayMode.Paused);
+            RootController.LogEvent("IG_MENU_PRESSED");
+            RootController.LogEvent("IM_SHOWN");
         }
 
         /// <summary>
