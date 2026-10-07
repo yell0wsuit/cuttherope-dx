@@ -73,8 +73,10 @@ export function transferCanvasToThread(canvasId, threadId) {
 // happened. What makes the progress claim true is separate: Preferences.Update runs on every
 // fixed step and writes eagerly when a save was requested.
 function reportContextLost() {
-    document.getElementById("splash")?.classList.remove("hidden");
-    for (const element of ["splash-spinner", "splash-progress", "start"]) {
+    const splash = document.getElementById("splash");
+    splash?.classList.remove("hidden");
+    splash?.classList.add("failed");
+    for (const element of ["splash-bubble", "start"]) {
         document.getElementById(element)?.setAttribute("hidden", "");
     }
     globalThis.ctrdxStopHint?.();
