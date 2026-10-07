@@ -118,6 +118,18 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public static readonly Vector MusicIconWeightCenter = new(62.1f, 62.3f);
 
+        /// <summary>Popup frame: the bottom cap (iOS q0).</summary>
+        public const int PopupBottom = 0;
+
+        /// <summary>Popup frame: the strip tiled between the caps (iOS q1).</summary>
+        public const int PopupStrip = 1;
+
+        /// <summary>Popup frame: the top cap (iOS q2).</summary>
+        public const int PopupTop = 2;
+
+        /// <summary>Popup: the round close button over the top cap's corner (iOS q10).</summary>
+        public const int PopupClose = 3;
+
         /// <summary>Settings: the wide credits window border (iOS q6).</summary>
         public const int WindowBorderWide = 6;
 

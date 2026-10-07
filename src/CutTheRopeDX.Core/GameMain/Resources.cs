@@ -354,6 +354,7 @@ namespace CutTheRopeDX.GameMain
             public const string MenuButtonsTimeTravel = "menu_buttons_timetravel";
             public const string MenuButtonBigTimeTravel = "menu_button_big_timetravel";
             public const string MenuButtonSmallTimeTravel = "menu_button_small_timetravel";
+            public const string MenuPopupTimeTravel = "menu_popup_timetravel";
             public const string MenuSettingsTimeTravel = "menu_settings_timetravel";
             public const string LogoClockTimeTravel = "logo_clock_timetravel";
             public const string ObjStarDisappear = "obj_star_disappear";
