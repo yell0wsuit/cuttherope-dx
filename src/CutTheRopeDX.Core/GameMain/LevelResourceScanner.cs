@@ -341,6 +341,11 @@ namespace CutTheRopeDX.GameMain
             _ = resources.Add(Resources.Img.FingerTraceGlow);
 
             _ = resources.Add(Resources.Snd.Tap);
+            if (MenuTheme.IsTimeTravel)
+            {
+                _ = resources.Add(Resources.Snd.TapTimeTravel1);
+                _ = resources.Add(Resources.Snd.TapTimeTravel2);
+            }
             _ = resources.Add(Resources.Snd.CandyBreak);
             _ = resources.Add(Resources.Snd.RopeBleak1);
             _ = resources.Add(Resources.Snd.RopeBleak2);

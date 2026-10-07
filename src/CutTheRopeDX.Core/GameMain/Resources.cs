@@ -617,6 +617,8 @@ namespace CutTheRopeDX.GameMain
         {
             public const string ZeptoLogoBubbles = "zepto_logo_bubbles";
             public const string Tap = "tap";
+            public const string TapTimeTravel1 = "tap_01_tt";
+            public const string TapTimeTravel2 = "tap_02_tt";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
             public const string Bubble = "bubble";
@@ -840,6 +842,7 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusicXmas = "game_music_xmas";
             public const string MenuMusicHalloween = "menu_music_halloween";
             public const string MenuMusicExp = "menu_music_exp";
+            public const string MenuMusicTimeTravel = "menu_music_tt";
             public const string GameMusicExp = "game_music_exp";
         }
 

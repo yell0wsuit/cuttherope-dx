@@ -1952,7 +1952,7 @@ namespace CutTheRopeDX.GameMain
 
             if (n.Value != -1)
             {
-                SoundMgr.PlaySound(Resources.Snd.Tap);
+                SoundMgr.PlaySound(TapSounds.Next());
             }
 
             if (n.IsLevelButton())
