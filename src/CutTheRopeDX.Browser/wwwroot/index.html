@@ -151,12 +151,11 @@
             }
             /* Contrast was measured against the artwork rather than its average color: ink
                holds 9.8:1 on the darkest pixel of the tile and 7.4:1 on the pink highlight
-               inside the bubble, ink-soft 7.1:1 on the tile, and button text 8.5:1. */
+               inside the bubble, and ink-soft 7.1:1 on the tile. Button labels carry their own
+               black outline, so they hold 21:1 whatever the pill behind them looks like. */
             #splash {
                 --ink: #19130c;
                 --ink-soft: #3d2b1f;
-                --button: #6b4423;
-                --button-hover: #5a3414;
                 --bubble: min(228px, 56vw, 34vh);
                 position: fixed;
                 inset: 0;
@@ -315,20 +314,51 @@
             #start,
             #reload,
             #resume {
-                padding: 10px 32px;
+                min-width: 190px;
+                height: 66px;
+                padding: 0 40px 4px;
                 font: inherit;
-                font-size: 1.6rem;
-                border: 0;
-                border-radius: 12px;
-                background: var(--button);
+                /* BigFont is 100 units on a 173-unit pill, with a black outline reaching 3
+                   units past the glyph and a hard black copy of the outlined glyph 2 across
+                   and 3 down (SkiaFont.EffectPaint). In em, both follow the label's size. */
+                font-size: calc(66px * 100 / 173);
+                line-height: 1;
                 color: #fff;
-                box-shadow: 0 3px 0 rgb(0 0 0 / 25%);
+                text-shadow:
+                    0.03em 0 #000,
+                    -0.03em 0 #000,
+                    0 0.03em #000,
+                    0 -0.03em #000,
+                    0.0212em 0.0212em #000,
+                    -0.0212em 0.0212em #000,
+                    0.0212em -0.0212em #000,
+                    -0.0212em -0.0212em #000,
+                    0.05em 0.03em #000,
+                    -0.01em 0.03em #000,
+                    0.02em 0.06em #000,
+                    0.02em 0 #000,
+                    0.0412em 0.0512em #000,
+                    -0.0012em 0.0512em #000,
+                    0.0412em 0.0088em #000,
+                    -0.0012em 0.0088em #000;
+                border-style: solid;
+                border-width: 0;
+                border-image: url("./splash/button.webp") 0 96 fill / 0 36px
+                    stretch;
+                background: url("./splash/button-pressed.webp") 0 0 / 0 0
+                    no-repeat;
                 cursor: pointer;
             }
             #start:hover,
             #reload:hover,
             #resume:hover {
-                background: var(--button-hover);
+                filter: brightness(1.06);
+            }
+            #start:active,
+            #reload:active,
+            #resume:active {
+                border-image-source: url("./splash/button-pressed.webp");
+                filter: none;
             }
             #start:focus-visible,
             #reload:focus-visible,
