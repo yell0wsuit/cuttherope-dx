@@ -1,0 +1,53 @@
+{
+    "frames": [
+        {
+            "filename": "02_char_omnom_bat.png",
+            "frame": { "x": 1530, "y": 1, "w": 482, "h": 300 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 482, "h": 300 },
+            "sourceSize": { "w": 482, "h": 300 }
+        },
+        {
+            "filename": "03_char_omnom_mummy.png",
+            "frame": { "x": 384, "y": 1, "w": 360, "h": 356 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 360, "h": 356 },
+            "sourceSize": { "w": 360, "h": 356 }
+        },
+        {
+            "filename": "04_char_omnom_jack.png",
+            "frame": { "x": 1, "y": 1, "w": 381, "h": 399 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 381, "h": 399 },
+            "sourceSize": { "w": 381, "h": 399 }
+        },
+        {
+            "filename": "05_char_omnom_frankenstein.png",
+            "frame": { "x": 746, "y": 1, "w": 342, "h": 351 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 342, "h": 351 },
+            "sourceSize": { "w": 342, "h": 351 }
+        },
+        {
+            "filename": "06_char_omnom_dracula.png",
+            "frame": { "x": 1090, "y": 1, "w": 438, "h": 347 },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": { "x": 0, "y": 0, "w": 438, "h": 347 },
+            "sourceSize": { "w": 438, "h": 347 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_result_screen_halloween.png",
+        "format": "RGBA8888",
+        "size": { "w": 2013, "h": 401 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:e7bf47cb5fd15e6214121086d7dd5064:fb1315a36f6c34045f2829857eaa2e28:4df8abba2d16773699dcf4fb2ad6b319$"
+    }
+}

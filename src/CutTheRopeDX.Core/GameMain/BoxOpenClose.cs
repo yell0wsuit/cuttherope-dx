@@ -531,13 +531,43 @@ namespace CutTheRopeDX.GameMain
         {
             if (HalloweenBatSwarm.ReplacesConfetti)
             {
-                _ = confettiAnims.AddChild(new HalloweenBatSwarm());
+                // Measured before the swarm joins the panel, so only the panel's own pieces count.
+                Rectangle panel = DesignExtent.Measure(result);
+                HalloweenBatSwarm swarm = new() { Gone = () => ShowHalloweenSticker(panel) };
+                _ = confettiAnims.AddChild(swarm);
                 return;
             }
             for (int i = 0; i < 70; i++)
             {
                 _ = confettiAnims.AddChild(CreateConfettiParticleNear());
             }
+        }
+
+        /// <summary>
+        /// What the screen shows right now, in the panel's design coordinates and kept clear of
+        /// its edges: where the Halloween sticker may go.
+        /// </summary>
+        /// <returns>The area in the result panel's design coordinates.</returns>
+        private Rectangle StickerArea()
+        {
+            // The inverse of the fitted group's scale about its own center, as its touch mapping does.
+            Rectangle visible = VisibleBounds;
+            float scale = result.scaleX == 0f ? 1f : result.scaleX;
+            float centerX = result.drawX + (result.width >> 1);
+            float centerY = result.drawY + (result.height >> 1);
+            float left = centerX + ((visible.x - centerX) / scale) - result.drawX;
+            float top = centerY + ((visible.y - centerY) / scale) - result.drawY;
+            float right = centerX + ((visible.x + visible.w - centerX) / scale) - result.drawX;
+            float bottom = centerY + ((visible.y + visible.h - centerY) / scale) - result.drawY;
+
+            // Not clamped to the design box: on a tall screen the free space is above and below
+            // the panel, outside the box, where the bats fly too.
+            float margin = FittedContentFit.EdgeMargin;
+            left += margin;
+            top += margin;
+            right -= margin;
+            bottom -= margin;
+            return new Rectangle(left, top, MathF.Max(0f, right - left), MathF.Max(0f, bottom - top));
         }
 
         /// <summary>
@@ -759,7 +789,8 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Invokes the box-closed callback and optionally starts the confetti burst.
+        /// Invokes the box-closed callback and optionally starts the confetti burst; during
+        /// Halloween, a result without one still gets its sticker.
         /// </summary>
         public void PostBoxClosed()
         {
@@ -767,6 +798,24 @@ namespace CutTheRopeDX.GameMain
             if (shouldShowConfetti)
             {
                 ShowConfetti();
+            }
+            else if (HalloweenBatSwarm.ReplacesConfetti)
+            {
+                // Under three stars there are no bats to wait for, so the sticker comes straight away.
+                ShowHalloweenSticker(DesignExtent.Measure(result));
+            }
+        }
+
+        /// <summary>
+        /// Sticks a costumed Om Nom in the free space around the result panel, when there is any.
+        /// </summary>
+        /// <param name="panel">What the result panel paints, measured without the sticker or bats.</param>
+        private void ShowHalloweenSticker(Rectangle panel)
+        {
+            Image sticker = HalloweenSticker.Create(panel, StickerArea());
+            if (sticker != null)
+            {
+                _ = confettiAnims.AddChild(sticker);
             }
         }
 

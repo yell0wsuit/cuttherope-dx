@@ -831,6 +831,7 @@ namespace CutTheRopeDX.Framework.Core
             HalloweenBatSwarm.ReplacesConfetti
                 ? Resources.Img.FxHalloween
                 : MenuTheme.Select(Resources.Img.ConfettiParticles, Resources.Img.ConfettiParticlesExp),
+            .. HalloweenBatSwarm.ReplacesConfetti ? (string[])[Resources.Img.MenuResultScreenHalloween] : [],
             MenuTheme.Select(Resources.Img.MenuPause, Resources.Img.MenuExpPauseTop),
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,

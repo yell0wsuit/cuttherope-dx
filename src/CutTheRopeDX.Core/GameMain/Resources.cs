@@ -326,6 +326,8 @@ namespace CutTheRopeDX.GameMain
             // Cut the Rope 3.3.0 Halloween bats, in the iOS quad order: the black bat, then the
             // three purple bats the swarm flies.
             public const string FxHalloween = "fx_halloween";
+
+            public const string MenuResultScreenHalloween = "menu_result_screen_halloween";
             public const string MenuPause = "menu_pause";
             public const string MenuResults = "menu_results";
 

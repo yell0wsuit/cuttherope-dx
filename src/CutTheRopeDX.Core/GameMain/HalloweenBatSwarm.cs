@@ -48,6 +48,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Seconds since the swarm started.</summary>
         private float elapsed;
 
+        /// <summary>Whether <see cref="Gone"/> has been called.</summary>
+        private bool goneReported;
+
+        /// <summary>Gets or sets what to call once, on the frame the last bat leaves.</summary>
+        public Action Gone { get; set; }
+
         /// <summary>
         /// Gets whether the bats stand in for the three-star confetti: in the Halloween period,
         /// with the classic menus. The Experiments menus keep their own confetti.
@@ -111,6 +117,11 @@ namespace CutTheRopeDX.GameMain
                 {
                     _ = layerGroups[i].AddChild(Bat.Create(Layers[i]));
                 }
+            }
+            if (!goneReported && Finished)
+            {
+                goneReported = true;
+                Gone?.Invoke();
             }
         }
 
