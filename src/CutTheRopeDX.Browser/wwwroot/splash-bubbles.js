@@ -76,6 +76,7 @@ function start() {
         frame = 0;
         if (
             splash.classList.contains("hidden") ||
+            splash.classList.contains("failed") ||
             reducedMotion?.matches === true
         ) {
             context.clearRect(0, 0, width, height);
@@ -141,8 +142,9 @@ function start() {
         }
     }
 
-    // The splash fades out for play and comes back for a lost graphics context, so the loop
-    // follows its visibility instead of being started and stopped by everyone who changes it.
+    // The splash fades out for play and turns into an error screen when something fails, and
+    // an error screen is no place for decoration. The loop follows the splash's classes instead
+    // of being started and stopped by everyone who changes them.
     new MutationObserver(schedule).observe(splash, {
         attributes: true,
         attributeFilter: ["class"],
