@@ -247,6 +247,17 @@ namespace CutTheRopeDX.Desktop
                     }
                     else
                     {
+                        // A level frozen mid-swing would otherwise pick up again the instant the
+                        // window comes back, and the click that refocuses it can land in the
+                        // level. The pause menu holds it until the player chooses to continue;
+                        // anywhere but live gameplay this does nothing. A frame-budget run is
+                        // driven by script rather than a player, and a menu opened by the window
+                        // manager shuffling focus would end up in its screenshot.
+                        if (frameLimit == 0)
+                        {
+                            _ = Application.ExistingRootController()?.EnsurePaused();
+                        }
+
                         GameLifecycle.PauseRuntime();
                     }
 

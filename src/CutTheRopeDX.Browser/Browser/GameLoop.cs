@@ -174,6 +174,7 @@ namespace CutTheRopeDX.Browser
             }
             else
             {
+                _ = Application.ExistingRootController()?.EnsurePaused();
                 GameLifecycle.PauseRuntime();
                 // Resigning active requests a save. Every full fixed step also saves, so the
                 // only remaining exposure is a change made during the final partial frame.
