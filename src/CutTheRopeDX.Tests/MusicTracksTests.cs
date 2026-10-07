@@ -75,14 +75,15 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TimeTravelGameplayKeepsTheMusicItWouldOtherwisePlay()
+        public void TimeTravelGameplayPlaysOnlyTheTimeTravelTrackWhateverThePack()
         {
-            for (int pack = 0; pack < PackConfig.PackCount; pack++)
+            WithStyle(MenuStyle.TimeTravel, () =>
             {
-                string[] classic = null;
-                WithStyle(MenuStyle.Classic, () => classic = MusicTracks.Game(pack));
-                WithStyle(MenuStyle.TimeTravel, () => Assert.Equal(classic, MusicTracks.Game(pack)));
-            }
+                for (int pack = 0; pack < PackConfig.PackCount; pack++)
+                {
+                    Assert.Equal([Resources.Music.GameMusicTimeTravel], MusicTracks.Game(pack));
+                }
+            });
         }
 
         /// <summary>Runs <paramref name="body"/> under a menu style, restoring the previous one.</summary>
