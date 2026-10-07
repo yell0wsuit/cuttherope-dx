@@ -796,6 +796,9 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuExtraButtons,
             Resources.Img.MenuBgrShadow,
             Resources.Img.MenuBgrXmas,
+            .. SpecialEvents.IsHalloween
+                ? (string[])[Resources.Img.MenuBgrHalloween, Resources.Img.MenuBgrHalloweenDecorations]
+                : [],
             Resources.BackgroundImg.SkinBackground,
             Resources.Img.SkinSelection,
             Resources.Img.CandySelectionFx,

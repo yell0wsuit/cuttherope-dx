@@ -21,6 +21,9 @@ namespace CutTheRopeDX.GameMain
         [
             new(() => MenuTheme.IsExperiments, Resources.Music.MenuMusicExp, Resources.Music.GameMusicExp),
             new(() => SpecialEvents.IsXmas, Resources.Music.MenuMusicXmas, Resources.Music.GameMusicXmas),
+
+            // Cut the Rope 3.3.0 dressed only its menus for Halloween; levels keep their music.
+            new(() => SpecialEvents.IsHalloween, Resources.Music.MenuMusicHalloween, Game: null),
         ];
 
         /// <summary>
@@ -48,14 +51,15 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Gets the gameplay tracks to pick from: the active override's track, or the pack's own music.
+        /// Gets the gameplay tracks to pick from: the active override's track, or the pack's own music
+        /// when no override is active or the active one leaves gameplay alone.
         /// </summary>
         /// <param name="pack">Pack being played.</param>
         /// <returns>The candidate music resource names, empty when the pack names none.</returns>
         public static string[] Game(int pack)
         {
             MusicOverride active = ActiveOverride();
-            if (active != null)
+            if (active?.Game != null)
             {
                 return [active.Game];
             }
@@ -109,7 +113,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="IsActive">Whether the override applies right now.</param>
         /// <param name="Menu">Menu music resource name.</param>
-        /// <param name="Game">Gameplay music resource name.</param>
+        /// <param name="Game">Gameplay music resource name, or <see langword="null"/> to keep the pack's own music.</param>
         private sealed record MusicOverride(Func<bool> IsActive, string Menu, string Game);
     }
 

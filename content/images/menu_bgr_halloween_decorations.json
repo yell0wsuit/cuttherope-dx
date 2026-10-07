@@ -1,0 +1,101 @@
+{
+    "frames": [
+        {
+            "filename": "02_decor_web_menu_2.png",
+            "frame": { "x": 1, "y": 1, "w": 520, "h": 712 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 785, "w": 520, "h": 712 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "03_decor_web_menu_1.png",
+            "frame": { "x": 1239, "y": 1, "w": 713, "h": 521 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 387, "y": 136, "w": 713, "h": 521 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "04_decor_bat_1_menu.png",
+            "frame": { "x": 1079, "y": 648, "w": 376, "h": 202 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 701, "y": 947, "w": 376, "h": 202 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "05_decor_bat_2_menu.png",
+            "frame": { "x": 1457, "y": 524, "w": 297, "h": 190 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 935, "y": 1228, "w": 297, "h": 190 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "06_decor_bat_3_menu.png",
+            "frame": { "x": 915, "y": 527, "w": 229, "h": 119 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 951, "y": 1105, "w": 229, "h": 119 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "08_decor_web_main.png",
+            "frame": { "x": 523, "y": 1, "w": 714, "h": 524 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 0, "y": 1149, "w": 714, "h": 524 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "09_decor_bat_1_main.png",
+            "frame": { "x": 1, "y": 715, "w": 386, "h": 183 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 1, "y": 624, "w": 386, "h": 183 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "10_decor_bat_2_main.png",
+            "frame": { "x": 389, "y": 715, "w": 308, "h": 176 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 873, "y": 384, "w": 308, "h": 176 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "11_decor_bat_3_main.png",
+            "frame": { "x": 1146, "y": 527, "w": 257, "h": 118 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 615, "y": 152, "w": 257, "h": 118 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "13_hat_halloween_back_logo.png",
+            "frame": { "x": 523, "y": 527, "w": 390, "h": 172 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 258, "y": 227, "w": 390, "h": 172 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        },
+        {
+            "filename": "16_hat_halloween_front_logo.png",
+            "frame": { "x": 699, "y": 701, "w": 378, "h": 193 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 260, "y": 151, "w": 378, "h": 193 },
+            "sourceSize": { "w": 1232, "h": 1772 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_bgr_halloween.png",
+        "format": "RGBA8888",
+        "size": { "w": 1953, "h": 899 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:975f2bf1448c0a1a6f8175916bfd8f8a:bc568c647597909abbb18b351c842f5e:6870515822d89f96c41684118a91b769$"
+    }
+}

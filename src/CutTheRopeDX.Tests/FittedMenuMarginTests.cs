@@ -27,7 +27,7 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
 
-            LayoutSurfaces.WithSurface(width, height, () =>
+            LayoutSurfaces.WithSurface(width, height, () => SeasonalDate.With(SeasonalDate.NoEvent, () =>
             {
                 MenuController controller = new(
                     Application.SharedRootController());
@@ -60,7 +60,7 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.Dispose();
                 }
-            });
+            }));
         }
 
         [Theory]
@@ -69,7 +69,7 @@ namespace CutTheRopeDX.Tests
         {
             _ = HeadlessGame.Boot();
 
-            LayoutSurfaces.WithSurface(width, height, () =>
+            LayoutSurfaces.WithSurface(width, height, () => SeasonalDate.With(SeasonalDate.NoEvent, () =>
             {
                 MenuController controller = new(
                     Application.SharedRootController());
@@ -98,7 +98,7 @@ namespace CutTheRopeDX.Tests
                 {
                     controller.Dispose();
                 }
-            });
+            }));
         }
 
         /// <summary>Where a fitted group's content is drawn, in logical space.</summary>
