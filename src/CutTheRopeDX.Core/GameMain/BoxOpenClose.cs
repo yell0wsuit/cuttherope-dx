@@ -524,10 +524,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Adds a burst of confetti particles to the result panel.
+        /// Adds a burst of confetti particles to the result panel, or the bat swarm that replaces
+        /// it during Halloween.
         /// </summary>
         public void ShowConfetti()
         {
+            if (HalloweenBatSwarm.ReplacesConfetti)
+            {
+                _ = confettiAnims.AddChild(new HalloweenBatSwarm());
+                return;
+            }
             for (int i = 0; i < 70; i++)
             {
                 _ = confettiAnims.AddChild(CreateConfettiParticleNear());

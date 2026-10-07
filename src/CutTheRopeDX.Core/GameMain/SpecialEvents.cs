@@ -22,5 +22,14 @@ namespace CutTheRopeDX.GameMain
         public static bool IsXmas => DateTime.Now.Month is 12 or 1;
 
         #endregion
+
+        #region Halloween event
+
+        /// <summary>
+        /// Gets a value indicating whether the Halloween event period is active.
+        /// </summary>
+        public static bool IsHalloween => DateTime.Now.Month is 10;
+
+        #endregion
     }
 }
