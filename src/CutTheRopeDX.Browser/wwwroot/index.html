@@ -216,13 +216,13 @@
                 max-height: 30vh;
                 object-fit: contain;
             }
-            /* The error art carries a logo of its own, so it takes the logo's place rather
-               than stacking a second one under it. */
+            /* On an error screen Om Nom stands in for both the logo and the progress bubble.
+               The sprite is drawn at 1x, so it is never stretched past its own size. */
             #splash-error-art {
                 display: none;
-                width: min(260px, 64vw);
+                width: min(197px, 50vw);
                 height: auto;
-                max-height: 36vh;
+                max-height: 30vh;
                 object-fit: contain;
             }
             #splash.failed #splash-logo {
@@ -416,9 +416,9 @@
             <img
                 id="splash-error-art"
                 src="./splash/error.webp"
-                width="326"
-                height="335"
-                alt=""
+                width="197"
+                height="215"
+                alt="Sad Om Nom"
                 decoding="async"
             />
             <div id="splash-bubble">
@@ -511,7 +511,9 @@
                 // fail the same way on every reload.
                 reload.hidden = id !== "boot-error";
             };
-            reload.addEventListener("click", () => globalThis.location.reload());
+            reload.addEventListener("click", () =>
+                globalThis.location.reload(),
+            );
 
             const onBootRejection = (event) =>
                 globalThis.ctrdxFail("boot-error", event.reason);
