@@ -521,7 +521,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             RootController root = Application.SharedRootController();
-            SoundMgr.PlaySound(Resources.Snd.Tap);
+            SoundMgr.PlaySound(TapSounds.Next());
             View view = GetView(0);
             switch (n)
             {
@@ -665,17 +665,17 @@ namespace CutTheRopeDX.GameMain
                 case GameControllerInputCommand.Ignore:
                     return;
                 case GameControllerInputCommand.OpenPause:
-                    SoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(TapSounds.Next());
                     OpenPauseMenu();
                     return;
                 case GameControllerInputCommand.Resume:
-                    SoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(TapSounds.Next());
                     EnterOverlayMode(GameControllerOverlayMode.Gameplay);
                     RootController.LogEvent("IM_CONTINUE_PRESSED");
                     return;
                 case GameControllerInputCommand.ExitResults:
                     navigationExitActive = true;
-                    SoundMgr.PlaySound(Resources.Snd.Tap);
+                    SoundMgr.PlaySound(TapSounds.Next());
                     exitCode = EXIT_CODE_FROM_PAUSE_MENU_LEVEL_SELECT;
                     SoundMgr.StopAll();
                     if (!boxCloseHandled)

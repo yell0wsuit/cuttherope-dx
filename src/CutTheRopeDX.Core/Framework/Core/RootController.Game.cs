@@ -844,6 +844,8 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuButtonSmallTimeTravel,
             Resources.Img.MenuSettingsTimeTravel,
             Resources.Img.LogoClockTimeTravel,
+            Resources.Snd.TapTimeTravel1,
+            Resources.Snd.TapTimeTravel2,
             null
         ];
 

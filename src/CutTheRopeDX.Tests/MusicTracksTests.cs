@@ -54,10 +54,35 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TimeTravelMenusKeepTheirTrackDuringHalloween()
+        {
+            WithStyle(MenuStyle.TimeTravel, () => SeasonalDate.With(SeasonalDate.Halloween, () =>
+                Assert.Equal(Resources.Music.MenuMusicTimeTravel, MusicTracks.Menu())));
+        }
+
+        [Fact]
         public void OutsideEventsTheMenusPlayTheDefaultTrack()
         {
             WithStyle(MenuStyle.Classic, () => SeasonalDate.With(SeasonalDate.NoEvent, () =>
                 Assert.Equal(Resources.Music.MenuMusic, MusicTracks.Menu())));
+        }
+
+        [Fact]
+        public void TimeTravelMenusPlayTheTimeTravelMenuTrack()
+        {
+            WithStyle(MenuStyle.TimeTravel, () =>
+                Assert.Equal(Resources.Music.MenuMusicTimeTravel, MusicTracks.Menu()));
+        }
+
+        [Fact]
+        public void TimeTravelGameplayKeepsTheMusicItWouldOtherwisePlay()
+        {
+            for (int pack = 0; pack < PackConfig.PackCount; pack++)
+            {
+                string[] classic = null;
+                WithStyle(MenuStyle.Classic, () => classic = MusicTracks.Game(pack));
+                WithStyle(MenuStyle.TimeTravel, () => Assert.Equal(classic, MusicTracks.Game(pack)));
+            }
         }
 
         /// <summary>Runs <paramref name="body"/> under a menu style, restoring the previous one.</summary>
