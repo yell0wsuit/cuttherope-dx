@@ -45,6 +45,22 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void NoCostumeShowsTwiceInARow()
+        {
+            int previous = HalloweenSticker.NextCostume();
+            bool[] seen = new bool[HalloweenSticker.Costumes];
+            for (int i = 0; i < 500; i++)
+            {
+                int costume = HalloweenSticker.NextCostume();
+                Assert.InRange(costume, 0, HalloweenSticker.Costumes - 1);
+                Assert.NotEqual(previous, costume);
+                seen[costume] = true;
+                previous = costume;
+            }
+            Assert.All(seen, Assert.True);
+        }
+
+        [Fact]
         public void EachStickerRollsItsOwnSize()
         {
             Rectangle roomy = new(48f, 48f, 2464f, 1344f);

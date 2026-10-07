@@ -9,8 +9,8 @@ namespace CutTheRopeDX.GameMain
 {
     /// <summary>
     /// A costumed Om Nom stuck next to the Halloween result panel - after the bats on three stars,
-    /// straight away otherwise: one of Cut the Rope 3.3.0's five, at a random spot, size and tilt,
-    /// fading and zooming in to that size.
+    /// straight away otherwise: one of Cut the Rope 3.3.0's five, never the one shown last time,
+    /// at a random spot, size and tilt, fading and zooming in to that size.
     /// </summary>
     internal static class HalloweenSticker
     {
@@ -47,6 +47,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Smallest share of its fitted size a sticker is drawn at; each one rolls its own.</summary>
         internal const float MinSizeShare = 0.8f;
 
+        /// <summary>Costume the previous sticker wore, or -1 before the first one.</summary>
+        private static int lastCostume = -1;
+
         /// <summary>
         /// Creates a sticker in the free space around the panel, or <see langword="null"/> when
         /// no side of it has room for one.
@@ -56,7 +59,7 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The sticker, already appearing, or <see langword="null"/>.</returns>
         public static Image Create(Rectangle panel, Rectangle area)
         {
-            int costume = MathHelper.RND_RANGE(0, Costumes - 1);
+            int costume = NextCostume();
             Image sticker = Image.FromResource(Resources.Img.MenuResultScreenHalloween, costume);
             float tilt = MathHelper.FLOAT_RND_RANGE((int)MinTilt, (int)MaxTilt) * (MathHelper.RND(1) == 0 ? -1f : 1f);
             if (!TryPlace(panel, area, sticker.width, sticker.height, tilt, out float x, out float y, out float scale))
@@ -79,6 +82,31 @@ namespace CutTheRopeDX.GameMain
             appear.AddKeyFrame(KeyFrame.MakeScale(scale, scale, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, AppearDuration));
             sticker.PlayTimeline(sticker.AddTimeline(appear));
             return sticker;
+        }
+
+        /// <summary>
+        /// Picks the next sticker's costume at random, never the one the previous sticker wore,
+        /// as Cut the Rope 3.3.0 picks its result-screen Om Nom.
+        /// </summary>
+        /// <returns>Quad of the costume in <see cref="Resources.Img.MenuResultScreenHalloween"/>.</returns>
+        internal static int NextCostume()
+        {
+            int costume;
+            if (lastCostume < 0)
+            {
+                costume = MathHelper.RND_RANGE(0, Costumes - 1);
+            }
+            else
+            {
+                // Roll among the other costumes by skipping over the previous one.
+                costume = MathHelper.RND_RANGE(0, Costumes - 2);
+                if (costume >= lastCostume)
+                {
+                    costume++;
+                }
+            }
+            lastCostume = costume;
+            return costume;
         }
 
         /// <summary>
