@@ -9,8 +9,8 @@
     "launch_handler": {
         "client_mode": "focus-existing"
     },
-    "background_color": "#202329",
-    "theme_color": "#202329",
+    "background_color": "#e2e2e2",
+    "theme_color": "#e2e2e2",
     "categories": ["games", "entertainment"],
     "icons": [
         {
