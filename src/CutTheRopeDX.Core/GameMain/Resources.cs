@@ -843,6 +843,7 @@ namespace CutTheRopeDX.GameMain
             public const string MenuMusicHalloween = "menu_music_halloween";
             public const string MenuMusicExp = "menu_music_exp";
             public const string MenuMusicTimeTravel = "menu_music_tt";
+            public const string GameMusicTimeTravel = "game_music_tt";
             public const string GameMusicExp = "game_music_exp";
         }
 
