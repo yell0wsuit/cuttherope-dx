@@ -627,6 +627,7 @@ namespace CutTheRopeDX.GameMain
             public const string Tap = "tap";
             public const string TapTimeTravel1 = "tap_01_tt";
             public const string TapTimeTravel2 = "tap_02_tt";
+            public const string LevelIconTimeTravel = "level_icon_tt";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
             public const string Bubble = "bubble";

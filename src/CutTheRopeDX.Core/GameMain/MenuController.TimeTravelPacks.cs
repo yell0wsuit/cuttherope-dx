@@ -4,6 +4,7 @@ using System.Globalization;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Visual;
 
 namespace CutTheRopeDX.GameMain
@@ -946,6 +947,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="l">Level pressed.</param>
         private void PlayTimeTravelLevelBurst(int l)
         {
+            SoundMgr.PlaySound(Resources.Snd.LevelIconTimeTravel);
             View view = ActiveView();
             BaseElement button = l < timeTravelLevelButtons.Count ? timeTravelLevelButtons[l] : null;
             BaseElement space = (BaseElement)levelsGroup ?? view;
