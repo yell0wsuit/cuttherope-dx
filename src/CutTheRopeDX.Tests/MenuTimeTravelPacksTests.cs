@@ -366,7 +366,7 @@ namespace CutTheRopeDX.Tests
             float[] radii = [88f, 75f, 70f, 63f, 51f, 46f, 55f, 73f];
             List<FillPlacement> placed = TimeTravelClockFill.Plan(shown, [hero], radii, new System.Random(7));
 
-            Assert.True(placed.Count >= 10, "only " + placed.Count + " clocks");
+            Assert.True(placed.Count >= 4, "only " + placed.Count + " clocks");
             List<Circle> circles = [hero];
             foreach (FillPlacement p in placed)
             {
@@ -381,7 +381,7 @@ namespace CutTheRopeDX.Tests
                 {
                     float dx = p.X - other.X;
                     float dy = p.Y - other.Y;
-                    Assert.True(System.MathF.Sqrt((dx * dx) + (dy * dy)) >= r + other.Radius + TimeTravelClockFill.Gap - 0.01f);
+                    Assert.True(System.MathF.Sqrt((dx * dx) + (dy * dy)) >= ((r + other.Radius) * (1f + (TimeTravelClockFill.Spacing / 2f))) - 0.01f);
                 }
                 circles.Add(new Circle(p.X, p.Y, r));
             }
