@@ -1,0 +1,45 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 869, "h": 846 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 83, "y": 307, "w": 869, "h": 846 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 1, "y": 849, "w": 648, "h": 646 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 172, "y": 431, "w": 648, "h": 646 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        },
+        {
+            "filename": "frame_0002.png",
+            "frame": { "x": 872, "y": 1, "w": 642, "h": 826 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 199, "y": 309, "w": 642, "h": 826 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        },
+        {
+            "filename": "frame_0003.png",
+            "frame": { "x": 872, "y": 829, "w": 672, "h": 723 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 188, "y": 407, "w": 672, "h": 723 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_pack_selection_icons_1_timetravel.png",
+        "format": "RGBA8888",
+        "size": { "w": 1545, "h": 1553 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:6b28b417f34c8251e5e6c599c5d284d0:0f13dcbff22be55d7ba23dfb4294b524:fc6d2fdacbb33b42efa0ad5d9189faed$"
+    }
+}
