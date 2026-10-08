@@ -111,6 +111,11 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
+            if (MenuTheme.IsTimeTravel)
+            {
+                UpdateTimeTravel(delta);
+                return;
+            }
             if (!MenuTheme.IsExperiments)
             {
                 return;

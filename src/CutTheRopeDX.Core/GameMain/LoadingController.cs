@@ -26,18 +26,32 @@ namespace CutTheRopeDX.GameMain
         {
             LoadingView loadingView = new();
             AddViewwithID(loadingView, 0);
+            if (MenuTheme.IsTimeTravel)
+            {
+                loadingView.AttachTimeTravel();
+            }
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetAlignment(2);
             text.SetStringandWidth(Application.GetString("LOADING"), 300f);
             text.anchor = text.parentAnchor = 18;
             _ = loadingView.AddChild(text);
             loadingText = text;
+            if (MenuTheme.IsTimeTravel)
+            {
+                loadingView.UseTimeTravelLabel(text);
+            }
         }
 
         /// <inheritdoc />
         protected override void Relayout(ViewportLayoutSnapshot snapshot)
         {
             base.Relayout(snapshot);
+
+            if (MenuTheme.IsTimeTravel)
+            {
+                ((LoadingView)GetView(0)).LayOutTimeTravel(snapshot.VisibleBounds, FittedScale);
+                return;
+            }
 
             // Center-anchored, so it already stays centered as it scales - no position
             // correction needed the way an edge-anchored element requires.

@@ -18,6 +18,7 @@ namespace CutTheRopeDX.GameMain
             currentPercent = 0f;
             animationComplete = false;
             ResetExperiments();
+            ResetTimeTravel();
             base.Show();
         }
 
@@ -32,7 +33,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the progress animation is complete; otherwise, <see langword="false"/>.</returns>
         public bool IsAnimationComplete()
         {
-            return (MenuTheme.IsExperiments ? IsExperimentsComplete() : animationComplete) || !Renderer.IsAvailable;
+            bool complete = MenuTheme.IsExperiments
+                ? IsExperimentsComplete()
+                : MenuTheme.IsTimeTravel ? IsTimeTravelComplete() : animationComplete;
+            return complete || !Renderer.IsAvailable;
         }
 
         /// <inheritdoc />
@@ -41,6 +45,11 @@ namespace CutTheRopeDX.GameMain
             if (MenuTheme.IsExperiments)
             {
                 DrawExperiments();
+                return;
+            }
+            if (MenuTheme.IsTimeTravel)
+            {
+                DrawTimeTravel();
                 return;
             }
 
