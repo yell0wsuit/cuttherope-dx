@@ -73,6 +73,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The main menu's Time Travel scene.</summary>
         private TimeTravelSceneGroup timeTravelMain;
 
+        /// <summary>The main menu's turning glow, rescaled on every layout pass.</summary>
+        private Image timeTravelGlow;
+
         /// <summary>Seconds per turn of the settings views' corner fan.</summary>
         private const float TimeTravelFanPeriod = 1f;
 
@@ -110,7 +113,8 @@ namespace CutTheRopeDX.GameMain
             stack.SetName("ttStack");
             _ = scene.AddChild(stack);
 
-            _ = stack.AddChild(CreateTimeTravelGlow());
+            _ = stack.AddChild(CreateTimeTravelGlow(out timeTravelGlow));
+            ScaleTimeTravelGlow(timeTravelGlow, new TimeTravelScreen(VisibleBounds));
 
             Button play = new Button().InitWithUpElementDownElementandID(
                 Image.FromResource(Resources.Img.MenuMainTimeTravel, TimeTravelArt.MainPlayUp),
@@ -155,8 +159,9 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>The additive light that turns behind Play.</summary>
+        /// <param name="light">The glow itself.</param>
         /// <returns>The turning element holding the glow.</returns>
-        private static BaseElement CreateTimeTravelGlow()
+        private static BaseElement CreateTimeTravelGlow(out Image light)
         {
             Image glow = Image.FromResource(Resources.Img.MenuMainAniTimeTravel, TimeTravelArt.Glow);
             glow.SetName("ttGlow");
@@ -177,7 +182,46 @@ namespace CutTheRopeDX.GameMain
             _ = turner.AddTimeline(spin);
             turner.PlayTimeline(0);
             _ = turner.AddChild(glow);
+            light = glow;
             return turner;
+        }
+
+        /// <summary>
+        /// Scales the glow as iOS does, and further on a screen wider than that leaves it, so it
+        /// always spans the full width on both sides of where it turns.
+        /// </summary>
+        /// <param name="glow">The glow.</param>
+        /// <param name="screen">The screen model.</param>
+        private static void ScaleTimeTravelGlow(Image glow, TimeTravelScreen screen)
+        {
+            if (glow == null)
+            {
+                return;
+            }
+            float scale = TimeTravelGlowScaleFor(screen, glow.width);
+            glow.scaleX = scale;
+            glow.scaleY = scale;
+        }
+
+        /// <summary>The glow's scale for a screen: iOS's, or wider to span its full width.</summary>
+        /// <param name="screen">The screen model.</param>
+        /// <param name="glowWidth">The glow's own width, in asset pixels.</param>
+        /// <returns>The scale.</returns>
+        internal static float TimeTravelGlowScaleFor(TimeTravelScreen screen, float glowWidth)
+        {
+            // Its middle sits off the scene's middle and swings round the pivot as it turns, so
+            // both distances are added to the half width it has to reach.
+            float a = FlashXmlScale.AtlasToFlashPointScale;
+            Vector offset = Image.GetQuadOffset(Resources.Img.MenuMainAniTimeTravel, TimeTravelArt.Glow);
+            Vector size = Image.GetQuadSize(Resources.Img.MenuMainAniTimeTravel, TimeTravelArt.Glow);
+            float centerX = (offset.X + (size.X / 2f)) / a;
+            float centerY = (offset.Y + (size.Y / 2f)) / a;
+            float pivotX = TimeTravelGlowPivot.X * TimeTravelArt.CanvasToAsset / a;
+            float pivotY = TimeTravelGlowPivot.Y * TimeTravelArt.CanvasToAsset / a;
+            float swing = MathF.Sqrt(((centerX - pivotX) * (centerX - pivotX)) + ((centerY - pivotY) * (centerY - pivotY)));
+            float reach = (screen.FullWidth / 2f) + MathF.Abs((TimeTravelScreen.SceneWidth / 2f) - pivotX) + swing;
+            float needed = 2f * reach * a / glowWidth;
+            return MathF.Max(TimeTravelGlowScale, needed);
         }
 
         /// <summary>Options and, where the host allows it, Quit or the level editor, as capsules under Play.</summary>
@@ -510,6 +554,7 @@ namespace CutTheRopeDX.GameMain
         {
             TimeTravelScreen screen = new(visible);
             timeTravelMain?.Layout(screen);
+            ScaleTimeTravelGlow(timeTravelGlow, screen);
             LayOutTimeTravelCapsules(visible);
             foreach (TimeTravelSceneGroup corner in timeTravelFans.Values)
             {
