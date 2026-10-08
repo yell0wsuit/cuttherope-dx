@@ -364,6 +364,10 @@ namespace CutTheRopeDX.GameMain
             public const string MenuBgrsTimeTravel = "menu_bgrs_timetravel";
             public const string MenuLevelsTimeTravel = "menu_levels_timetravel";
             public const string MenuLoadingTimeTravel = "menu_loading_timetravel";
+            public const string HudTimeTravel = "hud_timetravel";
+            public const string FxRestartTimeTravel = "fx_restart_timetravel";
+            public const string FxSpiralTimeTravel = "fx_spiral_timetravel";
+            public const string ResultScreenTimeTravel = "result_screen_timetravel";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
@@ -628,6 +632,12 @@ namespace CutTheRopeDX.GameMain
             public const string TapTimeTravel1 = "tap_01_tt";
             public const string TapTimeTravel2 = "tap_02_tt";
             public const string LevelIconTimeTravel = "level_icon_tt";
+            public const string TimeSpiralSuckInTimeTravel = "time_spiral_suck_in_tt";
+            public const string TimeSpiralSuckOutTimeTravel = "time_spiral_suck_out_tt";
+            public const string ResultStar1TimeTravel = "result_1_tt";
+            public const string ResultStar2TimeTravel = "result_2_tt";
+            public const string ResultStar3TimeTravel = "result_3_tt";
+            public const string ResultOpenTimeTravel = "metal_leaf_close_tt";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
             public const string Bubble = "bubble";
