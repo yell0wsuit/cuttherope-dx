@@ -1256,6 +1256,11 @@ namespace CutTheRopeDX.GameMain
                 CreateExperimentsPackSelect();
                 return;
             }
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelPackSelect();
+                return;
+            }
 
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
@@ -1447,6 +1452,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             PrepareCoverFor(i);
+            if (MenuTheme.IsTimeTravel)
+            {
+                ReachTimeTravelPage(i);
+                ShowCantUnlockAfterNextPack(i, Preferences.GetUnlockedForPackLevel(i, 0));
+                return;
+            }
             boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
             UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
@@ -1459,6 +1470,17 @@ namespace CutTheRopeDX.GameMain
                     ReleaseExperimentsButterfly(i);
                 }
             }
+            ShowCantUnlockAfterNextPack(i, unlockedForPackLevel);
+        }
+
+        /// <summary>
+        /// Tells the player the next pack is still locked when finishing a pack has scrolled the
+        /// picker onto it.
+        /// </summary>
+        /// <param name="i">Pack the picker settled on.</param>
+        /// <param name="unlockedForPackLevel">That pack's state.</param>
+        private void ShowCantUnlockAfterNextPack(int i, UNLOCKEDSTATE unlockedForPackLevel)
+        {
             RootController root = Application.SharedRootController();
             if (showNextPackStatus && i == root.Pack + 1)
             {
@@ -1520,6 +1542,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured level button element.</returns>
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return CreateTimeTravelLevelButton(l, p);
+            }
             bool isLocked = Preferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = Preferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
@@ -1563,6 +1589,10 @@ namespace CutTheRopeDX.GameMain
         {
             float transitionDuration = 0.3f;
             MenuView menuView = new();
+            levelsTimeTravelBackdrop = null;
+            timeTravelLevelsScene = null;
+            timeTravelLevelsRays = null;
+            timeTravelLevelButtons.Clear();
             Timeline coverDimTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
@@ -1576,6 +1606,12 @@ namespace CutTheRopeDX.GameMain
                 levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
                 PlaceLevelsSheet(VisibleBounds);
                 _ = menuView.AddChild(sheet);
+            }
+            else if (MenuTheme.IsTimeTravel)
+            {
+                levelsSheet = null;
+                levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
+                CreateTimeTravelLevelsBackdrop(menuView);
             }
             else
             {
@@ -1620,10 +1656,17 @@ namespace CutTheRopeDX.GameMain
             shadowSpinTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             _ = shadowImage.AddTimeline(shadowSpinTimeline);
             shadowImage.PlayTimeline(1);
-            _ = menuView.AddChild(shadowImage);
-            levelsShadow = shadowImage;
+
+            // Time Travel lights its level picker with the pack page's rays instead.
+            if (!MenuTheme.IsTimeTravel)
+            {
+                _ = menuView.AddChild(shadowImage);
+            }
+            levelsShadow = MenuTheme.IsTimeTravel ? null : shadowImage;
             string packStars = Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture);
-            HBox hBox = MenuTheme.IsExperiments ? CreateExperimentsTextWithStar(packStars) : CreateTextWithStar(packStars);
+            HBox hBox = MenuTheme.IsExperiments
+                ? CreateExperimentsTextWithStar(packStars)
+                : MenuTheme.IsTimeTravel ? CreateTimeTravelTextWithStar(packStars) : CreateTextWithStar(packStars);
 
             hBox.x = -30f;
             hBox.y = 40f;
@@ -1959,6 +2002,11 @@ namespace CutTheRopeDX.GameMain
             {
                 levelLaunchPending = true;
                 level = n.GetLevelIndex();
+                if (MenuTheme.IsTimeTravel)
+                {
+                    PlayTimeTravelLevelBurst(level);
+                    return;
+                }
                 ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
                 ActiveView().GetChildWithName("shadow").PlayTimeline(0);
                 ActiveView().GetChildWithName("levelsBack").PlayTimeline(0);
@@ -2357,6 +2405,10 @@ namespace CutTheRopeDX.GameMain
                 if (MenuTheme.IsExperiments)
                 {
                     UpdateExperimentsPackSelect();
+                }
+                if (MenuTheme.IsTimeTravel)
+                {
+                    UpdateTimeTravelPackSelect(delta);
                 }
                 if (PlatformServices.Host?.IsKeyPressed(KeyCode.Left) == true)
                 {

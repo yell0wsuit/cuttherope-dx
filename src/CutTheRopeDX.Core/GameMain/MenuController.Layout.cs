@@ -231,13 +231,17 @@ namespace CutTheRopeDX.GameMain
         /// <param name="snapshot">The viewport to lay out against.</param>
         private void LayOutLevelSelect(ViewportLayoutSnapshot snapshot)
         {
-            if (levelsCoverLeft == null && levelsSheet == null)
+            if (levelsCoverLeft == null && levelsSheet == null && levelsTimeTravelBackdrop == null)
             {
                 return;
             }
 
             Rectangle visible = snapshot.VisibleBounds;
-            if (levelsSheet != null)
+            if (levelsTimeTravelBackdrop != null)
+            {
+                LayOutTimeTravelLevelsBackdrop(visible);
+            }
+            else if (levelsSheet != null)
             {
                 PlaceLevelsSheet(visible);
             }
