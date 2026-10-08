@@ -29,13 +29,17 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Most a copied clock is tilted either way, in degrees.</summary>
         public const float MaxTilt = 20f;
 
-        /// <summary>Room kept between clocks, in iOS logical units.</summary>
-        public const float Gap = 8f;
+        /// <summary>
+        /// Room kept between two clocks, against their average radius: about the median of how
+        /// far the animation's own clocks stand from their nearest neighbor (1.2), so the copies
+        /// are as sparse as the clocks they continue.
+        /// </summary>
+        public const float Spacing = 1.2f;
 
         /// <summary>Share of a clock's radius that may run off the screen's edge.</summary>
         public const float Bleed = 0.35f;
 
-        /// <summary>How many places are tried for clocks; enough to pack the room full.</summary>
+        /// <summary>How many places are tried for clocks; enough to fill the room at that spacing.</summary>
         public const int Attempts = 1500;
 
         /// <summary>
@@ -159,7 +163,7 @@ namespace CutTheRopeDX.GameMain
         {
             foreach (Circle other in taken)
             {
-                float reach = radius + other.Radius + Gap;
+                float reach = (radius + other.Radius) * (1f + (Spacing / 2f));
                 float dx = x - other.X;
                 float dy = y - other.Y;
                 if ((dx * dx) + (dy * dy) < reach * reach)
