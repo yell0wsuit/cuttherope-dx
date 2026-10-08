@@ -856,6 +856,25 @@ namespace CutTheRopeDX.Framework.Core
             null
         ];
 
+        /// <summary>
+        /// The Time Travel game screen's resources: its HUD, pause buttons, level-start lightning,
+        /// time spiral and result screen, with their sounds.
+        /// </summary>
+        private static readonly string[] PackGameTimeTravel = [
+            Resources.Img.HudTimeTravel,
+            Resources.Img.FxRestartTimeTravel,
+            Resources.Img.FxSpiralTimeTravel,
+            Resources.Img.ResultScreenTimeTravel,
+            Resources.Img.MenuButtonsTimeTravel,
+            Resources.Img.MenuButtonSmallTimeTravel,
+            Resources.Snd.TimeSpiralSuckInTimeTravel,
+            Resources.Snd.TimeSpiralSuckOutTimeTravel,
+            Resources.Snd.ResultStar1TimeTravel,
+            Resources.Snd.ResultStar2TimeTravel,
+            Resources.Snd.ResultStar3TimeTravel,
+            Resources.Snd.ResultOpenTimeTravel,
+        ];
+
         /// <summary>Resource pack loaded for gameplay (HUD, candy, spider, etc.).</summary>
         private static readonly string[] PackGame = [
             Resources.Img.MenuButtons,
@@ -871,6 +890,7 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
             .. MenuTheme.IsExperiments ? (string[])[Resources.Img.ProfessorHand] : [],
+            .. MenuTheme.IsTimeTravel ? PackGameTimeTravel : [],
             null
         ];
 
