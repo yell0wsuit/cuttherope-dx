@@ -106,7 +106,8 @@ namespace CutTheRopeDX.GameMain
             // Skins with startWithGreeting already play greeting on init, so skip the delayed call.
             if (RootController.IsShowGreeting())
             {
-                if (!nightLevel && !animation.StartsWithGreeting)
+                // A pack's first Time Travel level greets once Om Nom is out of the spiral.
+                if (!nightLevel && !animation.StartsWithGreeting && !timeTravelArrivalPending)
                 {
                     dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, 1.3f);
                 }

@@ -28,6 +28,7 @@ namespace CutTheRopeDX.GameMain
             }
 
             delta = 0.016f;
+            UpdateTimeTravelSpiral(delta);
 
             // The opening pan flies the camera across the level with input switched off. Nothing
             // else advances until it hands input back, so a candy cannot fall - or be eaten, or
@@ -574,6 +575,7 @@ namespace CutTheRopeDX.GameMain
                         if (starsCollected <= hudStar.Length)
                         {
                             hudStar[starsCollected - 1].PlayTimeline(0);
+                            FillTimeTravelHudStar(starsCollected - 1);
                         }
                         Animation starDisappear = Image.InitializeFromResource(new Animation(), Resources.Img.ObjStarDisappear);
                         starDisappear.DoRestoreCutTransparency();

@@ -46,7 +46,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Glow sheet: the rotating light behind Play (iOS q0).</summary>
         public const int Glow = 0;
 
-        /// <summary>Back button plate (iOS q0).</summary>
+        /// <summary>Back button plate (iOS q0), also under every pause and result icon.</summary>
         public const int BackPlateUp = 0;
 
         /// <summary>Back button plate pressed (iOS q1).</summary>
@@ -269,6 +269,125 @@ namespace CutTheRopeDX.GameMain
 
             /// <summary>Where the level number is centered (iOS q8).</summary>
             public static readonly Rectangle Number = new(336f, 474f, 10f, 10f);
+        }
+
+        /// <summary>The HUD's star counter, one star a copy (iOS <c>hud.pb</c>).</summary>
+        public const string HudStarAnimationXml = "hud_timetravel.xml";
+
+        /// <summary>The lightning that strikes as a level opens (iOS <c>fx_restart.pb</c>).</summary>
+        public const string LightningAnimationXml = "fx_restart_timetravel.xml";
+
+        /// <summary>The time spiral Om Nom passes through (iOS <c>fx_spiral.pb</c>).</summary>
+        public const string SpiralAnimationXml = "fx_spiral_timetravel.xml";
+
+        /// <summary>The result screen (iOS <c>result_screen.pb</c>).</summary>
+        public const string ResultAnimationXml = "result_screen_timetravel.xml";
+
+        /// <summary>HUD: the pause pill (iOS q0).</summary>
+        public const int HudPauseUp = 0;
+
+        /// <summary>HUD: the pause pill pressed (iOS q1).</summary>
+        public const int HudPauseDown = 1;
+
+        /// <summary>HUD: the restart disc (iOS q2).</summary>
+        public const int HudRestartUp = 2;
+
+        /// <summary>HUD: the restart disc pressed (iOS q3).</summary>
+        public const int HudRestartDown = 3;
+
+        /// <summary>Small button sheet: the play icon on the pause menu's resume button (iOS q14).</summary>
+        public const int ResumeIcon = 13;
+
+        /// <summary>Small button sheet: the skip icon (iOS q15).</summary>
+        public const int SkipIcon = 14;
+
+        /// <summary>Result sheet: the folding blind's half (iOS q0).</summary>
+        public const int ResultFold = 0;
+
+        /// <summary>Result sheet: the next-level icon (iOS q3).</summary>
+        public const int ResultNextIcon = 3;
+
+        /// <summary>Result sheet: the replay icon (iOS q5).</summary>
+        public const int ResultRestartIcon = 5;
+
+        /// <summary>Result sheet: the level-grid icon (iOS q7).</summary>
+        public const int ResultMenuIcon = 7;
+
+        /// <summary>
+        /// The HUD sheet's places (iOS q7 and its position quads q10 to q15), in canvas pixels from
+        /// the iOS canvas origin.
+        /// </summary>
+        public static class HudMarkers
+        {
+            /// <summary>The second HUD star (iOS q7); the stars step by the gap to q6 from it.</summary>
+            public static readonly Rectangle Star = new(297f, 16f, 117f, 112f);
+
+            /// <summary>How far one HUD star is from the next (iOS q6 from q7).</summary>
+            public const float StarStep = 126f;
+
+            /// <summary>The pause menu's level-grid button (iOS q10).</summary>
+            public static readonly Rectangle PauseLevelSelect = new(302f, 1287f, 6f, 6f);
+
+            /// <summary>The pause menu's sound button (iOS q11).</summary>
+            public static readonly Rectangle PauseSound = new(637f, 1594f, 6f, 6f);
+
+            /// <summary>The pause menu's replay button (iOS q12).</summary>
+            public static readonly Rectangle PauseRestart = new(637f, 1287f, 6f, 6f);
+
+            /// <summary>The pause menu's resume button (iOS q13).</summary>
+            public static readonly Rectangle PauseResume = new(972f, 1287f, 6f, 6f);
+
+            /// <summary>The pause menu's shop button (iOS q14).</summary>
+            public static readonly Rectangle PauseShop = new(369f, 1594f, 6f, 6f);
+
+            /// <summary>The pause menu's skip button (iOS q15).</summary>
+            public static readonly Rectangle PauseSkip = new(910f, 1594f, 6f, 6f);
+        }
+
+        /// <summary>
+        /// The result sheet's places, in canvas pixels from the iOS canvas origin. Its position
+        /// quads are blank frames in the packed sheet, which was also split onto a grown canvas, so
+        /// every place the result screen is laid out from is held here.
+        /// </summary>
+        public static class ResultMarkers
+        {
+            /// <summary>The next-level button (iOS q4).</summary>
+            public static readonly Rectangle Next = new(932f, 1374f, 8f, 8f);
+
+            /// <summary>The replay button (iOS q6).</summary>
+            public static readonly Rectangle Restart = new(636f, 1396f, 8f, 8f);
+
+            /// <summary>The level-grid button (iOS q8).</summary>
+            public static readonly Rectangle Menu = new(342f, 1374f, 8f, 8f);
+
+            /// <summary>The replay icon (iOS q5): every round icon is set off its plate's middle as this one is off q6.</summary>
+            public static readonly Rectangle RestartIcon = new(580f, 1326f, 116f, 118f);
+
+            /// <summary>The display (iOS q21) the buttons, stars and title hang from.</summary>
+            public static readonly Rectangle Display = new(106f, 680f, 534f, 464f);
+
+            /// <summary>The improved-result banner (iOS q22).</summary>
+            public static readonly Rectangle ImprovedBanner = new(248f, 1059f, 833f, 373f);
+
+            /// <summary>The three stars (iOS q30 to q32).</summary>
+            public static readonly Rectangle[] Stars =
+            [
+                new(304f, 570f, 10f, 8f),
+                new(526f, 540f, 10f, 10f),
+                new(746f, 540f, 8f, 10f),
+            ];
+
+            /// <summary>The improved-result banner's text box (iOS q41).</summary>
+            public static readonly Rectangle ImprovedText = new(502f, 1091f, 418f, 229f);
+
+            /// <summary>The score (iOS q42).</summary>
+            public static readonly Rectangle Score = new(414f, 966f, 454f, 98f);
+
+            /// <summary>The title over the panel (iOS q43).</summary>
+            public static readonly Rectangle Title = new(636f, 152f, 8f, 8f);
+
+            /// <summary>The star bonus and time line (iOS q44).</summary>
+            public static readonly Rectangle Data = new(230f, 773f, 822f, 151f);
         }
 
         /// <summary>

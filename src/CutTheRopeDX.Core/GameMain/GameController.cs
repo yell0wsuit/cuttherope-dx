@@ -16,7 +16,7 @@ namespace CutTheRopeDX.GameMain
     /// <summary>
     /// Coordinates the active game scene, pause menu, level result flow, input routing, and game-view transitions.
     /// </summary>
-    internal sealed class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
+    internal sealed partial class GameController : ViewController, IButtonDelegation, IGameSceneDelegate
     {
         /// <inheritdoc />
         public override void Update(float t)
@@ -150,6 +150,37 @@ namespace CutTheRopeDX.GameMain
                 gameSceneDelegate = this
             };
             _ = gameView.AddChildwithID(gameScene, 0);
+            if (MenuTheme.IsTimeTravel)
+            {
+                _ = gameView.AddChildwithID(CreateTimeTravelHudButton(TimeTravelArt.HudPauseUp, TimeTravelArt.HudPauseDown, GameControllerButtonId.Pause, this), GameView.VIEW_ELEMENT_PAUSE_BUTTON);
+                _ = gameView.AddChildwithID(CreateTimeTravelHudButton(TimeTravelArt.HudRestartUp, TimeTravelArt.HudRestartDown, GameControllerButtonId.Restart, this), GameView.VIEW_ELEMENT_RESTART_BUTTON);
+                CreateTimeTravelPauseMenu(gameView);
+                _ = gameView.AddChildwithID(timeTravelPauseScene, GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
+            }
+            else
+            {
+                CreateHudAndPauseMenu(gameView);
+            }
+            BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
+            boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
+            _ = gameView.AddChildwithID(boxOpenClose, 4);
+            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
+            if (overlay != null)
+            {
+                overlay.anchor = overlay.parentAnchor = 9;
+                overlay.Start();
+                _ = gameView.AddChildwithID(overlay, 6);
+            }
+            AddViewwithID(gameView, 0);
+        }
+
+        /// <summary>
+        /// Builds the classic HUD buttons, the pause plate with its best score, and the pause
+        /// menu's button column.
+        /// </summary>
+        /// <param name="gameView">The game view they are added to.</param>
+        private void CreateHudAndPauseMenu(GameView gameView)
+        {
             int hudQuadOffset = ResourceMgr.GetHudButtonQuadOffset();
             Button button = MenuController.CreateButtonWithImageQuadIDDelegate(Resources.Img.HudUi, hudQuadOffset, GameControllerButtonId.Pause, this);
             button.anchor = button.parentAnchor = 12;
@@ -230,17 +261,6 @@ namespace CutTheRopeDX.GameMain
             pauseButtonsGroup = buttonsGroup;
             _ = buttonsGroup.AddChild(vBox);
             _ = gameView.AddChildwithID(buttonsGroup, GameView.VIEW_ELEMENT_PAUSE_BUTTONS);
-            BoxOpenClose boxOpenClose = new BoxOpenClose().InitWithButtonDelegate(this);
-            boxOpenClose.delegateboxClosed = new BoxOpenClose.boxClosed(BoxClosed);
-            _ = gameView.AddChildwithID(boxOpenClose, 4);
-            SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
-            if (overlay != null)
-            {
-                overlay.anchor = overlay.parentAnchor = 9;
-                overlay.Start();
-                _ = gameView.AddChildwithID(overlay, 6);
-            }
-            AddViewwithID(gameView, 0);
         }
 
         /// <summary>
@@ -520,6 +540,17 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // The Time Travel pause menu has a replay button, which leaves the menu first.
+            if (n == GameControllerButtonId.PauseRestart)
+            {
+                if (overlayMode != GameControllerOverlayMode.Paused)
+                {
+                    return;
+                }
+                EnterOverlayMode(GameControllerOverlayMode.Gameplay);
+                n = GameControllerButtonId.Restart;
+            }
+
             RootController root = Application.SharedRootController();
             SoundMgr.PlaySound(TapSounds.Next());
             View view = GetView(0);
@@ -739,8 +770,15 @@ namespace CutTheRopeDX.GameMain
                 DeactivateAllButtons();
             }
 
-            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
-            view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).SetEnabled(paused);
+            if (MenuTheme.IsTimeTravel)
+            {
+                ShowTimeTravelPauseMenu(paused);
+            }
+            else
+            {
+                view.GetChild(GameView.VIEW_ELEMENT_PAUSE_MENU).SetEnabled(paused);
+                view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).SetEnabled(paused);
+            }
 
             // The HUD buttons belong to the gameplay screen, so they are on show whenever that
             // screen is - which is every mode except the paused one, where the menu owns the
@@ -773,7 +811,7 @@ namespace CutTheRopeDX.GameMain
                 gameplayAudioPaused = false;
             }
 
-            if (!paused)
+            if (!paused || mapNameLabel == null)
             {
                 return;
             }
@@ -1066,24 +1104,14 @@ namespace CutTheRopeDX.GameMain
             }
 
             Rectangle visible = snapshot.VisibleBounds;
-
-            // Reposition the HUD buttons using the same edge offsets applied at construction,
-            // otherwise the restart button collapses onto the pause button and they overlap.
-            // Both are grown from the screen's top-right corner by the same boost menu content
-            // gets on a narrow viewport, same idea as RelayoutHud's star row: the corner-relative
-            // offset scales along with the button itself, so the pair grows as one composition
-            // anchored to that corner instead of just getting bigger in place.
-            Button pauseButton = (Button)view.GetChild(1);
-            Button restartButton = (Button)view.GetChild(2);
-            PlaceCornerAnchoredHudButton(pauseButton, -8f, 8f, FittedScale);
-            PlaceCornerAnchoredHudButton(restartButton, -pauseButton.width - 16f, 8f, FittedScale);
-
-            PlacePausePlate(visible);
-            PlaceBestScoreLabel(visible);
-
-            // The button column is a design-space composition like a menu's, so it is fitted the
-            // same way one is rather than merely stretched to the viewport width.
-            PlaceFittedGroup(pauseButtonsGroup);
+            if (MenuTheme.IsTimeTravel)
+            {
+                LayOutTimeTravelChrome(view, visible);
+            }
+            else
+            {
+                LayOutChrome(view, visible);
+            }
 
             // Camera first: the HUD pass re-covers the background, and how much world a screen of
             // this shape sees - which is what the background covers - is measured through the
@@ -1111,6 +1139,30 @@ namespace CutTheRopeDX.GameMain
                 results.result.x += centering.X * FittedScale;
                 results.result.y += centering.Y * FittedScale;
             }
+        }
+
+        /// <summary>Lays the classic HUD buttons and pause menu out for the current viewport.</summary>
+        /// <param name="view">The game view.</param>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void LayOutChrome(View view, Rectangle visible)
+        {
+            // Reposition the HUD buttons using the same edge offsets applied at construction,
+            // otherwise the restart button collapses onto the pause button and they overlap.
+            // Both are grown from the screen's top-right corner by the same boost menu content
+            // gets on a narrow viewport, same idea as RelayoutHud's star row: the corner-relative
+            // offset scales along with the button itself, so the pair grows as one composition
+            // anchored to that corner instead of just getting bigger in place.
+            Button pauseButton = (Button)view.GetChild(1);
+            Button restartButton = (Button)view.GetChild(2);
+            PlaceCornerAnchoredHudButton(pauseButton, -8f, 8f, FittedScale);
+            PlaceCornerAnchoredHudButton(restartButton, -pauseButton.width - 16f, 8f, FittedScale);
+
+            PlacePausePlate(visible);
+            PlaceBestScoreLabel(visible);
+
+            // The button column is a design-space composition like a menu's, so it is fitted the
+            // same way one is rather than merely stretched to the viewport width.
+            PlaceFittedGroup(pauseButtonsGroup);
         }
 
         /// <summary>

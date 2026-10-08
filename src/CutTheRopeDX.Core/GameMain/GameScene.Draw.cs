@@ -126,6 +126,7 @@ namespace CutTheRopeDX.GameMain
             decalsLayer?.Draw();
             support.Draw();
             waterLayer?.DrawBack();
+            DrawTimeTravelSpiral(0);
             TargetObject?.Draw();
             TargetAnimation?.DrawSleepOverlays();
             // Draw additional Om Noms. targets[0] is the primary, drawn above.
@@ -133,6 +134,7 @@ namespace CutTheRopeDX.GameMain
             {
                 TargetContext t = targets[ti];
                 t.support?.Draw();
+                DrawTimeTravelSpiral(ti);
                 t.targetObject?.Draw();
                 t.animation?.DrawSleepOverlays();
             }

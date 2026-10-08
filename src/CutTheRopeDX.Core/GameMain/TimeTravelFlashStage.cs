@@ -17,6 +17,7 @@ namespace CutTheRopeDX.GameMain
     internal sealed class TimeTravelFlashStage
     {
         private readonly List<Image> parts = [];
+        private readonly Dictionary<string, Image> partsByName = new(StringComparer.Ordinal);
 
         private TimeTravelFlashStage(FlashXmlStageRoot root)
         {
@@ -28,6 +29,14 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets the animation's parts.</summary>
         public IReadOnlyList<Image> Parts => parts;
+
+        /// <summary>Finds one of the animation's parts by its name.</summary>
+        /// <param name="name">The part's name.</param>
+        /// <returns>The part, or <see langword="null"/> when the stage has none by that name.</returns>
+        public Image Part(string name)
+        {
+            return partsByName.GetValueOrDefault(name);
+        }
 
         /// <summary>Reads an animation file.</summary>
         /// <param name="xmlFile">Animation file in the animations folder.</param>
@@ -83,6 +92,13 @@ namespace CutTheRopeDX.GameMain
             root.anchor = root.parentAnchor = 9;
             TimeTravelFlashStage stage = new(root);
             FlashXmlTargetAnimationBackend.BuildParts(built, root, stage.parts, -1, -1);
+            for (int i = 0; i < built.Parts.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(built.Parts[i].Name))
+                {
+                    _ = stage.partsByName.TryAdd(built.Parts[i].Name, stage.parts[i]);
+                }
+            }
             if (withRootTimelines)
             {
                 FlashXmlTargetAnimationBackend.BuildRootTimelines(built, root, -1, -1);

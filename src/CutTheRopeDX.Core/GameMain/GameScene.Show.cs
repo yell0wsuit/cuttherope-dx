@@ -19,6 +19,11 @@ namespace CutTheRopeDX.GameMain
             InitializeGameState();
             InitializeCandyObjects();
             InitializeHUDStars();
+            ResetTimeTravelSpiral();
+            timeTravelArrivalPending = MenuTheme.IsTimeTravel
+                && RootController.IsShowGreeting()
+                && Application.SharedRootController().Level == 0
+                && !CustomLevelSession.IsActive;
 
             RootController root = Application.SharedRootController();
             XElement map = root.Map;
@@ -121,6 +126,11 @@ namespace CutTheRopeDX.GameMain
             }
             PlatformServices.Cursor?.ReleaseButtons();
             StartProfessorHand();
+            if (timeTravelArrivalPending)
+            {
+                BeginTimeTravelArrival();
+            }
+            StrikeTimeTravelLightning();
             RootController.LogEvent("IG_SHOWN");
         }
 

@@ -19,7 +19,7 @@ namespace CutTheRopeDX.GameMain
         public override void Update(float delta)
         {
             base.Update(delta);
-            if (boxAnim != 2)
+            if (boxAnim != 2 || TimeTravelResult != null)
             {
                 return;
             }
@@ -181,6 +181,7 @@ namespace CutTheRopeDX.GameMain
             width = (int)visible.w;
             height = (int)visible.h;
             CoverFitAnimations(visible);
+            TimeTravelResult?.Layout(visible);
         }
 
         /// <summary>
@@ -199,6 +200,11 @@ namespace CutTheRopeDX.GameMain
         {
             if (openCloseAnims == null)
             {
+                return;
+            }
+            if (MenuTheme.IsTimeTravel)
+            {
+                FitTimeTravelFlash(visible);
                 return;
             }
 
@@ -383,6 +389,10 @@ namespace CutTheRopeDX.GameMain
             openCloseAnims = null;
             boxAnim = -1;
             delegateboxClosed = null;
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelResult(b);
+            }
             return this;
         }
 
@@ -442,6 +452,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void LevelFirstStart()
         {
+            TimeTravelResult?.Dismiss();
             boxAnim = 0;
             RemoveOpenCloseAnims();
             ShowOpenAnim();
@@ -456,6 +467,7 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void LevelStart()
         {
+            TimeTravelResult?.Dismiss();
             boxAnim = 1;
             RemoveOpenCloseAnims();
             ShowOpenAnim();
@@ -475,6 +487,12 @@ namespace CutTheRopeDX.GameMain
             boxAnim = 2;
             raState = -1;
             RemoveOpenCloseAnims();
+            if (TimeTravelResult != null)
+            {
+                // The blind shuts over the level in place of the box.
+                TimeTravelResult.Show(levelResult, shouldShowImprovedResult);
+                return;
+            }
             ShowCloseAnim();
             ((Text)result.GetChildWithName("scoreValue")).SetEnabled(false);
             Text text = (Text)result.GetChildWithName("dataTitle");
@@ -503,6 +521,7 @@ namespace CutTheRopeDX.GameMain
         {
             boxAnim = 4;
             result.SetEnabled(false);
+            TimeTravelResult?.Dismiss();
             RemoveOpenCloseAnims();
             ShowCloseAnim();
         }
@@ -574,6 +593,11 @@ namespace CutTheRopeDX.GameMain
         public void ShowOpenCloseAnim(bool open)
         {
             CreateOpenCloseAnims();
+            if (MenuTheme.IsTimeTravel)
+            {
+                ShowTimeTravelFlash(open);
+                return;
+            }
             if (MenuTheme.IsExperiments)
             {
                 ShowExperimentsBlind(open);
