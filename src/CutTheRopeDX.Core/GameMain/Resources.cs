@@ -357,6 +357,13 @@ namespace CutTheRopeDX.GameMain
             public const string MenuPopupTimeTravel = "menu_popup_timetravel";
             public const string MenuSettingsTimeTravel = "menu_settings_timetravel";
             public const string LogoClockTimeTravel = "logo_clock_timetravel";
+            public const string MenuPackSelectionTimeTravel = "menu_pack_selection_timetravel";
+            public const string MenuPackSelectionIconsTimeTravel = "menu_pack_selection_icons_timetravel";
+            public const string MenuPackSelectionIcons1TimeTravel = "menu_pack_selection_icons_1_timetravel";
+            public const string MenuPackSelectionIcons2TimeTravel = "menu_pack_selection_icons_2_timetravel";
+            public const string MenuBgrsTimeTravel = "menu_bgrs_timetravel";
+            public const string MenuLevelsTimeTravel = "menu_levels_timetravel";
+            public const string MenuLoadingTimeTravel = "menu_loading_timetravel";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
