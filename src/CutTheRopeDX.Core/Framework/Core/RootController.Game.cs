@@ -853,7 +853,6 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuLevelsTimeTravel,
             Resources.Snd.TapTimeTravel1,
             Resources.Snd.TapTimeTravel2,
-            Resources.Snd.LevelIconTimeTravel,
             null
         ];
 

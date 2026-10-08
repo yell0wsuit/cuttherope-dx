@@ -371,12 +371,14 @@ namespace CutTheRopeDX.GameMain
         ];
 
         /// <summary>
-        /// The Time Travel images kept for the whole session, terminated by <see langword="null"/>:
-        /// the loading screen draws while every other pack is being swapped out.
+        /// The Time Travel resources kept for the whole session, terminated by <see langword="null"/>:
+        /// the loading screen draws while every other pack is being swapped out, and a level's
+        /// click rings on after the menu pack it was pressed in has been freed.
         /// </summary>
-        private static readonly string[] PackTimeTravelCommon =
+        internal static readonly string[] PackTimeTravelCommon =
         [
             Resources.Img.MenuLoadingTimeTravel,
+            Resources.Snd.LevelIconTimeTravel,
             null
         ];
 
