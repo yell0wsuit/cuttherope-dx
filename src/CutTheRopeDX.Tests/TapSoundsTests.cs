@@ -48,9 +48,15 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
-        public void TheTimeTravelMenuPackLoadsTheLevelClick()
+        public void TheTimeTravelLevelClickOutlivesTheMenuPack()
         {
-            WithStyle(MenuStyle.TimeTravel, () => Assert.Contains(Resources.Snd.LevelIconTimeTravel, RootController.PackMenu));
+            // The click runs past the level press's burst, after which the menu pack is freed and
+            // freeing a sound stops it.
+            WithStyle(MenuStyle.TimeTravel, () =>
+            {
+                Assert.Contains(Resources.Snd.LevelIconTimeTravel, StartupController.PackTimeTravelCommon);
+                Assert.DoesNotContain(Resources.Snd.LevelIconTimeTravel, RootController.PackMenu);
+            });
         }
 
         [Fact]
