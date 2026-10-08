@@ -151,6 +151,35 @@
     <Exec Command="codesign --force --sign - &quot;$(AppBundlePath)&quot;" IgnoreExitCode="false" />
   </Target>
 
+  <!--
+    macOS: bundle exactly one SDL3 and one SDL_mixer.
+
+    The SDL3-CS packages ship each library under several names (libSDL3.dylib beside
+    libSDL3.0.dylib, three names for the mixer) as separate files sharing one install name, so
+    outside a bundle dyld treats them as one image. The Apple SDK gives every bundled dylib an
+    install name of its own and links the executable against all of them, so the app loads SDL3
+    twice: P/Invoke binds libSDL3.dylib while the mixer binds libSDL3.0.dylib. The mixer then
+    works against an SDL nobody initialized, every sound and song fails to load, and the reason
+    is recorded in the copy the game never reads, leaving the logged error blank.
+
+    Keep only the names P/Invoke probes for, then point the mixer at the SDL3 that remains.
+  -->
+  <Target Name="DropDuplicateSdlLibraries" AfterTargets="_ComputePublishLocation" Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <ItemGroup>
+      <_DuplicateSdlLibrary Include="@(_FileNativeReference)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)%(Extension)', '^libSDL3(_mixer)?\.[0-9.]+\.dylib$'))" />
+      <_FileNativeReference Remove="@(_DuplicateSdlLibrary)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="LinkMixerToBundledSdl" AfterTargets="_InstallNameTool" Condition="'$(TargetFramework)' == 'net10.0-macos'">
+    <ItemGroup>
+      <_BundledSdl Include="@(_DynamicLibraryToReidentify)" Condition="'%(Filename)%(Extension)' == 'libSDL3.dylib'" />
+      <_BundledSdlMixer Include="@(_DynamicLibraryToReidentify)" Condition="'%(Filename)%(Extension)' == 'libSDL3_mixer.dylib'" />
+    </ItemGroup>
+
+    <Exec Condition="'@(_BundledSdl)' != '' AND '@(_BundledSdlMixer)' != ''" Command="install_name_tool -change @rpath/libSDL3.0.dylib '@(_BundledSdl->'%(DynamicLibraryId)')' '@(_BundledSdlMixer->'%(ReidentifiedPath)')'" />
+  </Target>
+
   <Target Name="MoveMacOSAppToPublish" AfterTargets="Publish" Condition="'$(TargetFramework)' == 'net10.0-macos' AND '$(RuntimeIdentifier)' != '' AND $([MSBuild]::IsOsPlatform('OSX'))">
     <PropertyGroup>
       <AppBundleName>$(AssemblyName).app</AppBundleName>
