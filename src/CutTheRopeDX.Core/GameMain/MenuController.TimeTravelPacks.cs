@@ -312,12 +312,25 @@ namespace CutTheRopeDX.GameMain
             return rays;
         }
 
-        /// <summary>Scales the rays to the full screen height, as iOS sizes them.</summary>
+        /// <summary>
+        /// Scales the rays to the full screen height, as iOS sizes them, and further on a screen
+        /// wider than that leaves them, so they always span its full width.
+        /// </summary>
         /// <param name="rays">The rays.</param>
         /// <param name="screen">The screen model.</param>
-        private static void ScaleTimeTravelRays(Image rays, TimeTravelScreen screen)
+        internal static void ScaleTimeTravelRays(Image rays, TimeTravelScreen screen)
         {
-            rays.scaleX = rays.scaleY = TimeTravelRaysHeightScale * screen.FullHeight / TimeTravelScreen.SceneHeight;
+            rays.scaleX = rays.scaleY = TimeTravelRaysScale(screen);
+        }
+
+        /// <summary>The rays' scale for a screen: iOS's height rule, or wider to span its full width.</summary>
+        /// <param name="screen">The screen model.</param>
+        /// <returns>The scale, against the rays' own size.</returns>
+        internal static float TimeTravelRaysScale(TimeTravelScreen screen)
+        {
+            float byHeight = TimeTravelRaysHeightScale * screen.FullHeight / TimeTravelScreen.SceneHeight;
+            float raysWidth = TimeTravelArt.PackMarkers.Rays.w / 2f;
+            return MathF.Max(byHeight, screen.FullWidth / raysWidth);
         }
 
         /// <summary>A page's gradient background.</summary>
