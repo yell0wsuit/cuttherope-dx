@@ -939,6 +939,16 @@ namespace CutTheRopeDX.GameMain
             return 0f;
         }
 
+        /// <summary>Gets how long a state's timeline plays for, at the rate this skin plays it.</summary>
+        /// <param name="state">State to inspect.</param>
+        /// <returns>Seconds, or 0 when the skin has no timeline for the state.</returns>
+        public float GetPlaybackSeconds(TargetAnimationState state)
+        {
+            return TryMapState(state, out int timelineId)
+                ? GetTimelineDurationSeconds(timelineId) / GetTimelinePlaybackRate(SkinDefinition, timelineId)
+                : 0f;
+        }
+
         /// <summary>
         /// Gets the best known duration for a timeline.
         /// </summary>
