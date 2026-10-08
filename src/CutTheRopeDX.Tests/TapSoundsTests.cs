@@ -48,6 +48,12 @@ namespace CutTheRopeDX.Tests
         }
 
         [Fact]
+        public void TheTimeTravelMenuPackLoadsTheLevelClick()
+        {
+            WithStyle(MenuStyle.TimeTravel, () => Assert.Contains(Resources.Snd.LevelIconTimeTravel, RootController.PackMenu));
+        }
+
+        [Fact]
         public void TimeTravelLevelsLoadBothTaps()
         {
             WithStyle(MenuStyle.TimeTravel, () =>

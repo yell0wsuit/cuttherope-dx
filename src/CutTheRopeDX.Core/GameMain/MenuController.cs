@@ -1993,7 +1993,8 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (n.Value != -1)
+            // A Time Travel level plays its own sound with its burst instead of a tap.
+            if (n.Value != -1 && !(n.IsLevelButton() && MenuTheme.IsTimeTravel))
             {
                 SoundMgr.PlaySound(TapSounds.Next());
             }
