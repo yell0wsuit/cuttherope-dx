@@ -1,5 +1,6 @@
 using System;
 
+using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Visual;
 
@@ -135,6 +136,194 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Settings: the thin credits window border (iOS q7).</summary>
         public const int WindowBorderThin = 7;
+
+        /// <summary>Back button sheet: the page arrow (iOS q3).</summary>
+        public const int PageArrowUp = 3;
+
+        /// <summary>Back button sheet: the page arrow pressed (iOS q4).</summary>
+        public const int PageArrowDown = 4;
+
+        /// <summary>The pack pages' loading clock animation.</summary>
+        public const string LoadingAnimationXml = "menu_loading_timetravel.xml";
+
+        /// <summary>The burst a pressed level plays.</summary>
+        public const string LevelBurstAnimationXml = "fx_menu_levels_timetravel.xml";
+
+        /// <summary>The padlock on a locked pack, which splits apart when the pack opens.</summary>
+        public const string PackLockAnimationXml = "menu_pack_selection_lock_ani_timetravel.xml";
+
+        /// <summary>Pack sheet: the rays behind the pack icon (iOS q0).</summary>
+        public const int PackRays = 0;
+
+        /// <summary>Pack sheet: a page bullet (iOS q5).</summary>
+        public const int PageBullet = 4;
+
+        /// <summary>Pack sheet: the current page's bullet (iOS q6).</summary>
+        public const int PageBulletCurrent = 5;
+
+        /// <summary>Pack sheet: the star beside the star count (iOS q7).</summary>
+        public const int CounterStar = 6;
+
+        /// <summary>Pack sheet: the line across a locked icon where its stars reach (iOS q23).</summary>
+        public const int PackProgressLine = 22;
+
+        /// <summary>Pack sheet: the star on a padlock (iOS q25).</summary>
+        public const int LockStar = 23;
+
+        /// <summary>Pack sheet: the speech bubble on the coming-soon page (iOS q41).</summary>
+        public const int ComingSoonBubble = 29;
+
+        /// <summary>Pack sheet: the first of the three coming-soon gadgets (iOS q43 to q45).</summary>
+        public const int ComingSoonFirstGadget = 31;
+
+        /// <summary>Number of coming-soon gadgets.</summary>
+        public const int ComingSoonGadgets = 3;
+
+        /// <summary>Pack icon sheet: the badge on a pack with every star (iOS q8).</summary>
+        public const int PerfectBadge = 8;
+
+        /// <summary>Number of pack icons, which DX packs take in turn.</summary>
+        public const int PackIcons = 12;
+
+        /// <summary>Level sheet: the level played last (iOS q0).</summary>
+        public const int LevelLastPlayed = 0;
+
+        /// <summary>Level sheet: a locked level (iOS q1).</summary>
+        public const int LevelLocked = 1;
+
+        /// <summary>Level sheet: an open level (iOS q2).</summary>
+        public const int LevelOpen = 2;
+
+        /// <summary>Level sheet: no stars won; one more star per quad up to three (iOS q3 to q6).</summary>
+        public const int LevelStars = 3;
+
+        /// <summary>
+        /// The pack page whose background and tint the coming-soon page takes: page 14, the one
+        /// iOS gives it when the snowflake page is not shown.
+        /// </summary>
+        public const int ComingSoonPage = 14;
+
+        /// <summary>
+        /// Rects of the iOS pack sheet's position quads, in canvas pixels from the iOS canvas
+        /// origin. The packed sheet keeps these as blank frames without their places, so the
+        /// places are held here.
+        /// </summary>
+        public static class PackMarkers
+        {
+            /// <summary>Where the pack title is centered, and how wide it may run (iOS q4).</summary>
+            public static readonly Rectangle Title = new(223f, 269f, 837f, 300f);
+
+            /// <summary>The rays' quad (iOS q0): spun about its middle.</summary>
+            public static readonly Rectangle Rays = new(-151f, 196f, 1582f, 1530f);
+
+            /// <summary>A page bullet (iOS q5).</summary>
+            public static readonly Rectangle Bullet = new(605f, 1765f, 40f, 40f);
+
+            /// <summary>The current page's bullet (iOS q6): the row is centered on its height.</summary>
+            public static readonly Rectangle BulletCurrent = new(658f, 1745f, 76f, 75f);
+
+            /// <summary>The right page arrow's box (iOS q9): the arrow's top right sits on its own.</summary>
+            public static readonly Rectangle RightArrow = new(1122f, 838f, 106f, 216f);
+
+            /// <summary>The left page arrow's box (iOS q10): the arrow's top left sits on its own.</summary>
+            public static readonly Rectangle LeftArrow = new(60f, 838f, 106f, 216f);
+
+            /// <summary>The coming-soon page's text box (iOS q21).</summary>
+            public static readonly Rectangle ComingSoonText = new(336f, 934f, 610f, 252f);
+
+            /// <summary>The padlock half (iOS q22) its star and price are placed from.</summary>
+            public static readonly Rectangle LockHalf = new(372f, 687f, 244f, 581f);
+
+            /// <summary>The line across a locked icon (iOS q23).</summary>
+            public static readonly Rectangle ProgressLine = new(412f, 955f, 442f, 27f);
+
+            /// <summary>Where the padlock's star is centered (iOS q29).</summary>
+            public static readonly Rectangle LockStarMarker = new(636f, 1066f, 10f, 10f);
+
+            /// <summary>Where the padlock's price is centered (iOS q30).</summary>
+            public static readonly Rectangle LockPriceMarker = new(644f, 1056f, 10f, 10f);
+
+            /// <summary>The coming-soon bubble (iOS q41).</summary>
+            public static readonly Rectangle ComingSoonBubble = new(798f, 1389f, 403f, 332f);
+
+            /// <summary>The coming-soon bubble's text box (iOS q42).</summary>
+            public static readonly Rectangle ComingSoonBubbleText = new(851f, 1474f, 292f, 244f);
+
+            /// <summary>The coming-soon gadgets (iOS q43 to q45).</summary>
+            public static readonly Rectangle[] ComingSoonGadgets =
+            [
+                new(1f, 358f, 247f, 312f),
+                new(491f, 91f, 355f, 539f),
+                new(1074f, 358f, 269f, 301f),
+            ];
+        }
+
+        /// <summary>The level sheet's places, in canvas pixels on the level sheet's canvas.</summary>
+        public static class LevelMarkers
+        {
+            /// <summary>An open level's plate (iOS q2), which the rest are placed from.</summary>
+            public static readonly Rectangle Plate = new(214f, 353f, 250f, 267f);
+
+            /// <summary>The star strip (iOS q3).</summary>
+            public static readonly Rectangle Stars = new(285f, 540f, 163f, 84f);
+
+            /// <summary>Where the level number is centered (iOS q8).</summary>
+            public static readonly Rectangle Number = new(336f, 474f, 10f, 10f);
+        }
+
+        /// <summary>
+        /// The icon a pack shows: its sheet and quad. DX packs take the twelve iOS icons in turn.
+        /// </summary>
+        /// <param name="pack">Pack index.</param>
+        /// <returns>The sheet and the quad in it.</returns>
+        public static (string Sheet, int Quad) PackIcon(int pack)
+        {
+            int icon = ((pack % PackIcons) + PackIcons) % PackIcons;
+            return icon switch
+            {
+                < 6 => (Resources.Img.MenuPackSelectionIconsTimeTravel, icon),
+                < 10 => (Resources.Img.MenuPackSelectionIcons1TimeTravel, icon - 6),
+                _ => (Resources.Img.MenuPackSelectionIcons2TimeTravel, icon - 10),
+            };
+        }
+
+        /// <summary>
+        /// Page tints (iOS <c>bgrColors</c>), one per iOS page: page 0 was the more-games page and
+        /// pack <c>n</c> sat on page <c>n + 1</c>.
+        /// </summary>
+        private static readonly RGBAColor[] PageColors =
+        [
+            Rgb(203, 245, 7), Rgb(231, 172, 255), Rgb(255, 162, 162), Rgb(82, 255, 220), Rgb(255, 255, 0),
+            Rgb(245, 255, 77), Rgb(255, 222, 0), Rgb(230, 100, 170), Rgb(255, 189, 90), Rgb(239, 107, 0),
+            Rgb(129, 128, 125), Rgb(169, 254, 211), Rgb(164, 255, 116), Rgb(59, 211, 255), Rgb(180, 255, 255),
+        ];
+
+        /// <summary>Number of iOS pages, each with its own background and tint.</summary>
+        public static int PageCount => PageColors.Length;
+
+        /// <summary>
+        /// The iOS page a DX pack page draws: the page its icon had, or the coming-soon page.
+        /// </summary>
+        /// <param name="pack">Pack index; the one past the last pack is the coming-soon page.</param>
+        /// <param name="comingSoon">Whether this is the coming-soon page.</param>
+        /// <returns>The iOS page, which is also its background quad.</returns>
+        public static int PackPage(int pack, bool comingSoon)
+        {
+            return comingSoon ? ComingSoonPage : (((pack % PackIcons) + PackIcons) % PackIcons) + 1;
+        }
+
+        /// <summary>The tint of an iOS page.</summary>
+        /// <param name="page">iOS page.</param>
+        /// <returns>The tint, opaque.</returns>
+        public static RGBAColor PageColor(int page)
+        {
+            return PageColors[Math.Clamp(page, 0, PageColors.Length - 1)];
+        }
+
+        private static RGBAColor Rgb(int r, int g, int b)
+        {
+            return RGBAColor.MakeRGBA(r / 255f, g / 255f, b / 255f, 1f);
+        }
     }
 
     /// <summary>Builds Time Travel buttons with DX labels on iOS plates.</summary>
