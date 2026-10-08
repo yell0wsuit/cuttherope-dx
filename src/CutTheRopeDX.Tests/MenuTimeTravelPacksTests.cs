@@ -146,6 +146,23 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheRaysSpanTheFullWidthAndKeepTheIosHeightRule(string name, int width, int height)
+        {
+            _ = name;
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowPacks(controller);
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                TimeTravelScreen screen = new(visible);
+                BaseElement rays = view.GetChildWithName("ttRays");
+                Rectangle box = DrawnBox(rays);
+                Assert.True(box.x <= visible.x + 0.5f && box.x + box.w >= visible.x + visible.w - 0.5f, name + " rays width");
+                Assert.True(rays.scaleX >= (1.4286f * screen.FullHeight / TimeTravelScreen.SceneHeight) - 0.0001f, name + " rays height rule");
+            });
+        }
+
         [Fact]
         public void HalfwayBetweenPagesBothIconsAndBackgroundsShareTheScreen()
         {
