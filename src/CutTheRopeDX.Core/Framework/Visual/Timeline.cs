@@ -235,6 +235,26 @@ namespace CutTheRopeDX.Framework.Visual
         }
 
         /// <summary>
+        /// Gets how long the timeline runs: the time of the last keyframe on any of its tracks.
+        /// </summary>
+        public float Duration
+        {
+            get
+            {
+                float duration = 0f;
+                foreach (Track track in tracks)
+                {
+                    if (track != null)
+                    {
+                        track.UpdateRange();
+                        duration = MathF.Max(duration, track.endTime);
+                    }
+                }
+                return duration;
+            }
+        }
+
+        /// <summary>
         /// Returns the track for the specified type, or <see langword="null"/> if not created.
         /// </summary>
         /// <param name="tt">Track type to retrieve.</param>
