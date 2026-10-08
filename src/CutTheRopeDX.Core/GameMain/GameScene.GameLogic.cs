@@ -535,6 +535,7 @@ namespace CutTheRopeDX.GameMain
 
             CancelTouchesForLevelEnd();
             dd.CancelAllDispatches();
+            ScheduleTimeTravelDeparture();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
             // one keeps sleeping (and its zzz keeps looping) through the win transition, so it

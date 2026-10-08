@@ -308,6 +308,7 @@ namespace CutTheRopeDX.GameMain
                 const int HudUiStarFirstQuad = 1;
                 hudStar[i].SetDrawQuad(HudUiStarFirstQuad);
             }
+            ResetTimeTravelHudStars();
         }
 
     }

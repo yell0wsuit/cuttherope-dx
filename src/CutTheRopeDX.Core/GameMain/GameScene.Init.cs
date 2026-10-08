@@ -87,6 +87,10 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].y = hudStarSlotHeight / 2;
                 _ = AddChild(hudStar[i]);
             }
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelHudStars();
+            }
             int selectedTraceIndex = Preferences.GetIntForKey("PREFS_SELECTED_TRACE");
             for (int j = 0; j < pointerGestures.Length; j++)
             {
