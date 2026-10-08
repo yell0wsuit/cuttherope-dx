@@ -346,6 +346,118 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Fact]
+        public void APhoneShapedScreenGetsNoExtraClocks()
+        {
+            TimeTravelScreen screen = new(new Rectangle(0f, 0f, 640f, 960f));
+            Rectangle shown = TimeTravelClockFill.ShownRegion(screen);
+            List<FillPlacement> placed = TimeTravelClockFill.Plan(shown, [], [50f, 60f], new System.Random(1));
+            Assert.Empty(placed);
+            Assert.All(TimeTravelClockFill.CutClocks, cut => Assert.False(TimeTravelClockFill.ShowsCut(cut, shown)));
+        }
+
+        [Fact]
+        public void AWideScreenPacksClocksThatNeverTouchEachOtherOrTheIosScreen()
+        {
+            TimeTravelScreen screen = new(new Rectangle(0f, 0f, 2560f, 1080f));
+            Rectangle shown = TimeTravelClockFill.ShownRegion(screen);
+            Rectangle ios = TimeTravelClockFill.IosScreen;
+            Circle hero = new(400f, 593.5f, 120f);
+            float[] radii = [88f, 75f, 70f, 63f, 51f, 46f, 55f, 73f];
+            List<FillPlacement> placed = TimeTravelClockFill.Plan(shown, [hero], radii, new System.Random(7));
+
+            Assert.True(placed.Count >= 10, "only " + placed.Count + " clocks");
+            List<Circle> circles = [hero];
+            foreach (FillPlacement p in placed)
+            {
+                Assert.False(p.X >= ios.x && p.X <= ios.x + ios.w && p.Y >= ios.y && p.Y <= ios.y + ios.h);
+                Assert.InRange(p.Scale, TimeTravelClockFill.MinScale, TimeTravelClockFill.MaxScale);
+                Assert.InRange(p.Tilt, -TimeTravelClockFill.MaxTilt, TimeTravelClockFill.MaxTilt);
+                float r = radii[p.Clock] * p.Scale;
+                float bleed = r * TimeTravelClockFill.Bleed;
+                Assert.True(p.X - r >= shown.x - bleed - 0.01f && p.X + r <= shown.x + shown.w + bleed + 0.01f);
+                Assert.True(p.Y - r >= shown.y - bleed - 0.01f && p.Y + r <= shown.y + shown.h + bleed + 0.01f);
+                foreach (Circle other in circles)
+                {
+                    float dx = p.X - other.X;
+                    float dy = p.Y - other.Y;
+                    Assert.True(System.MathF.Sqrt((dx * dx) + (dy * dy)) >= r + other.Radius + TimeTravelClockFill.Gap - 0.01f);
+                }
+                circles.Add(new Circle(p.X, p.Y, r));
+            }
+        }
+
+        [Fact]
+        public void AnEdgeClockIsHiddenOnlyOnceItsCutWouldShow()
+        {
+            CutClock right = new("clock_09", CutSide.Right, 829.4f);
+            Assert.False(TimeTravelClockFill.ShowsCut(right, TimeTravelClockFill.ShownRegion(new TimeTravelScreen(new Rectangle(0f, 0f, 768f, 1024f)))));
+            Assert.True(TimeTravelClockFill.ShowsCut(right, TimeTravelClockFill.ShownRegion(new TimeTravelScreen(new Rectangle(0f, 0f, 1024f, 768f)))));
+            CutClock bottom = new("clock_12", CutSide.Bottom, 1259.2f);
+            Assert.False(TimeTravelClockFill.ShowsCut(bottom, TimeTravelClockFill.ShownRegion(new TimeTravelScreen(new Rectangle(0f, 0f, 1920f, 1080f)))));
+            Assert.True(TimeTravelClockFill.ShowsCut(bottom, TimeTravelClockFill.ShownRegion(new TimeTravelScreen(new Rectangle(0f, 0f, 400f, 1280f)))));
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheLoadingScreenFillsItsRoomWithClocksThatTickWithTheLoad(string name, int width, int height)
+        {
+            WithTimeTravel(width, height, _ =>
+            {
+                LoadingController loading = new(Application.SharedRootController());
+                try
+                {
+                    LoadingView view = (LoadingView)loading.GetView(0);
+                    view.TimeTravelRandom = new System.Random(3);
+                    float percent = 0f;
+                    view.TimeTravelPercent = () => percent;
+                    view.LayOutTimeTravel(ScreenPresentation.Instance.Snapshot.VisibleBounds);
+                    view.Show();
+                    Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                    TimeTravelScreen screen = new(visible);
+                    bool roomy = screen.FullWidth > 900f || screen.FullHeight > 1400f;
+                    Assert.True(!roomy || view.TimeTravelFills.Count > 0, name + " has no extra clocks");
+
+                    view.Update(0.5f);
+                    percent = 40f;
+                    view.Update(0.016f);
+                    foreach (TimeTravelFlashStage fill in view.TimeTravelFills)
+                    {
+                        Assert.Equal(3, fill.Parts.Count);
+                        Image hand = fill.Parts[1];
+                        Assert.Equal(1, hand.CurrentTimelineIndex);
+                        Assert.Equal(view.TimeTravelClock.GetTimeline(1).time, hand.GetCurrentTimeline().time, 3);
+                    }
+
+                    // An edge clock cut where the screen now shows is kept hidden after every step.
+                    Rectangle shown = TimeTravelClockFill.ShownRegion(screen);
+                    foreach (CutClock cut in TimeTravelClockFill.CutClocks)
+                    {
+                        Image part = All<Image>(view.TimeTravelClock).Find(image => image.quadToDraw == CutQuad(cut.Part) && image.parent == view.TimeTravelClock);
+                        if (TimeTravelClockFill.ShowsCut(cut, shown))
+                        {
+                            Assert.False(part.visible, name + " " + cut.Part);
+                        }
+                    }
+                }
+                finally
+                {
+                    loading.Dispose();
+                }
+            });
+        }
+
+        private static int CutQuad(string part)
+        {
+            return part switch
+            {
+                "clock_09" => 12,
+                "clock_11" => 6,
+                "clock_12" => 11,
+                _ => 10,
+            };
+        }
+
         private static View ShowPacks(MenuController controller)
         {
             controller.ShowView(MenuController.VIEW_PACK_SELECT);
