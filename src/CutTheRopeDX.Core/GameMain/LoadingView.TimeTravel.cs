@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -42,6 +43,10 @@ namespace CutTheRopeDX.GameMain
         private Text timeTravelLabel;
         private float timeTravelWound;
         private float timeTravelProgressLength;
+        private FlashXmlAnimationDefinition timeTravelDefinition;
+        private readonly List<TimeTravelFlashStage> timeTravelFills = [];
+        private readonly List<Image> timeTravelHiddenCuts = [];
+        private Rectangle timeTravelFilledFor;
 
         /// <summary>Gets the timeline the clock animation is on.</summary>
         internal TimeTravelPhase TimeTravelState { get; private set; } = TimeTravelPhase.Done;
@@ -52,6 +57,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the clock animation's stage, or <see langword="null"/> outside Time Travel.</summary>
         internal FlashXmlStageRoot TimeTravelClock => timeTravelClock?.Root;
 
+        /// <summary>Gets or sets the source of the extra clocks' places, sizes and tilts.</summary>
+        internal Random TimeTravelRandom { get; set; } = new();
+
+        /// <summary>Gets the extra clocks filling a screen wider or taller than the iOS one.</summary>
+        internal IReadOnlyList<TimeTravelFlashStage> TimeTravelFills => timeTravelFills;
+
         /// <summary>Builds the white backdrop and the clock animation, under the label.</summary>
         internal void AttachTimeTravel()
         {
@@ -60,7 +71,8 @@ namespace CutTheRopeDX.GameMain
             timeTravelWhite.anchor = timeTravelWhite.parentAnchor = 9;
             _ = AddChild(timeTravelWhite);
 
-            timeTravelClock = TimeTravelFlashStage.Create(TimeTravelArt.LoadingAnimationXml, Resources.Img.MenuLoadingTimeTravel);
+            timeTravelDefinition = TimeTravelFlashStage.Load(TimeTravelArt.LoadingAnimationXml);
+            timeTravelClock = TimeTravelFlashStage.Create(timeTravelDefinition, Resources.Img.MenuLoadingTimeTravel);
             timeTravelClock.Root.SetName("ttLoadingClock");
 
             // Wound by hand while loading, so the view's own update must not run it as well.
@@ -107,6 +119,10 @@ namespace CutTheRopeDX.GameMain
             TimeTravelScreen screen = new(visible);
             FlashXmlStageRoot stage = timeTravelClock.Root;
             timeTravelClock.Place(screen.Scale, stage.width / 2f, stage.height / 2f, visible.w / 2f, visible.h / 2f);
+            if (visible.w != timeTravelFilledFor.w || visible.h != timeTravelFilledFor.h)
+            {
+                FillTimeTravel(visible);
+            }
             if (timeTravelLabel != null)
             {
                 timeTravelLabel.scaleX = timeTravelLabel.scaleY = contentScale;
@@ -122,6 +138,9 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             timeTravelWound = 0f;
+
+            // Every load packs its extra clocks afresh.
+            FillTimeTravel(VisibleBounds);
             PlayTimeTravel(TimeTravelPhase.Intro);
             timeTravelLabel?.PlayTimeline(0);
         }
@@ -165,6 +184,7 @@ namespace CutTheRopeDX.GameMain
                 default:
                     break;
             }
+            HideTimeTravelCuts();
         }
 
         /// <summary>Plays one of the clock animation's timelines, moving on when it ends.</summary>
@@ -184,6 +204,152 @@ namespace CutTheRopeDX.GameMain
             }
             timeline.OnFinished = () => FinishTimeTravel(phase);
             timeTravelClock.Play((int)phase);
+            foreach (TimeTravelFlashStage fill in timeTravelFills)
+            {
+                fill.Play((int)phase);
+            }
+            HideTimeTravelCuts();
+        }
+
+        /// <summary>
+        /// Packs extra clocks into whatever the screen shows beyond the iOS one, and hides the
+        /// animation's edge clocks whose cut it would show. The extra clocks are hung from the
+        /// clock stage, so they step with it, and are caught up with the timeline it is on.
+        /// </summary>
+        /// <param name="visible">The logical region the viewport exposes.</param>
+        private void FillTimeTravel(Rectangle visible)
+        {
+            if (timeTravelClock == null)
+            {
+                return;
+            }
+            timeTravelFilledFor = visible;
+            FlashXmlStageRoot stage = timeTravelClock.Root;
+            foreach (TimeTravelFlashStage old in timeTravelFills)
+            {
+                stage.RemoveChild(old.Root);
+            }
+            timeTravelFills.Clear();
+            foreach (Image hidden in timeTravelHiddenCuts)
+            {
+                hidden.visible = true;
+            }
+            timeTravelHiddenCuts.Clear();
+
+            Rectangle shown = TimeTravelClockFill.ShownRegion(new TimeTravelScreen(visible));
+            HashSet<string> cut = [];
+            foreach (CutClock edge in TimeTravelClockFill.CutClocks)
+            {
+                if (TimeTravelClockFill.ShowsCut(edge, shown))
+                {
+                    _ = cut.Add(edge.Part);
+                }
+            }
+
+            List<Circle> occupied = [];
+            IReadOnlyList<FlashXmlPartDefinition> parts = timeTravelDefinition.Parts;
+            for (int i = 0; i < parts.Count; i++)
+            {
+                if (cut.Contains(parts[i].Name))
+                {
+                    timeTravelHiddenCuts.Add(timeTravelClock.Parts[i]);
+                }
+                else if (parts[i].Name.StartsWith("clock_", StringComparison.Ordinal))
+                {
+                    occupied.Add(ClockCircle(parts[i]));
+                }
+            }
+
+            List<float> radii = [];
+            foreach (FillClock clock in TimeTravelClockFill.Clocks)
+            {
+                FlashXmlPartDefinition face = FindPart(clock.Face);
+                radii.Add(face == null ? 0f : ClockCircle(face).Radius);
+            }
+
+            foreach (FillPlacement placement in TimeTravelClockFill.Plan(shown, occupied, radii, TimeTravelRandom))
+            {
+                FillClock clock = TimeTravelClockFill.Clocks[placement.Clock];
+                HashSet<string> names = [clock.Face, .. clock.Hands];
+                TimeTravelFlashStage fill = TimeTravelFlashStage.Create(
+                    timeTravelDefinition, Resources.Img.MenuLoadingTimeTravel, part => names.Contains(part.Name), withRootTimelines: false);
+                Circle home = ClockCircle(FindPart(clock.Face));
+
+                // Turned and scaled about the clock's own middle, which is set where it goes.
+                FlashXmlStageRoot root = fill.Root;
+                root.SetName("ttLoadingFill");
+                root.rotationCenterX = home.X - (root.width / 2f);
+                root.rotationCenterY = home.Y - (root.height / 2f);
+                root.scaleX = root.scaleY = placement.Scale;
+                root.rotation = placement.Tilt;
+                root.x = placement.X - home.X;
+                root.y = placement.Y - home.Y;
+                _ = stage.AddChild(root);
+                timeTravelFills.Add(fill);
+                CatchUpTimeTravelFill(fill);
+            }
+            HideTimeTravelCuts();
+        }
+
+        /// <summary>Brings a new extra clock to where the clock animation has got.</summary>
+        /// <param name="fill">The extra clock.</param>
+        private void CatchUpTimeTravelFill(TimeTravelFlashStage fill)
+        {
+            TimeTravelPhase phase = TimeTravelState == TimeTravelPhase.Done ? TimeTravelPhase.Outro : TimeTravelState;
+            fill.Play((int)phase);
+            float time = TimeTravelState switch
+            {
+                TimeTravelPhase.Progress => timeTravelWound,
+                TimeTravelPhase.Done => timeTravelClock.RootTimeline((int)phase)?.Duration ?? 0f,
+                TimeTravelPhase.Intro or TimeTravelPhase.Outro => timeTravelClock.RootTimeline((int)phase)?.time ?? 0f,
+                _ => 0f,
+            };
+            if (time > 0f)
+            {
+                fill.Root.Update(time);
+            }
+        }
+
+        /// <summary>Keeps the edge clocks whose cut would show hidden, whatever their timelines set.</summary>
+        private void HideTimeTravelCuts()
+        {
+            foreach (Image hidden in timeTravelHiddenCuts)
+            {
+                hidden.visible = false;
+            }
+        }
+
+        /// <summary>Finds one of the clock animation's parts by name.</summary>
+        /// <param name="name">Part name.</param>
+        /// <returns>The part, or <see langword="null"/>.</returns>
+        private FlashXmlPartDefinition FindPart(string name)
+        {
+            foreach (FlashXmlPartDefinition part in timeTravelDefinition.Parts)
+            {
+                if (part.Name == name)
+                {
+                    return part;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// The circle a clock face takes up where it rests: its middle is the point its animation
+        /// places, and its radius half its larger side.
+        /// </summary>
+        /// <param name="face">The face part.</param>
+        /// <returns>The circle, in stage units.</returns>
+        private static Circle ClockCircle(FlashXmlPartDefinition face)
+        {
+            Vector rest = default;
+            if (face.Timelines.TryGetValue((int)TimeTravelPhase.Progress, out FlashXmlTimelineDefinition idle) && idle.PositionKeyFrames.Count > 0)
+            {
+                rest = new Vector(idle.PositionKeyFrames[0].X, idle.PositionKeyFrames[0].Y);
+            }
+            Vector size = Image.GetQuadSize(Resources.Img.MenuLoadingTimeTravel, face.QuadToDraw);
+            float radius = MathF.Max(size.X, size.Y) / FlashXmlScale.AtlasToFlashPointScale / 2f;
+            return new Circle(rest.X, rest.Y, radius);
         }
 
         /// <summary>Moves on from a clock timeline that has ended.</summary>

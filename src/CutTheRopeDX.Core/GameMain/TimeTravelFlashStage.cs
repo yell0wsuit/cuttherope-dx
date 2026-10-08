@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -28,24 +29,64 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Gets the animation's parts.</summary>
         public IReadOnlyList<Image> Parts => parts;
 
+        /// <summary>Reads an animation file.</summary>
+        /// <param name="xmlFile">Animation file in the animations folder.</param>
+        /// <returns>The parsed animation.</returns>
+        public static FlashXmlAnimationDefinition Load(string xmlFile)
+        {
+            return FlashXmlImporter.ParseFile(ContentPaths.GetAnimationXmlAbsolutePath(xmlFile));
+        }
+
         /// <summary>Builds an animation, its parts at their first pose and nothing playing.</summary>
         /// <param name="xmlFile">Animation file in the animations folder.</param>
         /// <param name="sheet">Sheet its parts draw from.</param>
         /// <returns>The stage.</returns>
         public static TimeTravelFlashStage Create(string xmlFile, string sheet)
         {
-            FlashXmlAnimationDefinition definition = FlashXmlImporter.ParseFile(ContentPaths.GetAnimationXmlAbsolutePath(xmlFile));
+            return Create(Load(xmlFile), sheet);
+        }
+
+        /// <summary>
+        /// Builds an animation, or some of its parts, its parts at their first pose and nothing
+        /// playing.
+        /// </summary>
+        /// <param name="definition">The parsed animation.</param>
+        /// <param name="sheet">Sheet its parts draw from.</param>
+        /// <param name="keep">Which parts to build; every part when <see langword="null"/>.</param>
+        /// <param name="withRootTimelines">
+        /// Whether to give the stage the animation's own timelines, which time it and say when it
+        /// ends; a stage that only follows another one needs none.
+        /// </param>
+        /// <returns>The stage.</returns>
+        public static TimeTravelFlashStage Create(
+            FlashXmlAnimationDefinition definition,
+            string sheet,
+            Func<FlashXmlPartDefinition, bool> keep = null,
+            bool withRootTimelines = true)
+        {
+            FlashXmlAnimationDefinition built = keep == null ? definition : new FlashXmlAnimationDefinition
+            {
+                StageWidth = definition.StageWidth,
+                StageHeight = definition.StageHeight,
+                TextureResourceName = definition.TextureResourceName,
+                Parts = [.. definition.Parts.Where(keep)],
+                RootTimelines = definition.RootTimelines,
+                RootTimelineDefinitions = definition.RootTimelineDefinitions,
+            };
             FlashXmlStageRoot root = new();
             _ = root.InitWithTexture(Application.GetTexture(sheet));
             root.SetDrawQuad(0);
             root.color = RGBAColor.transparentRGBA;
             root.passColorToChilds = false;
-            root.width = (int)MathF.Round(definition.StageWidth);
-            root.height = (int)MathF.Round(definition.StageHeight);
+            root.width = (int)MathF.Round(built.StageWidth);
+            root.height = (int)MathF.Round(built.StageHeight);
             root.anchor = root.parentAnchor = 9;
             TimeTravelFlashStage stage = new(root);
-            FlashXmlTargetAnimationBackend.BuildParts(definition, root, stage.parts, -1, -1);
-            FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, root, -1, -1);
+            FlashXmlTargetAnimationBackend.BuildParts(built, root, stage.parts, -1, -1);
+            if (withRootTimelines)
+            {
+                FlashXmlTargetAnimationBackend.BuildRootTimelines(built, root, -1, -1);
+            }
             return stage;
         }
 
