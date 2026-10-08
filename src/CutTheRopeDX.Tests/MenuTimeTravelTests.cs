@@ -68,6 +68,24 @@ namespace CutTheRopeDX.Tests
 
         [Theory]
         [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
+        public void TheGlowSpansTheFullWidthAndNeverShrinksBelowTheIosScale(string name, int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = controller.GetView(MenuController.VIEW_MAIN_MENU);
+                controller.ShowView(MenuController.VIEW_MAIN_MENU);
+                controller.Update(0.016f);
+                ResolveDrawPositions(view);
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                BaseElement glow = view.GetChildWithName("ttGlow");
+                Rectangle box = DrawnBox(glow);
+                Assert.True(box.x <= visible.x + 0.5f && box.x + box.w >= visible.x + visible.w - 0.5f, name + " glow width");
+                Assert.True(glow.scaleX >= 2.7f, name + " glow scale");
+            });
+        }
+
+        [Theory]
+        [MemberData(nameof(LayoutSurfaces.Theory), MemberType = typeof(LayoutSurfaces))]
         public void PlayLandsWhereTheIosSceneDrawsItLoweredWithTheStack(string name, int width, int height)
         {
             _ = name;
