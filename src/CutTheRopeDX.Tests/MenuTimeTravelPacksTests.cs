@@ -390,6 +390,49 @@ namespace CutTheRopeDX.Tests
         }
 
         [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void TheTrimmedLockAndProgressLineOverlapAtTheirMirroredSeams(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowPacks(controller);
+                int pack = Preferences.GetPacksCount() - 1;
+                Find<ScrollableContainer>(view).PlaceToScrollPoint(pack);
+                controller.Update(0f);
+                BaseElement icon = Named(view, "ttPackIcon")[pack];
+                FlashXmlStageRoot padlock = Assert.IsType<FlashXmlStageRoot>(icon.GetChildWithName("ttLock"));
+                List<FlashXmlImage> halves = All<FlashXmlImage>(padlock);
+                Assert.Equal(2, halves.Count);
+                Image left = halves[0];
+                Image right = halves[1];
+
+                // The draw uses fractional quad sizes; the element's integer size is only its pivot basis.
+                for (int frame = 0; frame < 2; frame++)
+                {
+                    ResolveDrawPositions(view);
+                    float quadWidth = left.texture.quadRects[left.quadToDraw].w / FlashXmlScale.AtlasToFlashPointScale;
+                    float leftPivot = left.drawX + (left.width >> 1) + left.rotationCenterX;
+                    float leftEdge = leftPivot + ((left.drawX + quadWidth - leftPivot) * left.scaleX);
+                    float rightPivot = right.drawX + (right.width >> 1) + right.rotationCenterX;
+                    float rightEdge = rightPivot - ((right.drawX + quadWidth - rightPivot) * right.scaleX);
+                    float overlap = (leftEdge - rightEdge) * FlashXmlScale.AtlasToFlashPointScale;
+                    Assert.True(overlap >= 1.9f * left.scaleX, "lock overlap: " + overlap);
+                    padlock.updateable = true;
+                    controller.Update(0.1f);
+                }
+
+                Image line = Assert.IsType<Image>(icon.GetChildWithName("ttProgressLine"));
+                Image mirror = Assert.IsType<Image>(line.GetChild(0));
+                ResolveDrawPositions(view);
+                float mirrorPivot = mirror.drawX + (mirror.width >> 1);
+                float mirrorLeft = (2f * mirrorPivot) - (mirror.drawX + mirror.width);
+                Assert.InRange(line.drawX + line.width - mirrorLeft, 1.9f, 2.1f);
+            });
+        }
+
+        [Theory]
         [InlineData("Native", 2560, 1440)]
         [InlineData("Portrait", 720, 1280)]
         public void PressingTheIconOpensItsLevels(string name, int width, int height)
