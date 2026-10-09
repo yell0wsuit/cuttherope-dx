@@ -144,7 +144,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// Builds the Time Travel pause menu: the dim over the level, and the buttons on the iOS
         /// markers. The first row is the level grid, replay and resume; the second, drawn smaller,
-        /// is the main menu, sound, music and skip, where iOS had its shop, sound and skip.
+        /// is sound, music and skip. Both rows are centered together in the viewport.
         /// </summary>
         /// <param name="gameView">The game view the menu is added to.</param>
         private void CreateTimeTravelPauseMenu(GameView gameView)
@@ -192,7 +192,6 @@ namespace CutTheRopeDX.GameMain
             soundToggle.parentAnchor = musicToggle.parentAnchor = 9;
             List<BaseElement> small =
             [
-                CreateTimeTravelRoundButton(Resources.Img.MenuButtonsTimeTravel, TimeTravelArt.BackArrow, GameControllerButtonId.MainMenu, this),
                 soundToggle,
                 musicToggle,
             ];
@@ -209,6 +208,20 @@ namespace CutTheRopeDX.GameMain
             PlaceTimeTravelPauseRow(big, bigStep, bigY, 1f);
             PlaceTimeTravelPauseRow(small, TimeTravelPauseSmallStep, smallY, TimeTravelPauseSmallScale);
 
+            // Center the combined visible bounds, including the drop animation's resting offset.
+            float top = big[0].y - (big[0].height / 2f);
+            float bottom = small[0].y + (small[0].height * TimeTravelPauseSmallScale / 2f);
+            float shift = (TimeTravelSceneGroup.Height / 2f) - ((top + bottom) / 2f)
+                - (TimeTravelPauseRest * FlashXmlScale.AtlasToFlashPointScale);
+            foreach (BaseElement button in big)
+            {
+                button.y += shift;
+            }
+            foreach (BaseElement button in small)
+            {
+                button.y += shift;
+            }
+
             AddTimeTravelPauseTimelines();
             timeTravelPauseDim.SetEnabled(false);
             timeTravelPauseScene.SetEnabled(false);
@@ -223,8 +236,7 @@ namespace CutTheRopeDX.GameMain
         /// <param name="scale">How large the buttons are drawn.</param>
         private void PlaceTimeTravelPauseRow(List<BaseElement> row, float step, float y, float scale)
         {
-            // The canvas is twice the scene's logical width across, so its middle is that width.
-            float middle = TimeTravelScreen.SceneWidth;
+            float middle = TimeTravelSceneGroup.Width / (2f * TimeTravelArt.CanvasToAsset);
             for (int i = 0; i < row.Count; i++)
             {
                 BaseElement button = row[i];
