@@ -286,6 +286,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The result screen (iOS <c>result_screen.pb</c>).</summary>
         public const string ResultAnimationXml = "result_screen_timetravel.xml";
 
+        /// <summary>The original unlocked-chapter capsule animation.</summary>
+        public const string ResultUnlockedAnimationXml = "result_screen_unlocked_timetravel.xml";
+
         /// <summary>HUD: the pause pill (iOS q0).</summary>
         public const int HudPauseUp = 0;
 
@@ -315,6 +318,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Result sheet: the level-grid icon (iOS q7).</summary>
         public const int ResultMenuIcon = 7;
+
+        /// <summary>Result sheet: yellow star particles (native q26 and q27).</summary>
+        public const int ResultStarParticleFirst = 26;
 
         /// <summary>
         /// The HUD sheet's places (iOS q7 and its position quads q10 to q15), in canvas pixels from
@@ -382,6 +388,12 @@ namespace CutTheRopeDX.GameMain
 
             /// <summary>The improved-result banner's text box (iOS q41).</summary>
             public static readonly Rectangle ImprovedText = new(502f, 1091f, 418f, 229f);
+
+            /// <summary>The unlocked-chapter capsule (native q2).</summary>
+            public static readonly Rectangle UnlockedCapsule = new(194f, 1497f, 898f, 367f);
+
+            /// <summary>The unlocked-chapter capsule's text box (native q40).</summary>
+            public static readonly Rectangle UnlockedText = new(490f, 1556f, 482f, 254f);
 
             /// <summary>The score (iOS q42).</summary>
             public static readonly Rectangle Score = new(414f, 966f, 454f, 98f);

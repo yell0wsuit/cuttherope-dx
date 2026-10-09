@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
@@ -24,12 +26,12 @@ namespace CutTheRopeDX.Tests
     {
         private const float Frame = 0.016f;
 
-        private static void WithTimeTravelGame(int pack, int level, Action<GameController, GameScene> body, bool originalFlashOmNom = false, bool fromMenu = false)
+        private static void WithTimeTravelGame(int pack, int level, Action<GameController, GameScene> body, bool originalFlashOmNom = false, bool fromMenu = false, MenuStyle style = MenuStyle.TimeTravel, int width = 1920, int height = 1080)
         {
             _ = HeadlessGame.Boot();
             MenuStyle previous = MenuTheme.Current;
             int previousSkin = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
-            MenuTheme.Current = MenuStyle.TimeTravel;
+            MenuTheme.Current = style;
 
             // Winning saves the level and opens the next one; both are put back afterwards.
             int box = Application.SharedRootController().Box;
@@ -47,7 +49,7 @@ namespace CutTheRopeDX.Tests
                     Preferences.SetIntForKey(flash + 1, "PREFS_SELECTED_OMNOM", false);
                 }
                 RootController.SetShowGreeting(fromMenu);
-                LayoutSurfaces.WithSurface(1920, 1080, () =>
+                LayoutSurfaces.WithSurface(width, height, () =>
                 {
                     GameController controller = HeadlessGame.LoadLevelWithController(pack, level);
                     try
@@ -276,6 +278,255 @@ namespace CutTheRopeDX.Tests
                 controller.OnButtonPressed(GameControllerButtonId.NextLevel);
                 Assert.False(screen.visible);
             });
+        }
+
+        [Fact]
+        public void ResultStarsEmitFifteenParticlesAtTheNativeBurstTimeAndCleanUpOnReplay()
+        {
+            WithTimeTravel(1920, 1080, _ =>
+            {
+                using TimeTravelResultScreen screen = new(null);
+                LevelResult result = LevelResultCalculator.Calculate(20f, 2);
+                screen.Show(result, false);
+                screen.Update(screen.Folds.RootTimeline(0).Duration);
+                screen.Update(0.29f);
+                Assert.Empty(All<MultiParticles>(screen));
+                screen.Update(0.011f);
+                MultiParticles burst = Assert.Single(All<MultiParticles>(screen));
+                Assert.Equal(15, burst.particleCount);
+                Assert.Equal(15, burst.totalParticles);
+                Assert.Equal(5f, burst.life);
+                Assert.Equal(0.9f, burst.size);
+                Assert.Equal(150f * FlashXmlScale.AtlasToFlashPointScale, burst.gravity.Y);
+                float life = burst.particles[0].life;
+                float size = burst.particles[0].size;
+                burst.Update(0.1f);
+                Assert.Equal(life - 0.1f, burst.particles[0].life, 3);
+                Assert.True(burst.particles[0].size < size);
+                Assert.Equal(1f, burst.particles[0].color.AlphaChannel);
+                for (int i = 0; i < burst.particleCount; i++)
+                {
+                    Assert.Contains(burst.drawer.texCoordinates[i], new[] { burst.imageGrid.texture.quads[26], burst.imageGrid.texture.quads[27] });
+                }
+                Step(screen, 0.4f);
+                Assert.Equal(2, All<MultiParticles>(screen).Count);
+                Assert.False(screen.Stars[2].Root.updateable);
+                screen.Show(result, false);
+                Assert.Empty(All<MultiParticles>(screen));
+                Step(screen, 7f);
+                Assert.Empty(All<MultiParticles>(screen));
+            });
+        }
+
+        [Fact]
+        public void ResultCountAndScoreUseWhiteInsteadOfTheFontsBlackFill()
+        {
+            WithTimeTravel(1920, 1080, _ =>
+            {
+                using TimeTravelResultScreen screen = new(null);
+                screen.Show(LevelResultCalculator.Calculate(20f, 3), false);
+                Step(screen, 2f);
+                foreach (Text text in All<Text>(screen.Overlay))
+                {
+                    Assert.Equal(RGBAColor.solidOpaqueRGBA, text.colorOverride);
+                }
+            });
+        }
+
+        [Theory]
+        [InlineData(1920, 1080)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void AnImprovedResultShowsReadableLocalizedTextOnTheAnimatedBanner(int width, int height)
+        {
+            WithTimeTravel(width, height, _ =>
+            {
+                using TimeTravelResultScreen screen = new(null);
+                screen.Show(LevelResultCalculator.Calculate(20f, 3), true);
+                Step(screen, 6f);
+                Text text = Assert.Single(All<Text>(screen), t => t.Name == "ttResultImprovedText");
+                Assert.Equal(Application.GetString("IMPROVED_RESULT"), text.GetString());
+                Assert.NotEqual("IMPROVED_RESULT", text.GetString());
+                Assert.True(screen.GetChildWithName("ttResultImproved").visible);
+                Assert.Empty(All<RectangleElement>(text.parent));
+                // Darkest ribbon pixel beneath the fitted text, sampled from native q22.
+                Assert.True(Contrast(text.colorOverride.Value, RGBAColor.MakeRGBA(26f / 255f, 163f / 255f, 205f / 255f, 1f)) >= 7f);
+                Assert.True(text.width * text.scaleX <= text.parent.width - 16);
+                Assert.True(text.height * text.scaleY <= text.parent.height - 31);
+            });
+        }
+
+        private static double Contrast(RGBAColor foreground, RGBAColor background)
+        {
+            static double Linear(float component)
+            {
+                return component <= 0.04045f ? component / 12.92 : Math.Pow((component + 0.055) / 1.055, 2.4);
+            }
+            static double Luminance(RGBAColor color)
+            {
+                return (0.2126 * Linear(color.RedColor)) + (0.7152 * Linear(color.GreenColor)) + (0.0722 * Linear(color.BlueColor));
+            }
+            double first = Luminance(foreground);
+            double second = Luminance(background);
+            return (Math.Max(first, second) + 0.05) / (Math.Min(first, second) + 0.05);
+        }
+
+        [Theory]
+        [InlineData(false, 1920, 1080)]
+        [InlineData(true, 1920, 1080)]
+        [InlineData(false, 720, 1280)]
+        [InlineData(true, 720, 1280)]
+        [InlineData(false, 2940, 960)]
+        [InlineData(true, 2940, 960)]
+        public void TheNextChapterCapsuleAppearsOnlyWhenEnoughStarsUnlockIt(bool enoughStars, int width, int height)
+        {
+            WithTimeTravelGame(0, 1, (controller, _) =>
+            {
+                const int next = 1;
+                UNLOCKEDSTATE previous = Preferences.GetUnlockedForPackLevel(next, 0);
+                int slot = PackConfig.GetSaveSlot(next);
+                int previousStars = Preferences.GetStarsForPackLevel(slot, 0, 0);
+                int needed = PackConfig.GetUnlockStars(next);
+                try
+                {
+                    Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.LOCKED, next, 0);
+                    int otherStars = Preferences.GetTotalStarsInBox(slot) - previousStars;
+                    Preferences.SetStarsForPackLevel(slot, needed - otherStars - (enoughStars ? 0 : 1), 0, 0);
+                    BoxOpenClose box = (BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS);
+                    TimeTravelResultScreen screen = box.TimeTravelResult;
+                    LevelResult result = LevelResultCalculator.Calculate(20f, 2);
+                    screen.Show(result, false);
+                    Step(screen, 1f);
+                    BaseElement capsule = screen.GetChildWithName("ttResultNewChapter");
+                    Assert.NotNull(capsule);
+                    Assert.False(capsule.visible);
+                    Assert.Equal(UNLOCKEDSTATE.LOCKED, Preferences.GetUnlockedForPackLevel(next, 0));
+                    Step(screen, 7f);
+                    Assert.Equal(enoughStars, capsule.visible);
+                    Assert.Equal(enoughStars ? UNLOCKEDSTATE.JUSTUNLOCKED : UNLOCKEDSTATE.LOCKED, Preferences.GetUnlockedForPackLevel(next, 0));
+                    if (enoughStars)
+                    {
+                        Text text = Assert.Single(All<Text>(capsule));
+                        Assert.Equal(Application.GetString("NEW_CHAPTER_AVAILABLE"), text.GetString());
+                        Assert.NotEqual("NEW_CHAPTER_AVAILABLE", text.GetString());
+                        Assert.Empty(All<RectangleElement>(capsule));
+                        // Darkest capsule pixel beneath the fitted text, sampled from native q2.
+                        Assert.True(Contrast(text.colorOverride.Value, RGBAColor.MakeRGBA(156f / 255f, 238f / 255f, 234f / 255f, 1f)) >= 7f);
+                        Assert.True(text.width * text.scaleX <= text.parent.width - 16);
+                        Assert.True(text.height * text.scaleY <= text.parent.height - 31);
+                        Assert.Equal(1, capsule.CurrentTimelineIndex);
+                        screen.Show(result, false);
+                        Step(screen, 8f);
+                        Assert.False(screen.GetChildWithName("ttResultNewChapter").visible);
+                    }
+                }
+                finally
+                {
+                    Preferences.SetUnlockedForPackLevel(previous, next, 0);
+                    Preferences.SetStarsForPackLevel(slot, previousStars, 0, 0);
+                }
+            }, width: width, height: height);
+        }
+
+        [Theory]
+        [InlineData((int)MenuStyle.TimeTravel)]
+        [InlineData((int)MenuStyle.Classic)]
+        public void OnlyTimeTravelReplacesTheClassicWinCueWithItsResultSounds(int styleValue)
+        {
+            MenuStyle style = (MenuStyle)styleValue;
+            WithTimeTravelGame(0, 1, (controller, _) =>
+            {
+                RecordingResultAudio backend = new();
+                SoundMgr manager = Application.SharedSoundMgr();
+                string[] cues = [Resources.Snd.Win, Resources.Snd.ResultOpenTimeTravel, Resources.Snd.ResultStar1TimeTravel, Resources.Snd.ResultStar2TimeTravel, Resources.Snd.ResultStar3TimeTravel];
+                bool soundOn = Preferences.GetBooleanForKey("SOUND_ON");
+                foreach (string cue in cues)
+                {
+                    manager.FreeSound(cue);
+                }
+                SoundMgr.SetBackend(backend);
+                Preferences.SetBooleanForKey(true, "SOUND_ON");
+                try
+                {
+                    controller.LevelWon(LevelResultCalculator.Calculate(20f, 3));
+                    Step((BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS), 3f);
+                    if (style == MenuStyle.TimeTravel)
+                    {
+                        Assert.DoesNotContain(Resources.Snd.Win, backend.Played);
+                        foreach (string cue in cues.Skip(1))
+                        {
+                            Assert.Contains(cue, backend.Played);
+                        }
+                    }
+                    else
+                    {
+                        Assert.Contains(Resources.Snd.Win, backend.Played);
+                        Assert.DoesNotContain(Resources.Snd.ResultOpenTimeTravel, backend.Played);
+                    }
+                }
+                finally
+                {
+                    manager.StopAllSounds();
+                    foreach (string cue in cues)
+                    {
+                        manager.FreeSound(cue);
+                    }
+                    SoundMgr.SetBackend(null);
+                    Preferences.SetBooleanForKey(soundOn, "SOUND_ON");
+                }
+            }, style: style);
+        }
+
+        private sealed class RecordingResultAudio : IAudioBackend
+        {
+            public List<string> Played { get; } = [];
+            public AudioPlaybackState MusicState => AudioPlaybackState.Stopped;
+            public ISoundEffect LoadSound(string contentPath)
+            {
+                return new Effect(this, Path.GetFileNameWithoutExtension(contentPath));
+            }
+            public IMusicTrack LoadMusic(string contentPath)
+            {
+                throw new NotSupportedException();
+            }
+            public void PlayMusic(IMusicTrack track, bool repeating) { }
+            public void StopMusic() { }
+            public void PauseMusic() { }
+            public void ResumeMusic() { }
+
+            private sealed class Effect(RecordingResultAudio backend, string cue) : ISoundEffect
+            {
+                public ISoundInstance CreateInstance()
+                {
+                    return new Instance(backend, cue);
+                }
+                public void Dispose() { }
+            }
+
+            private sealed class Instance(RecordingResultAudio backend, string cue) : ISoundInstance
+            {
+                public bool IsLooped { get; set; }
+                public float Volume { get; set; }
+                public AudioPlaybackState State { get; private set; }
+                public void Play()
+                {
+                    backend.Played.Add(cue);
+                    State = AudioPlaybackState.Playing;
+                }
+                public void Stop()
+                {
+                    State = AudioPlaybackState.Stopped;
+                }
+                public void Pause()
+                {
+                    State = AudioPlaybackState.Paused;
+                }
+                public void Resume()
+                {
+                    State = AudioPlaybackState.Playing;
+                }
+                public void Dispose() { }
+            }
         }
 
         [Fact]

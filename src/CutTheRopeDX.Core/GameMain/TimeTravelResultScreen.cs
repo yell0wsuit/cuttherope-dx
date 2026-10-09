@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -71,11 +72,15 @@ namespace CutTheRopeDX.GameMain
         private readonly Text dataValue;
         private readonly List<TimeTravelFlashStage> stars = [];
         private TimeTravelFlashStage improvedBanner;
+        private TimeTravelFlashStage chapterCapsule;
+        private int completedPack;
+        private bool allowChapterUnlock;
         private LevelResult result;
         private bool shown;
         private bool improved;
         private float shownFor;
         private int starsFilled;
+        private int starBursts;
         private bool counting;
         private int countState;
         private float countDelay;
@@ -99,6 +104,7 @@ namespace CutTheRopeDX.GameMain
             AddPopTimeline();
 
             passText = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
+            passText.colorOverride = RGBAColor.solidOpaqueRGBA;
             passText.anchor = 18;
             passText.parentAnchor = 9;
             Vector title = AtRest(Middle(TimeTravelArt.ResultMarkers.Title));
@@ -150,8 +156,11 @@ namespace CutTheRopeDX.GameMain
             result = levelResult;
             shown = true;
             improved = improvedResult;
+            completedPack = Application.SharedRootController().Pack;
+            allowChapterUnlock = !CustomLevelSession.IsActive;
             shownFor = 0f;
             starsFilled = 0;
+            starBursts = 0;
             counting = false;
             countState = -1;
             countDelay = 0f;
@@ -159,21 +168,38 @@ namespace CutTheRopeDX.GameMain
 
             Folds = TimeTravelFlashStage.Create(definition, Resources.Img.ResultScreenTimeTravel, IsFold);
             Folds.Root.SetName("ttResultFolds");
-            Panel = TimeTravelFlashStage.Create(definition, Resources.Img.ResultScreenTimeTravel, part => !IsFold(part), withRootTimelines: false);
+            Panel = TimeTravelFlashStage.Create(definition, Resources.Img.ResultScreenTimeTravel,
+                part => !IsFold(part) && !IsStarPart(part) && part.Name != "Layer 2", withRootTimelines: false);
             Panel.Root.SetName("ttResultPanel");
             improvedBanner = TimeTravelFlashStage.Create(definition, Resources.Img.ResultScreenTimeTravel, part => part.Name == "Layer 2", withRootTimelines: false);
             improvedBanner.Root.SetName("ttResultImproved");
             improvedBanner.Root.visible = false;
+            AddNoticeText(improvedBanner.Part("Layer 2"), TimeTravelArt.ResultMarkers.ImprovedBanner,
+                TimeTravelArt.ResultMarkers.ImprovedText, "IMPROVED_RESULT", "ttResultImprovedText");
+            chapterCapsule = TimeTravelFlashStage.Create(TimeTravelArt.ResultUnlockedAnimationXml, Resources.Img.ResultScreenTimeTravel);
+            chapterCapsule.Root.SetName("ttResultNewChapter");
+            chapterCapsule.Root.visible = false;
+            chapterCapsule.RootTimeline(0).delegateTimelineDelegate = this;
+            chapterCapsule.RootTimeline(1).SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            chapterCapsule.Part("lamp").GetTimeline(1).SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+            AddNoticeText(chapterCapsule.Part("lamp"), TimeTravelArt.ResultMarkers.UnlockedCapsule,
+                TimeTravelArt.ResultMarkers.UnlockedText, "NEW_CHAPTER_AVAILABLE", "ttResultNewChapterText");
             _ = AddChild(Folds.Root);
             _ = AddChild(Panel.Root);
             _ = AddChild(Overlay);
             _ = AddChild(improvedBanner.Root);
+            _ = AddChild(chapterCapsule.Root);
 
             foreach (TimeTravelFlashStage star in stars)
             {
                 popContent.RemoveChild(star.Root);
             }
             stars.Clear();
+            foreach (TimeTravelStarParticles burst in popContent.GetChilds().Values.OfType<TimeTravelStarParticles>().ToArray())
+            {
+                popContent.RemoveChild(burst);
+                burst.Dispose();
+            }
             for (int i = 0; i < StarSlots.Length; i++)
             {
                 TimeTravelFlashStage star = TimeTravelFlashStage.Create(definition, Resources.Img.ResultScreenTimeTravel, IsStarPart, withRootTimelines: false);
@@ -245,6 +271,7 @@ namespace CutTheRopeDX.GameMain
             Vector origin = screen.ToDesign(0f, 0f);
             Panel.Place(screen.Scale, 0f, 0f, origin.X, origin.Y);
             improvedBanner.Place(screen.Scale, 0f, 0f, origin.X, origin.Y);
+            chapterCapsule.Place(screen.Scale, 0f, 0f, origin.X, origin.Y);
         }
 
         /// <inheritdoc />
@@ -263,6 +290,18 @@ namespace CutTheRopeDX.GameMain
                 FillStar(starsFilled);
                 starsFilled++;
             }
+            while (starBursts < starsFilled && shownFor >= showLength + (starBursts * StarStep) + 0.3f)
+            {
+                Vector at = AtRest(new Vector(StarSlots[starBursts].x, StarSlots[starBursts].y));
+                TimeTravelStarParticles burst = new TimeTravelStarParticles().Init();
+                burst.x = at.X;
+                burst.y = at.Y;
+                _ = popContent.AddChild(burst);
+                burst.StartSystem(15);
+                burst.StopSystem();
+                burst.Update(0f);
+                starBursts++;
+            }
             if (counting)
             {
                 AdvanceCount(delta);
@@ -277,6 +316,11 @@ namespace CutTheRopeDX.GameMain
         /// <inheritdoc />
         public void TimelineFinished(Timeline t)
         {
+            if (t == chapterCapsule?.RootTimeline(0))
+            {
+                chapterCapsule.Play(1);
+                return;
+            }
             counting = true;
             countState = -1;
             Shut?.Invoke();
@@ -329,10 +373,44 @@ namespace CutTheRopeDX.GameMain
         private Text CreateCountText(string font, sbyte textAnchor)
         {
             Text text = new Text().InitWithFont(Application.GetFont(font));
+            text.colorOverride = RGBAColor.solidOpaqueRGBA;
             text.anchor = textAnchor;
             text.parentAnchor = 9;
             _ = countContent.AddChild(text);
             return text;
+        }
+
+        /// <summary>Adds fitted black text directly on the bright notification artwork.</summary>
+        private static void AddNoticeText(Image art, Rectangle artBox, Rectangle textBox, string key, string name)
+        {
+            float unit = 0.5f;
+            float boxWidth = textBox.w * unit;
+            float boxHeight = textBox.h * unit;
+            BaseElement notice = new()
+            {
+                width = (int)boxWidth,
+                height = (int)boxHeight,
+                anchor = 18,
+                parentAnchor = 9,
+                x = (textBox.x + (textBox.w / 2f) - artBox.x) * unit,
+                y = (textBox.y + (textBox.h / 2f) - artBox.y) * unit,
+            };
+            FontGeneric font = Application.GetFont(Resources.Fnt.SmallFont);
+            Text text = new Text().InitWithFont(font);
+            text.SetName(name);
+            text.colorOverride = RGBAColor.MakeRGBA(0f, 0f, 0f, 1f);
+            text.anchor = text.parentAnchor = 18;
+            string message = Application.GetString(key);
+            text.SetAlignment(2);
+            text.SetStringandWidth(message, MathF.Max(boxWidth - 16f, font.StringWidth(message) * 0.65f));
+            float renderedWidth = MathF.Max(text.width, text.Lines.Max(line => line.width));
+            float scale = MathF.Min(1f, MathF.Min((boxWidth - 16f) / MathF.Max(1f, renderedWidth), (boxHeight - 32f) / MathF.Max(1f, text.height)));
+            text.scaleX = text.scaleY = scale;
+            // SmallFont's leading padding shifts the visible lettering below its centered box.
+            // Remove that scaled padding so the lettering sits in the artwork's text marker.
+            text.y = -font.GetTopSpacing() * scale;
+            _ = notice.AddChild(text);
+            _ = art.AddChild(notice);
         }
 
         /// <summary>
@@ -511,11 +589,28 @@ namespace CutTheRopeDX.GameMain
                             improvedBanner.Root.visible = true;
                             improvedBanner.Play(ImprovedTimeline);
                         }
+                        ShowNextChapterIfUnlocked();
                     }
                     break;
                 default:
                     break;
             }
+        }
+
+        /// <summary>Unlocks the next chapter once, after the score count, as native ResultScreen does.</summary>
+        private void ShowNextChapterIfUnlocked()
+        {
+            int next = completedPack + 1;
+            if (!allowChapterUnlock || next >= Preferences.GetPacksCount()
+                || Preferences.GetUnlockedForPackLevel(next, 0) != UNLOCKEDSTATE.LOCKED
+                || Preferences.GetTotalStarsInBox(PackConfig.GetSaveSlot(next)) < PackConfig.GetUnlockStars(next))
+            {
+                return;
+            }
+            // Leave the menu's first-visit unlock animation pending.
+            Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, next, 0);
+            chapterCapsule.Root.visible = true;
+            chapterCapsule.Play(0);
         }
     }
 }

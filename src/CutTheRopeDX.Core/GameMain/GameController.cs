@@ -383,7 +383,10 @@ namespace CutTheRopeDX.GameMain
             //{
             //RootController.SetHacked();
             //}
-            SoundMgr.PlaySound(Resources.Snd.Win);
+            if (!MenuTheme.IsTimeTravel)
+            {
+                SoundMgr.PlaySound(Resources.Snd.Win);
+            }
             ExperimentsVoice.LevelWon(result.StarsCollected);
             View view = GetView(0);
             GameScene gameScene = (GameScene)view.GetChild(0);
