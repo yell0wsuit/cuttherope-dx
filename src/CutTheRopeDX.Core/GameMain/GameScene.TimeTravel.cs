@@ -53,6 +53,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The HUD star animation, read once.</summary>
         private FlashXmlAnimationDefinition timeTravelHudStarDefinition;
 
+        /// <summary>Top-left of the star's empty pose, held fixed while its fill animates.</summary>
+        private Vector timeTravelHudStarOrigin;
+
         /// <summary>Seconds the open spiral has left.</summary>
         private float timeTravelSpiralLeft;
 
@@ -112,13 +115,14 @@ namespace CutTheRopeDX.GameMain
                 star.Play(0);
                 star.Root.updateable = false;
             }
+            Image empty = TimeTravelHudStars[0].Part("star_empty");
+            timeTravelHudStarOrigin = new Vector(empty.x, empty.y);
             LayOutTimeTravelHudStars();
         }
 
         /// <summary>
-        /// Places the HUD stars where iOS does, pinned to the visible top left: a star a step
-        /// apart, the first a step left of the iOS q7 marker, as iOS has it without its billing
-        /// buttons.
+        /// Places the first HUD star flush with the visible top-left corner, like the classic
+        /// HUD, keeping the Time Travel spacing between stars.
         /// </summary>
         private void LayOutTimeTravelHudStars()
         {
@@ -127,14 +131,10 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             TimeTravelScreen screen = new(VisibleBounds);
-            Rectangle slot = TimeTravelArt.HudMarkers.Star;
             for (int i = 0; i < TimeTravelHudStars.Length; i++)
             {
-                float canvasX = slot.x + (slot.w / 2f) + ((i - 1) * TimeTravelArt.HudMarkers.StarStep);
-                float canvasY = slot.y + (slot.h / 2f);
-                Vector pinned = screen.Pin(canvasX / 2f, canvasY / 2f, TimeTravelAttach.Left | TimeTravelAttach.Top);
-                Vector at = screen.ToDesign(pinned.X, pinned.Y);
-                TimeTravelHudStars[i].Place(screen.Scale, 0f, 0f, at.X, at.Y);
+                float x = i * TimeTravelArt.HudMarkers.StarStep / 2f * screen.Scale;
+                TimeTravelHudStars[i].Place(screen.Scale, timeTravelHudStarOrigin.X, timeTravelHudStarOrigin.Y, x, 0f);
             }
         }
 
