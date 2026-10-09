@@ -122,23 +122,27 @@ namespace CutTheRopeDX.Tests
             });
         }
 
-        [Fact]
-        public void TheHudStarsAreThreeIosStarsAlongTheTopLeftAndFillAsTheyAreCollected()
+        [Theory]
+        [InlineData(1920, 1080)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void TheHudStarsStartAtTheTopLeftCorner(int width, int height)
         {
             WithTimeTravelGame(0, 1, (_, scene) =>
             {
                 Assert.Equal(3, scene.TimeTravelHudStars.Length);
+                ResolveDrawPositions(scene);
                 TimeTravelScreen screen = new(ScreenPresentation.Instance.Snapshot.VisibleBounds);
                 for (int i = 0; i < 3; i++)
                 {
                     FlashXmlStageRoot root = scene.TimeTravelHudStars[i].Root;
-                    float originX = root.x + ((root.width >> 1) * (1f - root.scaleX));
-                    float canvasX = TimeTravelArt.HudMarkers.Star.x + (TimeTravelArt.HudMarkers.Star.w / 2f) + ((i - 1) * TimeTravelArt.HudMarkers.StarStep);
-                    Assert.Equal(canvasX / 2f * screen.Scale, originX, 1);
+                    Rectangle star = DrawnBox(scene.TimeTravelHudStars[i].Part("star_empty"));
+                    Assert.Equal(i * TimeTravelArt.HudMarkers.StarStep / 2f * screen.Scale, star.x, 1);
+                    Assert.Equal(0f, star.y, 1);
                     Assert.False(root.updateable);
                     Assert.True(scene.TimeTravelHudStars[i].Part("star_empty").visible);
                 }
-            });
+            }, width: width, height: height);
         }
 
         [Fact]
