@@ -73,6 +73,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Opacity of the part of a locked icon its stars do not yet reach (iOS half transparent).</summary>
         private const float TimeTravelLockedVeil = 0.5f;
 
+        /// <summary>Atlas pixels shared by mirrored halves so filtering cannot open their seam.</summary>
+        private const float TimeTravelSeamOverlap = 2f;
+
         /// <summary>Seconds before a pressed level's burst ends that the screen starts to whiten.</summary>
         private const float TimeTravelLevelFlash = 0.1f;
 
@@ -538,6 +541,8 @@ namespace CutTheRopeDX.GameMain
             mirror.anchor = 9;
             mirror.parentAnchor = 12;
             mirror.scaleX = -1f;
+            // Negative scale pivots around an integer half-width; account for odd sizes too.
+            mirror.x = mirror.width - (2 * (mirror.width >> 1)) - TimeTravelSeamOverlap;
             _ = line.AddChild(mirror);
             line.passTransformationsToChilds = true;
             Timeline vanish = new Timeline().InitWithMaxKeyFramesOnTrack(2);
@@ -556,11 +561,22 @@ namespace CutTheRopeDX.GameMain
 
             // Posed at its first frame and held there until the pack opens.
             padlock.Play(0);
+            CloseTimeTravelLockSeam(padlock);
             padlock.Root.updateable = false;
             page.Lock = padlock;
 
             page.Price = CreateTimeTravelPrice(icon, PackConfig.GetUnlockStars(n));
             _ = icon.AddChild(page.Price);
+        }
+
+        /// <summary>Places the mirror hinge on the trimmed quad, with a small overlap.</summary>
+        /// <param name="padlock">The lock whose Flash timeline has just set its pose.</param>
+        private static void CloseTimeTravelLockSeam(TimeTravelFlashStage padlock)
+        {
+            Image half = padlock.Part("lock2half");
+            float width = FlashXmlScale.NormalizeAtlasValue(half.texture.quadRects[half.quadToDraw].w);
+            float overlap = FlashXmlScale.NormalizeAtlasValue(TimeTravelSeamOverlap);
+            half.rotationCenterX = width - (half.width >> 1) - (overlap / 2f);
         }
 
         /// <summary>
@@ -806,6 +822,11 @@ namespace CutTheRopeDX.GameMain
                 if (page.Opening)
                 {
                     StepTimeTravelOpening(page, delta);
+                }
+                if (page.Lock != null)
+                {
+                    // Flash actions reset the hinge every frame; align it after the pose updates.
+                    CloseTimeTravelLockSeam(page.Lock);
                 }
             }
 
