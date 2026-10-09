@@ -362,6 +362,36 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void TheLockStarAndPriceUseTheIosScaleAroundTheLockHalf(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowPacks(controller);
+                BaseElement icon = Named(view, "ttPackIcon")[Preferences.GetPacksCount() - 1];
+                BaseElement price = icon.GetChildWithName("ttPrice");
+                Assert.Equal(0.9f, price.scaleX);
+                Assert.Equal(0.9f, price.scaleY);
+                Assert.True(price.passTransformationsToChilds);
+                Text number = Assert.Single(All<Text>(price));
+                Image star = Assert.Single(All<Image>(price));
+                ResolveDrawPositions(view);
+                Rectangle numberBox = DrawnBox(number);
+                Rectangle starBox = DrawnBox(star);
+                Assert.InRange(numberBox.y + (numberBox.h / 2f) - (starBox.y + (starBox.h / 2f)), -0.5f, 0.5f);
+                FlashXmlStageRoot padlock = Assert.IsType<FlashXmlStageRoot>(icon.GetChildWithName("ttLock"));
+                FlashXmlImage half = All<FlashXmlImage>(padlock)[0];
+                float units = FlashXmlScale.AtlasToFlashPointScale;
+                float expectedX = icon.drawX + (icon.width / 2f) - (123.05f * units) + (half.width * units / 2f);
+                float expectedY = icon.drawY + (icon.height / 2f) - (149.65f * units) + (half.height * units / 2f);
+                Assert.Equal(expectedX, price.drawX + (price.width >> 1) + price.rotationCenterX, 3);
+                Assert.Equal(expectedY, price.drawY + (price.height >> 1) + price.rotationCenterY, 3);
+            });
+        }
+
         [Fact]
         public void TheProgressLineShrinksAroundTheMeetingPointOfItsHalves()
         {
