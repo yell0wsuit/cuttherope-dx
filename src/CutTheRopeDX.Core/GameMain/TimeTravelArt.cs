@@ -170,6 +170,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Pack sheet: the star on a padlock (iOS q25).</summary>
         public const int LockStar = 23;
 
+        /// <summary>Pack sheet: the particle emitted when a padlock opens (iOS q26).</summary>
+        public const int LockParticle = 24;
+
         /// <summary>Pack sheet: the speech bubble on the coming-soon page (iOS q41).</summary>
         public const int ComingSoonBubble = 29;
 

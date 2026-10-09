@@ -260,6 +260,76 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        [Theory]
+        [InlineData(2560, 1440)]
+        [InlineData(720, 1280)]
+        public void UnlockingAPackEmitsThirtyShrinkingParticlesAfterTheIosDelay(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                int pack = Preferences.GetPacksCount() - 1;
+                UNLOCKEDSTATE previous = Preferences.GetUnlockedForPackLevel(pack, 0);
+                int lastBox = Preferences.GetLastBox();
+                try
+                {
+                    Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.JUSTUNLOCKED, pack, 0);
+                    controller.DeleteView(MenuController.VIEW_PACK_SELECT);
+                    controller.CreatePackSelect();
+                    View view = ShowPacks(controller);
+                    ScrollableContainer pages = Find<ScrollableContainer>(view);
+                    pages.PlaceToScrollPoint(pack);
+                    BaseElement icon = Named(view, "ttPackIcon")[pack];
+                    CroppedImage filled = All<CroppedImage>(icon)[0];
+                    float fillTime = filled.CropTop / (200f * FlashXmlScale.AtlasToFlashPointScale);
+                    controller.Update(fillTime + 0.001f);
+                    Assert.True(icon.GetChildWithName("ttLock").updateable);
+
+                    MultiParticles burst = Assert.Single(All<MultiParticles>(view), p => p.Name == "ttLockParticles");
+                    _ = Assert.IsType<TimeTravelSceneGroup>(burst.parent);
+                    Assert.Equal(0, burst.particleCount);
+                    controller.Update(0.19f);
+                    Assert.Equal(0, burst.particleCount);
+                    controller.Update(0.011f);
+                    Assert.Equal(30, burst.particleCount);
+                    Assert.Equal(UNLOCKEDSTATE.UNLOCKED, Preferences.GetUnlockedForPackLevel(pack, 0));
+                    Assert.Equal(burst.parent.width / 2f, burst.x);
+                    Assert.Equal(burst.parent.height / 2f, burst.y);
+
+                    Quad2D expected = Application.GetTexture(Resources.Img.MenuPackSelectionTimeTravel).quads[24];
+                    foreach (Quad2D quad in burst.drawer.texCoordinates)
+                    {
+                        Assert.Equal(expected, quad);
+                    }
+                    float size = burst.particles[0].size;
+                    float alpha = burst.particles[0].color.AlphaChannel;
+                    float life = burst.particles[0].life;
+                    float elapsed = burst.elapsed;
+                    controller.Update(0.1f);
+                    Assert.Equal(life - 0.1f, burst.particles[0].life, 4);
+                    Assert.Equal(elapsed + 0.1f, burst.elapsed, 4);
+                    Assert.True(burst.particles[0].size < size);
+                    Assert.True(burst.particles[0].color.AlphaChannel < alpha);
+                    Assert.NotEqual(0f, burst.particles[0].angle);
+
+                    // The burst survives swiping away, cleans itself up, and never repeats.
+                    pages.PlaceToScrollPoint(pack - 1);
+                    for (int i = 0; i < 100; i++)
+                    {
+                        controller.Update(0.1f);
+                    }
+                    Assert.Empty(All<MultiParticles>(view).FindAll(p => p.Name == "ttLockParticles"));
+                    pages.PlaceToScrollPoint(pack);
+                    controller.Update(0.3f);
+                    Assert.Empty(All<MultiParticles>(view).FindAll(p => p.Name == "ttLockParticles"));
+                }
+                finally
+                {
+                    Preferences.SetUnlockedForPackLevel(previous, pack, 0);
+                    Preferences.SetLastBox(lastBox);
+                }
+            });
+        }
+
         [Fact]
         public void SettlingOnTheNextPageMovesTheBulletAndShowsTheBackArrow()
         {

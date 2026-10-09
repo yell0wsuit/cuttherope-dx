@@ -85,6 +85,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>What swings the pack pages' rays when the page changes.</summary>
         private BaseElement timeTravelRaysSwing;
 
+        /// <summary>The pack scene, which holds unlock particles independently of the icons.</summary>
+        private TimeTravelSceneGroup timeTravelPackScene;
+
         /// <summary>The pack pages' rays.</summary>
         private Image timeTravelRays;
 
@@ -228,6 +231,7 @@ namespace CutTheRopeDX.GameMain
             _ = root.AddChild(packContainer);
 
             TimeTravelSceneGroup scene = new();
+            timeTravelPackScene = scene;
             timeTravelRays = AddTimeTravelRays(scene, screen, out timeTravelRaysSwing);
 
             BaseElement bob = CreateTimeTravelIconBob();
@@ -872,7 +876,7 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Fills an opening pack one frame further, and opens its padlock once it is full.</summary>
         /// <param name="page">The opening pack's page.</param>
         /// <param name="delta">Seconds since the last frame.</param>
-        private static void StepTimeTravelOpening(TimeTravelPackPage page, float delta)
+        private void StepTimeTravelOpening(TimeTravelPackPage page, float delta)
         {
             float target = page.Icon.height;
             float next = page.Opaque + (TimeTravelUnlockSpeed * FlashXmlScale.AtlasToFlashPointScale * delta);
@@ -888,6 +892,10 @@ namespace CutTheRopeDX.GameMain
             page.Price.PlayTimeline(0);
             page.Lock.Root.updateable = true;
             page.Lock.Play(0);
+            TimeTravelLockParticles burst = new TimeTravelLockParticles().Init();
+            burst.x = timeTravelPackScene.width / 2f;
+            burst.y = timeTravelPackScene.height / 2f;
+            _ = timeTravelPackScene.AddChild(burst);
         }
 
         /// <summary>Most stars the packs hold, three a level.</summary>
