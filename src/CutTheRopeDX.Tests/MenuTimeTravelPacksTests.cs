@@ -185,6 +185,81 @@ namespace CutTheRopeDX.Tests
             });
         }
 
+        [Theory]
+        [InlineData(0.25f, 1f)]
+        [InlineData(0.5f, 1f)]
+        [InlineData(0.75f, 1f)]
+        [InlineData(0.5f, 0.4f)]
+        public void SwipingLockedPacksFadesTheLockPriceAndBothProgressLineHalves(float fraction, float unlockAlpha)
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                int pack = Preferences.GetPacksCount() - 1;
+                UNLOCKEDSTATE previous = Preferences.GetUnlockedForPackLevel(pack, 0);
+                IRenderBackend previousRender = PlatformServices.Render;
+                RecordingRenderBackend renderer = new();
+                try
+                {
+                    Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.LOCKED, pack, 0);
+                    View view = ShowPacks(controller);
+                    ScrollableContainer pages = Find<ScrollableContainer>(view);
+                    pages.SetScroll(new Vector((pack - fraction) * ScreenPresentation.Instance.Snapshot.VisibleBounds.w, 0f));
+                    controller.Update(0f);
+                    BaseElement icon = Named(view, "ttPackIcon")[pack];
+                    BaseElement price = icon.GetChildWithName("ttPrice");
+                    price.color = RGBAColor.MakeRGBA(1f, 1f, 1f, unlockAlpha);
+                    FlashXmlStageRoot padlock = Assert.IsType<FlashXmlStageRoot>(icon.GetChildWithName("ttLock"));
+                    foreach (Image half in All<Image>(padlock))
+                    {
+                        if (half != padlock)
+                        {
+                            half.color = RGBAColor.MakeRGBA(1f, 1f, 1f, unlockAlpha);
+                        }
+                    }
+                    List<(DrawColorProbe Probe, float Alpha)> probes = [];
+                    foreach (BaseElement image in All<BaseElement>(icon).FindAll(element => element is Image or Text))
+                    {
+                        if (image is FlashXmlStageRoot)
+                        {
+                            continue;
+                        }
+                        DrawColorProbe probe = new(renderer);
+                        _ = image.AddChild(probe);
+                        float localAlpha = image is CroppedImage cropped && cropped.CropBottom > 0f ? 0.5f : image.color.AlphaChannel;
+                        probes.Add((probe, localAlpha * (image.parent == price ? unlockAlpha : 1f)));
+                    }
+                    Assert.NotNull(icon.GetChildWithName("ttLock"));
+                    PlatformServices.Render = renderer;
+                    icon.Draw();
+                    foreach ((DrawColorProbe probe, float alpha) in probes)
+                    {
+                        Assert.InRange(probe.Alpha, (alpha * icon.color.AlphaChannel) - 0.005f, (alpha * icon.color.AlphaChannel) + 0.005f);
+                    }
+                    // Drawing must not alter the held lock pose or accumulate fading between frames.
+                    icon.Draw();
+                    foreach ((DrawColorProbe probe, float alpha) in probes)
+                    {
+                        Assert.InRange(probe.Alpha, (alpha * icon.color.AlphaChannel) - 0.005f, (alpha * icon.color.AlphaChannel) + 0.005f);
+                    }
+                }
+                finally
+                {
+                    PlatformServices.Render = previousRender;
+                    Preferences.SetUnlockedForPackLevel(previous, pack, 0);
+                }
+            });
+        }
+
+        private sealed class DrawColorProbe(RecordingRenderBackend renderer) : BaseElement
+        {
+            public float Alpha { get; private set; }
+
+            public override void Draw()
+            {
+                Alpha = renderer.LastTexturedDrawColor.A / 255f;
+            }
+        }
+
         [Fact]
         public void SettlingOnTheNextPageMovesTheBulletAndShowsTheBackArrow()
         {
@@ -198,6 +273,49 @@ namespace CutTheRopeDX.Tests
                 Assert.Equal(1, ((TimeTravelPageBullets)view.GetChildWithName("ttPageBullets")).Current);
                 Assert.True(((Button)view.GetChildWithName("ttPrevPage")).touchable);
                 Assert.Equal(PackConfig.GetPackTitle(1, withNumber: false), ((Text)view.GetChildWithName("ttPackTitle")).GetString());
+            });
+        }
+
+        [Theory]
+        [InlineData(0.5f, 1)]
+        [InlineData(1.5f, 2)]
+        [InlineData(2.5f, 3)]
+        public void ThePageIndicatorRoundsMidpointsLikeIos(float position, int expected)
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                View view = ShowPacks(controller);
+                Find<ScrollableContainer>(view).SetScroll(new Vector(position * ScreenPresentation.Instance.Snapshot.VisibleBounds.w, 0f));
+                controller.Update(0f);
+                Assert.Equal(expected, ((TimeTravelPageBullets)view.GetChildWithName("ttPageBullets")).Current);
+                Assert.Equal(PackConfig.GetPackTitle(expected, withNumber: false), ((Text)view.GetChildWithName("ttPackTitle")).GetString());
+            });
+        }
+
+        [Fact]
+        public void TheProgressLineShrinksAroundTheMeetingPointOfItsHalves()
+        {
+            WithTimeTravel(2560, 1440, controller =>
+            {
+                int pack = Preferences.GetPacksCount() - 1;
+                UNLOCKEDSTATE previous = Preferences.GetUnlockedForPackLevel(pack, 0);
+                try
+                {
+                    Preferences.SetUnlockedForPackLevel(UNLOCKEDSTATE.LOCKED, pack, 0);
+                    View view = ShowPacks(controller);
+                    BaseElement icon = Named(view, "ttPackIcon")[pack];
+                    Image line = Assert.IsType<Image>(icon.GetChildWithName("ttProgressLine"));
+                    line.PlayTimeline(0);
+                    line.Update(0.05f);
+                    ResolveDrawPositions(view);
+                    Assert.Equal(0.5f, line.scaleX, 3);
+                    float pivot = line.drawX + (line.width >> 1) + line.rotationCenterX;
+                    Assert.InRange(pivot - (icon.drawX + (icon.width / 2f)), -1f, 1f);
+                }
+                finally
+                {
+                    Preferences.SetUnlockedForPackLevel(previous, pack, 0);
+                }
             });
         }
 
