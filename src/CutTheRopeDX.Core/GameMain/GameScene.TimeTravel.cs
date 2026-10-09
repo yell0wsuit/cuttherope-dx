@@ -16,9 +16,6 @@ namespace CutTheRopeDX.GameMain
     /// </content>
     internal sealed partial class GameScene
     {
-        /// <summary>Skin whose Om Nom travels through the spiral: the original one.</summary>
-        private const string TimeTravelSpiralSkin = "OM_NOM_ORIGINAL_FLASH";
-
         /// <summary>Seconds into an arrival that the screen flashes and the spiral sounds (iOS 0.3).</summary>
         private const float TimeTravelArrivalFlash = 0.3f;
 
@@ -64,6 +61,10 @@ namespace CutTheRopeDX.GameMain
         /// through the spiral instead of greeting.
         /// </summary>
         private bool timeTravelArrivalPending;
+
+        private bool timeTravelArrivalActive;
+
+        private TimeTravelBlackout timeTravelBlackout;
 
         /// <summary>Gets the HUD's stars; <see langword="null"/> outside Time Travel.</summary>
         internal TimeTravelFlashStage[] TimeTravelHudStars { get; private set; }
@@ -193,11 +194,11 @@ namespace CutTheRopeDX.GameMain
         /// Whether a target is the original Om Nom, the one the spiral carries.
         /// </summary>
         /// <param name="target">The target.</param>
-        /// <returns><see langword="true"/> when it wears the original Flash skin.</returns>
+        /// <returns><see langword="true"/> when it wears the original Flash skin or either seasonal hat.</returns>
         private static bool IsTimeTravelSpiralTarget(TargetContext target)
         {
             return target.animation is FlashXmlTargetAnimationBackend flash
-                && string.Equals(flash.SkinDefinition?.Id, TimeTravelSpiralSkin, StringComparison.Ordinal);
+                && flash.SkinDefinition?.Id is "OM_NOM_ORIGINAL_FLASH" or "OM_NOM_HALLOWEEN" or "OM_NOM_XMAS";
         }
 
         /// <summary>Finds the original Om Nom among the targets.</summary>
@@ -229,19 +230,26 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             TimeTravelSpiralTarget = index;
+            BeginTimeTravelBlackout(fadeOut: true);
+            timeTravelArrivalActive = true;
+            tutorialDirector.PresentationPaused = true;
+            ((FlashXmlTargetAnimationBackend)targets[index].animation).LevelIntroFinished = () =>
+            {
+                timeTravelArrivalActive = false;
+                tutorialDirector.PresentationPaused = false;
+                ShowGreeting();
+            };
             targets[index].targetObject.visible = false;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelArrivalFlash), null, TimeTravelArrivalFlash);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_openTimeTravelSpiral), null, TimeTravelSpiralOpens);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelStepOut), null, TimeTravelArrivalStep);
-            float intro = ((FlashXmlTargetAnimationBackend)targets[index].animation).GetPlaybackSeconds(TargetAnimationState.LevelIntro);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_showGreeting), null, TimeTravelArrivalStep + intro);
         }
 
         /// <summary>
         /// Ends a pack's last level the iOS way, once the original Om Nom has finished chewing: the
         /// spiral sounds, he is drawn into it as the screen flashes, and it closes after him.
         /// </summary>
-        private void ScheduleTimeTravelDeparture()
+        private bool ScheduleTimeTravelDeparture()
         {
             RootController root = Application.SharedRootController();
             if (!MenuTheme.IsTimeTravel
@@ -249,22 +257,27 @@ namespace CutTheRopeDX.GameMain
                 || root.IsPicker()
                 || root.Level != Preferences.GetLevelsInPackCount(root.Pack) - 1)
             {
-                return;
+                return false;
             }
             int index = FindTimeTravelSpiralTarget();
             if (index < 0 || !targets[index].Feeding.IsFed || targets[index].Feeding.IsAsleep)
             {
-                return;
+                return false;
             }
             TimeTravelSpiralTarget = index;
-            float chewing = ((FlashXmlTargetAnimationBackend)targets[index].animation).GetPlaybackSeconds(TargetAnimationState.Chewing);
+            FlashXmlTargetAnimationBackend animation = (FlashXmlTargetAnimationBackend)targets[index].animation;
+            animation.LevelOutroFinished = () => dd.CallObjectSelectorParamafterDelay(
+                new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2f);
+            float chewing = animation.GetPlaybackSeconds(TargetAnimationState.Chewing);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelDeparture), null, chewing);
+            return true;
         }
 
         /// <summary>Starts the departure's own beats.</summary>
         /// <param name="param">Unused.</param>
         private void Selector_timeTravelDeparture(FrameworkTypes param)
         {
+            BeginTimeTravelBlackout(fadeOut: false);
             SoundMgr.PlaySound(Resources.Snd.TimeSpiralSuckInTimeTravel);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelDrawIn), null, TimeTravelDepartureStep);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_openTimeTravelSpiral), null, TimeTravelSpiralOpens);
@@ -389,8 +402,46 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Clears the spiral and its Om Nom as a level is torn down.</summary>
         private void ResetTimeTravelSpiral()
         {
+            timeTravelArrivalActive = false;
+            timeTravelBlackout = null;
             TimeTravelSpiral = null;
             TimeTravelSpiralTarget = -1;
+        }
+
+        /// <summary>Dims the background around the traveling Om Nom with the native fade beats.</summary>
+        private void BeginTimeTravelBlackout(bool fadeOut)
+        {
+            if (timeTravelBlackout?.parent != null)
+            {
+                timeTravelBlackout.parent.RemoveChild(timeTravelBlackout);
+                timeTravelBlackout.Dispose();
+            }
+            timeTravelBlackout = new TimeTravelBlackout();
+            Timeline fade = new Timeline().InitWithMaxKeyFramesOnTrack(5);
+            fade.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_IMMEDIATE, 0f));
+            RGBAColor dim = RGBAColor.MakeRGBA(1f, 1f, 1f, 200f / 255f);
+            fade.AddKeyFrame(KeyFrame.MakeColor(dim, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.1f));
+            fade.AddKeyFrame(KeyFrame.MakeColor(dim, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1.9f));
+            if (fadeOut)
+            {
+                fade.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.transparentRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1f));
+                fade.delegateTimelineDelegate = staticAniPool;
+            }
+            _ = timeTravelBlackout.AddTimeline(fade);
+            _ = staticAniPool.AddChild(timeTravelBlackout);
+            timeTravelBlackout.PlayTimeline(0);
+        }
+
+        /// <summary>Keeps the spotlight on Om Nom as the gameplay camera moves or resizes.</summary>
+        private void LayoutTimeTravelBlackout()
+        {
+            if (timeTravelBlackout?.parent != null && TimeTravelSpiralTarget >= 0 && TimeTravelSpiralTarget < targets.Count)
+            {
+                GameObject target = targets[TimeTravelSpiralTarget].targetObject;
+                timeTravelBlackout.Place(VisibleBounds,
+                    new Vector((target.x - camera.RenderPos.X) * camera.Scale, (target.y - camera.RenderPos.Y) * camera.Scale),
+                    3f * camera.Scale);
+            }
         }
     }
 }

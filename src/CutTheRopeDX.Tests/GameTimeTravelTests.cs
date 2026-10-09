@@ -5,11 +5,13 @@ using System.Linq;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Helpers;
 using CutTheRopeDX.Framework.Media;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Helpers;
+using CutTheRopeDX.Tests.Interactions;
 
 using Xunit;
 
@@ -26,7 +28,7 @@ namespace CutTheRopeDX.Tests
     {
         private const float Frame = 0.016f;
 
-        private static void WithTimeTravelGame(int pack, int level, Action<GameController, GameScene> body, bool originalFlashOmNom = false, bool fromMenu = false, MenuStyle style = MenuStyle.TimeTravel, int width = 1920, int height = 1080)
+        private static void WithTimeTravelGame(int pack, int level, Action<GameController, GameScene> body, bool originalFlashOmNom = false, bool fromMenu = false, MenuStyle style = MenuStyle.TimeTravel, int width = 1920, int height = 1080, string skinId = null)
         {
             _ = HeadlessGame.Boot();
             MenuStyle previous = MenuTheme.Current;
@@ -43,9 +45,10 @@ namespace CutTheRopeDX.Tests
             }
             try
             {
-                if (originalFlashOmNom)
+                if (originalFlashOmNom || skinId != null)
                 {
-                    int flash = OmNomSkinRegistry.XmlSkins.ToList().FindIndex(skin => skin.Id == "OM_NOM_ORIGINAL_FLASH");
+                    int flash = OmNomSkinRegistry.XmlSkins.ToList().FindIndex(skin => skin.Id == (skinId ?? "OM_NOM_ORIGINAL_FLASH"));
+                    Assert.True(flash >= 0);
                     Preferences.SetIntForKey(flash + 1, "PREFS_SELECTED_OMNOM", false);
                 }
                 RootController.SetShowGreeting(fromMenu);
@@ -245,6 +248,186 @@ namespace CutTheRopeDX.Tests
                 Step(scene, 0.35f);
                 Assert.NotNull(scene.TimeTravelSpiral);
             }, originalFlashOmNom: true);
+        }
+
+        [Fact]
+        public void TheSceneDoesNotDrawOmNomWhileHisArrivalIsHidden()
+        {
+            WithTimeTravelGame(0, 0, (_, scene) =>
+            {
+                TargetContext target = scene.Targets[scene.TimeTravelSpiralTarget];
+                GameObject original = target.targetObject;
+                CountingOmNom drawProbe = new() { visible = false };
+                target.targetObject = drawProbe;
+                IRenderBackend previousRender = PlatformServices.Render;
+                PlatformServices.Render = new RecordingRenderBackend();
+                try
+                {
+                    scene.Draw();
+                    Assert.Equal(0, drawProbe.Draws);
+                    drawProbe.visible = true;
+                    scene.Draw();
+                    Assert.Equal(1, drawProbe.Draws);
+                }
+                finally
+                {
+                    target.targetObject = original;
+                    PlatformServices.Render = previousRender;
+                }
+            }, originalFlashOmNom: true, fromMenu: true);
+        }
+
+        [Theory]
+        [InlineData("OM_NOM_ORIGINAL_FLASH")]
+        [InlineData("OM_NOM_HALLOWEEN")]
+        [InlineData("OM_NOM_XMAS")]
+        [InlineData("OM_NOM_SUPERPOWERS")]
+        public void TheTutorialWaitsForTheArrivalAnimationBeforeAdvancing(string skinId)
+        {
+            WithTimeTravelGame(0, 0, (_, scene) =>
+            {
+                Timeline[] tutorials = [.. scene.TutorialPrompts().Select(prompt => prompt.Visual.GetCurrentTimeline()).Where(timeline => timeline != null)];
+                Assert.NotEmpty(tutorials);
+                Assert.True(scene.TimeTravelSpiralTarget >= 0);
+                TargetContext target = scene.Targets[scene.TimeTravelSpiralTarget];
+                Assert.Equal(skinId, target.animation.SkinDefinition.Id);
+                Assert.False(target.targetObject.visible);
+                float[] initial = [.. tutorials.Select(timeline => timeline.time)];
+                Step(scene, 1.2f);
+                Assert.Equal(initial, tutorials.Select(timeline => timeline.time).ToArray());
+                Step(scene, 0.3f);
+                Assert.Equal(initial, tutorials.Select(timeline => timeline.time).ToArray());
+                Assert.True(target.targetObject.visible);
+                Assert.True(Runs(target, TargetAnimationState.LevelIntro));
+                float intro = ((FlashXmlTargetAnimationBackend)scene.Targets[scene.TimeTravelSpiralTarget].animation).GetPlaybackSeconds(TargetAnimationState.LevelIntro);
+                Step(scene, intro + 0.2f);
+                Assert.Contains(tutorials, timeline => timeline.time > 0f);
+                Assert.False(scene.TutorialDirector().PresentationPaused);
+            }, fromMenu: true, skinId: skinId);
+        }
+
+        [Fact]
+        public void NearbyCandyCannotInterruptOmNomsArrivalOrLeaveTheTutorialHidden()
+        {
+            WithTimeTravelGame(0, 0, (_, scene) =>
+            {
+                Step(scene, 1.5f);
+                TargetContext target = scene.Targets[scene.TimeTravelSpiralTarget];
+                Vector candy = scene.Candy().WholeBody.Point.pos;
+                target.targetObject.x = candy.X;
+                target.targetObject.y = candy.Y;
+                Step(scene, Frame);
+                Assert.True(Runs(target, TargetAnimationState.LevelIntro));
+                target.targetObject.y += 1000f;
+                float intro = ((FlashXmlTargetAnimationBackend)target.animation).GetPlaybackSeconds(TargetAnimationState.LevelIntro);
+                Step(scene, intro + 0.2f);
+                Assert.False(scene.TutorialDirector().PresentationPaused);
+            }, originalFlashOmNom: true, fromMenu: true);
+        }
+
+        [Fact]
+        public void SuperNomTransformsAfterThePortalArrivalAndReturnsToHisOwnIdle()
+        {
+            WithTimeTravelGame(0, 0, (_, scene) =>
+            {
+                Assert.True(scene.TimeTravelSpiralTarget >= 0);
+                TargetContext target = scene.Targets[scene.TimeTravelSpiralTarget];
+                FlashXmlTargetAnimationBackend animation = (FlashXmlTargetAnimationBackend)target.animation;
+                Step(scene, 1.5f);
+                Assert.True(Runs(target, TargetAnimationState.LevelIntro));
+                Step(scene, animation.GetPlaybackSeconds(TargetAnimationState.LevelIntro));
+                Assert.True(Runs(target, TargetAnimationState.Greeting));
+                Step(scene, animation.GetPlaybackSeconds(TargetAnimationState.Greeting) + 0.1f);
+                Assert.True(Runs(target, TargetAnimationState.IdleLoop));
+                Assert.Equal(19, animation.SkinDefinition.GetTimelineId(TargetAnimationState.IdleLoop));
+            }, fromMenu: true, skinId: "OM_NOM_SUPERPOWERS");
+        }
+
+        [Fact]
+        public void SuperNomWithoutAnOutroStillShowsResultsNormally()
+        {
+            int last = Preferences.GetLevelsInPackCount(0) - 1;
+            WithTimeTravelGame(0, last, (controller, scene) =>
+            {
+                TargetContext target = scene.Targets[0];
+                Assert.True(target.Feeding.TryOpenMouth(1f));
+                Assert.True(target.Feeding.TryBeginChewing());
+                target.animation.Play(TargetAnimationState.Chewing);
+                scene.GameWon();
+                Step(scene, 2.2f);
+                BoxOpenClose box = (BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS);
+                Assert.True(box.TimeTravelResult.visible);
+            }, skinId: "OM_NOM_SUPERPOWERS");
+        }
+
+        private sealed class CountingOmNom : GameObject
+        {
+            internal int Draws { get; private set; }
+
+            public override void Draw()
+            {
+                Draws++;
+            }
+        }
+
+        [Theory]
+        [InlineData(1920, 1080)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void TheSpotlightKeepsOmNomClearAndDimsTheRestOfTheViewport(int width, int height)
+        {
+            using TimeTravelBlackout fade = new();
+            Vector focus = new(width * 0.7f, height * 0.6f);
+            fade.Place(new Rectangle(0f, 0f, width, height), focus, 3f);
+            Assert.Equal(width, fade.width);
+            Assert.Equal(height, fade.height);
+            Assert.Equal(0f, fade.AlphaAt(focus));
+            Assert.Equal(100f / 255f, fade.AlphaAt(new Vector(focus.X + (480f / MathF.Sqrt(2f)), focus.Y)), 5);
+            Assert.InRange(fade.AlphaAt(new Vector(0f, 0f)), 0.5f, 200f / 255f);
+            fade.Place(new Rectangle(0f, 0f, width, height), new Vector(100f, 120f), 1.5f);
+            Assert.Equal(0f, fade.AlphaAt(new Vector(100f, 120f)));
+            Assert.Equal(100f / 255f, fade.AlphaAt(new Vector(100f + (240f / MathF.Sqrt(2f)), 120f)), 5);
+        }
+
+        [Fact]
+        public void TheArrivalFadesTheBackgroundAroundOmNomAndClearsItAfterHeArrives()
+        {
+            WithTimeTravelGame(0, 0, (_, scene) =>
+            {
+                BaseElement fade = Assert.Single(All<BaseElement>(scene), element => element.Name == "ttOmNomBlackout");
+                Assert.Equal(0f, fade.color.AlphaChannel);
+                Step(scene, 1.2f);
+                Assert.True(fade.color.AlphaChannel > 0.7f);
+                Step(scene, 3f);
+                Assert.Equal(0f, fade.color.AlphaChannel);
+            }, originalFlashOmNom: true, fromMenu: true);
+        }
+
+        [Theory]
+        [InlineData("OM_NOM_ORIGINAL_FLASH")]
+        [InlineData("OM_NOM_HALLOWEEN")]
+        [InlineData("OM_NOM_XMAS")]
+        public void TheLastLevelWaitsForTheOutroAndItsTwoSecondHoldBeforeShowingResults(string skinId)
+        {
+            int last = Preferences.GetLevelsInPackCount(0) - 1;
+            WithTimeTravelGame(0, last, (controller, scene) =>
+            {
+                TargetContext target = scene.Targets[0];
+                Assert.True(target.Feeding.TryOpenMouth(1f));
+                Assert.True(target.Feeding.TryBeginChewing());
+                target.animation.Play(TargetAnimationState.Chewing);
+                FlashXmlTargetAnimationBackend animation = (FlashXmlTargetAnimationBackend)target.animation;
+                float departureStarts = animation.GetPlaybackSeconds(TargetAnimationState.Chewing) + 0.3f;
+                float outro = animation.GetPlaybackSeconds(TargetAnimationState.LevelOutro);
+                BoxOpenClose box = (BoxOpenClose)controller.GetView(0).GetChild(GameView.VIEW_ELEMENT_RESULTS);
+                scene.GameWon();
+                Assert.Equal(0, scene.TimeTravelSpiralTarget);
+                Step(scene, departureStarts + outro + 1.8f);
+                Assert.False(box.TimeTravelResult.visible);
+                _ = Assert.Single(All<BaseElement>(scene), element => element.Name == "ttOmNomBlackout");
+                Step(scene, 0.5f);
+                Assert.True(box.TimeTravelResult.visible);
+            }, skinId: skinId);
         }
 
         [Fact]

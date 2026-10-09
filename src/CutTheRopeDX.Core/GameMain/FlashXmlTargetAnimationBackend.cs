@@ -174,6 +174,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Skin definition that backs this target's animations.</summary>
         public OmNomSkinDefinition SkinDefinition { get; }
 
+        /// <summary>Runs once after the level-departure animation has finished.</summary>
+        internal Action LevelOutroFinished { get; set; }
+
+        /// <summary>Runs once after Om Nom's level-arrival animation has finished.</summary>
+        internal Action LevelIntroFinished { get; set; }
+
         /// <summary>Whether this backend is driven by Flash XML animation exports.</summary>
         public bool UsesFlashXmlAnimations => true;
 
@@ -473,6 +479,20 @@ namespace CutTheRopeDX.GameMain
                 && FindFirstPartWithTimeline(followupTimelineId) != null)
             {
                 PlayTimelineById(followupTimelineId);
+            }
+
+            if (finishedTimelineId == SkinDefinition.GetTimelineId(TargetAnimationState.LevelIntro))
+            {
+                Action finished = LevelIntroFinished;
+                LevelIntroFinished = null;
+                finished?.Invoke();
+            }
+
+            if (finishedTimelineId == SkinDefinition.GetTimelineId(TargetAnimationState.LevelOutro))
+            {
+                Action finished = LevelOutroFinished;
+                LevelOutroFinished = null;
+                finished?.Invoke();
             }
         }
 

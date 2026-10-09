@@ -37,6 +37,9 @@ namespace CutTheRopeDX.GameMain.Tutorials
         private readonly Dictionary<Rocket, int> rocketHistory = [];
         private bool loadingComplete;
 
+        /// <summary>Hides tutorial visuals and holds their delay and playback clocks during a cinematic.</summary>
+        public bool PresentationPaused { get; set; }
+
         /// <summary>Initializes a director against an authoritative tutorial world.</summary>
         /// <param name="world">World state boundary used for sampled conditions.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="world"/> is null.</exception>
@@ -118,6 +121,10 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <param name="delta">Elapsed frame time in seconds.</param>
         public void Update(float delta)
         {
+            if (PresentationPaused)
+            {
+                return;
+            }
             EvaluateSampledStates();
             EvaluateRocketIgnitions();
 
@@ -141,13 +148,19 @@ namespace CutTheRopeDX.GameMain.Tutorials
         /// <summary>Draws tutorial text visuals in XML order.</summary>
         public void DrawTexts()
         {
-            Draw(texts);
+            if (!PresentationPaused)
+            {
+                Draw(texts);
+            }
         }
 
         /// <summary>Draws tutorial image visuals in XML order.</summary>
         public void DrawImages()
         {
-            Draw(images);
+            if (!PresentationPaused)
+            {
+                Draw(images);
+            }
         }
 
         private static void AddToIndex<TKey>(

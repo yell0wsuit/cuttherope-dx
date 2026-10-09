@@ -15,6 +15,34 @@ namespace CutTheRopeDX.Tests.Tutorials
     public sealed class TutorialDirectorTests
     {
         [Fact]
+        public void CinematicPauseHidesTextAndImagesWithoutConsumingTheirPlayback()
+        {
+            List<string> draws = [];
+            TutorialDirector director = new(new FakeWorld()) { PresentationPaused = true };
+            (TutorialPrompt text, CountingVisual textVisual) = MakePrompt(TutorialEvent.Start, drawName: "text", draws: draws);
+            (TutorialPrompt image, CountingVisual imageVisual) = MakePrompt(TutorialEvent.Start, isText: false, drawName: "image", draws: draws);
+            director.Add(text);
+            director.Add(image);
+            director.CompleteLoading();
+            director.Update(10f);
+            director.DrawTexts();
+            director.DrawImages();
+            Assert.Empty(draws);
+            Assert.Equal(0f, textVisual.UpdatedSeconds);
+            Assert.Equal(0f, imageVisual.UpdatedSeconds);
+            Assert.Equal(TutorialPromptState.Playing, text.State);
+            Assert.Equal(TutorialPromptState.Playing, image.State);
+
+            director.PresentationPaused = false;
+            director.Update(0.25f);
+            director.DrawTexts();
+            director.DrawImages();
+            Assert.Equal(["text", "image"], draws);
+            Assert.Equal(0.25f, textVisual.UpdatedSeconds);
+            Assert.Equal(0.25f, imageVisual.UpdatedSeconds);
+        }
+
+        [Fact]
         public void StartFiresOnlyAfterLoadingCompletes()
         {
             FakeWorld world = new();
