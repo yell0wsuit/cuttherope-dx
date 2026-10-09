@@ -143,6 +143,52 @@ namespace CutTheRopeDX.GameMain
             public bool JustUnlocked { get; set; }
         }
 
+        /// <summary>
+        /// Applies the pager's fade to every piece at draw time. BaseElement colors replace
+        /// renderer colors, so a masked image or Flash stage can otherwise reset the fade for
+        /// the pieces after it. Keep the animation's own colors intact between draws.
+        /// </summary>
+        private sealed class TimeTravelPackIcon : BaseElement
+        {
+            private readonly List<(BaseElement Element, RGBAColor Color)> drawColors = [];
+
+            public override void Draw()
+            {
+                try
+                {
+                    FadeChildren(this, color.AlphaChannel);
+                    base.Draw();
+                }
+                finally
+                {
+                    foreach ((BaseElement element, RGBAColor saved) in drawColors)
+                    {
+                        element.color = saved;
+                    }
+                    drawColors.Clear();
+                }
+            }
+
+            private void FadeChildren(BaseElement parent, float alpha)
+            {
+                foreach (BaseElement child in parent.GetChilds().Values)
+                {
+                    if (child == null)
+                    {
+                        continue;
+                    }
+                    RGBAColor local = child.color;
+                    // Text combines its own color with the inherited renderer color.
+                    if (child is not Text)
+                    {
+                        drawColors.Add((child, local));
+                        child.color = RGBAColor.MakeRGBA(local.RedColor, local.GreenColor, local.BlueColor, local.AlphaChannel * alpha);
+                    }
+                    FadeChildren(child, child.passColorToChilds ? alpha * local.AlphaChannel : alpha);
+                }
+            }
+        }
+
         /// <summary>Builds the Time Travel pack pages.</summary>
         private void CreateTimeTravelPackSelect()
         {
@@ -420,7 +466,7 @@ namespace CutTheRopeDX.GameMain
             UNLOCKEDSTATE state = Preferences.GetUnlockedForPackLevel(n, 0);
             (string sheet, int quad) = TimeTravelArt.PackIcon(n);
             Vector size = Image.GetQuadSize(sheet, quad);
-            BaseElement icon = new()
+            BaseElement icon = new TimeTravelPackIcon()
             {
                 width = (int)MathF.Round(size.X),
                 height = (int)MathF.Round(size.Y),
@@ -483,6 +529,7 @@ namespace CutTheRopeDX.GameMain
             line.SetName("ttProgressLine");
             line.anchor = 20;
             line.parentAnchor = 10;
+            line.rotationCenterX = line.width / 2f;
             Image mirror = Image.FromResource(Resources.Img.MenuPackSelectionTimeTravel, TimeTravelArt.PackProgressLine);
             mirror.anchor = 9;
             mirror.parentAnchor = 12;
@@ -594,7 +641,7 @@ namespace CutTheRopeDX.GameMain
         private static TimeTravelPackPage CreateTimeTravelComingSoonPage()
         {
             // Covers the whole scene, so its art lands where the canvas draws it.
-            BaseElement icon = new()
+            BaseElement icon = new TimeTravelPackIcon()
             {
                 width = TimeTravelSceneGroup.Width,
                 height = TimeTravelSceneGroup.Height,
@@ -752,14 +799,14 @@ namespace CutTheRopeDX.GameMain
                 (float rotation, float alpha) = TimeTravelPager.IconPose(distance);
                 page.Icon.rotation = rotation;
                 page.Icon.color = RGBAColor.MakeRGBA(1f, 1f, 1f, alpha);
-                page.Veil?.color = RGBAColor.MakeRGBA(1f, 1f, 1f, TimeTravelLockedVeil * alpha);
                 if (page.Opening)
                 {
                     StepTimeTravelOpening(page, delta);
                 }
             }
 
-            int shown = (int)MathF.Round(position);
+            // iOS uses roundf, whose midpoint rule differs from .NET's default rounding.
+            int shown = (int)MathF.Round(position, MidpointRounding.AwayFromZero);
             if (shown != timeTravelShownPage)
             {
                 ShowTimeTravelPage(timeTravelShownPage, shown);
