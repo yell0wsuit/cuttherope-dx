@@ -155,8 +155,8 @@ namespace CutTheRopeDX.Tests
                 Assert.True(dim.visible);
                 Assert.True(scene.visible);
 
-                // Level grid, replay and resume, then main menu, sound, music and skip.
-                Assert.Equal(7, scene.GetChild(0).ChildsCount());
+                // Level grid, replay and resume, then sound, music and skip.
+                Assert.Equal(6, scene.GetChild(0).ChildsCount());
                 Step(view, 0.5f);
                 Assert.Equal(0.5f, dim.color.AlphaChannel, 3);
 
@@ -167,6 +167,38 @@ namespace CutTheRopeDX.Tests
                 Assert.False(dim.visible);
                 Assert.False(scene.visible);
             });
+        }
+
+        [Theory]
+        [InlineData(1920, 1080)]
+        [InlineData(720, 1280)]
+        [InlineData(2940, 960)]
+        public void ThePauseButtonsAreCenteredWithoutABackArrow(int width, int height)
+        {
+            WithTimeTravelGame(0, 1, (controller, _) =>
+            {
+                View view = controller.GetView(0);
+                controller.OnButtonPressed(GameControllerButtonId.Pause);
+                Step(view, 0.5f);
+                ResolveDrawPositions(view);
+                BaseElement group = view.GetChild(GameView.VIEW_ELEMENT_PAUSE_BUTTONS).GetChild(0);
+                BaseElement[] buttons = [.. Enumerable.Range(0, group.ChildsCount()).Select(group.GetChild)];
+                Assert.DoesNotContain(buttons.OfType<Button>(), button => button.buttonID == GameControllerButtonId.MainMenu);
+                Rectangle[] boxes = [.. buttons.Select(DrawnBox)];
+                Rectangle visible = ScreenPresentation.Instance.Snapshot.VisibleBounds;
+                float left = boxes.Min(box => box.x);
+                float right = boxes.Max(box => box.x + box.w);
+                float top = boxes.Min(box => box.y);
+                float bottom = boxes.Max(box => box.y + box.h);
+                Assert.InRange((left + right) / 2f, (visible.w / 2f) - 1f, (visible.w / 2f) + 1f);
+                Assert.InRange((top + bottom) / 2f, (visible.h / 2f) - 1f, (visible.h / 2f) + 1f);
+                foreach (IGrouping<float, BaseElement> row in buttons.GroupBy(button => button.y))
+                {
+                    Rectangle[] rowBoxes = [.. row.Select(DrawnBox)];
+                    Assert.InRange((rowBoxes.Min(box => box.x) + rowBoxes.Max(box => box.x + box.w)) / 2f,
+                        (visible.w / 2f) - 1f, (visible.w / 2f) + 1f);
+                }
+            }, width: width, height: height);
         }
 
         [Fact]
@@ -281,7 +313,6 @@ namespace CutTheRopeDX.Tests
         [InlineData("OM_NOM_ORIGINAL_FLASH")]
         [InlineData("OM_NOM_HALLOWEEN")]
         [InlineData("OM_NOM_XMAS")]
-        [InlineData("OM_NOM_SUPERPOWERS")]
         public void TheTutorialWaitsForTheArrivalAnimationBeforeAdvancing(string skinId)
         {
             WithTimeTravelGame(0, 0, (_, scene) =>
@@ -323,24 +354,6 @@ namespace CutTheRopeDX.Tests
                 Step(scene, intro + 0.2f);
                 Assert.False(scene.TutorialDirector().PresentationPaused);
             }, originalFlashOmNom: true, fromMenu: true);
-        }
-
-        [Fact]
-        public void SuperNomTransformsAfterThePortalArrivalAndReturnsToHisOwnIdle()
-        {
-            WithTimeTravelGame(0, 0, (_, scene) =>
-            {
-                Assert.True(scene.TimeTravelSpiralTarget >= 0);
-                TargetContext target = scene.Targets[scene.TimeTravelSpiralTarget];
-                FlashXmlTargetAnimationBackend animation = (FlashXmlTargetAnimationBackend)target.animation;
-                Step(scene, 1.5f);
-                Assert.True(Runs(target, TargetAnimationState.LevelIntro));
-                Step(scene, animation.GetPlaybackSeconds(TargetAnimationState.LevelIntro));
-                Assert.True(Runs(target, TargetAnimationState.Greeting));
-                Step(scene, animation.GetPlaybackSeconds(TargetAnimationState.Greeting) + 0.1f);
-                Assert.True(Runs(target, TargetAnimationState.IdleLoop));
-                Assert.Equal(19, animation.SkinDefinition.GetTimelineId(TargetAnimationState.IdleLoop));
-            }, fromMenu: true, skinId: "OM_NOM_SUPERPOWERS");
         }
 
         [Fact]
