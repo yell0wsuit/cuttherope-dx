@@ -170,18 +170,18 @@
 },
 {
 	"filename": "frame_0022.png",
-	"frame": {"x":1237,"y":713,"w":193,"h":455},
+	"frame": {"x":1240,"y":716,"w":187,"h":449},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":407,"y":535,"w":193,"h":455},
+	"spriteSourceSize": {"x":410,"y":538,"w":187,"h":449},
 	"sourceSize": {"w":1234,"h":1498}
 },
 {
 	"filename": "frame_0023.png",
-	"frame": {"x":1237,"y":1,"w":347,"h":24},
+	"frame": {"x":1240,"y":4,"w":341,"h":18},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":438,"y":744,"w":347,"h":24},
+	"spriteSourceSize": {"x":441,"y":747,"w":341,"h":18},
 	"sourceSize": {"w":1234,"h":1498}
 },
 {
