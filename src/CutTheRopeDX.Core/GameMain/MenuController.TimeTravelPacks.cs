@@ -565,7 +565,7 @@ namespace CutTheRopeDX.GameMain
             padlock.Root.updateable = false;
             page.Lock = padlock;
 
-            page.Price = CreateTimeTravelPrice(icon, PackConfig.GetUnlockStars(n));
+            page.Price = CreateTimeTravelPrice(icon, padlock.Part("lock1half"), PackConfig.GetUnlockStars(n));
             _ = icon.AddChild(page.Price);
         }
 
@@ -582,12 +582,14 @@ namespace CutTheRopeDX.GameMain
         /// <summary>
         /// The padlock's star and price, which fade away when the pack opens. iOS sets the star's
         /// right edge and the price's left edge on two marker points of the padlock, and slides
-        /// both left by however much the price is wider than three digits.
+        /// both left by however much the price is wider than three digits. The number shares
+        /// the star's vertical center.
         /// </summary>
         /// <param name="icon">The icon they sit on.</param>
+        /// <param name="lockHalf">The posed left half, whose center is the price's scale pivot.</param>
         /// <param name="price">Stars that open the pack.</param>
         /// <returns>The star and price, in an element covering the icon.</returns>
-        private static BaseElement CreateTimeTravelPrice(BaseElement icon, int price)
+        private static BaseElement CreateTimeTravelPrice(BaseElement icon, Image lockHalf, int price)
         {
             BaseElement group = new() { width = icon.width, height = icon.height };
             group.SetName("ttPrice");
@@ -602,6 +604,12 @@ namespace CutTheRopeDX.GameMain
             float lockTop = (icon.height / 2f) - (149.65f * FlashXmlScale.AtlasToFlashPointScale);
             float c = TimeTravelArt.CanvasToAsset;
 
+            // iOS scales this group to 90% as a child of the left lock half. Keep the
+            // icon-sized fade group, but use that half's center rather than the icon's.
+            group.scaleX = group.scaleY = 0.9f;
+            group.rotationCenterX = lockLeft + (lockHalf.width * FlashXmlScale.AtlasToFlashPointScale / 2f) - (group.width >> 1);
+            group.rotationCenterY = lockTop + (lockHalf.height * FlashXmlScale.AtlasToFlashPointScale / 2f) - (group.height >> 1);
+
             Text text = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
             text.SetString(price.ToString(CultureInfo.InvariantCulture));
             Text threeDigits = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
@@ -610,7 +618,6 @@ namespace CutTheRopeDX.GameMain
             text.anchor = 17;
             text.parentAnchor = 9;
             text.x = lockLeft + ((priceMarker.x + (priceMarker.w / 2f) - half.x) * c) - slide;
-            text.y = lockTop + ((priceMarker.y + (priceMarker.h / 2f) - half.y) * c);
             _ = group.AddChild(text);
 
             Image star = Image.FromResource(Resources.Img.MenuPackSelectionTimeTravel, TimeTravelArt.LockStar);
@@ -619,6 +626,8 @@ namespace CutTheRopeDX.GameMain
             star.x = lockLeft + ((starMarker.x + (starMarker.w / 2f) - half.x) * c) - slide;
             star.y = lockTop + ((starMarker.y + (starMarker.h / 2f) - half.y) * c);
             _ = group.AddChild(star);
+            // Center anchors use integer half-heights; compensate when just one height is odd.
+            text.y = star.y + (((star.height & 1) - (text.height & 1)) / 2f);
 
             Timeline fade = new Timeline().InitWithMaxKeyFramesOnTrack(2);
             fade.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
