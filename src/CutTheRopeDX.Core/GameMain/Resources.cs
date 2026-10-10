@@ -399,6 +399,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjBee = "obj_bee";
             public const string CharSupports = "char_supports";
             public const string CharSupportsXmas = "char_supports_xmas";
+            public const string CharSupportTimeTravel = "char_support_timetravel";
             public const string CharSupportExperiments = "char_support_experiments";
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";

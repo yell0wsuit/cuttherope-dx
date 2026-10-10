@@ -24,6 +24,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Number of platforms on the Experiments support sheet, one per Experiments pack.</summary>
         private const int ExperimentsSupportCount = 8;
 
+        /// <summary>Time Travel chairs, stored first in the atlas in chapter order.</summary>
+        private const int TimeTravelSupportCount = 12;
+
         /// <summary>
         /// Loads Om Nom from XML node data
         /// Sets up Om Nom animations, blink animation, and greeting if needed
@@ -51,7 +54,7 @@ namespace CutTheRopeDX.GameMain
             bool paddingtonGreetingPending =
                 isPaddington && isPrimaryTarget && !nightLevel && RootController.IsShowGreeting();
 
-            (string supportResource, int requestedQuad) = ResolveSupport(pack, isPaddington, MenuTheme.IsExperiments);
+            (string supportResource, int requestedQuad) = ResolveSupport(pack, isPaddington, MenuTheme.IsExperiments, MenuTheme.IsTimeTravel);
 
             // Clamp quad index to valid range; fall back to first quad for invalid values.
             Texture2D supportTexture = Application.GetTexture(supportResource);
@@ -122,20 +125,28 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Picks the platform Om Nom sits on. Paddington seats him on the bear's suitcase. Otherwise
-        /// the pack's platform set decides: the Experiments set takes the platform the pack's entry
-        /// names or, when it names none that exists, the next in turn by the pack's position.
+        /// the pack's platform set decides, taking a configured quad when valid or following the
+        /// pack's position in the selected game's chapter order.
         /// </summary>
         /// <param name="pack">Pack being played.</param>
         /// <param name="isPaddington">Whether the Paddington greeting is in play.</param>
         /// <param name="isExperiments">Whether the Experiments menus are active.</param>
+        /// <param name="isTimeTravel">Whether the Time Travel menus are active.</param>
         /// <returns>The support sheet and the quad to draw from it.</returns>
-        internal static (string Resource, int Quad) ResolveSupport(int pack, bool isPaddington, bool isExperiments)
+        internal static (string Resource, int Quad) ResolveSupport(int pack, bool isPaddington, bool isExperiments, bool isTimeTravel = false)
         {
             if (isPaddington)
             {
                 return (Resources.Img.CharSupportsXmas, PaddingtonSupportQuad);
             }
-            if (ResolveSupportTheme(PackConfig.GetSittingPlatformTheme(pack), isExperiments) == SittingPlatformTheme.Experiments)
+            SittingPlatformTheme theme = ResolveSupportTheme(PackConfig.GetSittingPlatformTheme(pack), isExperiments, isTimeTravel);
+            if (theme == SittingPlatformTheme.TimeTravel)
+            {
+                int quad = PackConfig.GetTimeTravelSittingPlatform(pack);
+                return (Resources.Img.CharSupportTimeTravel,
+                    quad is >= 0 and < 16 ? quad : ((pack % TimeTravelSupportCount) + TimeTravelSupportCount) % TimeTravelSupportCount);
+            }
+            if (theme == SittingPlatformTheme.Experiments)
             {
                 int quad = PackConfig.GetExpSittingPlatform(pack);
                 return (Resources.Img.CharSupportExperiments,
@@ -149,10 +160,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         /// <param name="configured">Platform set from the pack's entry, or <see langword="null"/> when unset.</param>
         /// <param name="isExperiments">Whether the Experiments menus are active.</param>
+        /// <param name="isTimeTravel">Whether the Time Travel menus are active.</param>
         /// <returns>The platform set to draw from.</returns>
-        internal static SittingPlatformTheme ResolveSupportTheme(SittingPlatformTheme? configured, bool isExperiments)
+        internal static SittingPlatformTheme ResolveSupportTheme(SittingPlatformTheme? configured, bool isExperiments, bool isTimeTravel = false)
         {
-            return configured ?? (isExperiments ? SittingPlatformTheme.Experiments : SittingPlatformTheme.Original);
+            return configured ?? (isTimeTravel ? SittingPlatformTheme.TimeTravel
+                : isExperiments ? SittingPlatformTheme.Experiments : SittingPlatformTheme.Original);
         }
     }
 }

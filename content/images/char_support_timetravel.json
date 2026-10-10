@@ -1,12 +1,44 @@
 {
     "frames": [
         {
-            "filename": "frame_0000_char_support_china.png",
-            "frame": { "x": 514, "y": 1, "w": 447, "h": 371 },
+            "filename": "frame_0000_char_support_medieval.png",
+            "frame": { "x": 714, "y": 946, "w": 260, "h": 326 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 124, "y": 232, "w": 447, "h": 371 },
+            "spriteSourceSize": { "x": 152, "y": 204, "w": 260, "h": 326 },
+            "sourceSize": { "w": 576, "h": 576 }
+        },
+        {
+            "filename": "frame_0000_char_support_renaissance.png",
+            "frame": { "x": 379, "y": 449, "w": 303, "h": 380 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 167, "y": 182, "w": 303, "h": 380 },
             "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0000_char_support_pirate.png",
+            "frame": { "x": 684, "y": 694, "w": 302, "h": 250 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 168, "y": 280, "w": 302, "h": 250 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0000_char_support_egypt.png",
+            "frame": { "x": 379, "y": 831, "w": 286, "h": 286 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 188, "y": 257, "w": 286, "h": 286 },
+            "sourceSize": { "w": 640, "h": 640 }
+        },
+        {
+            "filename": "frame_0000_char_support_shadow.png",
+            "frame": { "x": 332, "y": 1407, "w": 197, "h": 34 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 186, "y": 360, "w": 197, "h": 34 },
+            "sourceSize": { "w": 576, "h": 576 }
         },
         {
             "filename": "frame_0000_char_support_dinosaurs.png",
@@ -25,27 +57,19 @@
             "sourceSize": { "w": 576, "h": 576 }
         },
         {
-            "filename": "frame_0000_char_support_egypt.png",
-            "frame": { "x": 379, "y": 831, "w": 286, "h": 286 },
+            "filename": "frame_0000_char_support_western.png",
+            "frame": { "x": 1, "y": 1299, "w": 329, "h": 261 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 188, "y": 257, "w": 286, "h": 286 },
-            "sourceSize": { "w": 640, "h": 640 }
+            "spriteSourceSize": { "x": 113, "y": 276, "w": 329, "h": 261 },
+            "sourceSize": { "w": 576, "h": 576 }
         },
         {
-            "filename": "frame_0000_char_support_flying_future.png",
-            "frame": { "x": 332, "y": 1443, "w": 95, "h": 105 },
+            "filename": "frame_0000_char_support_china.png",
+            "frame": { "x": 514, "y": 1, "w": 447, "h": 371 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 400, "y": 372, "w": 95, "h": 105 },
-            "sourceSize": { "w": 640, "h": 640 }
-        },
-        {
-            "filename": "frame_0000_char_support_future.png",
-            "frame": { "x": 684, "y": 374, "w": 292, "h": 318 },
-            "rotated": false,
-            "trimmed": true,
-            "spriteSourceSize": { "x": 174, "y": 241, "w": 292, "h": 318 },
+            "spriteSourceSize": { "x": 124, "y": 232, "w": 447, "h": 371 },
             "sourceSize": { "w": 640, "h": 640 }
         },
         {
@@ -57,12 +81,12 @@
             "sourceSize": { "w": 640, "h": 640 }
         },
         {
-            "filename": "frame_0000_char_support_medieval.png",
-            "frame": { "x": 714, "y": 946, "w": 260, "h": 326 },
+            "filename": "frame_0000_char_support_future.png",
+            "frame": { "x": 684, "y": 374, "w": 292, "h": 318 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 152, "y": 204, "w": 260, "h": 326 },
-            "sourceSize": { "w": 576, "h": 576 }
+            "spriteSourceSize": { "x": 174, "y": 241, "w": 292, "h": 318 },
+            "sourceSize": { "w": 640, "h": 640 }
         },
         {
             "filename": "frame_0000_char_support_paradox.png",
@@ -73,36 +97,12 @@
             "sourceSize": { "w": 640, "h": 640 }
         },
         {
-            "filename": "frame_0000_char_support_pirate.png",
-            "frame": { "x": 684, "y": 694, "w": 302, "h": 250 },
+            "filename": "frame_0000_char_support_flying_future.png",
+            "frame": { "x": 332, "y": 1443, "w": 95, "h": 105 },
             "rotated": false,
             "trimmed": true,
-            "spriteSourceSize": { "x": 168, "y": 280, "w": 302, "h": 250 },
+            "spriteSourceSize": { "x": 400, "y": 372, "w": 95, "h": 105 },
             "sourceSize": { "w": 640, "h": 640 }
-        },
-        {
-            "filename": "frame_0000_char_support_renaissance.png",
-            "frame": { "x": 379, "y": 449, "w": 303, "h": 380 },
-            "rotated": false,
-            "trimmed": true,
-            "spriteSourceSize": { "x": 167, "y": 182, "w": 303, "h": 380 },
-            "sourceSize": { "w": 640, "h": 640 }
-        },
-        {
-            "filename": "frame_0000_char_support_shadow.png",
-            "frame": { "x": 332, "y": 1407, "w": 197, "h": 34 },
-            "rotated": false,
-            "trimmed": true,
-            "spriteSourceSize": { "x": 186, "y": 360, "w": 197, "h": 34 },
-            "sourceSize": { "w": 576, "h": 576 }
-        },
-        {
-            "filename": "frame_0000_char_support_western.png",
-            "frame": { "x": 1, "y": 1299, "w": 329, "h": 261 },
-            "rotated": false,
-            "trimmed": true,
-            "spriteSourceSize": { "x": 113, "y": 276, "w": 329, "h": 261 },
-            "sourceSize": { "w": 576, "h": 576 }
         },
         {
             "filename": "frame_0001_char_support_flying_future.png",
