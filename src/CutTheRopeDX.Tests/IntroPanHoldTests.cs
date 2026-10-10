@@ -200,6 +200,47 @@ namespace CutTheRopeDX.Tests
             }
         }
 
+        [Theory]
+        [InlineData("OM_NOM_ORIGINAL_FLASH")]
+        [InlineData("OM_NOM_HALLOWEEN")]
+        [InlineData("OM_NOM_XMAS")]
+        public void GameplayWaitsForOmNomsArrivalThenResumes(string skinId)
+        {
+            _ = HeadlessGame.Boot();
+            MenuStyle previous = MenuTheme.Current;
+            int previousSkin = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
+            MenuTheme.Current = MenuStyle.TimeTravel;
+            try
+            {
+                int skin = OmNomSkinRegistry.XmlSkins.ToList().FindIndex(s => s.Id == skinId);
+                Preferences.SetIntForKey(skin + 1, "PREFS_SELECTED_OMNOM", false);
+                RootController.SetShowGreeting(true);
+                GameScene scene = FreeCandyLevel(UnpannedHeight);
+                Assert.False(scene.IsIntroPanRunning());
+                Assert.True(scene.TimeTravelSpiralTarget >= 0);
+                float start = scene.Candy().WholeBody.Point.pos.Y;
+                HeadlessGame.StepFrames(scene, 100);
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+                Assert.NotNull(scene.TimeTravelSpiral);
+                Assert.True(scene.TutorialDirector().PresentationPaused);
+                HeadlessGame.StepFrames(scene, 100);
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+                for (int frame = 0; frame < 200 && scene.TutorialDirector().PresentationPaused; frame++)
+                {
+                    HeadlessGame.StepFrames(scene, 1);
+                }
+                Assert.False(scene.TutorialDirector().PresentationPaused);
+                HeadlessGame.StepFrames(scene, 10);
+                Assert.True(scene.Candy().WholeBody.Point.pos.Y > start + 1f);
+            }
+            finally
+            {
+                RootController.SetShowGreeting(false);
+                Preferences.SetIntForKey(previousSkin, "PREFS_SELECTED_OMNOM", false);
+                MenuTheme.Current = previous;
+            }
+        }
+
         /// <summary>
         /// Builds a level whose candy hangs from nothing, and reports how far it fell.
         /// </summary>
