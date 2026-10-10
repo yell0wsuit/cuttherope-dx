@@ -24,6 +24,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>The Cut the Rope: Experiments platforms, picked by <c>expSittingPlatform</c>.</summary>
         Experiments,
+
+        /// <summary>The Time Travel platforms, picked by <c>ttSittingPlatform</c>.</summary>
+        TimeTravel,
     }
 
     /// <summary>
@@ -105,6 +108,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Quad index in <see cref="Resources.Img.CharSupportExperiments"/> for this pack's support platform, or -1 to follow the pack's position.</summary>
         public int ExpSittingPlatform { get; } = expSittingPlatform;
+
+        /// <summary>Time Travel support atlas quad, or -1 to follow chapter order.</summary>
+        public int TimeTravelSittingPlatform { get; init; } = -1;
 
         /// <summary>Platform set this pack sits on, or <see langword="null"/> to follow the menu style.</summary>
         public SittingPlatformTheme? SittingPlatformTheme { get; } = sittingPlatformTheme;
@@ -292,6 +298,12 @@ namespace CutTheRopeDX.GameMain
         public static int GetSittingPlatform(int pack)
         {
             return pack >= 0 && pack < packs.Count ? packs[pack].SittingPlatform : 0;
+        }
+
+        /// <summary>Gets the Time Travel support quad, or -1 to follow chapter order.</summary>
+        public static int GetTimeTravelSittingPlatform(int pack)
+        {
+            return pack >= 0 && pack < packs.Count ? packs[pack].TimeTravelSittingPlatform : -1;
         }
 
         /// <summary>
@@ -687,6 +699,7 @@ namespace CutTheRopeDX.GameMain
                 ghostGrabColor
                 )
             {
+                TimeTravelSittingPlatform = ParseIntProperty(packElement, "ttSittingPlatform", -1, fileName),
                 TimeTravelPackPicture = ParseIntProperty(packElement, "ttPackPicture", -1, fileName),
                 TimeTravelPackBackground = ParseIntProperty(packElement, "ttPackBackground", -1, fileName),
             };
@@ -911,6 +924,8 @@ namespace CutTheRopeDX.GameMain
                     return SittingPlatformTheme.Original;
                 case "experiments":
                     return SittingPlatformTheme.Experiments;
+                case "timetravel":
+                    return SittingPlatformTheme.TimeTravel;
                 default:
                     PackConfigLog.UnknownSittingPlatformTheme(Log.For(LogCategories.ContentPacks), fileName, value);
                     return null;
@@ -1133,7 +1148,7 @@ namespace CutTheRopeDX.GameMain
 
         [LoggerMessage(
             Level = LogLevel.Warning,
-            Message = "{FileName} has unknown sittingPlatformTheme '{Value}'; expected 'original' or 'experiments'. Following the menu style.")]
+            Message = "{FileName} has unknown sittingPlatformTheme '{Value}'; expected 'original', 'experiments', or 'timetravel'. Following the menu style.")]
         public static partial void UnknownSittingPlatformTheme(ILogger logger, string fileName, string value);
     }
 }
