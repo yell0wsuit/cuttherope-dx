@@ -135,9 +135,9 @@ namespace CutTheRopeDX.Tests
         {
             MenuTimeTravelTests.WithTimeTravel(1920, 1080, _ =>
             {
-                CutTheRopeDX.Framework.Visual.Texture2D texture = CutTheRopeDX.Framework.Core.Application.GetTexture("char_support_timetravel");
+                Framework.Visual.Texture2D texture = Framework.Core.Application.GetTexture("char_support_timetravel");
                 Assert.Equal(16, texture.quadRects.Length);
-                CutTheRopeDX.Framework.Visual.Image support = CutTheRopeDX.Framework.Visual.Image.FromResource("char_support_timetravel", 0);
+                Framework.Visual.Image support = Framework.Visual.Image.FromResource("char_support_timetravel", 0);
                 support.DoRestoreCutTransparency();
                 Assert.Equal(576, support.width);
                 Assert.Equal(576, support.height);
