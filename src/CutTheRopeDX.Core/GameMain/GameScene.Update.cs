@@ -30,13 +30,27 @@ namespace CutTheRopeDX.GameMain
             delta = 0.016f;
             UpdateTimeTravelSpiral(delta);
 
-            // The opening pan flies the camera across the level with input switched off. Nothing
-            // else advances until it hands input back, so a candy cannot fall - or be eaten, or
+            // The opening pan flies the camera across the level with input switched off. Gameplay
+            // stays held until the pan finishes, so a candy cannot fall - or be eaten, or
             // drift out of a claw - before the player has seen where it is. On a level the design
             // box already covered there is no pan and this never fires; the levels that grew one
             // are the ones whose pan is long enough to lose the level on the way.
             if (IntroPanIsRunning)
             {
+                // Restart lightning plays over the pan. Arrival effects wait with their dispatcher
+                // and Om Nom animation, so advancing the whole pool would desynchronize them.
+                foreach (BaseElement effect in staticAniPool.GetChilds().Values.ToArray())
+                {
+                    if (effect.Name is "ttLightningRT" or "ttLightningBL")
+                    {
+                        effect.Update(delta);
+                        // The pool's normal update is held, including its queued cleanup.
+                        if (effect.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
+                        {
+                            staticAniPool.RemoveChildWithID(staticAniPool.GetChildId(effect));
+                        }
+                    }
+                }
                 UpdateCameraTracking(delta);
                 _ = AdvanceRestartFlow(delta);
                 return;
