@@ -144,6 +144,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-down event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchDownXYIndex(float tx, float ty, int ti)
         {
+            if (timeTravelArrivalActive)
+            {
+                return true;
+            }
             if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
@@ -529,6 +533,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-up event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchUpXYIndex(float tx, float ty, int ti)
         {
+            if (timeTravelArrivalActive)
+            {
+                return true;
+            }
             if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;
@@ -696,6 +704,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns><see langword="true"/> when the touch-move event was consumed; otherwise, <see langword="false"/>.</returns>
         public bool TouchMoveXYIndex(float tx, float ty, int ti)
         {
+            if (timeTravelArrivalActive)
+            {
+                return true;
+            }
             if (!TryGetPointerGesture(ti, out PointerGestureState gesture))
             {
                 return true;

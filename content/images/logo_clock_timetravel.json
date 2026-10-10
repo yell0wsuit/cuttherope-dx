@@ -1,0 +1,36 @@
+{"frames": [
+
+{
+	"filename": "logo_1536_2048-1.png",
+	"frame": {"x":1,"y":73,"w":32,"h":30},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":30},
+	"sourceSize": {"w":32,"h":30}
+},
+{
+	"filename": "logo_1536_2048-23.png",
+	"frame": {"x":103,"y":1,"w":55,"h":89},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":89},
+	"sourceSize": {"w":55,"h":89}
+},
+{
+	"filename": "logo_1536_2048-24.png",
+	"frame": {"x":1,"y":1,"w":100,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":70},
+	"sourceSize": {"w":100,"h":70}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "logo_clock_timetravel.png",
+	"format": "RGBA8888",
+	"size": {"w":159,"h":104},
+	"scale": "0.78",
+	"smartupdate": "$TexturePacker:SmartUpdate:b780792c6e64955ac6e78f67b0814d10:8951ade0816df1636b6662ce34916c4d:11aa64ba9de31ded46d795b2aaced3d0$"
+}
+}

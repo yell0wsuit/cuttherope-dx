@@ -126,15 +126,23 @@ namespace CutTheRopeDX.GameMain
             decalsLayer?.Draw();
             support.Draw();
             waterLayer?.DrawBack();
-            TargetObject?.Draw();
-            TargetAnimation?.DrawSleepOverlays();
+            DrawTimeTravelSpiral(0);
+            if (TargetObject?.visible == true)
+            {
+                TargetObject.Draw();
+                TargetAnimation?.DrawSleepOverlays();
+            }
             // Draw additional Om Noms. targets[0] is the primary, drawn above.
             for (int ti = 1; ti < targets.Count; ti++)
             {
                 TargetContext t = targets[ti];
                 t.support?.Draw();
-                t.targetObject?.Draw();
-                t.animation?.DrawSleepOverlays();
+                DrawTimeTravelSpiral(ti);
+                if (t.targetObject?.visible == true)
+                {
+                    t.targetObject.Draw();
+                    t.animation?.DrawSleepOverlays();
+                }
             }
             tutorialDirector.DrawTexts();
             tutorialDirector.DrawImages();
@@ -366,6 +374,7 @@ namespace CutTheRopeDX.GameMain
                 Renderer.SetBlendFunc(BlendingFactor.GLONE, BlendingFactor.GLONEMINUSSRCALPHA);
             }
             // Screen-space gameplay UI stays readable while the world is frozen.
+            LayoutTimeTravelBlackout();
             staticAniPool.Draw();
             PostDraw();
         }

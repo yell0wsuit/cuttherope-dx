@@ -1,0 +1,32 @@
+<FlashAnimation width="640" height="960" src="hud_timetravel">
+ <Image rotationCenterY="1" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="star_empty" src="hud_timetravel" quadToDraw="6" rotationCenterX="1">
+  <Timeline ID="0">
+   <Pos>-29.8,-29.1(1)@0+-29.8437,-29.1(3)@0.125+-29.8437,-29.1(3)@0.04166667+0,0(1)@0+0,0(1)@0.2083333</Pos>
+   <Scale>1,1(1)@0+0.266434,1(3)@0.125+0.266434,1(3)@0.04166667+0,0(1)@0+0,0(1)@0.2083333</Scale>
+   <Color>1,1,1,1(1)@0+1,1,1,1(3)@0.125+1,1,1,1(3)@0.04166667+0,0,0,0(1)@0+0,0,0,0(1)@0.2083333</Color>
+   <Skew>0,0(1)@0+0,0(3)@0.125+0,0(3)@0.04166667+0,0(1)@0+0,0(1)@0.2083333</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,6,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,1,1(1)@0+AC_SV,self,0,1(3)@0.125+AC_SDQ,self,6,0(3)@0+AC_SAP,self,0,0(3)@0+AC_SRC,self,1.05,1(3)@0+AC_SV,self,0,1(3)@0.04166667+AC_SDQ,self,6,0(3)@0+AC_SAP,self,0,0(3)@0+AC_SRC,self,1.05,1(3)@0+AC_SV,self,0,0(1)@0+AC_SV,self,0,0(1)@0.2083333</Action>
+  </Timeline>
+ </Image>
+ <Image rotationCenterY="1" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="star_collected" src="hud_timetravel" quadToDraw="7" rotationCenterX="0.549999">
+  <Timeline ID="0">
+   <Pos>0,0(1)@0+-29.8946,-29.1(1)@0.2083333+-29.85,-29.1(0)@0.125+-29.85,-29.1(0)@0.04166667</Pos>
+   <Scale>0,0(1)@0+0.229797,1(1)@0.2083333+1,1(0)@0.125+1,1(0)@0.04166667</Scale>
+   <Color>0,0,0,0(1)@0+1,1,1,1(1)@0.2083333+1,1,1,1(0)@0.125+1,1,1,1(0)@0.04166667</Color>
+   <Skew>0,0(1)@0+0,0(1)@0.2083333+0,0(0)@0.125+0,0(0)@0.04166667</Skew>
+   <Action>AC_SV,self,0,0(1)@0+AC_SV,self,0,1(1)@0.2083333+AC_SDQ,self,7,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0.549999,1(1)@0+AC_SV,self,0,1(0)@0.125+AC_SDQ,self,7,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0.5,1(0)@0+AC_SV,self,0,1(0)@0.04166667+AC_SDQ,self,7,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0.5,1(0)@0</Action>
+  </Timeline>
+ </Image>
+ <Image rotationCenterY="-0.5" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="star_mid" src="hud_timetravel" quadToDraw="8" rotationCenterX="0">
+  <Timeline ID="0">
+   <Pos>0,0(1)@0+-4.4,-25.55(1)@0.1666667+-4.4,-25.55(0)@0.04166667+0,0(1)@0+0,0(1)@0.1666667</Pos>
+   <Scale>0,0(1)@0+1.32001,1(1)@0.1666667+1.32001,1(0)@0.04166667+0,0(1)@0+0,0(1)@0.1666667</Scale>
+   <Color>0,0,0,0(1)@0+1,1,1,1(1)@0.1666667+1,1,1,1(0)@0.04166667+0,0,0,0(1)@0+0,0,0,0(1)@0.1666667</Color>
+   <Skew>0,0(1)@0+0,0(1)@0.1666667+0,0(0)@0.04166667+0,0(1)@0+0,0(1)@0.1666667</Skew>
+   <Action>AC_SV,self,0,0(1)@0+AC_SV,self,0,1(1)@0.1666667+AC_SDQ,self,8,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,0,-0.5(1)@0+AC_SV,self,0,1(0)@0.04166667+AC_SDQ,self,8,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,0,-0.5(0)@0+AC_SV,self,0,0(1)@0+AC_SV,self,0,0(1)@0.1666667</Action>
+  </Timeline>
+ </Image>
+ <Timeline ID="0">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@0.375</Action>
+ </Timeline>
+</FlashAnimation>

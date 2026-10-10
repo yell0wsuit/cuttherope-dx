@@ -299,6 +299,7 @@ namespace CutTheRopeDX.GameMain
                 hudStar[i].y = hudStarSlotHeight / 2f * hudScale;
                 hudStar[i].scaleX = hudStar[i].scaleY = hudScale;
             }
+            LayOutTimeTravelHudStars();
             UpdateBackgroundScale();
         }
 

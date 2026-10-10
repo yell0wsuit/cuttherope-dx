@@ -27,6 +27,13 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured menu button.</returns>
         public static Button CreateButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return TimeTravelPlates.CreateTextButton(
+                    Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, TimeTravelArt.LongPlateDown, str, bid, d,
+                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonBigTimeTravel, TimeTravelArt.LongPlateUp, Resources.Img.MenuButtons, 0));
+            }
+
             Image upImage = Image.FromResource(Resources.Img.MenuButtons, 0);
             Image downImage = Image.FromResource(Resources.Img.MenuButtons, 1);
             FontGeneric font = Application.GetFont(Resources.Fnt.BigFont);
@@ -56,6 +63,18 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured short menu button.</returns>
         public static Button CreateShortButtonWithTextIDDelegate(string str, ButtonId bid, IButtonDelegation d, bool selected = false)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                int ttUp = selected ? TimeTravelArt.ShortCapsuleDown : TimeTravelArt.ShortCapsuleUp;
+                int ttDown = selected ? TimeTravelArt.ShortCapsuleUp : TimeTravelArt.ShortCapsuleDown;
+                // Stretched to the classic short button's length, which every screen that uses
+                // these buttons is laid out around.
+                return TimeTravelPlates.CreatePillButton(
+                    Resources.Img.MenuButtonSmallTimeTravel, ttUp, ttDown, str, bid, d,
+                    TimeTravelPlates.HeightMatching(Resources.Img.MenuButtonSmallTimeTravel, TimeTravelArt.ShortCapsuleUp, Resources.Img.MenuButtons, 3),
+                    Image.GetQuadSize(Resources.Img.MenuButtons, 3).X);
+            }
+
             // When selected, swap quads so the "down" look is the default state
             int upQuad = selected ? 2 : 3;
             int downQuad = selected ? 3 : 2;
@@ -127,6 +146,11 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured back button.</returns>
         public static Button CreateBackButtonWithDelegateID(IButtonDelegation d, ButtonId bid)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return CreateTimeTravelBackButton(d, bid);
+            }
+
             Button button = CreateButtonWithImageQuad1Quad2IDDelegate(Resources.Img.MenuExtraButtons, 0, 1, bid, d);
             button.anchor = button.parentAnchor = 33;
             return button;
@@ -247,6 +271,13 @@ namespace CutTheRopeDX.GameMain
                     backgroundResource = ExperimentsBackdropFor(l, viewId);
                     backgroundQuad = -1;
                     break;
+                case var _ when MenuTheme.IsTimeTravel:
+                    // The mirrored iOS backdrops are one whole texture each, so no quad to pick.
+                    backgroundResource = viewId == VIEW_MAIN_MENU
+                        ? Resources.BackgroundImg.MenuTimeTravelMainBgr
+                        : Resources.BackgroundImg.MenuTimeTravelBgr;
+                    backgroundQuad = -1;
+                    break;
                 case var _ when SpecialEvents.IsXmas:
                     backgroundResource = Resources.Img.MenuBgrXmas;
                     backgroundQuad = 0;
@@ -267,13 +298,19 @@ namespace CutTheRopeDX.GameMain
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
             _ = baseElement.AddChild(image);
-            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments)
+            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments && !MenuTheme.IsTimeTravel)
             {
                 AddHalloweenDecorations(baseElement, mainMenu: l);
             }
+            if (MenuTheme.IsTimeTravel && IsTimeTravelSettingsView(viewId))
+            {
+                AttachTimeTravelFanCorner(baseElement, viewId);
+            }
             Image frontLayer = null;
             Image shadowLayer = null;
-            if (l)
+
+            // The Time Travel scenes draw their own title and have no light shaft.
+            if (l && !MenuTheme.IsTimeTravel)
             {
                 // Select main background based on special events
                 string backgroundSecondaryResource;
@@ -329,60 +366,9 @@ namespace CutTheRopeDX.GameMain
                 Image logo = Image.FromResource(Resources.Img.MenuLogoNew, 52);
                 logo.anchor = 10;
                 logo.parentAnchor = 10;
-                logo.y = 55f;
+                logo.y = LogoTop;
 
-                // Candy on rope (positioned under the logo)
-                // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
-                int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
-                Image candyUp = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
-                Image candyDown = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
-                candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
-                Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
-                candyButton.SetName("logoCandyButton");
-                candyButton.delegateButtonDelegate = this;
-                candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
-                candyButton.x = 143f;  // Offset right from center
-                candyButton.y = 490f;  // Offset down from top of logo
-                candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
-                _ = logo.AddChild(candyButton);
-
-                // Check if tutorial has been completed
-                bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_WAS_CHANGED");
-
-                if (showCandyTutorial)
-                {
-                    // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
-                    /*
-                    Image glowImage = Image.FromResource(Resources.Img.CandySelectionFx, 0);
-                    glowImage.x = -25f;
-                    glowImage.y = -25f;
-                    Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
-                    // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
-                    glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));  // Pause
-                    glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    _ = glowImage.AddTimeline(glowTimeline);
-                    glowImage.PlayTimeline(0);
-                    _ = candyButton.AddChild(glowImage);
-                    */
-
-                    // Pointing hand indicator
-                    Image handImage = Image.FromResource(Resources.Img.CandySelectionFx, 1);
-                    // Hand pointing animation - horizontal jabbing/pointing motion
-                    // Keep y constant for horizontal movement only
-                    Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
-                    handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
-                    handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-                    _ = handImage.AddTimeline(handTimeline);
-                    handImage.PlayTimeline(0);
-                    _ = candyButton.AddChild(handImage);
-                }
+                _ = logo.AddChild(CreateLogoCandyButton(this));
 
                 // Add event-specific decorations to logo -- layer top
                 switch (true)
@@ -406,7 +392,7 @@ namespace CutTheRopeDX.GameMain
                 _ = logoParent.AddChild(logo);
 
             }
-            if (s)
+            if (s && !MenuTheme.IsTimeTravel)
             {
                 Image shadowImage = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
                 shadowImage.anchor = shadowImage.parentAnchor = 18;
@@ -439,6 +425,68 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
+        /// Creates the candy that hangs from the title logo, showing the selected skin, which opens
+        /// candy selection. Until the player first changes candy it carries a pointing hand.
+        /// </summary>
+        /// <param name="d">Delegate that receives the press.</param>
+        /// <returns>The button, anchored to its parent's top center.</returns>
+        internal static Button CreateLogoCandyButton(IButtonDelegation d)
+        {
+            // Candy on rope (positioned under the logo)
+            // Get selected candy skin from preferences (0-50 for candy_01 to candy_51)
+            int selectedCandySkin = Preferences.GetIntForKey("PREFS_SELECTED_CANDY");
+            Image candyUp = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
+            Image candyDown = Image.FromResource(Resources.Img.MenuLogoNew, selectedCandySkin);
+            candyDown.scaleX = candyDown.scaleY = 0.95f;  // Slight press feedback
+            Button candyButton = new Button().InitWithUpElementDownElementandID(candyUp, candyDown, MenuButtonId.CandySelect);
+            candyButton.SetName("logoCandyButton");
+            candyButton.delegateButtonDelegate = d;
+            candyButton.anchor = candyButton.parentAnchor = 10;  // Top-center of logo
+            candyButton.x = 143f;  // Offset right from center
+            candyButton.y = 490f;  // Offset down from top of logo
+            candyButton.SetTouchIncreaseLeftRightTopBottom(40f, 40f, 40f, 40f);
+
+            // Check if tutorial has been completed
+            bool showCandyTutorial = !Preferences.GetBooleanForKey("PREFS_CANDY_WAS_CHANGED");
+
+            if (showCandyTutorial)
+            {
+                // Glow effect - pulsing animation (shrink/expand rapidly, pause, repeat)
+                /*
+                Image glowImage = Image.FromResource(Resources.Img.CandySelectionFx, 0);
+                glowImage.x = -25f;
+                glowImage.y = -25f;
+                Timeline glowTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(6);
+                // Rapid pulse: normal -> shrink -> expand -> shrink -> normal, then pause
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1.15, 1.15, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(0.85, 0.85, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.3));
+                glowTimeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 1));  // Pause
+                glowTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = glowImage.AddTimeline(glowTimeline);
+                glowImage.PlayTimeline(0);
+                _ = candyButton.AddChild(glowImage);
+                */
+
+                // Pointing hand indicator
+                Image handImage = Image.FromResource(Resources.Img.CandySelectionFx, 1);
+                // Hand pointing animation - horizontal jabbing/pointing motion
+                // Keep y constant for horizontal movement only
+                Timeline handTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0));
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(180, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_IN, 0.6f));  // Move LEFT (toward candy)
+                handTimeline.AddKeyFrame(KeyFrame.MakePos(200, 70, KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT, 0.6f));
+                handTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = handImage.AddTimeline(handTimeline);
+                handImage.PlayTimeline(0);
+                _ = candyButton.AddChild(handImage);
+            }
+            return candyButton;
+        }
+
+        /// <summary>
         /// Creates the menu background with an optional logo and the default shadow layer.
         /// </summary>
         /// <param name="l">Whether to include the menu logo and logo candy button.</param>
@@ -456,12 +504,22 @@ namespace CutTheRopeDX.GameMain
         /// <param name="q">Audio icon quad index.</param>
         /// <param name="b">Whether to draw the disabled cross overlay.</param>
         /// <param name="p">Whether to use the pressed-state background quad.</param>
-        /// <returns>The configured audio option image.</returns>
-        public static Image CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p)
+        /// <param name="round">
+        /// Whether the Time Travel menus draw it on the round plate, as their pause menu does,
+        /// rather than the capsule their settings use. The other menus have one look.
+        /// </param>
+        /// <returns>The configured audio option element.</returns>
+        public static BaseElement CreateAudioElementForQuadwithCrosspressediconOffset(int q, bool b, bool p, bool round = false)
         {
             if (MenuTheme.IsExperiments)
             {
                 return CreateExperimentsAudioElement(ExperimentsAudioIcon(q), b, p);
+            }
+
+            if (MenuTheme.IsTimeTravel)
+            {
+                int ttIcon = q == 3 ? TimeTravelArt.MusicIcon : TimeTravelArt.SoundIcon;
+                return round ? CreateTimeTravelRoundAudioElement(ttIcon, b, p) : CreateTimeTravelAudioPill(ttIcon, b, p);
             }
 
             int pressedStateQuad = p ? 1 : 0;
@@ -489,13 +547,14 @@ namespace CutTheRopeDX.GameMain
         /// <param name="q">Audio icon quad index.</param>
         /// <param name="delegateValue">Button delegate that receives press events.</param>
         /// <param name="bid">Button identifier assigned to the created toggle.</param>
+        /// <param name="round">Whether the Time Travel menus draw it on the round plate.</param>
         /// <returns>The configured audio toggle button.</returns>
-        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid)
+        public static ToggleButton CreateAudioButtonWithQuadDelegateIDiconOffset(int q, IButtonDelegation delegateValue, ButtonId bid, bool round = false)
         {
-            Image onUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false);
-            Image onDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true);
-            Image offUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false);
-            Image offDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true);
+            BaseElement onUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, false, round);
+            BaseElement onDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, false, true, round);
+            BaseElement offUp = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, false, round);
+            BaseElement offDown = CreateAudioElementForQuadwithCrosspressediconOffset(q, true, true, round);
             ToggleButton toggleButton = new ToggleButton().InitWithUpElement1DownElement1UpElement2DownElement2andID(onUp, onDown, offUp, offDown, bid);
             toggleButton.delegateButtonDelegate = delegateValue;
             return toggleButton;
@@ -653,6 +712,12 @@ namespace CutTheRopeDX.GameMain
         /// </summary>
         public void CreateMainMenu()
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelMainMenu();
+                return;
+            }
+
             MenuView menuView = new();
 
             // Everything the scene authors in design coordinates hangs from here; the layout pass
@@ -738,24 +803,36 @@ namespace CutTheRopeDX.GameMain
             _ = hBox.AddChild(dragToCutOption);
             _ = hBox.AddChild(clickToCutOption);
             _ = designGroup.AddChild(hBox);
-            Image image = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
-            image.anchor = image.parentAnchor = 18;
-            image.scaleX = image.scaleY = 2f;
-            Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
-            timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
-            _ = image.AddTimeline(timeline);
-            image.PlayTimeline(0);
-            _ = menuView.AddChild(image);
-            optionsShadow = image;
+            // The Time Travel settings have a plain backdrop, with no light shaft.
+            if (!MenuTheme.IsTimeTravel)
+            {
+                Image image = Image.FromResource(Resources.Img.MenuBgrShadow, 0);
+                image.anchor = image.parentAnchor = 18;
+                image.scaleX = image.scaleY = 2f;
+                Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(45, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
+                timeline.AddKeyFrame(KeyFrame.MakeRotation(405, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 75));
+                timeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
+                _ = image.AddTimeline(timeline);
+                image.PlayTimeline(0);
+                _ = menuView.AddChild(image);
+                optionsShadow = image;
+            }
             VBox vBox = new VBox().InitWithOffsetAlignWidth(5f, 2, DesignBox.w);
             vBox.anchor = vBox.parentAnchor = 18;
             ToggleButton musicToggle = CreateAudioButtonWithQuadDelegateIDiconOffset(3, this, MenuButtonId.ToggleMusic);
             ToggleButton soundToggle = CreateAudioButtonWithQuadDelegateIDiconOffset(2, this, MenuButtonId.ToggleSound);
-            HBox audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
-            _ = audioRow.AddChild(soundToggle);
-            _ = audioRow.AddChild(musicToggle);
+            HBox audioRow;
+            if (MenuTheme.IsTimeTravel)
+            {
+                audioRow = CreateTimeTravelAudioRow(musicToggle, soundToggle);
+            }
+            else
+            {
+                audioRow = new HBox().InitWithOffsetAlignHeight(-10f, 16, musicToggle.height);
+                _ = audioRow.AddChild(soundToggle);
+                _ = audioRow.AddChild(musicToggle);
+            }
             if (MenuTheme.IsExperiments)
             {
                 ToggleButton voiceToggle = CreateExperimentsVoiceToggle(this, MenuButtonId.ToggleVoice);
@@ -815,7 +892,9 @@ namespace CutTheRopeDX.GameMain
             text.y = -200f;
             resetText = text;
             WrapResetText();
-            Button yesButton = CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
+            Button yesButton = MenuTheme.IsTimeTravel
+                ? CreateTimeTravelHoldButton(Application.GetString("YES"), MenuButtonId.ConfirmResetYes)
+                : CreateButtonWithTextIDDelegate(Application.GetString("YES"), MenuButtonId.ConfirmResetYes, this);
             yesButton.anchor = yesButton.parentAnchor = 34;
             yesButton.y = -540f;
             Button noButton = CreateButtonWithTextIDDelegate(Application.GetString("NO"), MenuButtonId.ConfirmResetNo, this);
@@ -894,6 +973,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Quad the language buttons are drawn from, which is what sets their width.</summary>
         private const int LanguageButtonQuad = 3;
+
+        /// <summary>Where the main menu's logo starts, in design pixels from its design box's top.</summary>
+        private const float LogoTop = 55f;
 
         /// <summary>
         /// Builds the movie playback view.
@@ -1174,6 +1256,11 @@ namespace CutTheRopeDX.GameMain
                 CreateExperimentsPackSelect();
                 return;
             }
+            if (MenuTheme.IsTimeTravel)
+            {
+                CreateTimeTravelPackSelect();
+                return;
+            }
 
             MenuView menuView = new();
             BaseElement baseElement = CreateBackgroundWithLogo(false, VIEW_PACK_SELECT);
@@ -1365,6 +1452,12 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             PrepareCoverFor(i);
+            if (MenuTheme.IsTimeTravel)
+            {
+                ReachTimeTravelPage(i);
+                ShowCantUnlockAfterNextPack(i, Preferences.GetUnlockedForPackLevel(i, 0));
+                return;
+            }
             boxes[i].GetChildWithName("boxContainer").PlayTimeline(0);
             UNLOCKEDSTATE unlockedForPackLevel = Preferences.GetUnlockedForPackLevel(i, 0);
             BaseElement childWithName = boxes[i].GetChildWithName("lockHideMe");
@@ -1377,6 +1470,17 @@ namespace CutTheRopeDX.GameMain
                     ReleaseExperimentsButterfly(i);
                 }
             }
+            ShowCantUnlockAfterNextPack(i, unlockedForPackLevel);
+        }
+
+        /// <summary>
+        /// Tells the player the next pack is still locked when finishing a pack has scrolled the
+        /// picker onto it.
+        /// </summary>
+        /// <param name="i">Pack the picker settled on.</param>
+        /// <param name="unlockedForPackLevel">That pack's state.</param>
+        private void ShowCantUnlockAfterNextPack(int i, UNLOCKEDSTATE unlockedForPackLevel)
+        {
             RootController root = Application.SharedRootController();
             if (showNextPackStatus && i == root.Pack + 1)
             {
@@ -1438,6 +1542,10 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The configured level button element.</returns>
         public BaseElement CreateButtonForLevelPack(int l, int p)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                return CreateTimeTravelLevelButton(l, p);
+            }
             bool isLocked = Preferences.GetUnlockedForPackLevel(p, l) == UNLOCKEDSTATE.LOCKED;
             int starsForPackLevel = Preferences.GetStarsForPackLevel(p, l);
             TouchBaseElement touchBaseElement = new()
@@ -1481,6 +1589,10 @@ namespace CutTheRopeDX.GameMain
         {
             float transitionDuration = 0.3f;
             MenuView menuView = new();
+            levelsTimeTravelBackdrop = null;
+            timeTravelLevelsScene = null;
+            timeTravelLevelsRays = null;
+            timeTravelLevelButtons.Clear();
             Timeline coverDimTimeline = new Timeline().InitWithMaxKeyFramesOnTrack(3);
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.solidOpaqueRGBA, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
             coverDimTimeline.AddKeyFrame(KeyFrame.MakeColor(RGBAColor.MakeRGBA(0.85f, 0.85f, 0.85f, 1), KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, transitionDuration));
@@ -1494,6 +1606,12 @@ namespace CutTheRopeDX.GameMain
                 levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
                 PlaceLevelsSheet(VisibleBounds);
                 _ = menuView.AddChild(sheet);
+            }
+            else if (MenuTheme.IsTimeTravel)
+            {
+                levelsSheet = null;
+                levelsCoverLeft = levelsCoverRight = levelsSpineLeft = levelsSpineRight = null;
+                CreateTimeTravelLevelsBackdrop(menuView);
             }
             else
             {
@@ -1538,10 +1656,17 @@ namespace CutTheRopeDX.GameMain
             shadowSpinTimeline.SetTimelineLoopType(Timeline.LoopType.TIMELINE_REPLAY);
             _ = shadowImage.AddTimeline(shadowSpinTimeline);
             shadowImage.PlayTimeline(1);
-            _ = menuView.AddChild(shadowImage);
-            levelsShadow = shadowImage;
+
+            // Time Travel lights its level picker with the pack page's rays instead.
+            if (!MenuTheme.IsTimeTravel)
+            {
+                _ = menuView.AddChild(shadowImage);
+            }
+            levelsShadow = MenuTheme.IsTimeTravel ? null : shadowImage;
             string packStars = Preferences.GetTotalStarsInPack(pack).ToString(CultureInfo.InvariantCulture) + "/" + (Preferences.GetLevelsInPackCount(pack) * 3).ToString(CultureInfo.InvariantCulture);
-            HBox hBox = MenuTheme.IsExperiments ? CreateExperimentsTextWithStar(packStars) : CreateTextWithStar(packStars);
+            HBox hBox = MenuTheme.IsExperiments
+                ? CreateExperimentsTextWithStar(packStars)
+                : MenuTheme.IsTimeTravel ? CreateTimeTravelTextWithStar(packStars) : CreateTextWithStar(packStars);
 
             hBox.x = -30f;
             hBox.y = 40f;
@@ -1868,15 +1993,21 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
-            if (n.Value != -1)
+            // A Time Travel level plays its own sound with its burst instead of a tap.
+            if (n.Value != -1 && !(n.IsLevelButton() && MenuTheme.IsTimeTravel))
             {
-                SoundMgr.PlaySound(Resources.Snd.Tap);
+                SoundMgr.PlaySound(TapSounds.Next());
             }
 
             if (n.IsLevelButton())
             {
                 levelLaunchPending = true;
                 level = n.GetLevelIndex();
+                if (MenuTheme.IsTimeTravel)
+                {
+                    PlayTimeTravelLevelBurst(level);
+                    return;
+                }
                 ActiveView().GetChildWithName("levelsBox").PlayTimeline(0);
                 ActiveView().GetChildWithName("shadow").PlayTimeline(0);
                 ActiveView().GetChildWithName("levelsBack").PlayTimeline(0);
@@ -2260,7 +2391,7 @@ namespace CutTheRopeDX.GameMain
             TryShowOutdatedWindowsPopup();
             TryShowPrereleasePopup();
             TryShowUpdatePopup();
-            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll())
+            if (activeViewID == VIEW_ABOUT && aboutView != null && aboutView.UpdateAutoScroll(delta))
             {
                 return;
             }
@@ -2275,6 +2406,10 @@ namespace CutTheRopeDX.GameMain
                 if (MenuTheme.IsExperiments)
                 {
                     UpdateExperimentsPackSelect();
+                }
+                if (MenuTheme.IsTimeTravel)
+                {
+                    UpdateTimeTravelPackSelect(delta);
                 }
                 if (PlatformServices.Host?.IsKeyPressed(KeyCode.Left) == true)
                 {

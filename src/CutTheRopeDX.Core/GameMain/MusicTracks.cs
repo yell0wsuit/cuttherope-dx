@@ -20,6 +20,7 @@ namespace CutTheRopeDX.GameMain
         private static readonly MusicOverride[] Overrides =
         [
             new(() => MenuTheme.IsExperiments, Resources.Music.MenuMusicExp, Resources.Music.GameMusicExp),
+            new(() => MenuTheme.IsTimeTravel, Resources.Music.MenuMusicTimeTravel, Resources.Music.GameMusicTimeTravel),
             new(() => SpecialEvents.IsXmas, Resources.Music.MenuMusicXmas, Resources.Music.GameMusicXmas),
 
             // Cut the Rope 3.3.0 dressed only its menus for Halloween; levels keep their music.

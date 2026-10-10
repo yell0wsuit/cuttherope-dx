@@ -11,7 +11,7 @@ namespace CutTheRopeDX.Framework.Visual
     /// center, integer shift included - because anything else would agree with the drawn position
     /// only where the scale happens to be one.
     /// </remarks>
-    internal sealed class FittedGroup : BaseElement
+    internal class FittedGroup : BaseElement
     {
         /// <inheritdoc />
         public override bool OnTouchDownXY(float tx, float ty)

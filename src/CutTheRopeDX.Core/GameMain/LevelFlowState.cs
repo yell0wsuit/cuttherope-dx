@@ -55,8 +55,10 @@ namespace CutTheRopeDX.GameMain
     /// </summary>
     internal sealed class LevelFlowState
     {
-        /// <summary>Seconds each dim phase lasts.</summary>
-        public const float DimDuration = 0.15f;
+        /// <summary>
+        /// Seconds each dim phase lasts: 0.15, or Time Travel's 0.25 for its white restart flash.
+        /// </summary>
+        public static float DimDuration => MenuTheme.IsTimeTravel ? BoxOpenClose.TimeTravelFlashSeconds : 0.15f;
 
         /// <summary>Current restart phase.</summary>
         public RestartPhase Phase { get; private set; } = RestartPhase.Playing;

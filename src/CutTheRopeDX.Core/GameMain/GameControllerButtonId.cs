@@ -74,6 +74,11 @@ namespace CutTheRopeDX.GameMain
         public static GameControllerButtonId ToggleVoice => new(12);
 
         /// <summary>
+        /// Leaves the Time Travel pause menu and replays the level.
+        /// </summary>
+        public static GameControllerButtonId PauseRestart => new(13);
+
+        /// <summary>
         /// Converts a raw integer button value to a game-controller button identifier.
         /// </summary>
         /// <param name="value">Raw button value.</param>

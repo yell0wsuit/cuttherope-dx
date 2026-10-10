@@ -28,15 +28,44 @@ namespace CutTheRopeDX.GameMain
             }
 
             delta = 0.016f;
+            UpdateTimeTravelSpiral(delta);
 
-            // The opening pan flies the camera across the level with input switched off. Nothing
-            // else advances until it hands input back, so a candy cannot fall - or be eaten, or
+            // The opening pan flies the camera across the level with input switched off. Gameplay
+            // stays held until the pan finishes, so a candy cannot fall - or be eaten, or
             // drift out of a claw - before the player has seen where it is. On a level the design
             // box already covered there is no pan and this never fires; the levels that grew one
             // are the ones whose pan is long enough to lose the level on the way.
             if (IntroPanIsRunning)
             {
+                // Restart lightning plays over the pan. Arrival effects wait with their dispatcher
+                // and Om Nom animation, so advancing the whole pool would desynchronize them.
+                foreach (BaseElement effect in staticAniPool.GetChilds().Values.ToArray())
+                {
+                    if (effect.Name is "ttLightningRT" or "ttLightningBL")
+                    {
+                        effect.Update(delta);
+                        // The pool's normal update is held, including its queued cleanup.
+                        if (effect.GetCurrentTimeline()?.state == Timeline.TimelineState.TIMELINE_STOPPED)
+                        {
+                            staticAniPool.RemoveChildWithID(staticAniPool.GetChildId(effect));
+                        }
+                    }
+                }
                 UpdateCameraTracking(delta);
+                _ = AdvanceRestartFlow(delta);
+                return;
+            }
+
+            // The portal and Om Nom keep animating, but the world waits for his arrival to finish.
+            if (timeTravelArrivalActive)
+            {
+                base.Update(delta);
+                dd.Update(delta);
+                foreach (TargetContext target in targets)
+                {
+                    target.targetObject?.Update(delta);
+                    target.animation?.UpdateAdditionalOverlays(delta);
+                }
                 _ = AdvanceRestartFlow(delta);
                 return;
             }
@@ -574,6 +603,7 @@ namespace CutTheRopeDX.GameMain
                         if (starsCollected <= hudStar.Length)
                         {
                             hudStar[starsCollected - 1].PlayTimeline(0);
+                            FillTimeTravelHudStar(starsCollected - 1);
                         }
                         Animation starDisappear = Image.InitializeFromResource(new Animation(), Resources.Img.ObjStarDisappear);
                         starDisappear.DoRestoreCutTransparency();
@@ -1552,7 +1582,8 @@ namespace CutTheRopeDX.GameMain
                     TargetContext t = targets[ti];
                     // No mouth opening/closing once a win/loss transition is active: a sad Om Nom must
                     // not react to a remaining candy during the loss reaction.
-                    if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed))
+                    if (t.targetObject == null || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed)
+                        || (timeTravelArrivalActive && ti == TimeTravelSpiralTarget))
                     {
                         continue;
                     }
@@ -1599,6 +1630,7 @@ namespace CutTheRopeDX.GameMain
                     TargetContext t = targets[ti];
                     bool canInteractWithTarget = !nightLevel || t.NightSleep.IsAwake;
                     if (!canInteractWithTarget
+                        || (timeTravelArrivalActive && ti == TimeTravelSpiralTarget)
                         || !gameplayFlow.CanReactToCandy(t.Feeding.IsFed)
                         || t.Feeding.Phase != TargetFeedingPhase.MouthOpen
                         || t.targetObject == null)

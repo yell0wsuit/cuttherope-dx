@@ -535,6 +535,7 @@ namespace CutTheRopeDX.GameMain
 
             CancelTouchesForLevelEnd();
             dd.CancelAllDispatches();
+            bool departing = ScheduleTimeTravelDeparture();
 
             // Hide and reset sleep state for every Om Nom except one mid post-eat sleep: that
             // one keeps sleeping (and its zzz keeps looping) through the win transition, so it
@@ -577,7 +578,10 @@ namespace CutTheRopeDX.GameMain
             Candy.PlayTimeline(0);
             timeline.delegateTimelineDelegate = aniPool;
             _ = aniPool.AddChild(Candy);
-            dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
+            if (!departing)
+            {
+                dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_gameWon), null, 2);
+            }
             ReleaseRopesForBody(candies[0].WholeBody);
             ShutDownMice();
         }

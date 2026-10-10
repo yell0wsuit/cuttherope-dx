@@ -242,7 +242,8 @@ namespace CutTheRopeDX.GameMain
                 BackgroundImg.Bgr14P1, BackgroundImg.Bgr15P1, BackgroundImg.Bgr16P1, BackgroundImg.Bgr17P1,
                 BackgroundImg.ZeptolabNoLink, BackgroundImg.SkinBackground,
                 BackgroundImg.MenuExpMainBgr, BackgroundImg.MenuExpDefaultBgr,
-                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr
+                BackgroundImg.MenuExpCampaignBgr, BackgroundImg.MenuExpLoadingBgr,
+                BackgroundImg.MenuTimeTravelMainBgr, BackgroundImg.MenuTimeTravelBgr
             ];
         }
 
@@ -287,6 +288,10 @@ namespace CutTheRopeDX.GameMain
             public const string MenuExpDefaultBgr = "menu_bgr_default_horiz";
             public const string MenuExpCampaignBgr = "menu_campaign_bgr_horiz";
             public const string MenuExpLoadingBgr = "menu_loading_bgr_exp";
+
+            // Cut the Rope: Time Travel backdrops: the iOS portrait art mirrored out to 2560 by 1440.
+            public const string MenuTimeTravelMainBgr = "menu_main_bgr_timetravel";
+            public const string MenuTimeTravelBgr = "menu_main_bgr_2_timetravel";
         }
 
         /// <summary>
@@ -341,6 +346,28 @@ namespace CutTheRopeDX.GameMain
             public const string MenuExpPauseTop = "menu_pause_top_horiz";
             public const string ConfettiParticlesExp = "confetti_particles_exp";
             public const string ProfessorHand = "professor_hand";
+
+            // Cut the Rope: Time Travel menus. Packed from the iOS HD 1.5.0 atlases at 0.78, with
+            // frames the menus do not use dropped, so their indices are not the iOS quad numbers.
+            public const string MenuMainTimeTravel = "menu_main_timetravel";
+            public const string MenuMainAniTimeTravel = "menu_main_ani_timetravel";
+            public const string MenuButtonsTimeTravel = "menu_buttons_timetravel";
+            public const string MenuButtonBigTimeTravel = "menu_button_big_timetravel";
+            public const string MenuButtonSmallTimeTravel = "menu_button_small_timetravel";
+            public const string MenuPopupTimeTravel = "menu_popup_timetravel";
+            public const string MenuSettingsTimeTravel = "menu_settings_timetravel";
+            public const string LogoClockTimeTravel = "logo_clock_timetravel";
+            public const string MenuPackSelectionTimeTravel = "menu_pack_selection_timetravel";
+            public const string MenuPackSelectionIconsTimeTravel = "menu_pack_selection_icons_timetravel";
+            public const string MenuPackSelectionIcons1TimeTravel = "menu_pack_selection_icons_1_timetravel";
+            public const string MenuPackSelectionIcons2TimeTravel = "menu_pack_selection_icons_2_timetravel";
+            public const string MenuBgrsTimeTravel = "menu_bgrs_timetravel";
+            public const string MenuLevelsTimeTravel = "menu_levels_timetravel";
+            public const string MenuLoadingTimeTravel = "menu_loading_timetravel";
+            public const string HudTimeTravel = "hud_timetravel";
+            public const string FxRestartTimeTravel = "fx_restart_timetravel";
+            public const string FxSpiralTimeTravel = "fx_spiral_timetravel";
+            public const string ResultScreenTimeTravel = "result_screen_timetravel";
             public const string ObjStarDisappear = "obj_star_disappear";
             public const string ObjBubble = "obj_bubble";
             public const string ObjHook = "obj_hook";
@@ -372,6 +399,7 @@ namespace CutTheRopeDX.GameMain
             public const string ObjBee = "obj_bee";
             public const string CharSupports = "char_supports";
             public const string CharSupportsXmas = "char_supports_xmas";
+            public const string CharSupportTimeTravel = "char_support_timetravel";
             public const string CharSupportExperiments = "char_support_experiments";
             public const string CharAnimations2 = "char_animations2";
             public const string CharAnimations3 = "char_animations3";
@@ -602,6 +630,15 @@ namespace CutTheRopeDX.GameMain
         {
             public const string ZeptoLogoBubbles = "zepto_logo_bubbles";
             public const string Tap = "tap";
+            public const string TapTimeTravel1 = "tap_01_tt";
+            public const string TapTimeTravel2 = "tap_02_tt";
+            public const string LevelIconTimeTravel = "level_icon_tt";
+            public const string TimeSpiralSuckInTimeTravel = "time_spiral_suck_in_tt";
+            public const string TimeSpiralSuckOutTimeTravel = "time_spiral_suck_out_tt";
+            public const string ResultStar1TimeTravel = "result_1_tt";
+            public const string ResultStar2TimeTravel = "result_2_tt";
+            public const string ResultStar3TimeTravel = "result_3_tt";
+            public const string ResultOpenTimeTravel = "metal_leaf_close_tt";
             public const string Button = "button";
             public const string BubbleBreak = "bubble_break";
             public const string Bubble = "bubble";
@@ -825,6 +862,8 @@ namespace CutTheRopeDX.GameMain
             public const string GameMusicXmas = "game_music_xmas";
             public const string MenuMusicHalloween = "menu_music_halloween";
             public const string MenuMusicExp = "menu_music_exp";
+            public const string MenuMusicTimeTravel = "menu_music_tt";
+            public const string GameMusicTimeTravel = "game_music_tt";
             public const string GameMusicExp = "game_music_exp";
         }
 

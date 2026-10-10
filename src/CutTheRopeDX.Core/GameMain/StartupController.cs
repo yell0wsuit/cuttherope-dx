@@ -138,6 +138,10 @@ namespace CutTheRopeDX.GameMain
             {
                 resourceMgr.LoadPack(PackExperimentsCommon);
             }
+            if (MenuTheme.IsTimeTravel)
+            {
+                resourceMgr.LoadPack(PackTimeTravelCommon);
+            }
             resourceMgr.LoadPack(RootController.PackMenu);
             resourceMgr.LoadPack(PackLocalizationMenu);
             resourceMgr.StartLoading();
@@ -363,6 +367,18 @@ namespace CutTheRopeDX.GameMain
             Resources.Img.MenuExpLoading,
             Resources.Img.MenuExpLoadingScroll,
             Resources.BackgroundImg.MenuExpLoadingBgr,
+            null
+        ];
+
+        /// <summary>
+        /// The Time Travel resources kept for the whole session, terminated by <see langword="null"/>:
+        /// the loading screen draws while every other pack is being swapped out, and a level's
+        /// click rings on after the menu pack it was pressed in has been freed.
+        /// </summary>
+        internal static readonly string[] PackTimeTravelCommon =
+        [
+            Resources.Img.MenuLoadingTimeTravel,
+            Resources.Snd.LevelIconTimeTravel,
             null
         ];
 

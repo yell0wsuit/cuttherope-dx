@@ -2,6 +2,7 @@ using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
 using CutTheRopeDX.Framework.Platform;
 using CutTheRopeDX.Framework.Visual;
+using CutTheRopeDX.GameMain;
 
 namespace CutTheRopeDX.Commons
 {
@@ -29,12 +30,17 @@ namespace CutTheRopeDX.Commons
                 parentAnchor = CENTER
             };
 
-            // Timeline 0: Show animation - bounce effect (scale 0 → 1.1 → 0.9 → 1)
+            // Timeline 0: Show animation - bounce effect (scale 0 → 1.1 → 0.9 → 1). The Time Travel
+            // menus bounce as iOS CTRPopup does: wide but not tall at the overshoot, eased out.
+            bool timeTravel = MenuTheme.IsTimeTravel;
+            KeyFrame.TransitionType bounce = timeTravel
+                ? KeyFrame.TransitionType.FRAME_TRANSITION_EASE_OUT
+                : KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR;
             Timeline timeline = new Timeline().InitWithMaxKeyFramesOnTrack(4);
             timeline.AddKeyFrame(KeyFrame.MakeScale(0, 0, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1.1f, 1.1f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.3f));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(0.9f, 0.9f, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.1f));
-            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, KeyFrame.TransitionType.FRAME_TRANSITION_LINEAR, 0.2f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1.1f, timeTravel ? 1f : 1.1f, bounce, 0.3f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(0.9f, 0.9f, bounce, 0.1f));
+            timeline.AddKeyFrame(KeyFrame.MakeScale(1, 1, bounce, 0.2f));
             _ = AddTimeline(timeline);
             // Timeline 1: Hide animation - shrink to zero (scale 1 → 0)
             timeline = new Timeline().InitWithMaxKeyFramesOnTrack(2);

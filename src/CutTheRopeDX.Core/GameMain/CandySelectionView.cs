@@ -238,6 +238,16 @@ namespace CutTheRopeDX.GameMain
         /// <param name="active">Whether the tab should appear active.</param>
         private static void SetTabActive(Button tab, bool active)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                // The active tab wears the pressed pill at rest, as the selected language does.
+                TimeTravelPlates.SetPillQuads(
+                    tab,
+                    active ? TimeTravelArt.ShortCapsuleDown : TimeTravelArt.ShortCapsuleUp,
+                    active ? TimeTravelArt.ShortCapsuleUp : TimeTravelArt.ShortCapsuleDown);
+                return;
+            }
+
             Image upImage = (Image)tab.GetChild(0);
             Image downImage = (Image)tab.GetChild(1);
             int quad = active ? 5 : 4;
@@ -1141,6 +1151,14 @@ namespace CutTheRopeDX.GameMain
             FontGeneric font,
             IButtonDelegation buttonDelegate)
         {
+            if (MenuTheme.IsTimeTravel)
+            {
+                // The Time Travel short pill, as long as a language button.
+                Button pill = MenuController.CreateShortButtonWithTextIDDelegate(Application.GetString(textKey), buttonId, buttonDelegate);
+                pill.anchor = pill.parentAnchor = 10;
+                return pill;
+            }
+
             Image buttonUp = Image.FromResource(Resources.Img.SkinSelection, 4);
             Image buttonDown = Image.FromResource(Resources.Img.SkinSelection, 5);
 
