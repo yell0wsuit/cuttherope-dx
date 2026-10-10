@@ -56,6 +56,20 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
 
+            // The portal and Om Nom keep animating, but the world waits for his arrival to finish.
+            if (timeTravelArrivalActive)
+            {
+                base.Update(delta);
+                dd.Update(delta);
+                foreach (TargetContext target in targets)
+                {
+                    target.targetObject?.Update(delta);
+                    target.animation?.UpdateAdditionalOverlays(delta);
+                }
+                _ = AdvanceRestartFlow(delta);
+                return;
+            }
+
             // The professor's hand is bringing the candy in. Only animations advance until it has
             // risen off the screen again, so nothing falls, swings or scores while it is in view.
             if (ProfessorHandPausesPlay)
