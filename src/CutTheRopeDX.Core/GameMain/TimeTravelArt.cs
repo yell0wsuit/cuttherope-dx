@@ -55,6 +55,9 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Back button arrow (iOS q2).</summary>
         public const int BackArrow = 2;
 
+        /// <summary>Flame marking the hardest pack (iOS q9).</summary>
+        public const int HardestBadge = 8;
+
         /// <summary>Long plate (iOS q0).</summary>
         public const int LongPlateUp = 0;
 
@@ -412,7 +415,8 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The sheet and the quad in it.</returns>
         public static (string Sheet, int Quad) PackIcon(int pack)
         {
-            int icon = ((pack % PackIcons) + PackIcons) % PackIcons;
+            int picture = pack >= 0 && pack < PackConfig.Packs.Count ? PackConfig.Packs[pack].TimeTravelPackPicture : -1;
+            int icon = picture is >= 0 and < PackIcons ? picture : ((pack % PackIcons) + PackIcons) % PackIcons;
             return icon switch
             {
                 < 6 => (Resources.Img.MenuPackSelectionIconsTimeTravel, icon),
@@ -443,7 +447,12 @@ namespace CutTheRopeDX.GameMain
         /// <returns>The iOS page, which is also its background quad.</returns>
         public static int PackPage(int pack, bool comingSoon)
         {
-            return comingSoon ? ComingSoonPage : (((pack % PackIcons) + PackIcons) % PackIcons) + 1;
+            if (comingSoon)
+            {
+                return ComingSoonPage;
+            }
+            int background = pack >= 0 && pack < PackConfig.Packs.Count ? PackConfig.Packs[pack].TimeTravelPackBackground : -1;
+            return background >= 0 && background < PageCount ? background : (((pack % PackIcons) + PackIcons) % PackIcons) + 1;
         }
 
         /// <summary>The tint of an iOS page.</summary>

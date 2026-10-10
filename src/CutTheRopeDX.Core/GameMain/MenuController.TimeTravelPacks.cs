@@ -386,9 +386,7 @@ namespace CutTheRopeDX.GameMain
             return MathF.Max(byHeight, screen.FullWidth / raysWidth);
         }
 
-        /// <summary>A page's gradient background.</summary>
-        /// <param name="page">iOS page, which is its quad.</param>
-        /// <returns>The background, to be stretched over the screen.</returns>
+        /// <summary>Creates a Time Travel menu background from its page quad.</summary>
         private static Image CreateTimeTravelPageBackdrop(int page)
         {
             Image backdrop = Image.FromResource(Resources.Img.MenuBgrsTimeTravel, Math.Clamp(page, 0, TimeTravelArt.PageCount - 1));
@@ -505,6 +503,27 @@ namespace CutTheRopeDX.GameMain
                 Vector iconOffset = Image.GetQuadOffset(sheet, quad);
                 badge.x = badgeOffset.X - iconOffset.X;
                 badge.y = badgeOffset.Y - iconOffset.Y;
+                _ = icon.AddChild(badge);
+            }
+            string labelKey = PackConfig.GetBoxLabelText(n);
+            if (!string.IsNullOrEmpty(labelKey))
+            {
+                Image badge = Image.FromResource(Resources.Img.MenuButtonsTimeTravel, TimeTravelArt.HardestBadge);
+                badge.SetName("ttPackLabel");
+                badge.anchor = badge.parentAnchor = 12;
+                badge.x = -badge.width * 0.5f;
+                Text label = new Text().InitWithFont(Application.GetFont(Resources.Fnt.BigFont));
+                label.SetName("ttPackLabelText");
+                // iOS q11 is a text guide, omitted from the packed DX sheet: 316 x 118,
+                // centered (-4, 34.5) from the flame's center on the original canvas.
+                float textWidth = 316f * TimeTravelArt.CanvasToAsset * 1.15f;
+                label.SetAlignment(2);
+                label.SetStringandWidth(Application.GetString(labelKey).ToUpperInvariant(), textWidth / 0.53f);
+                label.scaleX = label.scaleY = MathF.Min(0.53f, 118f * TimeTravelArt.CanvasToAsset / MathF.Max(1, label.height));
+                label.anchor = label.parentAnchor = 18;
+                label.x = -4f * TimeTravelArt.CanvasToAsset;
+                label.y = 34.5f * TimeTravelArt.CanvasToAsset;
+                _ = badge.AddChild(label);
                 _ = icon.AddChild(badge);
             }
             return page;
@@ -654,7 +673,7 @@ namespace CutTheRopeDX.GameMain
         private static float TimeTravelShortestIcon()
         {
             float shortest = float.MaxValue;
-            for (int i = 0; i < TimeTravelArt.PackIcons; i++)
+            for (int i = 0; i < Math.Max(TimeTravelArt.PackIcons, Preferences.GetPacksCount()); i++)
             {
                 (string sheet, int quad) = TimeTravelArt.PackIcon(i);
                 shortest = MathF.Min(shortest, Image.GetQuadSize(sheet, quad).Y);

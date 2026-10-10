@@ -139,6 +139,12 @@ namespace CutTheRopeDX.GameMain
         /// <summary>Localization key for optional box label text (e.g., "the hardest one").</summary>
         public string BoxLabelText { get; } = boxLabelText;
 
+        /// <summary>Time Travel icon preset (0-11), or -1 to follow the pack's position.</summary>
+        public int TimeTravelPackPicture { get; init; } = -1;
+
+        /// <summary>Time Travel background preset (0-14), or -1 to follow the pack's position.</summary>
+        public int TimeTravelPackBackground { get; init; } = -1;
+
         /// <summary>Optional ghost grab circle color override, or <see langword="null"/> to use the default.</summary>
         public RGBAColor? GhostGrabColor { get; } = ghostGrabColor;
     }
@@ -575,9 +581,7 @@ namespace CutTheRopeDX.GameMain
             OutroVideo ??= ParseStringProperty(entryElement, "outroVideo");
         }
 
-        /// <summary>
-        /// Loads pack definitions from each configured pack file.
-        /// </summary>
+        /// <summary>Loads pack definitions from each configured pack file.</summary>
         /// <param name="packListEntries">Pack list entries that identify pack files and save slots.</param>
         /// <returns>The loaded pack definitions.</returns>
         private static List<PackDefinition> LoadPacksFromEntries(IEnumerable<PackListEntry> packListEntries)
@@ -595,89 +599,97 @@ namespace CutTheRopeDX.GameMain
 
                 foreach (JsonElement packElement in packsArray.EnumerateArray())
                 {
-                    if (packElement.ValueKind != JsonValueKind.Object)
-                    {
-                        throw new InvalidDataException($"{packListEntry.ConfigFileName} contains a non-object pack entry.");
-                    }
-
-                    int unlockStars = ParseIntProperty(packElement, "unlockStars", 0, packListEntry.ConfigFileName);
-                    int levelCount = ParseIntProperty(packElement, "levelCount", 0, packListEntry.ConfigFileName);
-                    bool isPlayable = levelCount > 0;
-
-                    string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
-                    string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
-                    int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, packListEntry.ConfigFileName);
-                    int expPackPicture = ParseIntProperty(packElement, "expPackPicture", -1, packListEntry.ConfigFileName);
-                    bool useBambooGate = ParseBoolProperty(packElement, "useBambooGate", false, packListEntry.ConfigFileName);
-
-                    string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
-                    if (isPlayable)
-                    {
-                        RequireResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
-                    }
-                    ValidateResourceNames(boxBackgrounds, "boxBackground", packListEntry.ConfigFileName);
-
-                    int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, packListEntry.ConfigFileName);
-
-                    int sittingPlatform = ParseIntProperty(packElement, "sittingPlatform", 0, packListEntry.ConfigFileName);
-                    int expSittingPlatform = ParseIntProperty(packElement, "expSittingPlatform", -1, packListEntry.ConfigFileName);
-                    SittingPlatformTheme? sittingPlatformTheme = ParseSittingPlatformTheme(
-                        ParseStringProperty(packElement, "sittingPlatformTheme"), packListEntry.ConfigFileName);
-
-                    string[] boxCovers = ParseResourceNames(packElement, "boxCover");
-                    if (isPlayable)
-                    {
-                        RequireResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
-                    }
-                    ValidateResourceNames(boxCovers, "boxCover", packListEntry.ConfigFileName);
-
-                    RGBAColor boxHoleBgColor = ParseColorProperty(packElement, "boxHoleBgColor");
-
-                    string[] musicPack = ParseResourceNames(packElement, "musicPack");
-
-                    string[] musicList = ParseResourceNames(packElement, "musicList");
-                    ValidateResourceNames(musicList, "musicList", packListEntry.ConfigFileName);
-
-                    bool earthBg = ParseBoolProperty(packElement, "earthBg", false, packListEntry.ConfigFileName);
-
-                    Vector? earthBgPosition = ParseVectorProperty(packElement, "earthBgPosition", packListEntry.ConfigFileName);
-
-                    string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
-
-                    string packName = ParseStringProperty(packElement, "packName");
-
-                    RGBAColor? ghostGrabColor = ParseNullableColorProperty(packElement, "ghostGrabColor");
-
-                    results.Add(
-                        new PackDefinition(
-                            unlockStars,
-                            levelCount,
-                            packListEntry.SaveSlot,
-                            packListEntry.ShowBoxNumber,
-                            packSpritesheet,
-                            packQuadIndex,
-                            expPackPicture,
-                            useBambooGate,
-                            boxBackgrounds,
-                            boxBackgroundP2Y,
-                            sittingPlatform,
-                            expSittingPlatform,
-                            sittingPlatformTheme,
-                            boxCovers,
-                            boxHoleBgColor,
-                            musicPack,
-                            musicList,
-                            earthBg,
-                            earthBgPosition,
-                            boxLabelText,
-                            packName,
-                            ghostGrabColor
-                            )
-                        );
+                    results.Add(ParsePackDefinition(packElement, packListEntry.ConfigFileName, packListEntry.SaveSlot, packListEntry.ShowBoxNumber));
                 }
             }
 
             return results;
+        }
+
+        /// <summary>Parses a shared pack entry, including optional theme-specific artwork.</summary>
+        internal static PackDefinition ParsePackDefinition(JsonElement packElement, string fileName, int saveSlot, bool showBoxNumber)
+        {
+            if (packElement.ValueKind != JsonValueKind.Object)
+            {
+                throw new InvalidDataException($"{fileName} contains a non-object pack entry.");
+            }
+
+            int unlockStars = ParseIntProperty(packElement, "unlockStars", 0, fileName);
+            int levelCount = ParseIntProperty(packElement, "levelCount", 0, fileName);
+            bool isPlayable = levelCount > 0;
+
+            string packSpritesheetRaw = ParseStringProperty(packElement, "packSpritesheet");
+            string packSpritesheet = ResolvePackSpritesheetId(packSpritesheetRaw);
+            int packQuadIndex = ParseIntProperty(packElement, "packQuadIndex", 0, fileName);
+            int expPackPicture = ParseIntProperty(packElement, "expPackPicture", -1, fileName);
+            bool useBambooGate = ParseBoolProperty(packElement, "useBambooGate", false, fileName);
+
+            string[] boxBackgrounds = ParseResourceNames(packElement, "boxBackground");
+            if (isPlayable)
+            {
+                RequireResourceNames(boxBackgrounds, "boxBackground", fileName);
+            }
+            ValidateResourceNames(boxBackgrounds, "boxBackground", fileName);
+
+            int boxBackgroundP2Y = ParseIntProperty(packElement, "boxBackgroundP2Y", 0, fileName);
+
+            int sittingPlatform = ParseIntProperty(packElement, "sittingPlatform", 0, fileName);
+            int expSittingPlatform = ParseIntProperty(packElement, "expSittingPlatform", -1, fileName);
+            SittingPlatformTheme? sittingPlatformTheme = ParseSittingPlatformTheme(
+                ParseStringProperty(packElement, "sittingPlatformTheme"), fileName);
+
+            string[] boxCovers = ParseResourceNames(packElement, "boxCover");
+            if (isPlayable)
+            {
+                RequireResourceNames(boxCovers, "boxCover", fileName);
+            }
+            ValidateResourceNames(boxCovers, "boxCover", fileName);
+
+            RGBAColor boxHoleBgColor = ParseColorProperty(packElement, "boxHoleBgColor");
+
+            string[] musicPack = ParseResourceNames(packElement, "musicPack");
+
+            string[] musicList = ParseResourceNames(packElement, "musicList");
+            ValidateResourceNames(musicList, "musicList", fileName);
+
+            bool earthBg = ParseBoolProperty(packElement, "earthBg", false, fileName);
+
+            Vector? earthBgPosition = ParseVectorProperty(packElement, "earthBgPosition", fileName);
+
+            string boxLabelText = ParseStringProperty(packElement, "boxLabelText");
+
+            string packName = ParseStringProperty(packElement, "packName");
+
+            RGBAColor? ghostGrabColor = ParseNullableColorProperty(packElement, "ghostGrabColor");
+
+            return new PackDefinition(
+                unlockStars,
+                levelCount,
+                saveSlot,
+                showBoxNumber,
+                packSpritesheet,
+                packQuadIndex,
+                expPackPicture,
+                useBambooGate,
+                boxBackgrounds,
+                boxBackgroundP2Y,
+                sittingPlatform,
+                expSittingPlatform,
+                sittingPlatformTheme,
+                boxCovers,
+                boxHoleBgColor,
+                musicPack,
+                musicList,
+                earthBg,
+                earthBgPosition,
+                boxLabelText,
+                packName,
+                ghostGrabColor
+                )
+            {
+                TimeTravelPackPicture = ParseIntProperty(packElement, "ttPackPicture", -1, fileName),
+                TimeTravelPackBackground = ParseIntProperty(packElement, "ttPackBackground", -1, fileName),
+            };
         }
 
         /// <summary>
