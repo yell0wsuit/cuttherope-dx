@@ -20,6 +20,72 @@ namespace CutTheRopeDX.Tests
     {
         private static readonly string[] PagePieces = ["ttPackIcon", "ttPageBullets", "ttPrevPage", "ttNextPage", "ttPackTitle"];
 
+        [Theory]
+        [InlineData(1920, 1080)]
+        [InlineData(720, 1280)]
+        [InlineData(3440, 1440)]
+        public void TheHardestPackHasItsConfiguredBadgeAndLocalizedText(int width, int height)
+        {
+            WithTimeTravel(width, height, controller =>
+            {
+                View view = ShowPacks(controller);
+                List<BaseElement> icons = Named(view, "ttPackIcon");
+                for (int i = 0; i < Preferences.GetPacksCount(); i++)
+                {
+                    BaseElement badge = icons[i].GetChildWithName("ttPackLabel");
+                    if (string.IsNullOrEmpty(PackConfig.GetBoxLabelText(i)))
+                    {
+                        Assert.Null(badge);
+                    }
+                    else
+                    {
+                        Assert.NotNull(badge);
+                        Image flame = Assert.IsType<Image>(badge);
+                        Assert.Same(Application.GetTexture(Resources.Img.MenuButtonsTimeTravel), flame.texture);
+                        Assert.Equal(TimeTravelArt.HardestBadge, flame.quadToDraw);
+                        Text label = Assert.IsType<Text>(badge.GetChildWithName("ttPackLabelText"));
+                        Assert.Equal(2, label.align);
+                        Assert.Equal(Application.GetString(PackConfig.GetBoxLabelText(i)).ToUpperInvariant(), label.GetString());
+                        Assert.True(label.width * label.scaleX <= 316f * TimeTravelArt.CanvasToAsset * 1.15f);
+                        Assert.True(label.height * label.scaleY <= 118f * TimeTravelArt.CanvasToAsset);
+                        Assert.Equal(12, badge.anchor);
+                        Assert.Equal(-badge.width * 0.5f, badge.x);
+                    }
+                }
+            });
+        }
+
+        [Theory]
+        [InlineData(8, -1)]
+        [InlineData(-1, 4)]
+        [InlineData(8, 4)]
+        [InlineData(12, 15)]
+        [InlineData(-2, -2)]
+        public void NumericPresetsSelectIndependentArtworkInBothPickers(int picture, int background)
+        {
+            WithTimeTravel(1920, 1080, controller =>
+            {
+                PackDefinition configured = TimeTravelPackConfigurationTests.Parse($"\"ttPackPicture\":{picture},\"ttPackBackground\":{background}");
+                TimeTravelPackConfigurationTests.WithPack(0, configured, () =>
+                {
+                    bool customIcon = picture == 8;
+                    string sheet = customIcon ? Resources.Img.MenuPackSelectionIcons1TimeTravel : Resources.Img.MenuPackSelectionIconsTimeTravel;
+                    int quad = customIcon ? 2 : 0;
+                    int page = background == 4 ? 4 : 1;
+                    Assert.Equal((sheet, quad), TimeTravelArt.PackIcon(0));
+                    Assert.Equal(page, TimeTravelArt.PackPage(0, false));
+                    Assert.Equal(TimeTravelArt.ComingSoonPage, TimeTravelArt.PackPage(0, true));
+                    controller.CreatePackSelect();
+                    View packs = ShowPacks(controller);
+                    Assert.Contains(All<Image>(Named(packs, "ttPackIcon")[0]),
+                        image => image.texture == Application.GetTexture(sheet) && image.quadToDraw == quad);
+                    Assert.Equal(page, Assert.IsType<Image>(Named(packs, "ttPageBackdrop")[0]).quadToDraw);
+                    View levels = ShowLevels(controller);
+                    Assert.Equal(page, Assert.IsType<Image>(levels.GetChildWithName("levelsBack")).quadToDraw);
+                });
+            });
+        }
+
         [Fact]
         public void AnIconFacesFrontOnItsOwnPageAndHasTurnedAwayOnePageOff()
         {
