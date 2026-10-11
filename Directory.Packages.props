@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <SkiaSharpVersion>4.152.0</SkiaSharpVersion>
+    <SkiaSharpVersion>4.153.1</SkiaSharpVersion>
     <!-- SDL3-CS ships bindings-only patch releases (x.y.z.N) without matching native packages -->
     <SDL3CSVersion>3.4.18</SDL3CSVersion>
     <SDL3NativeVersion>3.4.18</SDL3NativeVersion>
