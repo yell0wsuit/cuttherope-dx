@@ -298,7 +298,7 @@ namespace CutTheRopeDX.GameMain
             image.rotationCenterY = image.height / 2;
             image.passTransformationsToChilds = false;
             _ = baseElement.AddChild(image);
-            if (SpecialEvents.IsHalloween && !MenuTheme.IsExperiments && !MenuTheme.IsTimeTravel)
+            if (SpecialEvents.IsHalloween && MenuTheme.Current == MenuStyle.Classic)
             {
                 AddHalloweenDecorations(baseElement, mainMenu: l);
             }
@@ -346,7 +346,7 @@ namespace CutTheRopeDX.GameMain
                 // Add event-specific decorations to logo -- layer bottom
                 switch (true)
                 {
-                    case var _ when SpecialEvents.IsXmas:
+                    case var _ when SpecialEvents.IsXmas && MenuTheme.Current == MenuStyle.Classic:
                         // Hat background layer (behind the logo) - add to baseElement before logo
                         Image hatBackground = Image.FromResource(Resources.Img.MenuLogoXmasHat, 0);
                         hatBackground.anchor = 9;  // Top-left of the hat sprite
@@ -373,7 +373,7 @@ namespace CutTheRopeDX.GameMain
                 // Add event-specific decorations to logo -- layer top
                 switch (true)
                 {
-                    case var _ when SpecialEvents.IsXmas:
+                    case var _ when SpecialEvents.IsXmas && MenuTheme.Current == MenuStyle.Classic:
                         // Hat foreground layer (on top of the text logo)
                         Image hatForeground = Image.FromResource(Resources.Img.MenuLogoXmasHat, 1);
                         hatForeground.anchor = 9;  // Top-left of the hat sprite
@@ -382,7 +382,7 @@ namespace CutTheRopeDX.GameMain
                         hatForeground.y = -80f;  // Adjust vertical position (positive = down)
                         _ = logo.AddChild(hatForeground);
                         break;
-                    case var _ when SpecialEvents.IsHalloween:
+                    case var _ when SpecialEvents.IsHalloween && MenuTheme.Current == MenuStyle.Classic:
                         AddHalloweenLogoHat(logoParent, logo);
                         break;
                     default:
@@ -599,11 +599,16 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>
-        /// Adds the seasonal snowfall overlay to a menu view when the event is enabled.
+        /// Adds the seasonal snowfall overlay to a classic menu view when the event is enabled.
         /// </summary>
         /// <param name="menuView">View that should receive the overlay.</param>
         private static void AttachSnowfallOverlay(View menuView)
         {
+            if (MenuTheme.Current != MenuStyle.Classic)
+            {
+                return;
+            }
+
             SnowfallOverlay overlay = SnowfallOverlay.CreateIfEnabled();
             if (overlay != null)
             {

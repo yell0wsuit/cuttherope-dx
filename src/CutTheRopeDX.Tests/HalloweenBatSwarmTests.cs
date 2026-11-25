@@ -82,10 +82,13 @@ namespace CutTheRopeDX.Tests
             }));
         }
 
-        [Fact]
-        public void ExperimentsMenusKeepTheirConfetti()
+        [Theory]
+        [InlineData("experiments")]
+        [InlineData("timetravel")]
+        public void AlternateMenusKeepTheirConfetti(string theme)
         {
-            WithStyle(MenuStyle.Experiments, () => SeasonalDate.With(SeasonalDate.Halloween, () =>
+            Assert.True(MenuTheme.TryParse(theme, out MenuStyle style));
+            WithStyle(style, () => SeasonalDate.With(SeasonalDate.Halloween, () =>
             {
                 Assert.False(HalloweenBatSwarm.ReplacesConfetti);
                 BoxOpenClose box = LoadBox();
