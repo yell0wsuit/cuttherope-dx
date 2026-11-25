@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using CutTheRopeDX.Framework;
 using CutTheRopeDX.Framework.Core;
@@ -35,6 +36,10 @@ namespace CutTheRopeDX.GameMain
             BuiltForScale = scale;
             AutoScrollEnabled = false;
             _ = background.AddChild(currentContainer);
+            if (MenuTheme.IsTimeTravel)
+            {
+                AddWindowBorders(background);
+            }
             _ = menuView.AddChild(background);
 
             backButton = MenuController.CreateBackButtonWithDelegateID(buttonDelegate, MenuButtonId.BackToOptions);
@@ -82,6 +87,34 @@ namespace CutTheRopeDX.GameMain
             Vector scroll = currentContainer.GetScroll();
             Vector maxScroll = currentContainer.GetMaxScroll();
             scroll.Y += 0.5f;
+            scroll.Y = Math.Clamp(scroll.Y, 0f, MathF.Max(0f, maxScroll.Y));
+            currentContainer.SetScroll(scroll);
+            return true;
+        }
+
+        /// <summary>
+        /// Advances auto-scroll for one frame. The Time Travel credits scroll by time, 30 scene
+        /// units a second; the classic ones by frame.
+        /// </summary>
+        /// <param name="delta">Seconds since the last frame.</param>
+        /// <returns>
+        /// <see langword="true"/> if auto-scroll was applied this frame; otherwise <see langword="false"/>.
+        /// </returns>
+        public bool UpdateAutoScroll(float delta)
+        {
+            if (!MenuTheme.IsTimeTravel)
+            {
+                return UpdateAutoScroll();
+            }
+            if (!AutoScrollEnabled || currentContainer == null)
+            {
+                return false;
+            }
+
+            Vector scroll = currentContainer.GetScroll();
+            Vector maxScroll = currentContainer.GetMaxScroll();
+            float scale = new TimeTravelScreen(ScreenPresentation.Instance.Snapshot.VisibleBounds).Scale;
+            scroll.Y += delta * TimeTravelCreditsSpeed * scale;
             scroll.Y = Math.Clamp(scroll.Y, 0f, MathF.Max(0f, maxScroll.Y));
             currentContainer.SetScroll(scroll);
             return true;
@@ -252,6 +285,7 @@ namespace CutTheRopeDX.GameMain
 
             currentContainer.width = (int)ContainerWidth;
             currentContainer.height = (int)WindowHeight(visible);
+            PlaceWindowBorders();
 
             // The button in the corner is drawn over the bottom of the window, and on a viewport
             // narrow enough for the credits column to reach that corner it covers the last line
@@ -413,6 +447,67 @@ namespace CutTheRopeDX.GameMain
         /// the same reason as <see cref="ScrollOffset"/>.
         /// </summary>
         public bool AutoScrollEnabled { get; set; }
+
+        /// <summary>Scroll speed of the Time Travel credits, in scene units a second.</summary>
+        private const float TimeTravelCreditsSpeed = 30f;
+
+        // The iOS credits window borders, in canvas pixels: each strip's height, and where its top
+        // sits from the window's bottom edge, from the strips' offsets against the position-only
+        // window-bottom quad (q8, y 1568).
+        private const float BorderWideHeightC = 60f;
+        private const float BorderThinHeightC = 31f;
+        private const float BorderWideBelowBottomC = -32f;
+        private const float BorderThinBelowBottomC = -12f;
+
+        /// <summary>The Time Travel strips framing the credits window; empty in the other styles.</summary>
+        private readonly List<Image> windowBorders = [];
+
+        /// <summary>Adds the iOS strips that frame the credits window, the top ones mirrored.</summary>
+        /// <param name="background">Element the window hangs from.</param>
+        private void AddWindowBorders(BaseElement background)
+        {
+            windowBorders.Clear();
+            foreach ((string name, int quad, bool top) in new[]
+            {
+                ("ttWindowTopWide", TimeTravelArt.WindowBorderWide, true),
+                ("ttWindowTopThin", TimeTravelArt.WindowBorderThin, true),
+                ("ttWindowBottomWide", TimeTravelArt.WindowBorderWide, false),
+                ("ttWindowBottomThin", TimeTravelArt.WindowBorderThin, false),
+            })
+            {
+                Image strip = Image.FromResource(Resources.Img.MenuSettingsTimeTravel, quad);
+                strip.SetName(name);
+                strip.anchor = strip.parentAnchor = 18;
+                strip.scaleY = top ? -1f : 1f;
+                windowBorders.Add(strip);
+                _ = background.AddChild(strip);
+            }
+            PlaceWindowBorders();
+        }
+
+        /// <summary>Puts each strip across its window edge, offset from it as iOS offsets them.</summary>
+        private void PlaceWindowBorders()
+        {
+            if (windowBorders.Count == 0 || currentContainer == null)
+            {
+                return;
+            }
+
+            float half = currentContainer.height / 2f;
+            foreach (Image strip in windowBorders)
+            {
+                bool wide = strip.quadToDraw == TimeTravelArt.WindowBorderWide;
+                float heightC = wide ? BorderWideHeightC : BorderThinHeightC;
+                float belowBottomC = wide ? BorderWideBelowBottomC : BorderThinBelowBottomC;
+
+                // A bottom strip's top is the edge plus its offset; the mirrored top strip sits the
+                // same distance the other way, its top at the edge minus the offset and its height.
+                bool top = strip.scaleY < 0f;
+                float stripTopC = top ? -belowBottomC - heightC : belowBottomC;
+                float edge = top ? -half : half;
+                strip.y = edge + ((stripTopC + (heightC / 2f)) * TimeTravelArt.CanvasToAsset);
+            }
+        }
 
         /// <summary>
         /// Scroll container holding the About/Credits content.

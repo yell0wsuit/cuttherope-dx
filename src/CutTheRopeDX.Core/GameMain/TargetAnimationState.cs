@@ -52,5 +52,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Directional greeting where Om Nom turns its head downward.</summary>
         GreetDown,
+
+        /// <summary>Om Nom drawn out of the time spiral as a pack begins.</summary>
+        LevelIntro,
+
+        /// <summary>Om Nom drawn back into the time spiral as a pack ends.</summary>
+        LevelOutro,
     }
 }

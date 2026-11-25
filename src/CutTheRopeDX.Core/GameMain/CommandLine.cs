@@ -110,7 +110,7 @@ namespace CutTheRopeDX.GameMain
             string value = i + 1 < args.Length ? args[i + 1] : null;
             return MenuTheme.TryParse(value, out menu)
                 ? null
-                : MenuSwitch + " expects \"classic\" or \"experiments\".";
+                : MenuSwitch + " expects \"classic\", \"experiments\" or \"timetravel\".";
         }
     }
 }

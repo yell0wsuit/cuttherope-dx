@@ -50,9 +50,9 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>
         /// Gets whether the bats stand in for the three-star confetti: in the Halloween period,
-        /// with the classic menus. The Experiments menus keep their own confetti.
+        /// with the classic menus.
         /// </summary>
-        public static bool ReplacesConfetti => SpecialEvents.IsHalloween && !MenuTheme.IsExperiments;
+        public static bool ReplacesConfetti => SpecialEvents.IsHalloween && MenuTheme.Current == MenuStyle.Classic;
 
         /// <summary>Gets the number of bats still flying.</summary>
         public int LiveBats

@@ -1,0 +1,29 @@
+{
+    "frames": [
+        {
+            "filename": "frame_0000.png",
+            "frame": { "x": 1, "y": 1, "w": 723, "h": 691 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 145, "y": 410, "w": 723, "h": 691 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        },
+        {
+            "filename": "frame_0001.png",
+            "frame": { "x": 726, "y": 1, "w": 649, "h": 648 },
+            "rotated": false,
+            "trimmed": true,
+            "spriteSourceSize": { "x": 172, "y": 418, "w": 649, "h": 648 },
+            "sourceSize": { "w": 998, "h": 1498 }
+        }
+    ],
+    "meta": {
+        "app": "https://www.codeandweb.com/texturepacker",
+        "version": "1.0",
+        "image": "menu_pack_selection_icons_2_timetravel.png",
+        "format": "RGBA8888",
+        "size": { "w": 1376, "h": 693 },
+        "scale": "0.78",
+        "smartupdate": "$TexturePacker:SmartUpdate:69977dba06feabc06d7b180327dc64b5:a9b6cc9deddf6493733f8e132a06ecca:9257c9d7fc200e9bc0258c58d3eb95a6$"
+    }
+}

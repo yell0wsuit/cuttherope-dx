@@ -1,0 +1,24 @@
+<FlashAnimation width="640" height="960" src="result_screen_timetravel">
+ <Image rotationCenterY="3.5" anchorX="0" anchorY="0" parentAnchor="TOP|LEFT" anchor="CUSTOM" name="lamp" src="result_screen_timetravel" quadToDraw="2" rotationCenterX="3">
+  <Timeline ID="0">
+   <Pos>97.5,1253.6(1)@0+97.5,741.6(0)@0.7666667+97.5,776.25(4)@0.2+97.5,754.25(4)@0.3333333+97.5,768.85(4)@0.4333334+97.5,766.45(4)@0.5666667+97.5,766.45(4)@0.03333334</Pos>
+   <Scale>1,1(1)@0+1,1(0)@0.7666667+1,1(4)@0.2+1,1(4)@1.366667</Scale>
+   <Color>1,1,1,1(1)@0+1,1,1,1(0)@0.7666667+1,1,1,1(4)@0.2+1,1,1,1(4)@1.366667</Color>
+   <Skew>0,0(1)@0+0,0(0)@0.7666667+0,0(4)@0.2+0,0(4)@1.366667</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,2,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,3,3.5(1)@0+AC_SV,self,0,1(0)@0.7666667+AC_SDQ,self,2,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,3,3.5(0)@0+AC_SV,self,0,1(4)@0.2+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0+AC_SV,self,0,1(4)@1.366667+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0</Action>
+  </Timeline>
+  <Timeline ID="1">
+   <Pos>97.5,766.85(1)@0+97.5,773.55(4)@0.6666667+97.5,764.8(4)@0.6333334+97.5,768.6(0)@0.6333334+97.5,764.6(4)@0.5333334+97.5,770.35(4)@0.9+97.5,766.85(0)@0.9333334+97.5,766.85(4)@0.03333334</Pos>
+   <Scale>1,1(1)@0+1,1(4)@0.6666667+1,1(4)@0.6333334+1,1(0)@0.6333334+1,1(4)@0.5333334+1,1(4)@0.9+1,1(0)@0.9333334+1,1(4)@0.03333334</Scale>
+   <Color>1,1,1,1(1)@0+1,1,1,1(4)@0.6666667+1,1,1,1(4)@0.6333334+1,1,1,1(0)@0.6333334+1,1,1,1(4)@0.5333334+1,1,1,1(4)@0.9+1,1,1,1(0)@0.9333334+1,1,1,1(4)@0.03333334</Color>
+   <Skew>0,0(1)@0+0,0(4)@0.6666667+0,0(4)@0.6333334+0,0(0)@0.6333334+0,0(4)@0.5333334+0,0(4)@0.9+0,0(0)@0.9333334+0,0(4)@0.03333334</Skew>
+   <Action>AC_SV,self,0,1(1)@0+AC_SDQ,self,2,0(1)@0+AC_SAP,self,0,0(1)@0+AC_SRC,self,3,3.5(1)@0+AC_SV,self,0,1(4)@0.6666667+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0+AC_SV,self,0,1(4)@0.6333334+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0+AC_SV,self,0,1(0)@0.6333334+AC_SDQ,self,2,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,3,3.5(0)@0+AC_SV,self,0,1(4)@0.5333334+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0+AC_SV,self,0,1(4)@0.9+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0+AC_SV,self,0,1(0)@0.9333334+AC_SDQ,self,2,0(0)@0+AC_SAP,self,0,0(0)@0+AC_SRC,self,3,3.5(0)@0+AC_SV,self,0,1(4)@0.03333334+AC_SDQ,self,2,0(4)@0+AC_SAP,self,0,0(4)@0+AC_SRC,self,3,3.5(4)@0</Action>
+  </Timeline>
+ </Image>
+ <Timeline ID="0">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@2.333333</Action>
+ </Timeline>
+ <Timeline ID="1">
+  <Action>AC_D,self,0,0(0)@0+AC_D,self,0,0(0)@4.333333</Action>
+ </Timeline>
+</FlashAnimation>

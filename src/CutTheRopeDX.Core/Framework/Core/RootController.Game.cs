@@ -779,7 +779,13 @@ namespace CutTheRopeDX.Framework.Core
         /// slower texture paths like the browser's. It also never gets freed, so it stays in
         /// memory through gameplay.
         /// </remarks>
-        internal static string[] PackMenu => MenuTheme.IsExperiments ? PackMenuExperiments : PackMenuClassic;
+        internal static string[] PackMenu => MenuTheme.Current switch
+        {
+            MenuStyle.Classic => PackMenuClassic,
+            MenuStyle.Experiments => PackMenuExperiments,
+            MenuStyle.TimeTravel => PackMenuTimeTravel,
+            _ => PackMenuClassic,
+        };
 
         /// <summary>The classic menu's image resources, terminated by <see langword="null"/>.</summary>
         private static readonly string[] PackMenuClassic =
@@ -821,6 +827,54 @@ namespace CutTheRopeDX.Framework.Core
             null
         ];
 
+        /// <summary>
+        /// The Time Travel menu's image resources, terminated by <see langword="null"/>. Its
+        /// sub-views keep the classic structure and its title is the classic logo, so the classic
+        /// pack loads underneath.
+        /// </summary>
+        private static readonly string[] PackMenuTimeTravel =
+        [
+            .. PackMenuClassic[..^1],
+            Resources.BackgroundImg.MenuTimeTravelMainBgr,
+            Resources.BackgroundImg.MenuTimeTravelBgr,
+            Resources.Img.MenuMainTimeTravel,
+            Resources.Img.MenuMainAniTimeTravel,
+            Resources.Img.MenuButtonsTimeTravel,
+            Resources.Img.MenuButtonBigTimeTravel,
+            Resources.Img.MenuButtonSmallTimeTravel,
+            Resources.Img.MenuSettingsTimeTravel,
+            Resources.Img.LogoClockTimeTravel,
+            Resources.Img.MenuPopupTimeTravel,
+            Resources.Img.MenuPackSelectionTimeTravel,
+            Resources.Img.MenuPackSelectionIconsTimeTravel,
+            Resources.Img.MenuPackSelectionIcons1TimeTravel,
+            Resources.Img.MenuPackSelectionIcons2TimeTravel,
+            Resources.Img.MenuBgrsTimeTravel,
+            Resources.Img.MenuLevelsTimeTravel,
+            Resources.Snd.TapTimeTravel1,
+            Resources.Snd.TapTimeTravel2,
+            null
+        ];
+
+        /// <summary>
+        /// The Time Travel game screen's resources: its HUD, pause buttons, level-start lightning,
+        /// time spiral and result screen, with their sounds.
+        /// </summary>
+        private static readonly string[] PackGameTimeTravel = [
+            Resources.Img.HudTimeTravel,
+            Resources.Img.FxRestartTimeTravel,
+            Resources.Img.FxSpiralTimeTravel,
+            Resources.Img.ResultScreenTimeTravel,
+            Resources.Img.MenuButtonsTimeTravel,
+            Resources.Img.MenuButtonSmallTimeTravel,
+            Resources.Snd.TimeSpiralSuckInTimeTravel,
+            Resources.Snd.TimeSpiralSuckOutTimeTravel,
+            Resources.Snd.ResultStar1TimeTravel,
+            Resources.Snd.ResultStar2TimeTravel,
+            Resources.Snd.ResultStar3TimeTravel,
+            Resources.Snd.ResultOpenTimeTravel,
+        ];
+
         /// <summary>Resource pack loaded for gameplay (HUD, candy, spider, etc.).</summary>
         private static readonly string[] PackGame = [
             Resources.Img.MenuButtons,
@@ -836,6 +890,7 @@ namespace CutTheRopeDX.Framework.Core
             Resources.Img.MenuResults,
             Resources.Fnt.FontNumbersBig,
             .. MenuTheme.IsExperiments ? (string[])[Resources.Img.ProfessorHand] : [],
+            .. MenuTheme.IsTimeTravel ? PackGameTimeTravel : [],
             null
         ];
 

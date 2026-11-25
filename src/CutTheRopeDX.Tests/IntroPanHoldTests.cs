@@ -1,4 +1,8 @@
 using System;
+using System.Linq;
+
+using CutTheRopeDX.Framework.Core;
+using CutTheRopeDX.Framework.Visual;
 
 using CutTheRopeDX.GameMain;
 using CutTheRopeDX.Tests.Interactions;
@@ -118,6 +122,123 @@ namespace CutTheRopeDX.Tests
 
             Assert.Equal(0f, scene.gameplayFlow.DimTime, 0.001);
             Assert.Equal(RestartPhase.Playing, scene.gameplayFlow.Phase);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void TimeTravelRestartLightningAnimatesAndFinishesDuringTheCameraIntro(bool restart)
+        {
+            _ = HeadlessGame.Boot();
+            MenuStyle previous = MenuTheme.Current;
+            MenuTheme.Current = MenuStyle.TimeTravel;
+            try
+            {
+                GameScene scene = Scenario.New()
+                    .MapSize(320, PannedHeight)
+                    .Candy(160, 60)
+                    .OmNom(160, PannedHeight - 60)
+                    .Build(level: 1);
+                if (restart)
+                {
+                    scene.AnimateLevelRestart();
+                    HeadlessGame.StepFrames(scene, 20);
+                }
+                Assert.True(scene.IsIntroPanRunning());
+                BaseElement lightning = scene.GetChildWithName("ttLightningRT");
+                Assert.NotNull(lightning);
+                float start = scene.Candy().WholeBody.Point.pos.Y;
+                HeadlessGame.StepFrames(scene, 10);
+                Assert.True(lightning.GetCurrentTimeline().time > 0.1f);
+                Assert.True(scene.IsIntroPanRunning());
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+
+                HeadlessGame.StepFrames(scene, 90);
+                Assert.Null(scene.GetChildWithName("ttLightningRT"));
+                Assert.Null(scene.GetChildWithName("ttLightningBL"));
+                Assert.True(scene.IsIntroPanRunning());
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+            }
+            finally
+            {
+                MenuTheme.Current = previous;
+            }
+        }
+
+        [Fact]
+        public void TheArrivalFadeWaitsWithOmNomUntilTheCameraIntroFinishes()
+        {
+            _ = HeadlessGame.Boot();
+            MenuStyle previous = MenuTheme.Current;
+            int previousSkin = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
+            MenuTheme.Current = MenuStyle.TimeTravel;
+            try
+            {
+                int skin = OmNomSkinRegistry.XmlSkins.ToList().FindIndex(s => s.Id == "OM_NOM_ORIGINAL_FLASH");
+                Preferences.SetIntForKey(skin + 1, "PREFS_SELECTED_OMNOM", false);
+                RootController.SetShowGreeting(true);
+                GameScene scene = FreeCandyLevel(PannedHeight);
+                BaseElement fade = scene.GetChildWithName("ttOmNomBlackout");
+                Assert.NotNull(fade);
+                HeadlessGame.StepFrames(scene, 30);
+                Assert.True(scene.IsIntroPanRunning());
+                Assert.Equal(0f, fade.color.AlphaChannel);
+                Assert.Null(scene.TimeTravelSpiral);
+                for (int frame = 0; frame < 1000 && scene.IsIntroPanRunning(); frame++)
+                {
+                    HeadlessGame.StepFrames(scene, 1);
+                }
+                Assert.False(scene.IsIntroPanRunning());
+                HeadlessGame.StepFrames(scene, 30);
+                Assert.True(fade.color.AlphaChannel > 0.2f);
+            }
+            finally
+            {
+                RootController.SetShowGreeting(false);
+                Preferences.SetIntForKey(previousSkin, "PREFS_SELECTED_OMNOM", false);
+                MenuTheme.Current = previous;
+            }
+        }
+
+        [Theory]
+        [InlineData("OM_NOM_ORIGINAL_FLASH")]
+        [InlineData("OM_NOM_HALLOWEEN")]
+        [InlineData("OM_NOM_XMAS")]
+        public void GameplayWaitsForOmNomsArrivalThenResumes(string skinId)
+        {
+            _ = HeadlessGame.Boot();
+            MenuStyle previous = MenuTheme.Current;
+            int previousSkin = Preferences.GetIntForKey("PREFS_SELECTED_OMNOM");
+            MenuTheme.Current = MenuStyle.TimeTravel;
+            try
+            {
+                int skin = OmNomSkinRegistry.XmlSkins.ToList().FindIndex(s => s.Id == skinId);
+                Preferences.SetIntForKey(skin + 1, "PREFS_SELECTED_OMNOM", false);
+                RootController.SetShowGreeting(true);
+                GameScene scene = FreeCandyLevel(UnpannedHeight);
+                Assert.False(scene.IsIntroPanRunning());
+                Assert.True(scene.TimeTravelSpiralTarget >= 0);
+                float start = scene.Candy().WholeBody.Point.pos.Y;
+                HeadlessGame.StepFrames(scene, 100);
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+                Assert.NotNull(scene.TimeTravelSpiral);
+                Assert.True(scene.TutorialDirector().PresentationPaused);
+                HeadlessGame.StepFrames(scene, 100);
+                Assert.Equal(start, scene.Candy().WholeBody.Point.pos.Y);
+                for (int frame = 0; frame < 200 && scene.TutorialDirector().PresentationPaused; frame++)
+                {
+                    HeadlessGame.StepFrames(scene, 1);
+                }
+                Assert.False(scene.TutorialDirector().PresentationPaused);
+                HeadlessGame.StepFrames(scene, 10);
+                Assert.True(scene.Candy().WholeBody.Point.pos.Y > start + 1f);
+            }
+            finally
+            {
+                RootController.SetShowGreeting(false);
+                Preferences.SetIntForKey(previousSkin, "PREFS_SELECTED_OMNOM", false);
+                MenuTheme.Current = previous;
+            }
         }
 
         /// <summary>
