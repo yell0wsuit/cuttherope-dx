@@ -79,16 +79,6 @@ namespace CutTheRopeDX.GameMain
         /// <summary>The long hand's quad in the clock sheet.</summary>
         private const int MinuteHandQuad = 2;
 
-        /// <summary>
-        /// Where the clock center goes on the logo: the hole in the O of ROPE, in logo pixels.
-        /// </summary>
-        private static readonly Vector ClockCenterOnArt = new(388.5f, 425f);
-
-        /// <summary>
-        /// Top left of the clock's center point where the intro leaves it, in animation stage units.
-        /// </summary>
-        private static readonly Vector CenterPointRest = new(374.6f, 386.35f);
-
         private readonly List<Image> clockParts = [];
         private Random random;
         private Func<DateTime> now;
@@ -118,10 +108,15 @@ namespace CutTheRopeDX.GameMain
             logo.width = art.width;
             logo.height = art.height;
             _ = logo.AddChild(art);
-            logo.AttachClock();
+            Button candy = MenuController.CreateLogoCandyButton(candyDelegate);
+            // The candy is top-centered on the art; anchoring uses integer half-widths.
+            Vector candyCenter = new(
+                (art.width >> 1) + candy.x - (candy.width >> 1) + (candy.width / 2f),
+                candy.y + (candy.height / 2f));
+            logo.AttachClock(candyCenter);
             if (candyDelegate != null)
             {
-                _ = art.AddChild(MenuController.CreateLogoCandyButton(candyDelegate));
+                _ = art.AddChild(candy);
             }
             logo.Play(IntroTimeline);
             logo.ShowTime();
@@ -169,7 +164,8 @@ namespace CutTheRopeDX.GameMain
         }
 
         /// <summary>Builds the clock hands' animation over the logo.</summary>
-        private void AttachClock()
+        /// <param name="center">Center of the selected candy, in logo pixels.</param>
+        private void AttachClock(Vector center)
         {
             FlashXmlAnimationDefinition definition = FlashXmlImporter.ParseFile(
                 ContentPaths.GetAnimationXmlAbsolutePath(TimeTravelArt.LogoAnimationXml));
@@ -183,16 +179,6 @@ namespace CutTheRopeDX.GameMain
             clock.height = (int)MathF.Round(definition.StageHeight);
             clock.anchor = clock.parentAnchor = 9;
 
-            // The stage is in the animation's units and the logo in asset pixels. The stage scales
-            // about its own center like every element, so its position is solved for the point
-            // that must land on the logo: the center point's resting middle.
-            float scale = FlashXmlScale.AtlasToFlashPointScale;
-            float pivotX = CenterPointRest.X + (FlashXmlScale.NormalizeAtlasValue(sheet.quadRects[CenterPointQuad].w) / 2f);
-            float pivotY = CenterPointRest.Y + (FlashXmlScale.NormalizeAtlasValue(sheet.quadRects[CenterPointQuad].h) / 2f);
-            clock.scaleX = clock.scaleY = scale;
-            clock.x = ClockCenterOnArt.X - (clock.width >> 1) - ((pivotX - (clock.width >> 1)) * scale);
-            clock.y = ClockCenterOnArt.Y - (clock.height >> 1) - ((pivotY - (clock.height >> 1)) * scale);
-
             FlashXmlTargetAnimationBackend.BuildParts(definition, clock, clockParts, -1, -1);
             FlashXmlTargetAnimationBackend.BuildRootTimelines(definition, clock, -1, -1);
             Image hub = clockParts.Find(part => part.quadToDraw == CenterPointQuad);
@@ -200,6 +186,11 @@ namespace CutTheRopeDX.GameMain
             hourHand = FindHand(definition, HourHandQuad, HourHandArtAngle, HourHandCenterlineOffset);
             minuteHand = FindHand(definition, MinuteHandQuad, MinuteHandArtAngle, MinuteHandCenterlineOffset);
             hubCenter = hub == null ? hubRest : new Vector(hubRest.X + (hub.width / 2f), hubRest.Y + (hub.height / 2f));
+            // Scale the animation stage about its center, placing the resting hub on the candy.
+            float scale = FlashXmlScale.AtlasToFlashPointScale;
+            clock.scaleX = clock.scaleY = scale;
+            clock.x = center.X - (clock.width >> 1) - ((hubCenter.X - (clock.width >> 1)) * scale);
+            clock.y = center.Y - (clock.height >> 1) - ((hubCenter.Y - (clock.height >> 1)) * scale);
             foreach (int id in new[] { IntroTimeline, IdleTimeline })
             {
                 if (clock.GetTimeline(id) is { } timeline)
