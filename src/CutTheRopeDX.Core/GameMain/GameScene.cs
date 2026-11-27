@@ -992,6 +992,12 @@ namespace CutTheRopeDX.GameMain
         private Image support;
 
         /// <summary>
+        /// Whether Om Nom is yet to come out of the spiral.
+        /// See <see cref="BeginTimeTravelArrival"/> and <see cref="Selector_timeTravelStepOut"/>.
+        /// </summary>
+        private bool? IsDoingTTArrival => targets.Count > 0 ? targets[0].isDoingTTArrival : null;
+
+        /// <summary>
         /// The main candy gameplay object.
         /// </summary>
         private GameObject Candy => candies[0].WholeBody.Visual;

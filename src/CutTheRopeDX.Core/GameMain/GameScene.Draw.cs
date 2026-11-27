@@ -127,7 +127,7 @@ namespace CutTheRopeDX.GameMain
             support.Draw();
             waterLayer?.DrawBack();
             DrawTimeTravelSpiral(0);
-            if (TargetObject?.visible == true)
+            if (IsDoingTTArrival == false)
             {
                 TargetObject.Draw();
                 TargetAnimation?.DrawSleepOverlays();
@@ -138,7 +138,7 @@ namespace CutTheRopeDX.GameMain
                 TargetContext t = targets[ti];
                 t.support?.Draw();
                 DrawTimeTravelSpiral(ti);
-                if (t.targetObject?.visible == true)
+                if (!t.isDoingTTArrival)
                 {
                     t.targetObject.Draw();
                     t.animation?.DrawSleepOverlays();

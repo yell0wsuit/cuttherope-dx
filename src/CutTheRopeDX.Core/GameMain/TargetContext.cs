@@ -26,5 +26,11 @@ namespace CutTheRopeDX.GameMain
 
         /// <summary>Gets the authoritative blink, idle, and chat cadence.</summary>
         public TargetIdleState Idle { get; } = new(blinkCountdown, idleCountdown);
+
+        /// <summary>
+        /// Whether Om Nom is yet to come out of the spiral.
+        /// See <see cref="GameScene.BeginTimeTravelArrival"/> and <see cref="GameScene.Selector_timeTravelStepOut"/>.
+        /// </summary>
+        public bool isDoingTTArrival;
     }
 }
