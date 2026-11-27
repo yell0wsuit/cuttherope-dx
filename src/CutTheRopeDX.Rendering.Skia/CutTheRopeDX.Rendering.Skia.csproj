@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.NativeAssets.macOS" VersionOverride="4.153.1" />
     <ProjectReference Include="../CutTheRopeDX.Core/CutTheRopeDX.Core.csproj" />
     <InternalsVisibleTo Include="CutTheRopeDX.Browser" />
     <InternalsVisibleTo Include="CutTheRope-DX" />
