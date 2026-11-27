@@ -239,7 +239,7 @@ namespace CutTheRopeDX.GameMain
                 tutorialDirector.PresentationPaused = false;
                 ShowGreeting();
             };
-            targets[index].targetObject.visible = false;
+            targets[index].isDoingTTArrival = true;
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelArrivalFlash), null, TimeTravelArrivalFlash);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_openTimeTravelSpiral), null, TimeTravelSpiralOpens);
             dd.CallObjectSelectorParamafterDelay(new DelayedDispatcher.DispatchFunc(Selector_timeTravelStepOut), null, TimeTravelArrivalStep);
@@ -311,7 +311,7 @@ namespace CutTheRopeDX.GameMain
                 return;
             }
             TargetContext target = targets[TimeTravelSpiralTarget];
-            target.targetObject.visible = true;
+            target.isDoingTTArrival = false;
             target.animation?.Play(TargetAnimationState.LevelIntro);
         }
 
